@@ -1,0 +1,25 @@
+{
+  "name": "Poker",
+  "version": "0.0.1",
+  "private": false,
+  "scripts": {
+    "start": "node app.js",
+    "serve": "nodemon server-poker --watch ./ --ignore /node_modules"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geobalas/Poker"
+  },
+  "dependencies": {
+    "clone": "^2.1.2",
+    "connect": "~3.3.3",
+    "express": "~3.4.7",
+    "jade": "~1.7.0",
+    "less": "~2.0.0",
+    "less-middleware": "~1.0.4",
+    "minter-js-sdk": "^0.20.3",
+    "nedb": "^1.8.0",
+    "sha256": "^0.2.0",
+    "socket.io": "~1.2.0"
+  }
+}
