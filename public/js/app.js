@@ -59,7 +59,7 @@ app.run(function($rootScope) {
     $rootScope.sittingOnTable = '';
     $rootScope.updateUser();
     window.onbeforeunload = ()=> {
-        if (!$rootScope.sittingOnTable){
+        if (!$rootScope.sittingOnTable && $rootScope.sittingOnTable !== ''){
             return null;
         }
         return true;
