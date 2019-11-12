@@ -1,14 +1,14 @@
 <div id="lobby">
-    <div ng-show="isLogged()"><b>{{$root.user.login}}</b> Deposit: {{$root.user.deposit}} <u ng-click="$root.logOut()">Exit</u></div>
+    <div class="login-path" ng-show="isLogged()"><b>{{$root.user.login}}</b> Deposit: {{$root.user.deposit}} <u ng-click="$root.logOut()">Exit</u></div>
     <div class="modal-wrap" ng-show="!isLogged()">
         <div class="modal">
             <form ng-submit="logreg()">
                     <label for="screen-login-input">Enter your login</label>
                     <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true" required>
-                   
+
                     <label for="screen-address-input" ng-show="!isLoginned">Enter your address</label>
                     <input id="screen-address-input" class="input-left" type="text" ng-model="address" ng-show="!isLoginned" ng-trim="true">
-                   
+
                     <label for="screen-password-input">Enter your password</label>
                     <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true" required>
                <br>
@@ -20,11 +20,11 @@
         </div>
         <div id="curtain" ng-show="!isLogged()"></div>
     </div>
-    <table id="table-list">
+    <table id="table-list" class="table_dark">
         <tr>
-            <th class="dark-border">Name</th>
-            <th class="dark-border">BB/SB</th>
-            <th>Players</th>
+            <th class="dark-border">Name room</th>
+            <th class="dark-border">Bet BB/SB</th>
+            <th>Seats/Players</th>
         </tr>
         <tr ng-repeat="table in lobbyTables">
             <td><a href="/table-{{table.seatsCount}}/{{table.id}}">{{table.name}}</a></td>
