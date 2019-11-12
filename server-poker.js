@@ -9,8 +9,8 @@ var express = require('express'),
     $u = require('./helpers/utils'),
     log = require('./helpers/log');
 
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
+require('./modules/tlgGame');
+
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

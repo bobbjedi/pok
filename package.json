@@ -1,5 +1,5 @@
 {
-  "name": "Poker",
+  "name": "Xewert",
   "version": "0.0.1",
   "private": false,
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/geobalas/Poker"
+    "url": ""
   },
   "dependencies": {
     "clone": "^2.1.2",
@@ -19,6 +19,7 @@
     "less-middleware": "~1.0.4",
     "minter-js-sdk": "^0.20.3",
     "nedb": "^1.8.0",
+    "node-telegram-bot-api": "^0.40.0",
     "sha256": "^0.2.0",
     "socket.io": "~1.2.0"
   }

@@ -7,7 +7,7 @@ const token = '1009891603:AAGW5bMDjbcdOA_2DKFZV9AYMwK4UVdVjwA';
 const bot = new TelegramBot(token, {polling: true});
 
 // ссылка на игру в сети интернет
-let url = 'http://swbot.info:36669';
+let url = 'http://cr-games.club:3000';
 
 // название игры (то, что указывали в BotFather)
 const gameName = 'minterFlappyBird';
@@ -20,4 +20,8 @@ bot.onText(/\/start/, function onPhotoText(msg) {
 // Handle callback queries
 bot.on('callback_query', function onCallbackQuery(callbackQuery) {
     bot.answerCallbackQuery(callbackQuery.id, { url });
+});
+
+bot.on('error', ()=>{
+    console.log('err');
 });
