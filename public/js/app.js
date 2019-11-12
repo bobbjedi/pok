@@ -109,6 +109,4 @@ function noty(type, text){
         timeout: 3000,
         soundPlayed: true
     }).show();
-    // console.log(n)
-    // setTimeout(()=>n.stop(), 3000);
 }

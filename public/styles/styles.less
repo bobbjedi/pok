@@ -804,3 +804,25 @@ div#board-wrap {
 		font-size: 1em;
 	}
 }
+
+#noticeOrientation{
+    display: none;
+    position: fixed;
+    top:0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+     & img{
+         width:80%;
+     }
+}
+@media screen and (orientation:portrait) and (max-device-width: 500px) {
+   #content{
+       display: none;
+   }
+   #noticeOrientation{
+        display: flex;
+   }
+}
