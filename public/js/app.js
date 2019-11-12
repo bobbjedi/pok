@@ -3,22 +3,22 @@ var socket = io.connect();
 var app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
         templateUrl: '/partials/table-10-handed.html',
-        controller: 'TableController', 
+        controller: 'TableController',
     });
 
     $routeProvider.when('/table-6/:tableId', {
         templateUrl: '/partials/table-6-handed.html',
-        controller: 'TableController', 
+        controller: 'TableController',
     });
 
     $routeProvider.when('/table-2/:tableId', {
         templateUrl: '/partials/table-2-handed.html',
-        controller: 'TableController', 
+        controller: 'TableController',
     });
 
     $routeProvider.when('/', {
         templateUrl: '/partials/lobby.html',
-        controller: 'LobbyController', 
+        controller: 'LobbyController',
     });
 
     $routeProvider.otherwise({ redirectTo: '/' });
@@ -44,11 +44,11 @@ app.run(function($rootScope) {
             Object.assign($rootScope.user, data);
             $rootScope.totalChips = data.deposit;
             $rootScope.sittingOnTable = '';
-        });
+        }, true);
     };
 
     $rootScope.api = api;
-    
+
     $rootScope.$watch('user.token', ()=>{
         localStorage.setItem('token', $rootScope.user.token);
     });
@@ -80,6 +80,7 @@ function api(obj, cb = () => {}, silent, type = 'api') {
                     console.warn(obj.action + ' error: ', data);
                     if (!silent) {
                         console.log('NOTT', data.msg);
+                        noty('warning', data.msg);
                     }
                 }
                 this.$digest();
@@ -89,3 +90,25 @@ function api(obj, cb = () => {}, silent, type = 'api') {
             console.warn(obj.action, err);
         });
 };
+
+Noty.overrideDefaults({
+    layout: 'topRight',
+    theme: 'mint',
+    theme: 'mint',
+    animation: {
+        open: 'noty_effects_open',
+        close: 'noty_effects_close'
+    }
+});
+
+
+function noty(type, text){
+    const n = new Noty({
+        type,
+        text,
+        timeout: 3000,
+        soundPlayed: true
+    }).show();
+    // console.log(n)
+    // setTimeout(()=>n.stop(), 3000);
+}

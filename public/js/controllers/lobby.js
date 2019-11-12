@@ -41,22 +41,12 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         user.address = $scope.address;
         if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
             console.log('Fill in all the fields!');
-            // this.$notify({
-            //     type: 'error',
-            //     group: 'foo',
-            //     title: 'Error ' + this.status,
-            //     text: 'Fill in all the fields!'
-            // });
+            noty('error', 'Заполните все поля!');
             return;
         }
         if (user.address && (user.address.length < 40 || !user.address.startsWith('Mx'))){
             console.log('U minter adress must be Mx345536dsv34344...!');
-            // this.$notify({
-            //     type: 'warn',
-            //     group: 'foo',
-            //     title: 'Error ' + this.status,
-            //     text: 'U minter adress must be Mx345536dsv34344...!'
-            // });
+            noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
             return;
         }
         const action = $scope.isLoginned ? 'login' : 'registration';
@@ -66,6 +56,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         }, (data) => {
             Object.assign($rootScope.user, data);
             $rootScope.user.isLogged = true;
+            noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
         });
     };
 }]);
