@@ -9,7 +9,7 @@ var express = require('express'),
     $u = require('./helpers/utils'),
     log = require('./helpers/log');
 
-require('./modules/tlgGame');
+// require('./modules/tlgGame');
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -134,32 +134,34 @@ io.sockets.on('connection', function(socket) {
                 console.log({token});
                 var token = token.trim();
                 // If the new screen name is not an empty string
-                if (token && typeof players[socket.id] === 'undefined') {
-                    let playerExists = false;
-                    for (var i in players) {
-                        const player = players[i];
-                        if (player.token && player.token === token) {
-                            playerExists = player;
-                            break;
-                        }
-                    }
+                // if (token && typeof players[socket.id] === 'undefined') {
+                if (token) {
 
-                    if (!playerExists){ // создаем нового
-                        const user = await $u.getUserFromQ({token});
-                        if (!user){
-                            return;
-                        }
-                        players[socket.id] = new Player(socket, user);
-                        callback({'success': true});
+                    // let playerExists = false;
+                    // for (var i in players) {
+                    //     const player = players[i];
+                    //     if (player.token && player.token === token) {
+                    //         playerExists = player;
+                    //         break;
+                    //     }
+                    // }
+
+                    // if (!playerExists){ // создаем нового
+                    const user = await $u.getUserFromQ({token});
+                    if (!user){
                         return;
                     }
+                    players[socket.id] = new Player(socket, user);
+                    callback({'success': true});
+                    return;
+                    // }
                     console.log('ЕЩЕ ЖИВ!');
                     // Обновляем данные
-                    players[socket.id] = playerExists;
-                    players[socket.id].socket = socket;
-                    const {sittingOnTable, seat, room} = players[socket.id];
+                    // players[socket.id] = playerExists;
+                    // players[socket.id].socket = socket;
+                    // const {sittingOnTable, seat, room} = players[socket.id];
                     // console.log(players[socket.id])
-                    callback({'success': true, position: {sittingOnTable, seat, room}});
+                    // callback({'success': true, position: {sittingOnTable, seat, room}});
                 }
             }
         } catch (e){

@@ -10,12 +10,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     $rootScope.$watch('user.isLogged', ()=>{
         socket.emit ('checkUser', $rootScope.user.token, response => {
             if (response.success){
-                const {position} = response;
-                if (position){
-                    $rootScope.sittingOnTable = position.sittingOnTable + '';
-                    $rootScope.sittingIn = !!(position.sittingOnTable + 1);
-                }
-                $rootScope.$digest();
+                $rootScope.updateUser();
             }
             else if (response.message) {
                 $scope.registerError = response.message;
@@ -39,6 +34,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         user.password = $scope.password;
         user.login = $scope.login;
         user.address = $scope.address;
+        console.log(!user.login, !user.password, !$scope.isLoginned, !user.address)
         if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
             console.log('Fill in all the fields!');
             noty('error', 'Заполните все поля!');
@@ -54,7 +50,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             action,
             data: user
         }, (data) => {
-            Object.assign($rootScope.user, data);
+            $rootScope.user = data;
             $rootScope.user.isLogged = true;
             noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
         });

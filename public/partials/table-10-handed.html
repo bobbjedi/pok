@@ -75,6 +75,7 @@
 			<seat player="table.seats[5]" active-seat="table.activeSeat" dealer-seat="table.dealerSeat" my-seat="mySeat" my-cards="myCards" sitting-on-table="$root.sittingOnTable" show-buy-in-modal="showBuyInModal(seat)" notifications="notifications" seat-index="5" cell-number="5" class="bottom right"></seat>
 		</div>
 	</div>
+	<div class="row bottom-corrector"></div>
 	<div class="row controls">
 		<div class="chat-cell">
 			<div id="chat" ng-controller="ChatController">
@@ -103,8 +104,16 @@
 		</div>
 		<div class="double-cell">
 			<div class="cell-content">
-				<input type="range" ng-show="showBetRange()" min="{{minBetAmount()}}" max="{{maxBetAmount()}}" ng-model="betAmount">
+				<div class="buttons-bet" ng-show="showBetRange()">
+					<div class="button-bet hovered" ng-click="betAmount = minBetAmount()">Мин.</div>
+					<div class="button-bet hovered" ng-click="betAmount = maxBetAmount() / 2">50%</div>
+					<div class="button-bet hovered" ng-click="betAmount = $scope.table.pot || minBetAmount()">Банк</div>
+					<div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Макс.</div>
+				</div>
+			<div class="range-input">
 				<input type="number" id="bet-input" ng-show="showBetInput()" min="{{minBetAmount()}}" max="{{maxBetAmount()}}" ng-model="betAmount" value="{{betAmount}}">
+				<input type="range" ng-show="showBetRange()" min="{{minBetAmount()}}" max="{{maxBetAmount()}}" ng-model="betAmount">
+			</div>
 			</div>
 		</div>
 	</div>

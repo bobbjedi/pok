@@ -35,7 +35,8 @@ app.run(function($rootScope) {
             login: '',
             address: '',
             token: false,
-            deposit: 0
+            deposit: 0,
+            isLoginned: true
         };
     };
 
@@ -43,7 +44,7 @@ app.run(function($rootScope) {
         $rootScope.api({action: 'getUser'}, data => {
             Object.assign($rootScope.user, data);
             $rootScope.totalChips = data.deposit;
-            $rootScope.sittingOnTable = '';
+            $rootScope.$digest();
         }, true);
     };
 
@@ -64,6 +65,9 @@ app.run(function($rootScope) {
         }
         return true;
     };
+    setInterval(() => {
+        $rootScope.updateUser();
+    }, 30 * 1000);
 });
 
 
