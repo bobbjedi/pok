@@ -33,7 +33,7 @@ console.log('Listening on port ' + port);
 
 // The lobby
 app.get('/', function(req, res) {
-    res.sendfile(__dirname + '/views/index.html');
+    res.sendfile(__dirname + '/public/index_.html');
 });
 
 // The lobby data (the array of tables and their data)
@@ -192,20 +192,20 @@ io.sockets.on('connection', function(socket) {
                 console.log('Disconnect!>>>>>.', player.public.name, player.sittingOnTable, player.seat);
                 // return;
                 // If the player was sitting on a table
-                player.onDisconnect(()=>{
-                    console.log('RM', player.public.name);
-                    if (player.sittingOnTable !== false && typeof tables[player.sittingOnTable] !== 'undefined' && socket.id === player.socket.id) {
-                        console.log('RM TABLE', player.public.name);
-                        // The seat on which the player was sitting
-                        var seat = player.seat;
-                        // The table on which the player was sitting
-                        var tableId = player.sittingOnTable;
-                        // Remove the player from the seat
-                        tables[tableId].playerLeft(seat);
-                    }
-                    // Remove the player object from the players array
-                    delete players[socket.id];
-                });
+                // player.onDisconnect(()=>{
+                console.log('RM', player.public.name);
+                if (player.sittingOnTable !== false && typeof tables[player.sittingOnTable] !== 'undefined' && socket.id === player.socket.id) {
+                    console.log('RM TABLE', player.public.name);
+                    // The seat on which the player was sitting
+                    var seat = player.seat;
+                    // The table on which the player was sitting
+                    var tableId = player.sittingOnTable;
+                    // Remove the player from the seat
+                    tables[tableId].playerLeft(seat);
+                }
+                // Remove the player object from the players array
+                delete players[socket.id];
+                // });
             }
         } catch (e){
             log.error('disconnect: ', e);

@@ -1,5 +1,6 @@
 var Deck = require('./deck'),
-    Pot = require('./pot');
+    Pot = require('./pot'),
+    log = require('../helpers/log');
 
 /**
  * The table "class"
@@ -213,8 +214,8 @@ Table.prototype.initializeRound = function(changeDealer) {
         this.headsUp = this.playersSittingInCount === 2;
         this.playersInHandCount = 0;
         this.biggestBet = 0;
-        this.public.biggestBet = 0
-        
+        this.public.biggestBet = 0;
+
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
@@ -638,44 +639,48 @@ Table.prototype.playerSatIn = function(seat) {
  * @param int seat
  */
 Table.prototype.playerLeft = function(seat) {
-    this.log({
-        message: this.seats[seat].public.name + ' left',
-        action: '',
-        seat: '',
-        notification: ''
-    });
+    try {
+        this.log({
+            message: this.seats[seat].public.name + ' left',
+            action: '',
+            seat: '',
+            notification: ''
+        });
 
-    // If someone is really sitting on that seat
-    if (this.seats[seat].public.name) {
-        var nextAction = '';
+        // If someone is really sitting on that seat
+        if (this.seats[seat].public.name) {
+            var nextAction = '';
 
-        // If the player is sitting in, make them sit out first
-        if (this.seats[seat].public.sittingIn) {
-            this.playerSatOut(seat, true);
+            // If the player is sitting in, make them sit out first
+            if (this.seats[seat].public.sittingIn) {
+                this.playerSatOut(seat, true);
+            }
+
+            this.seats[seat].leaveTable();
+
+            // Empty the seat
+            this.public.seats[seat] = {};
+            this.public.playersSeatedCount--;
+
+            // If there are not enough players to continue the game
+            if (this.public.playersSeatedCount < 2) {
+                this.public.dealerSeat = null;
+            }
+
+            this.seats[seat] = null;
+            this.emitEvent('table-data', this.public);
+
+            // If a player left a heads-up match and there are people waiting to play, start a new round
+            if (this.playersInHandCount < 2) {
+                this.endRound();
+            }
+            // Else if the player was the last to act in this phase, end the phase
+            else if (this.lastPlayerToAct === seat && this.public.activeSeat === seat) {
+                this.endPhase();
+            }
         }
-
-        this.seats[seat].leaveTable();
-
-        // Empty the seat
-        this.public.seats[seat] = {};
-        this.public.playersSeatedCount--;
-
-        // If there are not enough players to continue the game
-        if (this.public.playersSeatedCount < 2) {
-            this.public.dealerSeat = null;
-        }
-
-        this.seats[seat] = null;
-        this.emitEvent('table-data', this.public);
-
-        // If a player left a heads-up match and there are people waiting to play, start a new round
-        if (this.playersInHandCount < 2) {
-            this.endRound();
-        }
-        // Else if the player was the last to act in this phase, end the phase
-        else if (this.lastPlayerToAct === seat && this.public.activeSeat === seat) {
-            this.endPhase();
-        }
+    } catch (e){
+        log.error('TABLE playerLeft' + e);
     }
 };
 

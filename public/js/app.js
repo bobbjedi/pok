@@ -1,23 +1,27 @@
-var socket = io.connect();
+import table10 from '../partials/table-10-handed.html';
+import table6 from '../partials/table-6-handed.html';
+import table2 from '../partials/table-2-handed.html';
+import lobbyTemplate from '../partials/lobby.html';
+import noty from './libs/noty';
 
-var app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
+window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
-        templateUrl: '/partials/table-10-handed.html',
+        template: table10,
         controller: 'TableController',
     });
 
     $routeProvider.when('/table-6/:tableId', {
-        templateUrl: '/partials/table-6-handed.html',
+        template: table6,
         controller: 'TableController',
     });
 
     $routeProvider.when('/table-2/:tableId', {
-        templateUrl: '/partials/table-2-handed.html',
+        template: table2,
         controller: 'TableController',
     });
 
     $routeProvider.when('/', {
-        templateUrl: '/partials/lobby.html',
+        template: lobbyTemplate,
         controller: 'LobbyController',
     });
 
@@ -94,23 +98,3 @@ function api(obj, cb = () => {}, silent, type = 'api') {
             console.warn(obj.action, err);
         });
 };
-
-Noty.overrideDefaults({
-    layout: 'topRight',
-    theme: 'mint',
-    theme: 'mint',
-    animation: {
-        open: 'noty_effects_open',
-        close: 'noty_effects_close'
-    }
-});
-
-
-function noty(type, text){
-    const n = new Noty({
-        type,
-        text,
-        timeout: 3000,
-        soundPlayed: true
-    }).show();
-}

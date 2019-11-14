@@ -3,10 +3,11 @@
  * seatIndex: The index of the player in the "seats" array
  * cellNumber: The number of the cell in the grid (used for styles)
  */
+import template from '../../partials/seat.html';
 app.directive('seat', [function() {
     return {
         restrict: 'E',
-        templateUrl: '/partials/seat.html',
+        template: template,
         replace: true,
         scope: {
             player: '=',

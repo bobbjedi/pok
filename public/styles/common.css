@@ -182,12 +182,6 @@ input[type=range]:focus::-ms-fill-upper {
     background: rgb(68, 67, 67);;
 }
 
-body {
-    padding: 30px;
-}
-
-
-
 .buttons-bet {
     width: 100%;
     display: flex;
@@ -229,4 +223,44 @@ body {
     background: rgb(68, 67, 67);
     color: white;
     font-size: 1em;
+}
+
+
+.tin-line-player{
+    height: 0;
+    width: 80%;
+    margin: 4px 10%;
+    border-bottom: 1px solid #aaafb0;
+}
+.player-content{
+    width: 100%;
+}
+.controls{
+    display: flex;
+    height: 80px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    z-index: 1;
+    position: relative;
+    width: 120%;
+    margin-left: -10%;
+}
+
+div.row {
+    height: calc( ( 100% - 50px ) / 3 );
+}
+
+#messages{
+    position: absolute;
+    height: 50px;
+    width: 135px;
+    position: fixed;
+    height: 50px;
+    top: 3px;
+    left: 3px;
+    width: 135px;
+}
+
+#table{
+    height: calc( 100% - 215px );
 }
