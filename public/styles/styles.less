@@ -7,6 +7,9 @@
 @dark-greek: #17541D;
 @brown: #724F39;
 
+html{
+touch-action: manipulation;
+}
 body {
     margin: 0;
     background: #2E1F3E;
@@ -947,7 +950,7 @@ screen and (max-device-width: 480px) {
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     #content {
         width: 768px;
-        height: 100%;
+        height: 520px;
     }
 
     body {
@@ -955,12 +958,11 @@ screen and (max-device-width: 480px) {
     }
 
     div.row.controls {
-        position: fixed;
-        width: 100%;
-        left: 0;
-        border-radius: 8px;
-        bottom: 0;
-        height: 116px;
+    position: absolute;
+    width: 100%;
+    border-radius: 8px;
+    bottom: 0;
+    height: 116px;
     }
 
     .bottom-corrector {
@@ -1007,7 +1009,7 @@ screen and (max-device-width: 480px) {
     }
 
     div#chat input[type="text"] {
-        width: 170px;
+        width: 140px;
     }
 
     #pot {
