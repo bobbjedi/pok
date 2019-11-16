@@ -10,13 +10,17 @@ var express = require('express'),
     log = require('./helpers/log');
 
 // require('./modules/tlgGame');
+const sep = __dirname.includes('/') ? '/' : '\\';
+const dirs = __dirname.split(sep);
+dirs.pop();
+const dirName = dirs.join(sep);
 
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(app.router);
-app.use(lessMiddleware(__dirname + '/public'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(lessMiddleware(dirName + '/public'));
+app.use(express.static(path.join(dirName, 'public')));
 require('./modules/api')(app);
 // Development Only
 if ('development' === app.get('env')) {
@@ -33,7 +37,7 @@ console.log('Listening on port ' + port);
 
 // The lobby
 app.get('/', function(req, res) {
-    res.sendfile(__dirname + '/public/index_.html');
+    res.sendfile(dirName + '/public/index.html');
 });
 
 // The lobby data (the array of tables and their data)
@@ -91,7 +95,7 @@ io.sockets.on('connection', function(socket) {
                 players[socket.id].room = tableId;
             }
         } catch (e){
-            log.error('enterRoom: ', e);
+            log.error('enterRoom: ' + e);
         }
     });
 
@@ -107,7 +111,7 @@ io.sockets.on('connection', function(socket) {
                 players[socket.id].room = null;
             }
         } catch (e){
-            log.error('leaveRoom: ', e);
+            log.error('leaveRoom: ' + e);
         }
     });
 
@@ -130,7 +134,7 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': true, 'totalChips': players[socket.id].chips });
             }
         } catch (e){
-            log.error('leaveTable: ', e);
+            log.error('leaveTable: ' + e);
         }
     });
 
@@ -177,7 +181,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('checkUser: ', e);
+            log.error('checkUser: ' + e);
         }
     });
 
@@ -208,7 +212,7 @@ io.sockets.on('connection', function(socket) {
                 // });
             }
         } catch (e){
-            log.error('disconnect: ', e);
+            log.error('disconnect: ' + e);
         }
     });
     /**
@@ -260,7 +264,7 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': false });
             }
         } catch (e){
-            log.error('sitOnTheTable: ', e);
+            log.error('sitOnTheTable: ' + e);
         }
     });
 
@@ -277,7 +281,7 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': true });
             }
         } catch (e){
-            log.error('sitIn: ', e);
+            log.error('sitIn: ' + e);
         }
     });
 
@@ -313,7 +317,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('postBlind: ', e);
+            log.error('postBlind: ' + e);
         }
     });
 
@@ -338,7 +342,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('check: ', e);
+            log.error('check: ' + e);
         }
     });
 
@@ -359,7 +363,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('fold: ', e);
+            log.error('fold: ' + e);
         }
     });
 
@@ -380,7 +384,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('leaveRoom: ', e);
+            log.error('call: ' + e);
         }
     });
 
@@ -406,7 +410,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('bet: ', e);
+            log.error('bet: ' + e);
         }
     });
 
@@ -445,7 +449,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
-            log.error('rise: ', e);
+            log.error('rise: ' + e);
         }
     });
 
@@ -454,9 +458,13 @@ io.sockets.on('connection', function(socket) {
 	 * @param string message
 	 */
     socket.on('sendMessage', function(message) {
-        message = message.trim();
-        if (message && players[socket.id].room) {
-            socket.broadcast.to('table-' + players[socket.id].room).emit('receiveMessage', { 'message': htmlEntities(message), 'sender': players[socket.id].public.name });
+        try {
+            message = message.trim();
+            if (message && players[socket.id] && players[socket.id].room) {
+                socket.broadcast.to('table-' + players[socket.id].room).emit('receiveMessage', { 'message': htmlEntities(message), 'sender': players[socket.id].public.name });
+            }
+        } catch (e){
+            log.error('sendMessage' + e);
         }
     });
 });

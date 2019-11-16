@@ -21,7 +21,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
 
     });
     $http({
-        url: '/lobby-data',
+        url: window.Domain + '/lobby-data',
         method: 'GET'
     }).success(function (data, status, headers, config) {
         for (const tableId in data) {

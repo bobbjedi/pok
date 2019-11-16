@@ -22,7 +22,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // Getting the table data
         $http({
-            url: '/table-data/' + $routeParams.tableId,
+            url: window.Domain + '/table-data/' + $routeParams.tableId,
             method: 'GET'
         }).success(function(data, status, headers, config) {
             $scope.table = data.table;

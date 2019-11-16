@@ -1,7 +1,7 @@
-import table10 from '../partials/table-10-handed.html';
-import table6 from '../partials/table-6-handed.html';
-import table2 from '../partials/table-2-handed.html';
-import lobbyTemplate from '../partials/lobby.html';
+import table10 from './partials/table-10-handed.html';
+import table6 from './partials/table-6-handed.html';
+import table2 from './partials/table-2-handed.html';
+import lobbyTemplate from './partials/lobby.html';
 import noty from './libs/noty';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
@@ -78,7 +78,7 @@ app.run(function($rootScope) {
 function api(obj, cb = () => {}, silent, type = 'api') {
     obj.data = obj.data || {};
     obj.data.token = type === 'api' && (obj.token || this.user.token);
-    fetch('/' + type + '?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
+    fetch(window.Domain + '/' + type + '?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
         .then(res => {
             res.json().then(data => {
                 console.log('Resp:', obj.action + ' -> ', data);

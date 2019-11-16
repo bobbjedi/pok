@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const log = require('./helpers/log');
+const log = require('./server/helpers/log');
 const DIR_NAME = __dirname + '/public/';
 
 require('./modules/cron');

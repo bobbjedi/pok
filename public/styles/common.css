@@ -185,10 +185,11 @@ input[type=range]:focus::-ms-fill-upper {
 .buttons-bet {
     width: 100%;
     display: flex;
+    justify-content: space-around;
 }
 
 .button-bet {
-    width: 24%;
+    width: calc( 25% - 2px);
     text-align: center;
     line-height: 1;
     padding: 13px 0px;
@@ -254,13 +255,31 @@ div.row {
     position: absolute;
     height: 50px;
     width: 135px;
-    position: fixed;
     height: 50px;
-    top: 3px;
+    bottom: 40px;
     left: 3px;
-    width: 135px;
+    width: 175px;
 }
 
+#chat form{
+    margin-top: 40px;
+}
+
+.chat-cell{
+    width: 200px;
+}
 #table{
     height: calc( 100% - 215px );
+}
+
+.button-control{
+    margin: 3px;
+    width: 12%;
+}
+.button-control button{
+    color: white;
+}
+.block-buttons-bet{
+    margin-left: 5px;
+    flex-grow: 1;
 }

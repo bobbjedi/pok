@@ -5,7 +5,7 @@ const isDev = process.argv[3] === 'development';
 
 module.exports = {
     entry: {
-        app: './public/js/init.js',
+        app: './app/init.js',
     },
     output: {
         path: Dist,
