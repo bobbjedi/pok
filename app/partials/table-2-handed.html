@@ -98,8 +98,8 @@
             <div class="block-buttons-bet">
                 <div class="buttons-bet" ng-show="showBetRange()">
                     <div class="button-bet hovered" ng-click="betAmount = minBetAmount()">Мин.</div>
-                    <div class="button-bet hovered" ng-click="betAmount = $scope.table.bigBlind * 3">3xBB</div>
-                    <div class="button-bet hovered" ng-click="betAmount = $scope.table.pot || $scope.table.bigBlind">Банк</div>
+                    <div class="button-bet hovered" ng-click="betAmount = table.bigBlind * 3">3xBB</div>
+                    <div class="button-bet hovered" ng-click="betAmount = potAmount() || table.bigBlind">Банк</div>
                     <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Макс.</div>
                 </div>
                 <div class="range-input">
