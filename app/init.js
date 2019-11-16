@@ -1,4 +1,5 @@
 import Noty from './libs/noty';
+import './libs/fonts';
 import './libs/angular.min';
 import './libs/angular-route.min';
 import './directives/socket.io';
