@@ -43,7 +43,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 return $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
             }
         };
-
+        $scope.potAmount = ()=> $scope.table.pot && $scope.table.pot[0].amount;
         $scope.maxBetAmount = function() {
             if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
             return $scope.actionState === "actBettedPot" ? $scope.table.seats[$scope.mySeat].chipsInPlay + $scope.table.seats[$scope.mySeat].bet : $scope.table.seats[$scope.mySeat].chipsInPlay;
