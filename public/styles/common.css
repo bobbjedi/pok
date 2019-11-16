@@ -272,6 +272,15 @@ div.row {
     height: calc( 100% - 215px );
 }
 
+.table-name{
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    top: 44%;
+    z-index: 10;
+    font-size: 2em;
+}
+
 .button-control{
     margin: 3px;
     width: 12%;

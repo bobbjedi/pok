@@ -28,6 +28,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.table = data.table;
             $scope.buyInAmount = data.table.maxBuyIn;
             $scope.betAmount = data.table.bigBlind;
+            console.log(data);
         });
 
         // Joining the socket room

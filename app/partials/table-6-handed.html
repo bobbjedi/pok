@@ -13,9 +13,13 @@
 		</div>
 		<div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
 	</div>
-	<div id="table">
-		<div id="felt"></div>
-	</div>
+    <div id="table">
+            <div class="table-name">
+                <div>{{table.name}}</div>
+                <div>Big blind: {{table.bigBlind}}, Max buy in: {{table.maxBuyIn}}</div>
+            </div>
+        <div id="felt"></div>
+    </div>
 	<div class="row">
 		<div class="cell">
 			<a id="to-lobby" class="button" href="/" ng-show="!$root.sittingOnTable" ng-click="leaveRoom()">< Lobby</a>
@@ -102,8 +106,8 @@
             <div class="block-buttons-bet">
                 <div class="buttons-bet" ng-show="showBetRange()">
                     <div class="button-bet hovered" ng-click="betAmount = minBetAmount()">Мин.</div>
-                    <div class="button-bet hovered" ng-click="betAmount = maxBetAmount() / 2">50%</div>
-                    <div class="button-bet hovered" ng-click="betAmount = $scope.table.pot || minBetAmount()">Банк</div>
+                    <div class="button-bet hovered" ng-click="betAmount = $scope.table.bigBlind * 3">3xBB</div>
+                    <div class="button-bet hovered" ng-click="betAmount = $scope.table.pot || $scope.table.bigBlind">Банк</div>
                     <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Макс.</div>
                 </div>
                 <div class="range-input">
