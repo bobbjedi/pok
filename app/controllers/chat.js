@@ -1,4 +1,4 @@
-
+// import angular from 'angular';
 /**
  * The table controller. It keeps track of the data on the interface,
  * depending on the replies from the server.

@@ -3,6 +3,7 @@ import table6 from './partials/table-6-handed.html';
 import table2 from './partials/table-2-handed.html';
 import lobbyTemplate from './partials/lobby.html';
 import noty from './libs/noty';
+import config from '../config';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -31,7 +32,6 @@ window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, 
 });
 
 app.run(function($rootScope) {
-
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,
@@ -42,6 +42,16 @@ app.run(function($rootScope) {
             deposit: 0,
             isLoginned: true
         };
+    };
+    $rootScope.timeOutCurrent = 0;
+    setInterval(()=>{
+        if ($rootScope.timeOutCurrent > 0){
+            $rootScope.$digest();
+        }
+        $rootScope.timeOutCurrent--;
+    }, 1000);
+    $rootScope.updateTimeOut = function(){
+        $rootScope.timeOutCurrent = config.timeOutWait - 3;
     };
 
     $rootScope.updateUser = ()=>{

@@ -23,9 +23,12 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     $http({
         url: window.Domain + '/lobby-data',
         method: 'GET'
-    }).success(function (data, status, headers, config) {
-        for (const tableId in data) {
-            $scope.lobbyTables[tableId] = data[tableId];
+    }).then(res => {
+        if (res.status === 200){
+            const data = res.data;
+            for (const tableId in data) {
+                $scope.lobbyTables[tableId] = data[tableId];
+            }
         }
     });
 

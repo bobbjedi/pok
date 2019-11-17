@@ -1,7 +1,7 @@
 var Deck = require('./deck'),
     Pot = require('./pot'),
-    log = require('../helpers/log');
-
+    log = require('../helpers/log'),
+    config = require('../helpers/configReader');
 /**
  * The table "class"
  * @param string	id (the table id)
@@ -37,6 +37,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // The pot with its methods
     this.pot = new Pot;
     // All the public table data
+    this.timeOutWaitUserAction = null;
     this.public = {
         // The table id
         id: id,
@@ -66,6 +67,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         seats: [],
         // The phase of the game ('smallBlind', 'bigBlind', 'preflop'... etc)
         phase: null,
+        lastWaitPhase: null,
         // The cards on the board
         board: ['', '', '', '', ''],
         // Log of an action, displayed in the chat
@@ -81,9 +83,35 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     }
 };
 
+Table.prototype.setTimeoutWait = function(){
+    const {activeSeat, phase} = this.public;
+    if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
+        return;
+    }
+    this.clearTimeoutWait();
+    this.lastWaitPhase = phase;
+    this.lastActiveSet = activeSeat;
+    const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+    this.timeOutWaitUserAction = setTimeout(()=>{
+        this.timeOutWaitUserAction = null;
+        const seat = this.public.seats[activeSeat];
+        const currentSeatName = seat && seat.name;
+        if (currentSeatName === lastActiveUserLogin){
+            this.playerLeft(activeSeat);
+        }
+    }, (config.timeOutWait + 5) * 1000);
+};
+
+Table.prototype.clearTimeoutWait = function(){
+    if (this.timeOutWaitUserAction){
+        clearTimeout(this.timeOutWaitUserAction);
+    }
+    this.timeOutWaitUserAction = null;
+};
 // The function that emits the events of the table
 Table.prototype.emitEvent = function(eventName, eventData){
-    this.eventEmitter(eventName, eventData);
+    this.eventEmitter(eventName, eventData);    
+    this.setTimeoutWait();
     this.log({
         message: '',
         action: '',
@@ -205,7 +233,7 @@ Table.prototype.findPreviousPlayer = function(offset, status) {
  */
 Table.prototype.initializeRound = function(changeDealer) {
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
-
+    this.clearTimeoutWait();
     if (this.playersSittingInCount > 1) {
         // The game is on now
         this.gameIsOn = true;
@@ -271,7 +299,7 @@ Table.prototype.initializeSmallBlind = function() {
 
     // Start asking players to post the small blind
     this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
-    this.emitEvent('table-data', this.public);
+    this.emitEvent('table-data', this.public, true);
 };
 
 /**
@@ -307,6 +335,7 @@ Table.prototype.initializePreflop = function() {
  * Method that starts the next phase of the round
  */
 Table.prototype.initializeNextPhase = function() {
+    this.clearTimeoutWait();
     switch (this.public.phase) {
     case 'preflop':
         this.public.phase = 'flop';
@@ -326,7 +355,7 @@ Table.prototype.initializeNextPhase = function() {
     this.public.biggestBet = 0;
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
-    this.emitEvent('table-data', this.public);
+    this.emitEvent('table-data', this.public, true);
 
     // If all other players are all in, there should be no actions. Move to the next round.
     if (this.otherPlayersAreAllIn()) {
@@ -343,6 +372,7 @@ Table.prototype.initializeNextPhase = function() {
  * Making the next player the active one
  */
 Table.prototype.actionToNextPlayer = function() {
+    this.clearTimeoutWait();
     this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['chipsInPlay', 'inHand']);
 
     switch (this.public.phase) {
@@ -375,7 +405,7 @@ Table.prototype.actionToNextPlayer = function() {
         break;
     }
 
-    this.emitEvent('table-data', this.public);
+    this.emitEvent('table-data', this.public, true);
 };
 
 /**
@@ -413,13 +443,14 @@ Table.prototype.showdown = function() {
     var that = this;
     setTimeout(function(){
         that.endRound();
-    }, 2000);
+    }, config.timeOutBeforeNewGame * 1000);
 };
 
 /**
  * Ends the current phase of the round
  */
 Table.prototype.endPhase = function() {
+    this.clearTimeoutWait();
     switch (this.public.phase) {
     case 'preflop':
     case 'flop':
@@ -490,7 +521,7 @@ Table.prototype.playerFolded = function() {
         this.pot.giveToWinner(this.seats[winnersSeat]);
         this.endRound();
     } else {
-        if (this.lastPlayerToAct == this.public.activeSeat) {
+        if (this.lastPlayerToAct === this.public.activeSeat) {
             this.endPhase();
         } else {
             this.actionToNextPlayer();
@@ -786,7 +817,7 @@ Table.prototype.endRound = function() {
     }
 
     // Sitting out the players who don't have chips
-    for (i = 0; i < this.public.seatsCount; i++) {
+    for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
             this.seats[i].sitOut();
             this.playersSittingInCount--;

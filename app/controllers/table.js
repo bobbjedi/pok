@@ -3,6 +3,7 @@
  * The table controller. It keeps track of the data on the interface,
  * depending on the replies from the server.
  */
+// import angular from 'angular';
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds) {
         var seat = null;
@@ -14,6 +15,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.myCards = ['', ''];
         $scope.mySeat = null;
         $scope.betAmount = 0;
+        $scope.winMsg = null;
         $rootScope.sittingOnTable = null;
         var showingNotification = false;
 
@@ -24,10 +26,13 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $http({
             url: window.Domain + '/table-data/' + $routeParams.tableId,
             method: 'GET'
-        }).success(function(data, status, headers, config) {
-            $scope.table = data.table;
-            $scope.buyInAmount = data.table.maxBuyIn;
-            $scope.betAmount = data.table.bigBlind;
+        }).then(res => {
+            if (res.status === 200){
+                const data = res.data;
+                $scope.table = data.table;
+                $scope.buyInAmount = data.table.maxBuyIn;
+                $scope.betAmount = data.table.bigBlind;
+            }
         });
 
         // Joining the socket room
@@ -164,15 +169,17 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-
+        $scope.leaveTableStates = ()=>{
+            $rootScope.sittingOnTable = null;
+            $rootScope.sittingIn = false;
+            $scope.actionState = '';
+            $rootScope.updateUser();
+        };
         // Leave the table (not the room)
         $scope.leaveTable = function() {
             socket.emit('leaveTable', function(response) {
                 if (response.success) {
-                    $rootScope.sittingOnTable = null;
-                    $rootScope.totalChips = response.totalChips;
-                    $rootScope.sittingIn = false;
-                    $scope.actionState = '';
+                    $scope.leaveTableStates();
                     $rootScope.$digest();
                     $scope.$digest();
                 }
@@ -241,10 +248,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-
+    
+        let lastSeatActive = -1;
         // When the table data have changed
         socket.on('table-data', function(data) {
             $scope.table = data;
+            if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
+                $rootScope.updateTimeOut();
+            }
             switch (data.log.action) {
             case 'fold':
                 sounds.playFoldSound();
@@ -263,8 +274,15 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 break;
             }
             if (data.log.message) {
+                const msg = data.log.message.trim();
+                if (msg === $rootScope.user.login + ' left'){
+                    $scope.leaveTableStates();
+                };
+                if (msg.includes('wins the pot')){
+                }
+
                 var messageBox = document.querySelector('#messages');
-                var messageElement = angular.element('<p class="log-message">' + data.log.message + '</p>');
+                var messageElement = angular.element('<p class="log-message">' + msg + '</p>');
                 angular.element(messageBox).append(messageElement);
                 messageBox.scrollTop = messageBox.scrollHeight;
                 if (data.log.notification && data.log.seat !== '') {

@@ -15,10 +15,11 @@
         ]
     },
     "dependencies": {
+        "angular": "^1.2.5",
+        "angular-route": "^1.2.5",
         "clone": "^2.1.2",
         "connect": "~3.3.3",
         "express": "~3.11.0",
-        "jade": "~1.7.0",
         "less": "~2.0.0",
         "less-middleware": "~1.0.4",
         "minter-js-sdk": "^0.20.3",

@@ -1,22 +1,27 @@
 <div id="lobby">
     <div id="user-panel">
         <img src="/images/ligapoker.gif" class="label-poker">
-        <div class="login-path" ng-show="isLogged()"><b>Hello!</b> <span class="user-name">{{$root.user.login}}</span> <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i><br>Deposit: <span class="deposit">{{$root.user.deposit}}</span> <i class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i> </div>
+        <div class="login-path" ng-show="isLogged()"><b>Hello!</b> <span class="user-name">{{$root.user.login}}</span>
+            <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i><br>Deposit:
+            <span class="deposit">{{$root.user.deposit}}</span> <i class="fa fa-creative-commons txt-green hovered"
+                aria-hidden="true"></i> </div>
     </div>
     <div class="modal-wrap" ng-show="!isLogged()">
         <div class="modal">
             <form ng-submit="logreg()">
-                    <label for="screen-login-input">Enter your login</label>
-                    <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true" required>
+                <label for="screen-login-input">Enter your login</label>
+                <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true" required>
 
-                    <label for="screen-address-input" ng-show="!isLoginned">Enter your address</label>
-                    <input id="screen-address-input" class="input-left" type="text" ng-model="address" ng-show="!isLoginned" ng-trim="true">
+                <label for="screen-address-input" ng-show="!isLoginned">Enter your address</label>
+                <input id="screen-address-input" class="input-left" type="text" ng-model="address" ng-show="!isLoginned"
+                    ng-trim="true">
 
-                    <label for="screen-password-input">Enter your password</label>
-                    <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true" required>
-               <br>
-               <br>
-                    <input type="submit" value="Submit">
+                <label for="screen-password-input">Enter your password</label>
+                <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true"
+                    required>
+                <br>
+                <br>
+                <input type="submit" value="Submit">
 
                 <a ng-click="isLoginned =! isLoginned">{{isLoginned ? 'Got registration?' : 'Got Login?'}}</a>
             </form>

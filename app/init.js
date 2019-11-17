@@ -2,6 +2,7 @@ import Noty from './libs/noty';
 import './libs/fonts';
 import './libs/angular.min';
 import './libs/angular-route.min';
+
 import './directives/socket.io';
 
 import './app';
@@ -25,7 +26,7 @@ Noty.overrideDefaults({
 
 
 window.noty = (type, text)=>{
-    console.log({type, text})
+    console.log({type, text});
     new Noty({
         type,
         text,
