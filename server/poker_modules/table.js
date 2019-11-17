@@ -85,6 +85,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
 
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
+    console.log('попытка', activeSeat, phase);
     if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
         return;
     }
@@ -92,18 +93,21 @@ Table.prototype.setTimeoutWait = function(){
     this.lastWaitPhase = phase;
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+    console.log('Ставим ', lastActiveUserLogin);
     this.timeOutWaitUserAction = setTimeout(()=>{
+        console.log('просрал ');
         this.timeOutWaitUserAction = null;
         const seat = this.public.seats[activeSeat];
         const currentSeatName = seat && seat.name;
         if (currentSeatName === lastActiveUserLogin){
             this.playerLeft(activeSeat);
         }
-    }, (config.timeOutWait + 5) * 1000);
+    }, config.timeOutWait * 1000);
 };
 
 Table.prototype.clearTimeoutWait = function(){
     if (this.timeOutWaitUserAction){
+        console.log('Сбросили')
         clearTimeout(this.timeOutWaitUserAction);
     }
     this.timeOutWaitUserAction = null;
@@ -527,6 +531,7 @@ Table.prototype.playerFolded = function() {
             this.actionToNextPlayer();
         }
     }
+    this.clearTimeoutWait();
 };
 
 /**
