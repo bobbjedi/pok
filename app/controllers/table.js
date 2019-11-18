@@ -38,6 +38,21 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // Joining the socket room
         socket.emit('enterRoom', $routeParams.tableId);
 
+        $rootScope.$watch('timeOutCurrent', (v)=>{
+            if (v !== 1){
+                return;
+            }
+            if ($scope.showCheckButton()){
+                $scope.check();
+            } else if ($scope.showFoldButton()){
+                $scope.fold();
+            } else if ($scope.showSitOutButton()){
+                $scope.postBlind(false);
+            } else if ($scope.showLeaveTableButton()){
+                $scope.leaveTable();
+            }
+        });
+
         $scope.minBetAmount = function() {
             if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
             // If the pot was raised
@@ -62,6 +77,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $scope.showLeaveTableButton = function() {
             return $rootScope.sittingOnTable !== null && (!$rootScope.sittingIn || $scope.actionState === "waiting");
+        };
+        $scope.showSitOutButton = function() {
+            return $scope.actionState === 'postSmallBlind' || $scope.actionState === 'postBigBlind';
         };
 
         $scope.showPostSmallBlindButton = function() {
@@ -248,7 +266,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-    
+
         let lastSeatActive = -1;
         // When the table data have changed
         socket.on('table-data', function(data) {

@@ -26,6 +26,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     }).then(res => {
         if (res.status === 200){
             const data = res.data;
+            console.log(data);
             for (const tableId in data) {
                 $scope.lobbyTables[tableId] = data[tableId];
             }

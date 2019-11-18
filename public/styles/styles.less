@@ -99,7 +99,7 @@ a {
 #content {
     margin: 0 auto;
     width: 1024px;
-    height: 768px;
+    height: 600px;
 }
 
 table,
@@ -194,10 +194,9 @@ table {
 #table {
     background-color: @brown;
     border-radius: 200px;
-    // height: 53%;
     left: 10%;
     position: absolute;
-    top: 15%;
+    top: 17%;
     width: 80%;
     z-index: 0;
     box-shadow: 0 0 25px 0 @dark-purple;
@@ -257,6 +256,7 @@ div.controls {
     }
 
     div.chat-cell {
+        width: 250px;
         // float: left;
         // width: 25%;
     }
@@ -372,7 +372,7 @@ div.seat {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 60px;
+    height: 70px;
     background-color: #433f47;
     border: 1px solid #afaabe;
     border-radius: 3px;
@@ -854,6 +854,7 @@ div#board-wrap {
 /* Landscape phone to portrait tablet */
 @media screen and (max-width: 767px),
 screen and (max-device-width: 480px) {
+
     #content {
         width: 480px;
         height: 320px;
@@ -1001,6 +1002,7 @@ screen and (max-device-width: 480px) {
 
     div#chat div#messages {
         height: 50px;
+        width: 135px;
     }
 
     div#chat input[type="text"] {
@@ -1030,7 +1032,15 @@ screen and (max-device-width: 480px) {
     #developer-info {
         font-size: 1em;
     }
+
+    div.seat{
+        height: 60px;
+    }
+    div.controls div.chat-cell{
+        width: 190px;
+    }
 }
+
 
 #noticeOrientation {
     display: none;

@@ -265,22 +265,17 @@ div.row {
 #messages {
     position: absolute;
     height: 50px;
-    width: 135px;
-    height: 50px;
     bottom: 40px;
     left: 3px;
-    width: 175px;
+    width: 225px;
 }
 
 #chat form {
     margin-top: 40px;
 }
 
-.chat-cell {
-    width: 200px;
-}
-
 #table {
+    top: 17%;
     height: calc(100% - 215px);
 }
 
@@ -318,3 +313,7 @@ div.row {
     justify-content: center;
     color: gold;
 }
+/*
+div.seat{
+    height: 70px;
+} */

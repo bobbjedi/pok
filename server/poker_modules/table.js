@@ -102,7 +102,7 @@ Table.prototype.setTimeoutWait = function(){
         if (currentSeatName === lastActiveUserLogin){
             this.playerLeft(activeSeat);
         }
-    }, config.timeOutWait * 1000);
+    }, (config.timeOutWait + 5) * 1000);
 };
 
 Table.prototype.clearTimeoutWait = function(){
@@ -114,7 +114,7 @@ Table.prototype.clearTimeoutWait = function(){
 };
 // The function that emits the events of the table
 Table.prototype.emitEvent = function(eventName, eventData){
-    this.eventEmitter(eventName, eventData);    
+    this.eventEmitter(eventName, eventData);
     this.setTimeoutWait();
     this.log({
         message: '',
