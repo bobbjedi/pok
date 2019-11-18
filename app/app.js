@@ -4,6 +4,7 @@ import table2 from './partials/table-2-handed.html';
 import lobbyTemplate from './partials/lobby.html';
 import noty from './libs/noty';
 import config from '../config';
+import $u from './libs/utils';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -55,13 +56,13 @@ app.run(function($rootScope) {
         $rootScope.timeOutCurrent = config.timeOutWait - 3;
     };
 
-    $rootScope.updateUser = ()=>{
+    $rootScope.updateUser = $u.throttle(()=>{
         $rootScope.api({action: 'getUser'}, data => {
             Object.assign($rootScope.user, data);
             $rootScope.totalChips = data.deposit;
             $rootScope.$digest();
         }, true);
-    };
+    }, 3000);
 
     $rootScope.api = api;
 
@@ -109,3 +110,9 @@ function api(obj, cb = () => {}, silent, type = 'api') {
             console.warn(obj.action, err);
         });
 };
+
+window.addEventListener("hashchange", function(e) {
+    if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')){
+        window.location.reload();
+    }
+});
