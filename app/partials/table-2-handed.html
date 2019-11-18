@@ -1,4 +1,5 @@
 <div id="table-wrap">
+    <div id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
     <div class="modal-wrap" ng-show="buyInModalVisible">
         <div class="modal">
             <form ng-submit="sitOnTheTable()">
@@ -22,11 +23,15 @@
     </div>
     <div class="row">
         <div class="cell">
-            <a id="to-lobby" class="button" href="/" ng-show="!$root.sittingOnTable" ng-click="leaveRoom()">
-                < Lobby</a> </div> <div class="cell">
+                <a id="go-to-lobby" class="button-top txt-yellow" href="/" ng-show="!$root.sittingOnTable"
+                ng-click="leaveRoom()">
+                < Lobby</a>
         </div>
         <div class="cell"></div>
         <div class="cell"></div>
+        <div class="cell">
+            <a id="buy-coins" class="button-top txt-green" href="/" ng-click="leaveRoom()">Buy cheaps</a>
+        </div>
     </div>
     <div class="row">
         <div class="cell">

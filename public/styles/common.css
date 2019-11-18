@@ -313,3 +313,83 @@ div.row {
     justify-content: center;
     color: gold;
 }
+
+
+.button-top{
+    border: 1px solid grey;
+    padding: 0px;
+    width: 80px;
+    position: absolute;
+    display: block;
+    text-align: center;
+    top: 5px;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 1.3em;
+    background: #262727;
+    cursor: pointer;
+}
+
+#go-to-lobby{
+    left: 12px;
+}
+#buy-coins{
+    right: 12px;
+}
+
+/* FULLSCREEN */
+@media screen and (max-width: 768px) {
+    .button-top{
+        width: 55px;
+        position: fixed;
+    }
+    #table {
+        top: 12%;
+        height: calc(100% - 135px);
+    }
+    #table #felt{
+        top: 6%;
+        height: 88%;
+    }
+    div.seat {
+        height: 45px;
+    }
+
+    .controls {
+        height: 60px;
+    }
+
+    div.row {
+        height: calc((100% - 20px) / 3);
+    }
+
+    #chat form {
+        margin-top: 34px;
+    }
+
+    #messages {
+        height: 42px;
+        bottom: 25px;
+        width: 155px;
+    }
+
+    div.controls div.chat-cell {
+        width: 175px;
+    }
+
+    div#chat input[type="text"] {
+        width: 140px;
+        margin: 3px 0 0 2px;
+        padding: 6px;
+    }
+
+    #to-lobby {
+        position: fixed;
+        left: 30px;
+    }
+
+    #buy-coins{
+        position: fixed;
+        right: 30px;
+    }
+}
