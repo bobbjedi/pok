@@ -146,31 +146,38 @@ io.sockets.on('connection', function(socket) {
 	 * @param string token
 	 * @param function callback
 	 */
-    socket.on('checkUser', async (token, callback) => {
+    socket.on('checkUser', async (data, callback) => {
+        const {name, token} = data;
         // If a new screen name is posted
         try {
             if (typeof token !== 'undefined') {
-                console.log({token});
-                var token = token.trim();
+                console.log('Check', name);
                 // If the new screen name is not an empty string
                 // if (token && typeof players[socket.id] === 'undefined') {
-                if (token) {
-
-                    // let playerExists = false;
-                    // for (var i in players) {
-                    //     const player = players[i];
-                    //     if (player.token && player.token === token) {
-                    //         playerExists = player;
-                    //         break;
-                    //     }
-                    // }
-
-                    // if (!playerExists){ // создаем нового
+                if (name) {
+                    let playerExists = false;
+                    for (var i in players) {
+                        const player = players[i];
+                        if (player.public.name && player.public.name === name) {
+                            playerExists = player;
+                            break;
+                        }
+                    }
+                    if (playerExists){
+                        console.log('УЖЕ ЕСТЬ!', name);
+                        if (socket.id === playerExists.socket.id){
+                            console.log('Сокет тотже!', name);
+                            return;
+                        }
+                        $u.removePlayer(playerExists.socket);
+                    } // создаем нового
+                    console.log('Создаем!');
                     const user = await $u.getUserFromQ({token});
                     if (!user){
                         return;
                     }
                     players[socket.id] = new Player(socket, user);
+                    console.log('Создали', name, Object.keys(players).length);
                     callback({'success': true});
                     return;
                     // }
@@ -195,26 +202,7 @@ io.sockets.on('connection', function(socket) {
         try {
         // If the socket points to a player object
             console.log('Disconnect');
-            const player = players[socket.id];
-            if (typeof player !== 'undefined') {
-                console.log('Disconnect!>>>>>.', player.public.name, player.sittingOnTable, player.seat);
-                // return;
-                // If the player was sitting on a table
-                // player.onDisconnect(()=>{
-                console.log('RM', player.public.name);
-                if (player.sittingOnTable !== false && typeof tables[player.sittingOnTable] !== 'undefined' && socket.id === player.socket.id) {
-                    console.log('RM TABLE', player.public.name);
-                    // The seat on which the player was sitting
-                    var seat = player.seat;
-                    // The table on which the player was sitting
-                    var tableId = player.sittingOnTable;
-                    // Remove the player from the seat
-                    tables[tableId].playerLeft(seat);
-                }
-                // Remove the player object from the players array
-                delete players[socket.id];
-                // });
-            }
+            $u.removePlayer(socket);
         } catch (e){
             log.error('disconnect: ' + e);
         }
@@ -472,6 +460,30 @@ io.sockets.on('connection', function(socket) {
         }
     });
 });
+
+$u.removePlayer = socket =>{
+    const player = players[socket.id];
+    if (typeof player !== 'undefined') {
+        console.log('Disconnect!>>>>>.', player.public.name, player.sittingOnTable, player.seat);
+        // return;
+        // If the player was sitting on a table
+        // player.onDisconnect(()=>{
+        if (player.sittingOnTable !== false && typeof tables[player.sittingOnTable] !== 'undefined' && socket.id === player.socket.id) {
+            console.log('RM TABLE', player.public.name);
+            // The seat on which the player was sitting
+            var seat = player.seat;
+            // The table on which the player was sitting
+            var tableId = player.sittingOnTable;
+            // Remove the player from the seat
+            tables[tableId].playerLeft(seat);
+        }
+        // Remove the player object from the players array
+        console.log(!!players[socket.id]);
+        delete players[socket.id];
+        console.log(!!players[socket.id]);
+        // });
+    }
+};
 
 /**
  * Event emitter function that will be sent to the table objects

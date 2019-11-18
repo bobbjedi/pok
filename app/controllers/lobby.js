@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
     $scope.lobbyTables = [];
     // $scope.newScreenName = '';
@@ -7,8 +9,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         return $rootScope.user.isLogged;
     };
     $scope.user = $rootScope.user;
-    $rootScope.$watch('user.isLogged', ()=>{
-        socket.emit ('checkUser', $rootScope.user.token, response => {
+    const checkUser = _.throttle(function(v){
+        if (!v){
+            return;
+        }
+        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login}, response => {
             if (response.success){
                 $rootScope.updateUser();
             }
@@ -19,7 +24,8 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             $scope.$digest();
         });
 
-    });
+    }, 0);
+    $rootScope.$watch('user.isLogged', checkUser);
     $http({
         url: window.Domain + '/lobby-data',
         method: 'GET'

@@ -27,7 +27,8 @@
         "node-cron": "^2.0.3",
         "node-telegram-bot-api": "^0.40.0",
         "sha256": "^0.2.0",
-        "socket.io": "~1.2.0"
+        "socket.io": "~1.2.0",
+        "underscore": "^1.9.1"
     },
     "devDependencies": {
         "@babel/core": "^7.4.4",

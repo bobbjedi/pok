@@ -41,3 +41,8 @@ window.noty = (type, text)=>{
 //     $u.launchFullScreen();
 // }
 // $u.launchFullScreen();
+window.addEventListener("hashchange", function(e) {
+    if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')){
+        window.location.reload();
+    }
+});

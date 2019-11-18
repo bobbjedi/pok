@@ -10,7 +10,6 @@ module.exports = (app) => {
         try {
             const action = req.query.action;
             const GET = JSON.parse(req.query.data);
-            console.log('GET.token', GET.token);
             const User = await $u.getUserFromQ({token: GET.token});
             // роуты
             switch (action) {

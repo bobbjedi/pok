@@ -1,5 +1,4 @@
 const throttle = (func, ms) => {
-
     let isThrottled = false,
         savedArgs,
         savedThis;
