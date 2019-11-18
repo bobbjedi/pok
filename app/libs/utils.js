@@ -29,20 +29,31 @@ const throttle = (func, ms) => {
 
 
 window.isFullScreen = false;
+
+document.fullscreenEnabled =
+	document.fullscreenEnabled ||
+	document.mozFullScreenEnabled ||
+	document.documentElement.webkitRequestFullScreen;
 //Запустить отображение в полноэкранном режиме
-window.launchFullScreen = (element) => {
-    window.isFullScreen = true;
-    element = element || document.documentElement;
-    if (element.requestFullScreen) {
-        element.requestFullScreen();
-    } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullScreen) {
-        element.webkitRequestFullScreen();
+window.launchFullScreen = () => {
+    function requestFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    }
+
+    if (document.fullscreenEnabled) {
+        window.isFullScreen = true;
+        requestFullscreen(document.documentElement);
     }
 };
 
 // Выход из полноэкранного режима
+
 window.cancelFullscreenCustom = () => {
     window.isFullScreen = false;
     if (document.cancelFullScreen) {
@@ -56,7 +67,7 @@ window.cancelFullscreenCustom = () => {
 
 window.toggleFullScreen = () => {
     if (window.isFullScreen) {
-        return window.cancelFullscreenCustom()
+        return window.cancelFullscreenCustom();
     }
     window.launchFullScreen();
 };
