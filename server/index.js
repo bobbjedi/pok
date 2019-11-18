@@ -191,6 +191,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         try {
         // If the socket points to a player object
+            console.log('Disconnect');
             const player = players[socket.id];
             if (typeof player !== 'undefined') {
                 console.log('Disconnect!>>>>>.', player.public.name, player.sittingOnTable, player.seat);
