@@ -1,8 +1,4 @@
-export default {
-    throttle
-};
-
-function throttle(func, ms) {
+const throttle = (func, ms) => {
 
     let isThrottled = false,
         savedArgs,
@@ -29,4 +25,43 @@ function throttle(func, ms) {
     }
 
     return wrapper;
-}
+};
+
+
+window.isFullScreen = false;
+//Запустить отображение в полноэкранном режиме
+window.launchFullScreen = (element) => {
+    window.isFullScreen = true;
+    element = element || document.documentElement;
+    if (element.requestFullScreen) {
+        element.requestFullScreen();
+    } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullScreen) {
+        element.webkitRequestFullScreen();
+    }
+};
+
+// Выход из полноэкранного режима
+window.cancelFullscreenCustom = () => {
+    window.isFullScreen = false;
+    if (document.cancelFullScreen) {
+        document.cancelFullScreen();
+    } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+    } else if (document.webkitCancelFullScreen) {
+        document.webkitCancelFullScreen();
+    }
+};
+
+window.toggleFullScreen = () => {
+    if (window.isFullScreen) {
+        return window.cancelFullscreenCustom()
+    }
+    window.launchFullScreen();
+};
+
+export default {
+    throttle
+};
+

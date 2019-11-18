@@ -1,3 +1,4 @@
+import $u from './libs/utils';
 import Noty from './libs/noty';
 import './libs/fonts';
 import './libs/angular.min';
@@ -34,3 +35,9 @@ window.noty = (type, text)=>{
         soundPlayed: true
     }).show();
 };
+
+
+// if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+//     $u.launchFullScreen();
+// }
+// $u.launchFullScreen();
