@@ -4,7 +4,8 @@
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 )"></div>
     </div>
     <div class="seat" ng-show="seatOccupied(seatIndex)" ng-class="{active: activeSeat===seatIndex}">
-        <div class="time-out" ng-show="activeSeat === seatIndex && $root.timeOutCurrent >=0">{{$root.timeOutCurrent}}s</div>
+        <div class="time-out" ng-show="activeSeat === seatIndex && $root.timeOutCurrent >=0">
+            <i class="fa fa-clock-o" aria-hidden="true"></i>&#160;{{$root.timeOutCurrent}}s</div>
         <a class="sitIn" ng-show="!player.name" ng-click="showBuyInModal( {seat:seatIndex} )">Sit In</a>
         <div class="player-content" ng-show="player.name">
             <div ng-show="!notifications[seatIndex].message">
@@ -18,7 +19,7 @@
             </div>
         </div>
     </div>
-    <div id="dealer-wrap-{{cellNumber}}" class="dealer-button" ng-show="dealerSeat===seatIndex">D</div>
+    <div id="dealer-wrap-{{cellNumber}}" class="dealer-button" ng-show="dealerSeat===seatIndex"><i class="fa fa-gg-circle" aria-hidden="true"></i></div>
     <div id="bets-{{cellNumber}}" class="bets">
         <span ng-show="player.bet"><img src="/images/cheap.png">&nbsp;{{player.bet}}</span>
     </div>
