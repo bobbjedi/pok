@@ -36,7 +36,7 @@
             <th>Seats/Players</th>
             <th>Buy in</th>
         </tr>
-        <tr ng-repeat="table in lobbyTables">
+        <tr ng-repeat="table in lobbyTables" ng-show="table">
             <td><a href="#!/table-{{table.seatsCount}}/{{table.id}}">{{table.name}}</a></td>
             <td class="centered-text">{{table.bigBlind}}/{{table.smallBlind}}</td>
             <td class="centered-text">{{table.playersSeatedCount}}/{{table.seatsCount}}</td>
