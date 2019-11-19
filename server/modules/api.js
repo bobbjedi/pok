@@ -53,7 +53,7 @@ module.exports = (app) => {
                 break;
 
             case ('withdraw'):
-                const resWithdraw = await withdraw(User, User.deposit * 0.99);
+                const resWithdraw = await withdraw(User, User.deposit);
                 if (resWithdraw){
                     success({}, res);
                 } else {
