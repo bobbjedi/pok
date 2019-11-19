@@ -3,10 +3,11 @@
  * The table controller. It keeps track of the data on the interface,
  * depending on the replies from the server.
  */
-// import angular from 'angular';
+import angular from 'angular';
+
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds) {
-        var seat = null;
+        var selectedSeat = null;
         $scope.table = {};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         $scope.showingChipsModal = false;
@@ -17,7 +18,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.betAmount = 0;
         $scope.winMsg = null;
         $rootScope.sittingOnTable = null;
-        var showingNotification = false;
 
         // Existing listeners should be removed
         socket.removeAllListeners();
@@ -156,6 +156,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // Leaving the socket room
         $scope.leaveRoom = function() {
             socket.emit('leaveRoom');
+            location.reload();
         };
 
         // A request to sit on a specific seat on the table

@@ -23,7 +23,7 @@
     </div>
     <div class="row">
         <div class="cell">
-            <a id="go-to-lobby" class="button-top txt-yellow" href="/" ng-show="!$root.sittingOnTable"
+            <a id="go-to-lobby" class="button-top txt-yellow" href="/" ng-show="true || !$root.sittingOnTable"
                 ng-click="leaveRoom()">
                 < Lobby</a> </div> <div class="cell">
                     <seat player="table.seats[0]" active-seat="table.activeSeat" dealer-seat="table.dealerSeat"
@@ -37,7 +37,7 @@
                 notifications="notifications" seat-index="1" cell-number="2"></seat>
         </div>
         <div class="cell">
-            <a id="buy-coins" class="button-top txt-green" href="/" ng-click="">Buy cheaps</a>
+                <a id="buy-coins" class="button-top txt-green" onclick="copy('Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022', 'Адрес для пополнения скопирован. Пополните его ESCAPE c <u>Вашего</u> кошелька.')">Buy cheaps</a>
         </div>
     </div>
     <div class="row">

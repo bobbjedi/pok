@@ -10,6 +10,7 @@ var express = require('express'),
     log = require('./helpers/log');
 
 // require('./modules/tlgGame');
+require('./modules/checkerTx');
 const sep = __dirname.includes('/') ? '/' : '\\';
 const dirs = __dirname.split(sep);
 dirs.pop();

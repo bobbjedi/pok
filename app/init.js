@@ -1,11 +1,10 @@
-import $u from './libs/utils';
 import Noty from './libs/noty';
 import './libs/fonts';
-import './libs/angular.min';
-import './libs/angular-route.min';
+
+import 'angular';
+import 'angular-route';
 
 import './directives/socket.io';
-
 import './app';
 import './controllers/lobby';
 import './controllers/chat';
@@ -17,7 +16,6 @@ import './directives/seat';
 
 Noty.overrideDefaults({
     layout: 'topRight',
-    theme: 'mint',
     theme: 'mint',
     animation: {
         open: 'noty_effects_open',
@@ -40,7 +38,6 @@ window.noty = (type, text)=>{
 // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 //     $u.launchFullScreen();
 // }
-// $u.launchFullScreen();
 window.addEventListener("hashchange", function(e) {
     if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')){
         window.location.reload();

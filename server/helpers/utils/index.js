@@ -16,7 +16,6 @@ module.exports = {
 
     async createUser(params){
         const user = new usersDb({
-            _id: params.address,
             address: params.address,
             login: params.login,
             password: sha256(params.password.toString()),

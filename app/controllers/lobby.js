@@ -32,7 +32,6 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     }).then(res => {
         if (res.status === 200){
             const data = res.data;
-            console.log(data);
             for (const tableId in data) {
                 $scope.lobbyTables[tableId] = data[tableId];
             }
@@ -44,14 +43,14 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         user.password = $scope.password;
         user.login = $scope.login;
         user.address = $scope.address;
-        console.log(!user.login, !user.password, !$scope.isLoginned, !user.address)
+        // console.log(!user.login, !user.password, !$scope.isLoginned, !user.address)
         if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
-            console.log('Fill in all the fields!');
+            // console.log('Fill in all the fields!');
             noty('error', 'Заполните все поля!');
             return;
         }
         if (user.address && (user.address.length < 40 || !user.address.startsWith('Mx'))){
-            console.log('U minter adress must be Mx345536dsv34344...!');
+            // console.log('U minter adress must be Mx345536dsv34344...!');
             noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
             return;
         }

@@ -1,6 +1,6 @@
 // https://github.com/minterscan/minter_private_key/releases/download/v1.0/minter_private_key_v1.0.zip
 const config = require('../helpers/configReader');
-const pk = 'ac5547e423be6da33008f33f32dba5b1e9f63909adc0628baa98d9e6fe3609eb';
+const pk = '3be19c0b2ccfd2da2e9fb5a7ced79713ddd0da45b47dfd23b9ca24ce53cf4891';
 const {Minter, SendTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
 const COIN = config.coinName;
@@ -38,7 +38,7 @@ module.exports = {
 };
 
 async function sendTx(address, amount){
-	amount *= 1 - config.comission;
+    amount *= 1 - config.comission;
     const txParams = new SendTxParams({
         privateKey: pk,
         nonce: await getNonce(),

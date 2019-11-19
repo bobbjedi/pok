@@ -3,7 +3,7 @@ import table6 from './partials/table-6-handed.html';
 import table2 from './partials/table-2-handed.html';
 import lobbyTemplate from './partials/lobby.html';
 import config from '../config';
-import $u from './libs/utils';
+import angular from 'angular';
 import _ from 'underscore';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
@@ -38,7 +38,7 @@ app.run(function($rootScope) {
         $rootScope.user = {
             isLogged: false,
             password: '',
-            login: '',
+            login: null,
             address: '',
             token: false,
             deposit: 0,
