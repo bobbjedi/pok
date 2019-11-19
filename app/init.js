@@ -24,7 +24,7 @@ Noty.overrideDefaults({
 });
 
 
-window.noty = (type, text, delay)=>{
+window.noty = (type, text, delay) => {
     new Noty({
         type,
         text,
@@ -37,8 +37,8 @@ window.noty = (type, text, delay)=>{
 // if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 //     $u.launchFullScreen();
 // }
-window.addEventListener("hashchange", function(e) {
-    if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')){
+window.addEventListener("hashchange", function (e) {
+    if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')) {
         window.location.reload();
     }
 });
@@ -53,6 +53,53 @@ window.copy = function (v, msg) {
     window.noty('info', msg || 'Скопировано', 10000);
 };
 
-window.copyAddress = ()=>{
+window.copyAddress = () => {
     window.copy('Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022', 'Адрес для пополнения <i>Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022</i> <b>скопирован</b>.  Переведите на него ESCAPE c <u>Вашего</u> кошелька (указанного при регистрации) для пополнения счета.');
 };
+
+
+(() => {
+    let isFullScreen = false;
+
+    document.fullscreenEnabled =
+        document.fullscreenEnabled ||
+        document.mozFullScreenEnabled ||
+        document.documentElement.webkitRequestFullScreen;
+    //Запустить отображение в полноэкранном режиме
+    window.launchFullScreen = () => {
+        function requestFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        }
+
+        if (document.fullscreenEnabled) {
+            isFullScreen = true;
+            requestFullscreen(document.documentElement);
+        }
+    };
+
+    // Выход из полноэкранного режима
+
+    window.cancelFullscreenCustom = () => {
+        isFullScreen = false;
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    };
+
+    window.toggleFullScreen = () => {
+        if (isFullScreen) {
+            return window.cancelFullscreenCustom();
+        }
+        window.launchFullScreen();
+    };
+})();
