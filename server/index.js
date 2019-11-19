@@ -513,4 +513,4 @@ tables[3] = new Table(3, 'Sample 6-handed Table hard', eventEmitter(3), 6, 8, 4,
 tables[4] = new Table(4, 'Sample 2-handed Table', eventEmitter(4), 2, 8, 4, 800, 160, false);
 tables[5] = new Table(5, 'Sample 2-handed Table hard', eventEmitter(5), 2, 16, 8, 1500, 500, false);
 tables[6] = new Table(6, 'Sample 6-handed Private Table', eventEmitter(6), 6, 20, 10, 2000, 400, true);
-tables[7] = new Table(7, 'TEST 10-handed Table', eventEmitter(7), 10, 1, 0.5, 50, 200, false);
+tables[7] = new Table(7, 'TEST 10-handed Table', eventEmitter(7), 10, 1, 0.5, 200, 50, false);
