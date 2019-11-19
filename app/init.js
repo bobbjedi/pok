@@ -24,12 +24,11 @@ Noty.overrideDefaults({
 });
 
 
-window.noty = (type, text)=>{
-    console.log({type, text});
+window.noty = (type, text, delay)=>{
     new Noty({
         type,
         text,
-        timeout: 3000,
+        timeout: delay || 3000,
         soundPlayed: true
     }).show();
 };
@@ -43,3 +42,17 @@ window.addEventListener("hashchange", function(e) {
         window.location.reload();
     }
 });
+
+window.copy = function (v, msg) {
+    var copytext = document.createElement('input');
+    copytext.value = v;
+    document.body.appendChild(copytext);
+    copytext.select();
+    document.execCommand('copy');
+    document.body.removeChild(copytext);
+    window.noty('info', msg || 'Скопировано', 10000);
+};
+
+window.copyAddress = ()=>{
+    window.copy('Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022', 'Адрес для пополнения <i>Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022</i> <b>скопирован</b>.  Переведите на него ESCAPE c <u>Вашего</u> кошелька для пополнения счета.');
+};

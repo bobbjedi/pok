@@ -4,7 +4,7 @@
         <img src="/images/ligapoker.gif" class="label-poker">
         <div class="login-path" ng-show="isLogged()"><b>Hello!</b> <span class="user-name">{{$root.user.login}}</span>
             <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i><br>Deposit:
-            <span class="deposit">{{$root.user.deposit}}</span> <i class="fa fa-creative-commons txt-green hovered"
+            <span class="deposit">{{$root.user.deposit}}</span> <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered"
                 aria-hidden="true"></i> </div>
     </div>
     <div class="modal-wrap" ng-show="!isLogged()">
