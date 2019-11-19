@@ -79,7 +79,6 @@ window.copyAddress = () => {
 
         if (document.fullscreenEnabled) {
             isFullScreen = true;
-            localStorage.setItem('isFullScreen', isFullScreen);
             requestFullscreen(document.documentElement);
         }
     };
@@ -88,7 +87,6 @@ window.copyAddress = () => {
 
     window.cancelFullscreenCustom = () => {
         isFullScreen = false;
-        localStorage.setItem('isFullScreen', isFullScreen);
         if (document.cancelFullScreen) {
             document.cancelFullScreen();
         } else if (document.mozCancelFullScreen) {
@@ -102,10 +100,6 @@ window.copyAddress = () => {
         if (isFullScreen) {
             return window.cancelFullscreenCustom();
         }
-        window.launchFullScreen();
-    };
-
-    if (localStorage.getItem('isFullScreen')){
         window.launchFullScreen();
     };
 })();

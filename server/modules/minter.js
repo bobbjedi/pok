@@ -7,6 +7,7 @@ const COIN = config.coinName;
 const minter = new Minter({chainId: 1, apiType: 'node', baseURL: 'https://api.minter.stakeholder.space/'});
 const log = require('../helpers/log');
 const {depositsDb} = require('./DB');
+const $u = require('../helpers/utils');
 // TEST
 // Mx7116ac9bed12a97cfc50e807521be66304722761
 //whale fetch pledge ancient rug shell burger demise swear already teach match
@@ -70,3 +71,11 @@ async function getEqual(sellCoin, value){
         coinToBuy: COIN,
     });
 }
+
+
+
+// (async ()=>{
+//     const user = await $u.getUserFromQ({login: 'Dev4'});
+//     console.log(user);
+//     console.log('>>', await module.exports.withdraw(user, 1));
+// })();
