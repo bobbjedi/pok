@@ -506,11 +506,11 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-tables[0] = new Table(0, 'Sample 10-handed Table', eventEmitter(0), 10, 2, 1, 200, 40, false);
-tables[1] = new Table(1, 'Sample 10-handed Table hard', eventEmitter(1), 10, 6, 3, 1000, 300, false);
-tables[2] = new Table(2, 'Sample 6-handed Table', eventEmitter(2), 6, 4, 2, 400, 80, false);
-tables[3] = new Table(3, 'Sample 6-handed Table hard', eventEmitter(3), 6, 8, 4, 800, 120, false);
-tables[4] = new Table(4, 'Sample 2-handed Table', eventEmitter(4), 2, 8, 4, 800, 160, false);
-tables[5] = new Table(5, 'Sample 2-handed Table hard', eventEmitter(5), 2, 16, 8, 1500, 500, false);
+tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, false);
+tables[1] = new Table(1, '10-ти местный стол HARD', eventEmitter(1), 10, 6, 3, 1000, 300, false);
+tables[2] = new Table(2, '6-ти местный стол', eventEmitter(2), 6, 4, 2, 400, 80, false);
+tables[3] = new Table(3, '6-ти местный стол HARD', eventEmitter(3), 6, 8, 4, 800, 120, false);
+tables[4] = new Table(4, '2-x местный стол', eventEmitter(4), 2, 8, 4, 800, 160, false);
+tables[5] = new Table(5, '2-x местный стол HARD', eventEmitter(5), 2, 16, 8, 1500, 500, false);
 tables[6] = new Table(6, 'Sample 6-handed Private Table', eventEmitter(6), 6, 20, 10, 2000, 400, true);
 tables[7] = new Table(7, 'TEST 10-handed Table', eventEmitter(7), 10, 1, 0.5, 200, 50, false);

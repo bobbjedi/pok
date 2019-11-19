@@ -7,10 +7,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     $scope.status = 'login';
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
-
     const preloader = document.getElementById('preloader');
     preloader.style.opacity = 1;
     preloader.style.display = 'flex';
+   
     $scope.hidePreloader = () =>{
         setTimeout(()=>{
             preloader.style.opacity = 0;
@@ -20,10 +20,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         }, 1000);
     };
 
-    const checkUser = _.throttle(function(v){
-        if (!v){
-            return;
-        }
+    const checkUser = () => {
         socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login}, response => {
             if (response.success){
                 $rootScope.updateUser();
@@ -35,7 +32,8 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             $scope.$digest();
         });
 
-    }, 0);
+    };
+    window.reconnectSocket(checkUser);
     $rootScope.$watch('user.isLogged', checkUser);
    
     $http({

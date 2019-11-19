@@ -6,11 +6,22 @@
                 <h1>{{table.name}}</h1>
                 <span class="table-requirements">Max buy-in {{table.maxBuyIn}}</span>
                 <span class="table-requirements">Min buy-in {{table.minBuyIn}}</span>
-                <span class="table-requirements">You have a total of {{$root.totalChips}} chips</span>
+                <span class="table-requirements">Ваш депозит {{$root.totalChips}} фишек</span>
                 <span class="table-requirements error" ng-show="buyInError">{{buyInError}}</span>
                 <input class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
-                <input type="submit" value="Sit in">
+                <input type="submit" value="Сесть">
             </form>
+        </div>
+        <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
+    </div>
+    <div class="modal-wrap" ng-show="inToLobby">
+        <div class="modal">
+            <br>
+            <h4>Вы действительно хотите покинуть комнату?</h4>
+            <div class="buts">
+                <div class="but bg-green" ng-click="leaveRoom()">Да</div>
+                <div class="but bg-red" ng-click="inToLobby = false">Нет</div>
+            </div>
         </div>
         <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
     </div>
@@ -23,14 +34,11 @@
     </div>
     <div class="row">
         <div class="cell">
-                <a id="go-to-lobby" class="button-top txt-yellow" ng-show="true || !$root.sittingOnTable"
-                ng-click="leaveRoom()">
-                < Lobby</a>
+            <a id="go-to-lobby" class="button-top txt-yellow" ng-click="inToLobby = true"><i class="fa fa-chevron-left" aria-hidden="true"></i> Lobby</a></div> <div class="cell">
         </div>
         <div class="cell"></div>
-        <div class="cell"></div>
         <div class="cell">
-            <a id="buy-coins" class="button-top txt-green" onclick="copyAddress">Buy coin</a>
+            <a id="buy-coins" class="button-top txt-green" onclick="copyAddress">Купить</a>
         </div>
     </div>
     <div class="row">
@@ -86,12 +94,12 @@
         </div>
         <div class="button-control">
             <button class="control-button" ng-click="fold()" ng-show="showFoldButton()">Fold</button>
-            <button class="control-button" ng-click="postBlind(false)" ng-show="showSitOutButton()">Sit Out</button>
-            <button class="control-button" ng-click="leaveTable()" ng-show="showLeaveTableButton()">Leave Table</button>
+            <button class="control-button" ng-click="postBlind(false)" ng-show="showSitOutButton()">Отказаться</button>
+            <button class="control-button" ng-click="leaveTable()" ng-show="showLeaveTableButton()">Покинуть стол</button>
         </div>
         <div class="button-control">
             <button class="control-button" ng-click="sitIn()"
-                ng-show="$root.sittingOnTable !== null && !$root.sittingIn">Sit In</button>
+                ng-show="$root.sittingOnTable !== null && !$root.sittingIn">Вернуться</button>
             <button class="control-button" ng-click="postBlind(true)" ng-show="actionState === 'postSmallBlind'">Small
                 Blind ({{table.smallBlind}})</button>
             <button class="control-button" ng-click="postBlind(true)" ng-show="actionState === 'postBigBlind'">Big Blind
@@ -120,10 +128,10 @@
         </div>
     </div>
     <div id="audio">
-        <audio id="fold-sound" src="/audio/fold.wav" preload="auto">
-            <audio id="check-sound" src="/audio/check.wav" preload="auto">
-                <audio id="call-sound" src="/audio/call.wav" preload="auto">
-                    <audio id="bet-sound" src="/audio/bet.wav" preload="auto">
-                        <audio id="raise-sound" src="/audio/raise.wav" preload="auto">
+        <audio id="fold-sound" src="/audio/fold.wav" preload="auto" />
+        <audio id="check-sound" src="/audio/check.wav" preload="auto" />
+        <audio id="call-sound" src="/audio/call.wav" preload="auto" />
+        <audio id="bet-sound" src="/audio/bet.wav" preload="auto" />
+        <audio id="raise-sound" src="/audio/raise.wav" preload="auto" />
     </div>
 </div>

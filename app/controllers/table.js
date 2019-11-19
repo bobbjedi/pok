@@ -5,8 +5,8 @@
  */
 import angular from 'angular';
 
-app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds',
-    function($scope, $rootScope, $http, $routeParams, $timeout, sounds) {
+app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
+    function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
         var selectedSeat = null;
         $scope.table = {};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -16,6 +16,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.myCards = ['', ''];
         $scope.mySeat = null;
         $scope.betAmount = 0;
+        $scope.inToLobby = false;
         $rootScope.winnerName = null;
         $rootScope.winnerMsg = null;
         $rootScope.sittingOnTable = null;
@@ -145,7 +146,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // Leaving the socket room
         $scope.leaveRoom = function() {
             socket.emit('leaveRoom');
-            location.reload();
+            $location.path('/');
+            $scope.inToLobby = false;
         };
 
         // A request to sit on a specific seat on the table

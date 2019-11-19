@@ -32,8 +32,8 @@ window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, 
     // $locationProvider.html5Mode(true).hashPrefix('!');
 });
 
-app.run(function($rootScope) {
-    location.assign('/#');
+app.run(function($rootScope, $location) {
+    $location.path('/');
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,

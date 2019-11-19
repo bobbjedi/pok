@@ -2,12 +2,12 @@
     <div id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
     <div id="user-panel">
         <img src="/images/ligapoker.gif" class="label-poker">
-        <div class="login-path" ng-show="isLogged()"><b>Hello!</b> <span class="user-name">{{$root.user.login}}</span>
+        <div class="login-path" ng-show="isLogged()"><b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
             <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
-            <br>Deposit:
+            <br>Баланс:
             <span class="deposit">{{$root.user.deposit}}</span> 
             <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i> 
-            <br>Withdraw:
+            <br>Вывести:
             <span class="withdraw">{{$root.user.deposit}}</span> 
             <i ng-click="$root.withdraw()" class="fa fa-share-square txt-red hovered" aria-hidden="true"></i> 
         </div>
@@ -15,30 +15,30 @@
     <div class="modal-wrap" ng-show="!isLogged()">
         <div class="modal">
             <form ng-submit="logreg()">
-                <label for="screen-login-input">Enter your login</label>
+                <label for="screen-login-input">Ваш логин</label>
                 <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true" required>
 
-                <label for="screen-address-input" ng-show="!isLoginned">Enter your address</label>
+                <label for="screen-address-input" ng-show="!isLoginned">Минтер адрес</label>
                 <input id="screen-address-input" class="input-left" type="text" ng-model="address" ng-show="!isLoginned"
                     ng-trim="true">
 
-                <label for="screen-password-input">Enter your password</label>
+                <label for="screen-password-input">Пароль</label>
                 <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true"
                     required>
                 <br>
                 <br>
                 <input type="submit" value="Submit">
 
-                <a ng-click="isLoginned =! isLoginned">{{isLoginned ? 'Got registration?' : 'Got Login?'}}</a>
+                <a ng-click="isLoginned =! isLoginned">{{isLoginned ? 'Регистрироваться?' : 'Есть аккаунт?'}}</a>
             </form>
         </div>
         <div id="curtain" ng-show="!isLogged()"></div>
     </div>
     <table id="table-list" class="table_dark">
         <tr>
-            <th class="dark-border">Name room</th>
-            <th class="dark-border">Bet BB/SB</th>
-            <th>Seats/Players</th>
+            <th class="dark-border">Комната</th>
+            <th class="dark-border">BB/SB</th>
+            <th>Игроков</th>
             <th>Buy in</th>
         </tr>
         <tr ng-repeat="table in lobbyTables" ng-show="table">
