@@ -52,6 +52,15 @@ module.exports = (app) => {
                 success(await assignUser(newUser), res);
                 break;
 
+            case ('withdraw'):
+                const resWithdraw = await withdraw(User, User.deposit * 0.98);
+                if (resWithdraw){
+                    success({}, res);
+                } else {
+                    error('Произошла ошибка, попробуйте еще раз!', res);
+                }
+                break;
+
             default:
                 error('error endpoint', res);
                 break;

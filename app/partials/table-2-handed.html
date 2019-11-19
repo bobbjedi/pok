@@ -44,6 +44,7 @@
                 <span id="pot" ng-show="table.pot[0].amount">{{potText()}}</span>
             </div>
             <div id="board-wrap">
+                <div ng-show="$root.winnerMsg" class="winner-msg txt-yellow">{{$root.winnerMsg}}</div>
                 <div class="card-container">
                     <div class="card card-{{table.board[0]}}" ng-show="table.board[0]"></div>
                 </div>

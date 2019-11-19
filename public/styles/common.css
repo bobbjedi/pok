@@ -250,7 +250,7 @@ input[type=range]:focus::-ms-fill-upper {
 .controls {
     display: flex;
     height: 80px;
-    background-color: #1f1f1f;
+    background-color: rgba(0,0,0,0.3);
     border-radius: 8px;
     z-index: 1;
     position: relative;
@@ -326,7 +326,7 @@ div.row {
     padding: 12px;
     border-radius: 4px;
     font-size: 1.3em;
-    background: #262727;
+    background: rgba(0,0,0,0.5);
     cursor: pointer;
 }
 
@@ -335,6 +335,14 @@ div.row {
 }
 #buy-coins{
     right: 12px;
+}
+
+.winner-msg{
+    text-align: center;
+    margin-top: -26px;
+    margin-left: -6%;
+    position: absolute;
+    font-size: 1.6em;
 }
 
 /* FULLSCREEN */

@@ -17,7 +17,7 @@ body {
     font-family: Arial;
     color: @light-purple;
     font-size: 1em;
-    // background-image: url(/images/bg.jpg);
+    background-image: url(/images/bg.jpg);
 }
 
 input[type="text"],
@@ -373,7 +373,7 @@ div.seat {
     align-items: center;
     width: 100%;
     height: 70px;
-    background-color: #433f47;
+    background-color: #0d0d0d;
     border: 1px solid #afaabe;
     border-radius: 3px;
     color: @light-purple;
@@ -388,7 +388,12 @@ div.seat {
     &.active {
         color: #e9e0ee;
         border: 2px solid #a1a6a9;
-        box-shadow: 0 0 2px 0 #94c3de;
+        box-shadow: 0 0 3px 0 #94c3de;
+    }
+    &.winner {
+        color: #e9e0ee;
+        border: 2px solid #eabb56;
+        box-shadow: 0 0 5px 0 #4f9745;
     }
 
     p {
@@ -811,7 +816,7 @@ div#board-wrap {
 
     .modal {
         padding: 32px;
-        background-color: #fff;
+        background-color: #333;
         border-radius: 5px;
         position: relative;
         margin: 0 auto;
@@ -1062,6 +1067,46 @@ screen and (max-device-width: 480px) {
         width: 95%;
     }
 }
+
+#preloader {
+    z-index: 100000;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color:#0d0d0d;
+    transition: .5s;
+    justify-content: center;
+    align-items: center;
+    & img {
+        animation-name: rotation;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        width: 200px;
+    }
+}
+
+@keyframes rotation {
+    0% {
+        transform:rotate(0deg);
+    }
+    100% {
+        transform:rotate(360deg);
+    }
+}
+
+
+.hide{
+    opacity:0;
+}
+
+
+
 
 @media screen and (orientation:portrait) and (max-device-width: 500px) {
     #content {

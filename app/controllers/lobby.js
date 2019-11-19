@@ -5,10 +5,21 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
     $scope.status = 'login';
-    $scope.isLogged = ()=> {
-        return $rootScope.user.isLogged;
-    };
+    $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
+
+    const preloader = document.getElementById('preloader');
+    preloader.style.opacity = 1;
+    preloader.style.display = 'flex';
+    $scope.hidePreloader = () =>{
+        setTimeout(()=>{
+            preloader.style.opacity = 0;
+            setTimeout(()=>{
+                preloader.style.display = 'none';
+            }, 500);
+        }, 1000);
+    };
+
     const checkUser = _.throttle(function(v){
         if (!v){
             return;
@@ -26,6 +37,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
 
     }, 0);
     $rootScope.$watch('user.isLogged', checkUser);
+   
     $http({
         url: window.Domain + '/lobby-data',
         method: 'GET'
@@ -35,6 +47,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             for (const tableId in data) {
                 $scope.lobbyTables[tableId] = data[tableId];
             }
+            $scope.hidePreloader();
         }
     });
 

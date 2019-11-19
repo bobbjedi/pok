@@ -54,5 +54,5 @@ window.copy = function (v, msg) {
 };
 
 window.copyAddress = ()=>{
-    window.copy('Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022', 'Адрес для пополнения <i>Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022</i> <b>скопирован</b>.  Переведите на него ESCAPE c <u>Вашего</u> кошелька для пополнения счета.');
+    window.copy('Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022', 'Адрес для пополнения <i>Mxf8c81cdf545aaea50e1f4fbc7f5b89b98ef92022</i> <b>скопирован</b>.  Переведите на него ESCAPE c <u>Вашего</u> кошелька (указанного при регистрации) для пополнения счета.');
 };

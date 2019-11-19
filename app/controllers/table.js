@@ -16,7 +16,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.myCards = ['', ''];
         $scope.mySeat = null;
         $scope.betAmount = 0;
-        $scope.winMsg = null;
+        $rootScope.winnerName = null;
+        $rootScope.winnerMsg = null;
         $rootScope.sittingOnTable = null;
 
         // Existing listeners should be removed
@@ -39,17 +40,21 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.emit('enterRoom', $routeParams.tableId);
 
         $rootScope.$watch('timeOutCurrent', (v)=>{
-            if (v !== 1){
+            if (v !== 1 || $scope.table.activeSeat !== $scope.mySeat){
                 return;
             }
             if ($scope.showCheckButton()){
                 $scope.check();
+                console.log('Autocheck');
             } else if ($scope.showFoldButton()){
+                console.log('Autofold');
                 $scope.fold();
             } else if ($scope.showSitOutButton()){
                 $scope.postBlind(false);
+                console.log('sitOut');
             } else if ($scope.showLeaveTableButton()){
                 $scope.leaveTable();
+                console.log('leaveTable');
             }
         });
 
@@ -135,22 +140,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
                 return potText;
             }
-        };
-
-        $scope.getCardClass = function(seat, card) {
-            if ($scope.mySeat === seat) {
-                return $scope.myCards[card];
-            }
-            else if (typeof $scope.table.seats !== 'undefined' && typeof $scope.table.seats[seat] !== 'undefined' && $scope.table.seats[seat] && typeof $scope.table.seats[seat].cards !== 'undefined' && typeof $scope.table.seats[seat].cards[card] !== 'undefined') {
-                return 'card-' + $scope.table.seats[seat].cards[card];
-            }
-            else {
-                return 'card-back';
-            }
-        };
-
-        $scope.seatOccupied = function(seat) {
-            return !$rootScope.sittingOnTable || ($scope.table.seats !== 'undefined' && typeof $scope.table.seats[seat] !== 'undefined' && $scope.table.seats[seat] && $scope.table.seats[seat].name);
         };
 
         // Leaving the socket room
@@ -274,6 +263,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.table = data;
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();
+                $rootScope.winnerName = null;
+                $rootScope.winnerMsg = null;
             }
             switch (data.log.action) {
             case 'fold':
@@ -292,14 +283,16 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 sounds.playRaiseSound();
                 break;
             }
+
             if (data.log.message) {
                 const msg = data.log.message.trim();
                 if (msg === $rootScope.user.login + ' left'){
                     $scope.leaveTableStates();
                 };
                 if (msg.includes('wins the pot')){
+                    $rootScope.winnerName = msg.split(' ')[0];
+                    $rootScope.winnerMsg = msg.split('[')[0];
                 }
-
                 var messageBox = document.querySelector('#messages');
                 var messageElement = angular.element('<p class="log-message">' + msg + '</p>');
                 angular.element(messageBox).append(messageElement);
@@ -326,6 +319,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.on('gameStopped', function(data) {
             $scope.table = data;
             $scope.actionState = 'waiting';
+            $scope.myCards[0] = '';
+            $scope.myCards[1] = '';
             $scope.$digest();
         });
 

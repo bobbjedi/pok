@@ -85,7 +85,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
 
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
-    console.log('попытка', activeSeat, phase);
+    // console.log('попытка', activeSeat, phase);
     if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
         return;
     }
@@ -93,14 +93,14 @@ Table.prototype.setTimeoutWait = function(){
     this.lastWaitPhase = phase;
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
-    console.log('Ставим ', lastActiveUserLogin);
+    console.log('Ставим ', lastActiveUserLogin, phase);
     this.timeOutWaitUserAction = setTimeout(()=>{
-        console.log('просрал ');
         this.timeOutWaitUserAction = null;
         const seat = this.public.seats[activeSeat];
         const currentSeatName = seat && seat.name;
         if (currentSeatName === lastActiveUserLogin){
             this.playerLeft(activeSeat);
+            console.log('Высадили ', lastActiveUserLogin);
         }
     }, (config.timeOutWait + 5) * 1000);
 };

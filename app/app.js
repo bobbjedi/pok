@@ -64,6 +64,14 @@ app.run(function($rootScope) {
         }, true);
     }, 2000);
 
+
+    $rootScope.withdraw = _.throttle(function(){
+        $rootScope.api({action: 'withdraw'}, data => {
+            noty('success', 'Успешно вывели!');
+            $rootScope.updateUser();
+        });
+    }, 1000);
+
     $rootScope.api = api;
 
     $rootScope.$watch('user.token', ()=>{
@@ -93,13 +101,13 @@ function api(obj, cb = () => {}, silent, type = 'api') {
     fetch(window.Domain + '/' + type + '?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
         .then(res => {
             res.json().then(data => {
-                console.log('Resp:', obj.action + ' -> ', data);
+                // console.log('Resp:', obj.action + ' -> ', data);
                 if (data.success) {
                     cb(data.result);
                 } else {
                     console.warn(obj.action + ' error: ', data);
                     if (!silent) {
-                        console.log('NOTT', data.msg);
+                        // console.log('NOTT', data.msg);
                         noty('error', data.msg);
                     }
                 }

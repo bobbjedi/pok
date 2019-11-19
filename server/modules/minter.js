@@ -20,13 +20,15 @@ module.exports = {
         if (user.deposit + 0.5 < amount){
             return false;
         }
+        console.log(amount);
         try {
             const hash = await sendTx(user.address, amount);
             amount = Math.round(amount);
             if (hash){
-                user.deposit -= amount;
+                user.deposit = Math.round(user.deposit - amount);
                 await user.save();
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
+                console.log(hash);
                 return true;
             }
             return false;
