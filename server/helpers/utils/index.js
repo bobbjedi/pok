@@ -19,12 +19,26 @@ module.exports = {
             address: params.address,
             login: params.login,
             password: sha256(params.password.toString()),
-            deposit: config.regDrop || 0
+            deposit: config.regDrop || 0,
+            depositInGame: 0
         });
         await user.save();
         if (config.regDrop > 0){
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
         }
         return user;
+    },
+    // воозвращаем после падения сервера
+    async returnChepsInplay(){
+        const users = await usersDb.find({depositInGame: {$gt: 0}});
+        for (let u in users){
+            const user = users[u];
+            await user.update({
+                deposit: user.deposit + user.depositInGame,
+                depositInGame: 0
+            }, 1);
+        }
     }
 };
+
+module.exports.returnChepsInplay();

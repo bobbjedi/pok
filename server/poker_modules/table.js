@@ -444,9 +444,9 @@ Table.prototype.showdown = function() {
         this.emitEvent('table-data', this.public);
     }
 
-    var that = this;
-    setTimeout(function(){
-        that.endRound();
+    this.updateDepsInPlay();
+    setTimeout(()=>{
+        this.endRound(true); // не нужно обновлять
     }, config.timeOutBeforeNewGame * 1000);
 };
 
@@ -719,6 +719,12 @@ Table.prototype.playerLeft = function(seat) {
         log.error('TABLE playerLeft' + e);
     }
 };
+Table.prototype.updateDepsInPlay = function(){
+    for (let i = 0; i < this.public.seatsCount; i++) {
+        this.seats[i] && this.seats[i].updateDepInPlay();
+    }
+};
+
 
 /**
  * Changes the data of the table when a player sits out
@@ -813,7 +819,10 @@ Table.prototype.removeAllCardsFromPlay = function() {
 /**
  * Actions that should be taken when the round has ended
  */
-Table.prototype.endRound = function() {
+Table.prototype.endRound = function(isnotNeedUpdateDeps) { // не нужно обновлять заморозку в игре фишек
+    if (!isnotNeedUpdateDeps){ // нужно обновить
+        this.updateDepsInPlay();
+    }
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
     if (!this.pot.isEmpty()) {

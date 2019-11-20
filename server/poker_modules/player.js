@@ -43,25 +43,32 @@ var Player = function(socket, user) {
     this.token = user.token;
 };
 
-/**
- * Updates the player data when they leave the table
- */
+
+
 Player.prototype.getUserDB = async function(){
     return await $u.getUserFromQ({_id: this._id});
 };
+Player.prototype.updateDeposit = async function(amount){
+    const user = await this.getUserDB();
+    user.deposit = $u.round(user.deposit + amount);
+    await user.save();
+};
 
+Player.prototype.updateDepInPlay = async function(){
+    const user = await this.getUserDB();
+    await user.update({depositInGame: this.public.chipsInPlay}, true);
+    console.log(this.public.name, this.public.chipsInPlay);
+};
+
+/**
+ * Updates the player data when they leave the table
+ */
 Player.prototype.onDisconnect = function(cb){
     this.setTimeOutDisconnect = setTimeout(cb, 0 * 1000);
 };
 
 Player.prototype.return = function(){
     clearTimeout(this.setTimeOutDisconnect);
-};
-
-Player.prototype.updateDeposit = async function(amount){
-    const user = await this.getUserDB();
-    user.deposit = $u.round(user.deposit + amount);
-    await user.save();
 };
 
 Player.prototype.leaveTable = async function() {
@@ -74,6 +81,7 @@ Player.prototype.leaveTable = async function() {
         await this.updateDeposit(this.public.chipsInPlay);
         // Remove the chips from play
         this.public.chipsInPlay = 0;
+        await this.updateDepInPlay();
     }
 };
 
@@ -92,6 +100,7 @@ Player.prototype.sitOnTable = async function(tableId, seat, chips) {
     this.seat = seat;
     this.sittingOnTable = tableId;
     await this.updateDeposit(-chips);
+    await this.updateDepInPlay();
 };
 
 /**

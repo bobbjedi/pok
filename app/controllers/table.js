@@ -160,6 +160,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.buyInError = null;
                     $scope.mySeat = selectedSeat;
                     $scope.actionState = 'waiting';
+                    $rootScope.updateUser();
                     $scope.$digest();
                 } else {
                     if (response.error) {
