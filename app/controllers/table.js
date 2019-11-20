@@ -41,6 +41,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.emit('enterRoom', $routeParams.tableId);
 
         $rootScope.$watch('timeOutCurrent', (v)=>{
+            if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){
+                $scope.postBlind(true);
+            }
             if (v !== 1 || $scope.table.activeSeat !== $scope.mySeat){
                 return;
             }
@@ -88,12 +91,18 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             return $scope.actionState === 'postSmallBlind' || $scope.actionState === 'postBigBlind';
         };
 
+        $scope.showSmallBlindButton = function() {
+            return $scope.actionState === 'postSmallBlind';
+        };
         $scope.showPostSmallBlindButton = function() {
             return $scope.actionState === "actNotBettedPot" || $scope.actionState === "actBettedPot";
         };
 
         $scope.showPostBigBlindButton = function() {
             return $scope.actionState === "actNotBettedPot" || $scope.actionState === "actBettedPot";
+        };
+        $scope.showBigBlindButton = function() {
+            return $scope.actionState === 'postBigBlind';
         };
 
         $scope.showFoldButton = function() {

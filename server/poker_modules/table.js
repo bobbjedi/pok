@@ -800,6 +800,7 @@ Table.prototype.otherPlayersAreAllIn = function() {
     }
 
     // In this case, all the players are all in. There should be no actions. Move to the next round.
+    console.log('isALL IN', playersAllIn >= this.playersInHandCount - 1);
     return playersAllIn >= this.playersInHandCount - 1;
 };
 
