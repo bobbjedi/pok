@@ -70,13 +70,13 @@ app.run(function($rootScope, $location) {
         });
     }, 1000);
 
-    $rootScope.api = api;
-
     $rootScope.$watch('user.token', ()=>{
         localStorage.setItem('token', $rootScope.user.token);
     });
 
     $rootScope.logOut();
+    $rootScope.api = api;
+    $rootScope.config = config;
     $rootScope.user.token = localStorage.getItem('token');
     $rootScope.totalChips = 0;
     $rootScope.sittingOnTable = '';

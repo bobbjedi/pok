@@ -15,7 +15,7 @@ var Deck = require('./deck'),
  * @param int 		minBuyIn (the minimum amount of chips that one can bring to the table)
  * @param bool 		privateTable (flag that shows whether the table will be shown in the lobby)
  */
-var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, privateTable) {
+var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable) {
     // The table is not displayed in the lobby
     this.privateTable = privateTable;
     // The number of players who receive cards at the begining of each round
@@ -39,6 +39,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // All the public table data
     this.timeOutWaitUserAction = null;
     this.public = {
+        type,
         // The table id
         id: id,
         // The table name
@@ -820,9 +821,9 @@ Table.prototype.removeAllCardsFromPlay = function() {
  * Actions that should be taken when the round has ended
  */
 Table.prototype.endRound = function(isnotNeedUpdateDeps) { // не нужно обновлять заморозку в игре фишек
-    if (!isnotNeedUpdateDeps){ // нужно обновить
-        this.updateDepsInPlay();
-    }
+    // if (!isnotNeedUpdateDeps){ // нужно обновить
+    //     this.updateDepsInPlay();
+    // }
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
     if (!this.pot.isEmpty()) {

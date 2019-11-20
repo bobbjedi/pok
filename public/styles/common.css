@@ -33,12 +33,23 @@
 .big{
     font-size: 1.2em;
 }
+.center{
+    text-align: center;
+}
 .w100 {
     width: 100%;
 }
-
+.modal-text{
+    font-size: 1.3em;
+    color: white;
+    margin: 20px 0;
+    text-align: center;
+}
 .m1 {
     margin: 1px;
+}
+.m10 {
+    margin: 10px;
 }
 
 .hovered {
@@ -353,9 +364,10 @@ div.row {
 }
 
 .winner-msg{
+    left: 0;
+    width: 100%;
     text-align: center;
-    margin-top: -26px;
-    margin-left: -6%;
+    margin-top: -5px;
     position: absolute;
     font-size: 1.6em;
 }

@@ -1,7 +1,10 @@
 const {usersDb, depositsDb} = require('../../modules/DB');
 const config = require('../../helpers/configReader');
 const sha256 = require('sha256');
+const tablesData = require('../../tablesDefault');
 
+
+let tables, eventEmitter, Table;
 module.exports = {
     round(n) {
         return Number(n.toFixed(8));
@@ -38,6 +41,15 @@ module.exports = {
                 depositInGame: 0
             }, 1);
         }
+    },
+    createTables(tables = tables, eventEmitter = eventEmitter, Table = Table){
+        tables = tables;
+        eventEmitter = eventEmitter;
+        Table = Table;
+        tablesData.forEach((t, i)=>{
+            tables[i] = new Table(i, t.count + ' местный стол', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn, t.minBuyIn, t.type, false);
+        });
+        // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, 'hard', false);
     }
 };
 

@@ -286,7 +286,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 sounds.playRaiseSound();
                 break;
             }
-
+            console.log(data.log);
             if (data.log.message) {
                 const msg = data.log.message.trim();
                 if (msg === $rootScope.user.login + ' left'){
@@ -294,7 +294,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 };
                 if (msg.includes('wins the pot')){
                     $rootScope.winnerName = msg.split(' ')[0];
-                    $rootScope.winnerMsg = msg.split('[')[0];
+                    // $rootScope.winnerMsg = msg.split('[')[0].replace('(', '<span class="big txt-green">').replace(')', "</span>") + '.';
+                    $rootScope.winnerMsg = msg.split('[')[0] + '.';
                 }
                 var messageBox = document.querySelector('#messages');
                 var messageElement = angular.element('<p class="log-message">' + msg + '</p>');

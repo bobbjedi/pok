@@ -107,7 +107,6 @@ tr,
 th,
 td {
     border: 1px solid @light-purple;
-    color: @light-purple;
     border-collapse: collapse;
     padding: 8px;
 }
@@ -135,7 +134,7 @@ table {
 }
 
 .table_dark td {
-    color: #CAD4D6;
+    // color: #CAD4D6;
     border-bottom: 1px solid #37B5A5;
     border-right: 1px solid #37B5A5;
     padding: 7px 17px;
@@ -1086,12 +1085,15 @@ screen and (max-device-width: 480px) {
     justify-content: center;
     align-items: center;
     & img {
-        animation-name: rotation;
-        animation-duration: 2s;
-        animation-iteration-count: infinite;
-        animation-timing-function: linear;
         width: 200px;
     }
+}
+
+.rotate{
+    animation-name: rotation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }
 
 @keyframes rotation {
@@ -1103,7 +1105,28 @@ screen and (max-device-width: 480px) {
     }
 }
 
+.img_animate{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    animation-name: rotation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    background-size: 100% 100%;
+}
 
+.dark-cheap{
+    background-image: url(/images/preloader.png);
+}
+.red-cheap{
+    background-image: url(/images/cheap_red.png);
+}
+
+.table-name-img{
+    align-items: center;
+    display: flex;
+}
 .hide{
     opacity:0;
 }
