@@ -1,0 +1,35 @@
+<div id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
+<div class="modal-wrap" ng-show="buyInModalVisible">
+    <div class="modal">
+        <form ng-submit="sitOnTheTable()">
+            <h1>{{table.name}}</h1>
+            <span class="table-requirements">Max buy-in {{table.maxBuyIn}}</span>
+            <span class="table-requirements">Min buy-in {{table.minBuyIn}}</span>
+            <span class="table-requirements">Ваш депозит {{$root.totalChips}} фишек</span>
+            <span class="table-requirements error" ng-show="buyInError">{{buyInError}}</span>
+            <input class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
+            <input type="submit" value="Сесть">
+        </form>
+    </div>
+    <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
+</div>
+
+<div class="modal-wrap" ng-show="inToLobby">
+    <div class="modal">
+        <br>
+        <h4>Вы действительно хотите покинуть комнату?</h4>
+        <div class="buts">
+            <div class="but bg-green" ng-click="leaveRoom()">Да</div>
+            <div class="but bg-red" ng-click="inToLobby = false">Нет</div>
+        </div>
+    </div>
+    <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
+</div>
+
+<div id="table">
+    <div class="table-name">
+        <div>{{table.name}}</div>
+        <div>Big blind: {{table.bigBlind}}, Max buy in: {{table.maxBuyIn}}</div>
+    </div>
+    <div id="felt"></div>
+</div>

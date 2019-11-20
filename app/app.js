@@ -1,24 +1,22 @@
-import table10 from './partials/table-10-handed.html';
-import table6 from './partials/table-6-handed.html';
-import table2 from './partials/table-2-handed.html';
 import lobbyTemplate from './partials/lobby.html';
+import includeHtml from './partials/table-paths';
 import config from '../config';
 import angular from 'angular';
 import _ from 'underscore';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
-        template: table10,
+        template: includeHtml(10),
         controller: 'TableController',
     });
 
     $routeProvider.when('/table-6/:tableId', {
-        template: table6,
+        template: includeHtml(6),
         controller: 'TableController',
     });
 
     $routeProvider.when('/table-2/:tableId', {
-        template: table2,
+        template: includeHtml(2),
         controller: 'TableController',
     });
 

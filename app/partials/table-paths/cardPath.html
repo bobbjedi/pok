@@ -1,0 +1,23 @@
+<div class="double-cell">
+    <div id="pot-wrap">
+        <span id="pot" ng-show="table.pot[0].amount">{{potText()}}</span>
+    </div>
+    <div id="board-wrap">
+        <div ng-show="$root.winnerMsg" class="winner-msg txt-yellow">{{$root.winnerMsg}}</div>
+        <div class="card-container">
+            <div class="card card-{{table.board[0]}}" ng-show="table.board[0]"></div>
+        </div>
+        <div class="card-container">
+            <div class="card card-{{table.board[1]}}" ng-show="table.board[1]"></div>
+        </div>
+        <div class="card-container">
+            <div class="card card-{{table.board[2]}}" ng-show="table.board[2]"></div>
+        </div>
+        <div class="card-container">
+            <div class="card card-{{table.board[3]}}" ng-show="table.board[3]"></div>
+        </div>
+        <div class="card-container">
+            <div class="card card-{{table.board[4]}}" ng-show="table.board[4]"></div>
+        </div>
+    </div>
+</div>
