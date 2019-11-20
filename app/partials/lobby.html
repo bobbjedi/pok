@@ -49,13 +49,15 @@
     </div>
     <table id="table-list" class="table_dark">
         <tr>
+            <th class="dark-border">#</th>
             <th class="dark-border">Комната</th>
             <th class="dark-border">BB/SB</th>
             <th>Игроков</th>
             <th>Buy in</th>
             <th>Тип</th>
         </tr>
-        <tr ng-repeat="table in lobbyTables" ng-show="table">
+        <tr ng-repeat="table in lobbyTables" ng-show="table && table.type !== 'unlim'">
+            <td>{{table.id + 1}}</td>
             <td>
                 <a href="#!/table-{{table.seatsCount}}/{{table.id}}">
                     <span class="table-name-img">

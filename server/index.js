@@ -242,10 +242,10 @@ io.sockets.on('connection', function(socket) {
             ){
             // The chips the player chose are less than the total chips the player has
                 if (data.chips > players[socket.id].chips){
-                    callback({ 'success': false, 'error': 'You don\'t have that many chips' });
+                    callback({ 'success': false, 'error': 'У вас недостаточно фишек.' });
                 }
                 else if (data.chips > tables[data.tableId].public.maxBuyIn || data.chips < tables[data.tableId].public.minBuyIn){
-                    callback({ 'success': false, 'error': 'The amount of chips should be between the maximum and the minimum amount of allowed buy in' });
+                    callback({ 'success': false, 'error': 'Количество фишек должно быть в диапазоне Max - Min buy in.' });
                 }
                 else {
                 // Give the response to the user
@@ -255,9 +255,10 @@ io.sockets.on('connection', function(socket) {
                 }
             } else {
             // If the user is not allowed to sit in, notify the user
-                callback({ 'success': false });
+                callback({ 'success': false, error: 'Ошибка..' });
             }
         } catch (e){
+            callback({ 'success': false, error: 'Ошибка... (с)' });
             log.error('sitOnTheTable: ' + e);
         }
     });
