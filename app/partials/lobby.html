@@ -56,7 +56,7 @@
             <th>Buy in</th>
             <th>Тип</th>
         </tr>
-        <tr ng-repeat="table in lobbyTables" ng-show="table && table.type !== 'unlim'">
+        <tr ng-repeat="table in lobbyTables" ng-show="table">
             <td>{{table.id + 1}}</td>
             <td>
                 <a href="#!/table-{{table.seatsCount}}/{{table.id}}">

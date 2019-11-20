@@ -23,7 +23,7 @@ module.exports = [{
 {
     count: 10,
     sb: 10,
-    minBuyIn: 1,
+    minBuyIn: 2000,
     maxBuyIn: 1000000,
     type: 'unlim'
 },
@@ -51,7 +51,7 @@ module.exports = [{
 {
     count: 6,
     sb: 15,
-    minBuyIn: 1,
+    minBuyIn: 2000,
     maxBuyIn: 1000000,
     type: 'unlim'
 },
@@ -81,7 +81,7 @@ module.exports = [{
 {
     count: 2,
     sb: 20,
-    minBuyIn: 1,
+    minBuyIn: 2000,
     maxBuyIn: 1000000,
     type: 'unlim'
 }
