@@ -180,7 +180,6 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
         log.info('[table#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
     });
     const msgStr = JSON.stringify({_: '{DATA}', winnersData});
-    console.log('winnersData>', winnersData);
     return {messages, msgStr};
 };
   
