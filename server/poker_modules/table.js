@@ -390,7 +390,7 @@ Table.prototype.showdown = function() {
         currentPlayer = this.findNextPlayer(currentPlayer);
     }
 
-    var messages = this.pot.destributeToWinners(this.seats, currentPlayer);
+    const {messages, msgStr} = this.pot.destributeToWinners(this.seats, currentPlayer);
 
     var messagesCount = messages.length;
     for (var i = 0; i < messagesCount; i++) {
@@ -402,6 +402,14 @@ Table.prototype.showdown = function() {
         });
         this.emitEvent('table-data', this.public);
     }
+
+    this.log({
+        message: msgStr,
+        action: '',
+        seat: 100,
+        notification: ''
+    });
+    this.emitEvent('table-data', this.public);
 
     this.updateDepsInPlay();
     setTimeout(()=>{
@@ -719,7 +727,7 @@ Table.prototype.playerLeft = function(seat) {
         }
     } catch (e){
         console.log(e);
-log.error('TABLE playerLeft' + e);
+        log.error('TABLE playerLeft' + e);
     }
 };
 Table.prototype.updateDepsInPlay = function(){

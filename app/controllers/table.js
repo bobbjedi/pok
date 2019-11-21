@@ -18,7 +18,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.betAmount = 0;
         $scope.inToLobby = false;
         $rootScope.winnerName = null;
-        $rootScope.winnerMsg = null;
+        $rootScope.winnersData = {};
+        $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
 
         // Existing listeners should be removed
@@ -286,7 +287,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();
                 $rootScope.winnerName = null;
-                $rootScope.winnerMsg = null;
+                $rootScope.winnerMsgArr = [];
+                $rootScope.winnersData = {};
             }
             switch (data.log.action) {
             case 'fold':
@@ -310,10 +312,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 if (msg === $rootScope.user.login + ' left'){
                     $scope.leaveTableStates();
                 };
-                if (msg.includes('wins the pot')){
-                    $rootScope.winnerName = msg.split(' ')[0];
-                    // $rootScope.winnerMsg = msg.split('[')[0].replace('(', '<span class="big txt-green">').replace(')', "</span>") + '.';
-                    $rootScope.winnerMsg = msg.split('[')[0] + '.';
+                if (msg.includes('{DATA}')){
+                    const data = JSON.parse(msg).winnersData;
+                    $rootScope.winnersData = data;
+                    $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
                 }
                 var messageBox = document.querySelector('#messages');
                 var messageElement = angular.element('<p class="log-message">' + msg + '</p>');

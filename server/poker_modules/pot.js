@@ -2,19 +2,17 @@ const log = require('../helpers/log');
 /**
  * The pot object
  */
-var Pot = function(table) {
+var Pot = function() {
     // The pot may be split to several amounts, since not all players
     // have the same money on the table
     // Each portion of the pot has an amount and an array of the
     // contributors (players who have betted in the pot and can
     // win it in the showdown)
     // this.tableId = ;
-    this.pots = [
-        { 
-            amount: 0,
-            contributors: []
-        }
-    ];
+    this.pots = [{ 
+        amount: 0,
+        contributors: []
+    }];
 };
   
 /**
@@ -31,17 +29,7 @@ Pot.prototype.reset = function() {
    * @param array players (the array of the tables as it exists in the table)
    */
 Pot.prototype.addTableBets = function(players) {
-    this.tableId = 'x';
-    // if (!this.tableId){
-    //     let i = 0;
-    //     let player = null;
-    //     while (!player){
-    //         player = players[i];
-    //         i++;
-    //     }
-    //     this.tableId = player.sittingOnTable;
-    // }
- 
+    this.tableId = this.tableId || getTableId(players);
     // 
     // Getting the current pot (the one in which new bets should be added)
     var currentPot = this.pots.length - 1;
@@ -58,6 +46,7 @@ Pot.prototype.addTableBets = function(players) {
             if (!smallestBet) {
                 smallestBet = players[i].public.bet;
             }
+            // eslint-disable-next-line eqeqeq
             else if (players[i].public.bet != smallestBet) {
                 allBetsAreEqual = false;
           
@@ -124,6 +113,8 @@ Pot.prototype.addPlayersBets = function(player) {
 Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
     var potsCount = this.pots.length;
     var messages = [];
+    var messages_ = [];
+    const winnersData = {};
     log.info('[table#' + this.tableId + '] *** Game finished **');
     log.info('[table#' + this.tableId + ']' + ' Pots: ' + JSON.stringify(this.pots));
     // For each one of the pots, starting from the last one
@@ -149,9 +140,13 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
             log.info('[table#' + this.tableId + ']' + ' winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);
             log.info('[table#' + this.tableId + ']' + ' s135: ' + winner.public.name + ' #' + winner.seat + ' + ' + pot.amount);
             winner.public.chipsInPlay += pot.amount;
-            var htmlHand = '[' + winner.evaluatedHand.cards.join(', ') + ']';
-            htmlHand = htmlHand.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
+            var htmlHand_ = '[' + winner.evaluatedHand.cards.join(', ') + ']';
+            var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
             messages.push(winner.public.name + ' wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand);
+            messages_.push(winner.public.name + ' wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand_);
+                      
+            winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_};
+            winnersData[winner.public.name].amount += pot.amount;
         } else {
             var winnersCount = winners.length;
   
@@ -160,24 +155,33 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
   
             for (var j in winners) {
                 var playersWinnings = 0;
-                if (oddChip && players[winners[j]].seat === firstPlayerToAct) {
+                const jPlayer = players[winners[j]];
+                if (oddChip && jPlayer.seat === firstPlayerToAct) {
                     playersWinnings = winnings + 1;
                 } else {
                     playersWinnings = winnings;
                 }
   
-                players[winners[j]].public.chipsInPlay += playersWinnings;
-                log.info('[table#' + this.tableId + ']' + ' s154: ' + players[winners[j]].public.name + ' #' + winners[j] + ' + ' + playersWinnings);
-                var htmlHand = '[' + players[winners[j]].evaluatedHand.cards.join(', ') + ']';
-                htmlHand = htmlHand.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
-                messages.push(players[winners[j]].public.name + ' ties the pot (' + playersWinnings + ') with ' + players[winners[j]].evaluatedHand.name + ' ' + htmlHand);
+                jPlayer.public.chipsInPlay += playersWinnings;
+                log.info('[table#' + this.tableId + ']' + ' s154: ' + jPlayer.public.name + ' #' + winners[j] + ' + ' + playersWinnings);
+                var htmlHand_ = '[' + jPlayer.evaluatedHand.cards.join(', ') + ']';
+                var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
+                messages.push(jPlayer.public.name + ' ties the pot (' + playersWinnings + ') with ' + jPlayer.evaluatedHand.name + ' ' + htmlHand);
+                messages_.push(jPlayer.public.name + ' ties the pot (' + playersWinnings + ') with ' + jPlayer.evaluatedHand.name + ' ' + htmlHand_);
+
+                winnersData[jPlayer.public.name] = winnersData[jPlayer.public.name] || {amount: 0, cards: jPlayer.evaluatedHand.name + ' ' + htmlHand_};
+                winnersData[jPlayer.public.name].amount += playersWinnings;
             }
         }
     }
   
     this.reset();
-  
-    return messages;
+    Object.keys(winnersData).forEach(u=>{
+        log.info('[table#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
+    });
+    const msgStr = JSON.stringify({_: '{DATA}', winnersData});
+    console.log('winnersData>', winnersData);
+    return {messages, msgStr};
 };
   
 /**
@@ -220,3 +224,8 @@ Pot.prototype.isEmpty = function() {
   
   
 module.exports = Pot;
+
+
+function getTableId(players){
+    return Number((players.find(p=>p) || {}).room) + 1;
+}

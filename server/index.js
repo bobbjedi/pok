@@ -156,7 +156,6 @@ io.sockets.on('connection', function(socket) {
         // If a new screen name is posted
         try {
             if (typeof token !== 'undefined') {
-                console.log('Check', name);
                 // If the new screen name is not an empty string
                 // if (token && typeof players[socket.id] === 'undefined') {
                 if (name) {
