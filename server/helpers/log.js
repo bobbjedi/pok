@@ -15,20 +15,20 @@ _________________${fullTime()}_________________
 module.exports = {
     error (str) {
         infoStr.write(`
-` + 'error|' + time() + '|' + str);
-        console.log('\x1b[31m', 'error|' + time(), "\x1b[0m", str);
+` + 'error|' + fullTime() + '|' + str);
+        console.log('\x1b[31m', 'error|' + fullTime(), "\x1b[0m", str);
     },
     info (str) {
-        console.log('\x1b[32m', 'info|' + time(), "\x1b[0m", str);
+        console.log('\x1b[32m', 'info|' + fullTime(), "\x1b[0m", str);
 
         infoStr.write(`
-` + 'info|' + time() + '|' + str);
+` + 'info|' + fullTime() + '|' + str);
     },
     warn (str) {
-        console.log('\x1b[33m', 'warn|' + time(), "\x1b[0m", str);
+        console.log('\x1b[33m', 'warn|' + fullTime(), "\x1b[0m", str);
 
         infoStr.write(`
-		` + 'warn|' + time() + '|' + str);
+		` + 'warn|' + fullTime() + '|' + str);
     },
 };
 
@@ -52,5 +52,5 @@ function date () {
 }
 
 function fullTime () {
-    return date() + ' ' + time();
+    return `${date()}  ${time()}`;
 }

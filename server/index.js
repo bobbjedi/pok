@@ -1,11 +1,9 @@
 const express = require('express'),
     bodyParser = require('body-parser'),
     fileUpload = require('express-fileupload'),
-    // favicon = require('express-favicon'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
-    // lessMiddleware = require('less-middleware'),
     path = require('path'),
     Table = require('./poker_modules/table'),
     Player = require('./poker_modules/player'),
@@ -22,9 +20,7 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 app.use(fileUpload());
 app.use(express.static(path.join(dirName, 'public')));
-// app.use(favicon(dirName + '/favicon.ico'));
 require('./modules/api')(app);
-
 
 var players = [];
 var tables = [];
@@ -32,7 +28,7 @@ var eventEmitter = {};
 
 var port = process.env.PORT || 3000;
 server.listen(port);
-console.log('Listening on port ' + port);
+log.info('Poker server listening on port ' + port);
 
 app.post('/upload', function(req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {

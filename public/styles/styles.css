@@ -247,7 +247,7 @@ div#messages {
     border: 1px solid;
     border-radius: 8px;
     height: 75px;
-    background-color: #fff;
+    background-color: black;
     padding: 8px;
     overflow: auto
 }
@@ -273,9 +273,10 @@ div#chat input[type="text"] {
     width: 197px;
     font-size: 1em;
     margin: 3px 0 0 8px;
-    padding: 9px;
+    padding: 5px;
     transform: translate(0, -2px);
-    border-radius: 8px
+    border-radius: 2px;
+    background-color: black;
 }
 
 div.player-wrap {
@@ -736,7 +737,7 @@ div#board-wrap .card-container {
     width: 100%;
     font-weight: bold;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    font-size: 1.6em
+    font-size: 0.7em;
 }
 
 .bets .ng-binding {
