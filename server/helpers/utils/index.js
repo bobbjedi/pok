@@ -7,7 +7,7 @@ const tablesData = require('../../tablesDefault');
 let tables, eventEmitter, Table;
 module.exports = {
     round(n) {
-        return Number(n.toFixed(8));
+        return Number(n.toFixed(2));
     },
     unix(){
         return new Date().getTime();

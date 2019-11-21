@@ -415,7 +415,7 @@ io.sockets.on('connection', function(socket) {
 
                 if (tables[tableId] && tables[tableId].seats[activeSeat].socket.id === socket.id && !tables[tableId].public.biggestBet && ['preflop', 'flop', 'turn', 'river'].indexOf(tables[tableId].public.phase) > -1) {
                 // Validating the bet amount
-                    amount = parseInt(amount);
+                    amount = $u.round(amount);
                     if (amount && isFinite(amount) && amount <= tables[tableId].seats[activeSeat].public.chipsInPlay) {
                     // Sending the callback first, because the next functions may need to send data to the same player, that shouldn't be overwritten
                         callback({ 'success': true });
@@ -451,7 +451,7 @@ io.sockets.on('connection', function(socket) {
 				// Not every other player is all in (in which case the only move is "call")
 				&& !tables[tableId].otherPlayersAreAllIn()
                 ) {
-                    amount = parseInt(amount);
+                    amount = $u.round(amount);
                     if (amount && isFinite(amount)) {
                         amount -= tables[tableId].seats[activeSeat].public.bet;
                         if (amount <= tables[tableId].seats[activeSeat].public.chipsInPlay) {

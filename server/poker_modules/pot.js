@@ -1,4 +1,6 @@
 const log = require('../helpers/log');
+const config = require('../helpers/configReader');
+const $u = require('../helpers/utils');
 /**
  * The pot object
  */
@@ -92,6 +94,7 @@ Pot.prototype.addTableBets = function(players) {
         // Recursion
         this.addTableBets(players);
     }
+    console.log(this.pots);
 };
   
 /**
@@ -120,6 +123,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
+        pot.amount *= 1 - (config.rake || 0) / 100; 
         var winners = [];
         var bestRating = 0;
         var playersCount = players.length;
@@ -147,6 +151,8 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
                       
             winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_};
             winnersData[winner.public.name].amount += pot.amount;
+            winnersData[winner.public.name].amount = $u.round(winnersData[winner.public.name].amount);
+            winner.roundCheapsInPlay();
         } else {
             var winnersCount = winners.length;
   
@@ -171,6 +177,10 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
 
                 winnersData[jPlayer.public.name] = winnersData[jPlayer.public.name] || {amount: 0, cards: jPlayer.evaluatedHand.name + ' ' + htmlHand_};
                 winnersData[jPlayer.public.name].amount += playersWinnings;
+
+                winnersData[jPlayer.public.name].amount = $u.round(winnersData[jPlayer.public.name].amount);
+                jPlayer.roundCheapsInPlay();
+
             }
         }
     }

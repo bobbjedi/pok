@@ -44,7 +44,10 @@ var Player = function(socket, user) {
 };
 
 
-
+Player.prototype.roundCheapsInPlay = function (){
+    this.public.chipsInPlay = $u.round(this.public.chipsInPlay);
+    this.public.bet = $u.round(this.public.bet);
+};
 Player.prototype.getUserDB = async function(){
     return await $u.getUserFromQ({_id: this._id});
 };
@@ -92,7 +95,7 @@ Player.prototype.leaveTable = async function() {
  */
 Player.prototype.sitOnTable = async function(tableId, seat, chips) {
     // Remove the chips that player will have on the table, from the player object
-    chips = parseInt(chips);
+    chips = $u.round(chips);
     this.chips -= chips;
     this.public.chipsInPlay = chips;
     // Add the table info in the player object
@@ -127,12 +130,13 @@ Player.prototype.fold = function() {
  * @param number amount
  */
 Player.prototype.bet = function(amount) {
-    amount = parseInt(amount);
+    amount = $u.round(amount);
     if (amount > this.public.chipsInPlay) {
         amount = this.public.chipsInPlay;
     }
     this.public.chipsInPlay -= amount;
     this.public.bet += +amount;
+    this.roundCheapsInPlay();
 };
 
 /**
@@ -140,12 +144,13 @@ Player.prototype.bet = function(amount) {
  * @param number amount
  */
 Player.prototype.raise = function(amount) {
-    amount = parseInt(amount);
+    amount = $u.round(amount);
     if (amount > this.public.chipsInPlay) {
         amount = this.public.chipsInPlay;
     }
     this.public.chipsInPlay -= amount;
     this.public.bet += +amount;
+    this.roundCheapsInPlay();
 };
 
 /**
