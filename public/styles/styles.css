@@ -376,6 +376,9 @@ div.seat .player-content span {
 div.seat .player-content .notification {
     line-height: 2.4
 }
+.player-content .txt-yellow{
+    font-size: 1em;
+}
 
 div#board-wrap {
     margin: 6% 8%

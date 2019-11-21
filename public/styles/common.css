@@ -277,7 +277,7 @@ input[type=range]:focus::-ms-fill-upper {
 .tin-line-player {
     height: 0;
     width: 70%;
-    margin: 4px 39% 4px 23%;
+    margin: 4px 41% 4px 34%;
     border-bottom: 1px solid #aaafb0;
 }
 
@@ -291,7 +291,7 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 .player-content .deposit{
-    font-size: 0.9em;
+    font-size: 1.3em;
 }
 .controls {
     display: flex;
