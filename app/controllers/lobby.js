@@ -75,4 +75,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
         });
     };
+
+    setTimeout(() => {
+        // работа с аватаром
+        $scope.uploadAvatar = () => document.getElementById('input-upload-avatar').click();
+        document.getElementById('input-upload-avatar').onchange = () => document.getElementById('uploadAvatarForm').submit();
+    }, 2000);
 }]);

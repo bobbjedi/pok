@@ -1,8 +1,11 @@
-var express = require('express'),
+const express = require('express'),
+    bodyParser = require('body-parser'),
+    fileUpload = require('express-fileupload'),
+    // favicon = require('express-favicon'),
     app = express(),
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
-    lessMiddleware = require('less-middleware'),
+    // lessMiddleware = require('less-middleware'),
     path = require('path'),
     Table = require('./poker_modules/table'),
     Player = require('./poker_modules/player'),
@@ -15,18 +18,13 @@ const sep = __dirname.includes('/') ? '/' : '\\';
 const dirs = __dirname.split(sep);
 dirs.pop();
 const dirName = dirs.join(sep);
-
-app.use(express.favicon());
-// app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(app.router);
-app.use(lessMiddleware(dirName + '/public'));
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+app.use(fileUpload());
 app.use(express.static(path.join(dirName, 'public')));
+// app.use(favicon(dirName + '/favicon.ico'));
 require('./modules/api')(app);
-// Development Only
-if ('development' === app.get('env')) {
-    app.use(express.errorHandler());
-}
+
 
 var players = [];
 var tables = [];
@@ -35,6 +33,21 @@ var eventEmitter = {};
 var port = process.env.PORT || 3000;
 server.listen(port);
 console.log('Listening on port ' + port);
+
+app.post('/upload', function(req, res) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let sampleFile = req.files.sampleFile;
+    // Use the mv() method to place the file somewhere on your server
+    sampleFile.mv('/somewhere/on/your/server/filename.jpg', function(err) {
+        if (err){
+            return res.status(500).send(err);
+        }
+        res.send('File uploaded!');
+    });
+});
 
 // The lobby
 app.get('/', function(req, res) {

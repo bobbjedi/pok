@@ -71,6 +71,33 @@ module.exports = (app) => {
             error('Error api code 1', res);
         }
     });
+
+    app.post('/upload', async (req, res) => {
+        console.log('UPLOAD')
+        if (!req.files || Object.keys(req.files).length === 0) {
+            console.log('No files were uploaded.')
+            return res.status(400).send('No files were uploaded.');
+        }
+        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+        let sampleFile = req.files.sampleFile;
+        let token = req.body.token;
+        console.log({token});
+        const user = await $u.getUserFromQ({token});
+        if (!user){
+            return res.redirect('/#eui');
+        }
+        console.log('Upload img', user.login);
+        // Use the mv() method to place the file somewhere on your server
+        sampleFile.mv('./public/avatars/' + user.login + '.jpg', function(err) {
+            if (err){
+                return res.status(500).send(err);
+            }
+            console.log('./public/avatars/' + user.login + '.jpg');
+            return res.redirect('/#sui');
+        });
+    });
+
+
     app.get('/public', async (req, res) => {
         // publicApi(req, res);
     });

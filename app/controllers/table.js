@@ -316,6 +316,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     const data = JSON.parse(msg).winnersData;
                     $rootScope.winnersData = data;
                     $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
+                    return $scope.$digest();
                 }
                 var messageBox = document.querySelector('#messages');
                 var messageElement = angular.element('<p class="log-message">' + msg + '</p>');
