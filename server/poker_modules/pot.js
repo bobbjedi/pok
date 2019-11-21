@@ -31,15 +31,16 @@ Pot.prototype.reset = function() {
    * @param array players (the array of the tables as it exists in the table)
    */
 Pot.prototype.addTableBets = function(players) {
-    if (!this.tableId){
-        let i = 0;
-        let player = null;
-        while (!player){
-            player = players[i];
-            i++;
-        }
-        this.tableId = player.sittingOnTable;
-    }
+    this.tableId = 'x';
+    // if (!this.tableId){
+    //     let i = 0;
+    //     let player = null;
+    //     while (!player){
+    //         player = players[i];
+    //         i++;
+    //     }
+    //     this.tableId = player.sittingOnTable;
+    // }
  
     // 
     // Getting the current pot (the one in which new bets should be added)

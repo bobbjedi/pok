@@ -523,3 +523,18 @@ function htmlEntities(str) {
 }
 
 $u.createTables(tables, eventEmitter, Table);
+
+// (async ()=>{
+//     var Player1 = new Player({}, await $u.getUserFromQ({login: 'Dev'}));
+//     const commonCards = ['3c', 'Jh', 'Ks'];
+//     Player1.cards = ['9s', '7d'];
+//     Player1.evaluateHand(commonCards);
+//     console.log(Player1.evaluateHand.rank);
+// })();
+
+// cards: [
+//     'Th', '3d',
+//     'Kh', '4s',
+//     'Ac', 'Jh',
+//     'Ks'
+//   ]

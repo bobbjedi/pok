@@ -78,7 +78,7 @@ module.exports = (app) => {
 
 function error(msg, res) {
     try {
-        log.error(msg);
+        msg && log.error(msg);
         res.json({success: false,
             msg,
         });

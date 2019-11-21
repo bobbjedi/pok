@@ -166,10 +166,13 @@ Player.prototype.prepareForNewRound = function() {
  * @return object this (for chaining)
  */
 Player.prototype.evaluateHand = function(board) {
+    // console.log('this.cards>', this.cards);
+    // console.log('board>', board);
     var cards = this.cards.concat(board);
+    // console.log(cards);
     var cardNamess = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
     var cardNames = { 'A': 'ace', 'K': 'king', 'Q': 'queen', 'J': 'jack', 'T': 'ten', '9': 'nine', '8': 'eight', '7': 'seven', '6': 'six', '5': 'five', '4': 'four', '3': 'three', '2': 'deuce' };
-
+    // console.log({cards});
     // Returns the name of the card, in singular or in plural
     var getCardName = function(cardValue, plural) {
         if (typeof plural !== 'undefined' && plural === true) {
@@ -499,3 +502,4 @@ Player.prototype.evaluateHand = function(board) {
 };
 
 module.exports = Player;
+
