@@ -985,7 +985,7 @@ screen and (max-device-width:480px) {
 
     div#chat input[type="submit"] {
         transform: translate(0, -2px);
-        padding: 7px 8px;
+        padding: 1px 8px;
         width: 35px
     }
 

@@ -60,16 +60,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             if ($scope.showCheckButton()){
                 $scope.check();
-                console.log('Autocheck');
             } else if ($scope.showFoldButton()){
-                console.log('Autofold');
                 $scope.fold();
             } else if ($scope.showSitOutButton()){
                 $scope.postBlind(false);
-                console.log('sitOut');
             } else if ($scope.showLeaveTableButton()){
                 $scope.leaveTable();
-                console.log('leaveTable');
             }
         });
 
