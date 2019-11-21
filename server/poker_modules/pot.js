@@ -1,12 +1,14 @@
+const log = require('../helpers/log');
 /**
  * The pot object
  */
-var Pot = function() {
+var Pot = function(table) {
     // The pot may be split to several amounts, since not all players
     // have the same money on the table
     // Each portion of the pot has an amount and an array of the
     // contributors (players who have betted in the pot and can
     // win it in the showdown)
+    // this.tableId = ;
     this.pots = [
         { 
             amount: 0,
@@ -121,7 +123,8 @@ Pot.prototype.addPlayersBets = function(player) {
 Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
     var potsCount = this.pots.length;
     var messages = [];
-    console.log('[table#' + this.tableId + ']' + ' Pots: ' + JSON.stringify(this.pots));
+    log.info('[table#' + this.tableId + '] *** Game finished **');
+    log.info('[table#' + this.tableId + ']' + ' Pots: ' + JSON.stringify(this.pots));
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
@@ -139,11 +142,11 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
                 }
             }
         }
-        console.log('[table#' + this.tableId + ']' + ' Winners для pot:' + JSON.stringify(pot) + ' Winners:' + winners);
+        log.info('[table#' + this.tableId + ']' + ' Winners для pot:' + JSON.stringify(pot) + ' Winners:' + winners);
         if (winners.length === 1) {
             const winner = players[winners[0]];
-            console.log('[table#' + this.tableId + ']' + ' winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);
-            console.log('[table#' + this.tableId + ']' + ' s135: ' + winner.public.name + ' #' + winner.seat + ' + ' + pot.amount);
+            log.info('[table#' + this.tableId + ']' + ' winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);
+            log.info('[table#' + this.tableId + ']' + ' s135: ' + winner.public.name + ' #' + winner.seat + ' + ' + pot.amount);
             winner.public.chipsInPlay += pot.amount;
             var htmlHand = '[' + winner.evaluatedHand.cards.join(', ') + ']';
             htmlHand = htmlHand.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
@@ -163,7 +166,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
                 }
   
                 players[winners[j]].public.chipsInPlay += playersWinnings;
-                console.log('[table#' + this.tableId + ']' + ' s154: ' + players[winners[j]].public.name + ' #' + winners[j] + ' + ' + playersWinnings);
+                log.info('[table#' + this.tableId + ']' + ' s154: ' + players[winners[j]].public.name + ' #' + winners[j] + ' + ' + playersWinnings);
                 var htmlHand = '[' + players[winners[j]].evaluatedHand.cards.join(', ') + ']';
                 htmlHand = htmlHand.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
                 messages.push(players[winners[j]].public.name + ' ties the pot (' + playersWinnings + ') with ' + players[winners[j]].evaluatedHand.name + ' ' + htmlHand);
@@ -185,13 +188,15 @@ Pot.prototype.giveToWinner = function(winner) {
     var potsCount = this.pots.length;
     var totalAmount = 0;
     for (var i = potsCount - 1; i >= 0; i--) {
-        console.log('[table#' + this.tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
+        log.info('[table#' + this.tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
   
     this.reset();
-    return winner.public.name + ' wins the pot (' + totalAmount + ')';
+    const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
+    log.info('[table#' + this.tableId + '] ' + msg);
+    return msg;
 };
   
 /**

@@ -47,7 +47,7 @@ module.exports = {
         eventEmitter = eventEmitter;
         Table = Table;
         tablesData.forEach((t, i)=>{
-            tables[i] = new Table(i, t.count + ' местный стол', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn, t.minBuyIn, t.type, false);
+            tables[i] = new Table(i, t.count + ' местный стол', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false);
         });
         // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, 'hard', false);
     }

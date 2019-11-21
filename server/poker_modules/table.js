@@ -598,7 +598,7 @@ Table.prototype.playerBetted = function(amount) {
         this.endPhase();
     } else {
         this.lastPlayerToAct = previousPlayerSeat;
-        console.log('Betted this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
+        // console.log('Betted this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
         this.actionToNextPlayer();
     }
 };
@@ -625,7 +625,7 @@ Table.prototype.playerRaised = function(amount) {
         this.endPhase();
     } else {
         this.lastPlayerToAct = previousPlayerSeat;
-        console.log('Raised this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
+        // console.log('Raised this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
         this.actionToNextPlayer();
     }
 };
