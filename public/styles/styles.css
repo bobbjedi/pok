@@ -694,16 +694,16 @@ div#board-wrap .card-container {
 
 #bets-3 {
     left: -75%;
-    top: 75%
+    top: 100%
 }
 
 #bets-4 {
-    top: -30%;
-    left: -75%
+    top: 40%;
+    left: -103%
 }
 
 #bets-5 {
-    top: -35%;
+    top: -30%;
     left: -75%
 }
 
