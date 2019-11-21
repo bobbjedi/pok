@@ -340,6 +340,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
+        // 
         // When the game has stopped
         socket.on('gameStopped', function(data) {
             $scope.table = data;
@@ -351,14 +352,16 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // When the player is asked to place the small blind
         socket.on('postSmallBlind', function(data) {
-            $scope.actionState = 'postSmallBlind';
+            sounds.playMyStepSound();
             $scope.$digest();
+            $scope.actionState = 'postSmallBlind';
         });
 
         // When the player is asked to place the big blind
         socket.on('postBigBlind', function(data) {
             $scope.actionState = 'postBigBlind';
             $scope.$digest();
+            sounds.playMyStepSound();
         });
 
         // When the player is dealt cards
@@ -371,14 +374,15 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the user is asked to act and the pot was betted
         socket.on('actBettedPot', function() {
             $scope.actionState = 'actBettedPot';
-
             var proposedBet = +$scope.table.biggestBet + $scope.table.bigBlind;
             $scope.betAmount = $scope.table.seats[$scope.mySeat].chipsInPlay < proposedBet ? $scope.table.seats[$scope.mySeat].chipsInPlay : proposedBet;
             $scope.$digest();
+            sounds.playMyStepSound();
         });
 
         // When the user is asked to act and the pot was not betted
         socket.on('actNotBettedPot', function() {
+            sounds.playMyStepSound();
             $scope.actionState = 'actNotBettedPot';
 
             $scope.betAmount = $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
@@ -387,6 +391,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // When the user is asked to call an all in
         socket.on('actOthersAllIn', function() {
+            sounds.playMyStepSound();
             $scope.actionState = 'actOthersAllIn';
 
             $scope.$digest();
