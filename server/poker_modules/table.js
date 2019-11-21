@@ -546,7 +546,6 @@ Table.prototype.playerChecked = function() {
     });
 
     this.emitEvent('table-data', this.public);
-    console.log('this.lastPlayerToAct === this.public.activeSeat', this.lastPlayerToAct, this.public.activeSeat);
     if (this.lastPlayerToAct === this.public.activeSeat) {
         this.endPhase();
     } else {
