@@ -34,6 +34,7 @@ module.exports = {
             }
             return false;
         } catch (e){
+            console.log(e);
             log.error('Withdraw: ' + e);
         }
     },
@@ -58,6 +59,7 @@ async function sendTx(address, amount){
         return await minter.postTx(txParams);
     } catch (e){
         const errorMessage = e.response.data.error;
+        console.log(e);
         log.error(`Send TX: ${errorMessage.tx_result.message} | ${address} | ${amount}`);
         return false;
     }

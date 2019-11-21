@@ -94,7 +94,6 @@ Table.prototype.setTimeoutWait = function(){
     this.lastWaitPhase = phase;
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
-    console.log('Ставим ', lastActiveUserLogin, phase);
     this.timeOutWaitUserAction = setTimeout(()=>{
         this.timeOutWaitUserAction = null;
         const seat = this.public.seats[activeSeat];
@@ -108,7 +107,6 @@ Table.prototype.setTimeoutWait = function(){
 
 Table.prototype.clearTimeoutWait = function(){
     if (this.timeOutWaitUserAction){
-        console.log('Сбросили')
         clearTimeout(this.timeOutWaitUserAction);
     }
     this.timeOutWaitUserAction = null;
@@ -253,7 +251,7 @@ Table.prototype.initializeRound = function(changeDealer) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (!this.seats[i].public.chipsInPlay) {
-                    console.log('SEAT!!!??? i?');
+                    // console.log('SEAT!!!??? i?');
                     this.seats[i].sitOut(); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
@@ -371,46 +369,6 @@ Table.prototype.initializeNextPhase = function() {
     } else {
         this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
     }
-};
-
-/**
- * Making the next player the active one
- */
-Table.prototype.actionToNextPlayer = function() {
-    this.clearTimeoutWait();
-    this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['chipsInPlay', 'inHand']);
-
-    switch (this.public.phase) {
-    case 'smallBlind':
-        this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
-        break;
-    case 'bigBlind':
-        this.seats[this.public.activeSeat].socket.emit('postBigBlind');
-        break;
-    case 'preflop':
-        if (this.otherPlayersAreAllIn()) {
-            this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
-        } else {
-            this.seats[this.public.activeSeat].socket.emit('actBettedPot');
-        }
-        break;
-    case 'flop':
-    case 'turn':
-    case 'river':
-        // If someone has betted
-        if (this.public.biggestBet) {
-            if (this.otherPlayersAreAllIn()) {
-                this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
-            } else {
-                this.seats[this.public.activeSeat].socket.emit('actBettedPot');
-            }
-        } else {
-            this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
-        }
-        break;
-    }
-
-    this.emitEvent('table-data', this.public, true);
 };
 
 /**
@@ -536,6 +494,47 @@ Table.prototype.playerFolded = function() {
 };
 
 /**
+ * Making the next player the active one
+ */
+Table.prototype.actionToNextPlayer = function() {
+    this.clearTimeoutWait();
+    this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['inHand']);
+   
+    switch (this.public.phase) {
+    case 'smallBlind':
+        this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
+        break;
+    case 'bigBlind':
+        this.seats[this.public.activeSeat].socket.emit('postBigBlind');
+        break;
+    case 'preflop':
+        if (this.otherPlayersAreAllIn()) {
+            this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
+        } else {
+            this.seats[this.public.activeSeat].socket.emit('actBettedPot');
+        }
+        break;
+    case 'flop':
+    case 'turn':
+    case 'river':
+        // If someone has betted
+        if (this.public.biggestBet) {
+            if (this.otherPlayersAreAllIn()) {
+                this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
+            } else {
+                this.seats[this.public.activeSeat].socket.emit('actBettedPot');
+            }
+        } else {
+            this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
+        }
+        break;
+    }
+
+    this.emitEvent('table-data', this.public, true);
+};
+
+
+/**
  * When a player checks
  */
 Table.prototype.playerChecked = function() {
@@ -547,7 +546,7 @@ Table.prototype.playerChecked = function() {
     });
 
     this.emitEvent('table-data', this.public);
-
+    console.log('this.lastPlayerToAct === this.public.activeSeat', this.lastPlayerToAct, this.public.activeSeat);
     if (this.lastPlayerToAct === this.public.activeSeat) {
         this.endPhase();
     } else {
@@ -599,6 +598,7 @@ Table.prototype.playerBetted = function(amount) {
         this.endPhase();
     } else {
         this.lastPlayerToAct = previousPlayerSeat;
+        console.log('Betted this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
         this.actionToNextPlayer();
     }
 };
@@ -620,10 +620,12 @@ Table.prototype.playerRaised = function(amount) {
     this.emitEvent('table-data', this.public);
 
     var previousPlayerSeat = this.findPreviousPlayer();
+    // this.findNextPlayer(this.public.activeSeat, ['chipsInPlay', 'inHand']);
     if (previousPlayerSeat === this.public.activeSeat) {
         this.endPhase();
     } else {
         this.lastPlayerToAct = previousPlayerSeat;
+        console.log('Raised this.lastPlayerToAct', this.seats[previousPlayerSeat].public.name, this.seats[previousPlayerSeat].public.chipsInPlay);
         this.actionToNextPlayer();
     }
 };
@@ -717,7 +719,8 @@ Table.prototype.playerLeft = function(seat) {
             }
         }
     } catch (e){
-        log.error('TABLE playerLeft' + e);
+        console.log(e);
+log.error('TABLE playerLeft' + e);
     }
 };
 Table.prototype.updateDepsInPlay = function(){
@@ -788,6 +791,24 @@ Table.prototype.playerSatOut = function(seat, playerLeft) {
     this.emitEvent('table-data', this.public);
 };
 
+Table.prototype.otherPlayersAreFinish = function() {
+    var currentPlayer = this.public.activeSeat;
+    var playersAllFinish = 0;
+    var isZero = false;
+    for (var i = 0; i < this.playersInHandCount; i++) {
+        if (this.seats[currentPlayer].public.chipsInPlay === 0) {
+            isZero = true;
+            console.log('FINISH, BUT 0>>', currentPlayer);
+        };
+
+        if (this.seats[currentPlayer].public.chipsInPlay === 0 || this.seats[currentPlayer].public.bet === this.public.biggestBet) {
+            playersAllFinish++;
+        }
+        currentPlayer = this.findNextPlayer(currentPlayer);
+    }
+    return playersAllFinish >= this.playersInHandCount - 1 && isZero;
+};
+
 Table.prototype.otherPlayersAreAllIn = function() {
     // Check if the players are all in
     var currentPlayer = this.public.activeSeat;
@@ -800,7 +821,6 @@ Table.prototype.otherPlayersAreAllIn = function() {
     }
 
     // In this case, all the players are all in. There should be no actions. Move to the next round.
-    console.log('isALL IN', playersAllIn >= this.playersInHandCount - 1);
     return playersAllIn >= this.playersInHandCount - 1;
 };
 
@@ -821,10 +841,7 @@ Table.prototype.removeAllCardsFromPlay = function() {
 /**
  * Actions that should be taken when the round has ended
  */
-Table.prototype.endRound = function(isnotNeedUpdateDeps) { // не нужно обновлять заморозку в игре фишек
-    // if (!isnotNeedUpdateDeps){ // нужно обновить
-    //     this.updateDepsInPlay();
-    // }
+Table.prototype.endRound = function() {
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
     if (!this.pot.isEmpty()) {

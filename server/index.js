@@ -17,7 +17,7 @@ dirs.pop();
 const dirName = dirs.join(sep);
 
 app.use(express.favicon());
-app.use(express.logger('dev'));
+// app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(app.router);
 app.use(lessMiddleware(dirName + '/public'));
@@ -100,6 +100,7 @@ io.sockets.on('connection', function(socket) {
                 players[socket.id].room = tableId;
             }
         } catch (e){
+            console.log(e);
             log.error('enterRoom: ' + e);
         }
     });
@@ -116,6 +117,7 @@ io.sockets.on('connection', function(socket) {
                 players[socket.id].room = null;
             }
         } catch (e){
+            console.log(e);
             log.error('leaveRoom: ' + e);
         }
     });
@@ -139,6 +141,7 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': true, 'totalChips': players[socket.id].chips });
             }
         } catch (e){
+            console.log(e);
             log.error('leaveTable: ' + e);
         }
     });
@@ -193,6 +196,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('checkUser: ' + e);
         }
     });
@@ -206,6 +210,7 @@ io.sockets.on('connection', function(socket) {
             console.log('Disconnect');
             $u.removePlayer(socket);
         } catch (e){
+            console.log(e);
             log.error('disconnect: ' + e);
         }
     });
@@ -259,6 +264,7 @@ io.sockets.on('connection', function(socket) {
             }
         } catch (e){
             callback({ 'success': false, error: 'Ошибка... (с)' });
+            console.log(e);
             log.error('sitOnTheTable: ' + e);
         }
     });
@@ -276,6 +282,7 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': true });
             }
         } catch (e){
+            console.log(e);
             log.error('sitIn: ' + e);
         }
     });
@@ -312,6 +319,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('postBlind: ' + e);
         }
     });
@@ -337,6 +345,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('check: ' + e);
         }
     });
@@ -358,6 +367,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('fold: ' + e);
         }
     });
@@ -379,6 +389,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('call: ' + e);
         }
     });
@@ -405,6 +416,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('bet: ' + e);
         }
     });
@@ -444,6 +456,7 @@ io.sockets.on('connection', function(socket) {
                 }
             }
         } catch (e){
+            console.log(e);
             log.error('rise: ' + e);
         }
     });
@@ -459,6 +472,7 @@ io.sockets.on('connection', function(socket) {
                 socket.broadcast.to('table-' + players[socket.id].room).emit('receiveMessage', { 'message': htmlEntities(message), 'sender': players[socket.id].public.name });
             }
         } catch (e){
+            console.log(e);
             log.error('sendMessage' + e);
         }
     });
@@ -509,11 +523,3 @@ function htmlEntities(str) {
 }
 
 $u.createTables(tables, eventEmitter, Table);
-// tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, false);
-// tables[1] = new Table(1, '10-ти местный стол HARD', eventEmitter(1), 10, 6, 3, 1000, 300, false);
-// tables[2] = new Table(2, '6-ти местный стол', eventEmitter(2), 6, 4, 2, 400, 80, false);
-// tables[3] = new Table(3, '6-ти местный стол HARD', eventEmitter(3), 6, 8, 4, 800, 120, false);
-// tables[4] = new Table(4, '2-x местный стол', eventEmitter(4), 2, 8, 4, 800, 160, false);
-// tables[5] = new Table(5, '2-x местный стол HARD', eventEmitter(5), 2, 16, 8, 1500, 500, false);
-// tables[6] = new Table(6, 'Sample 6-handed Private Table', eventEmitter(6), 6, 20, 10, 2000, 400, true);
-// tables[7] = new Table(7, 'TEST 10-handed Table', eventEmitter(7), 10, 1, 0.5, 200, 50, false);

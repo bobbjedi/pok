@@ -44,6 +44,16 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){
                 $scope.postBlind(true);
             }
+
+            if ($scope.showCallButton() && $scope.callAmount() === 0){ // сходил в алл ин и ждет автокалит 0
+                console.log('Автоколл после аллин');
+                return $scope.call();
+            }
+            if ($scope.showCheckButton() && $scope.table.seats[$scope.mySeat].chipsInPlay <= 0){
+                console.log('Авточек после аллин');
+                return $scope.check();
+            }
+
             if (v !== 1 || $scope.table.activeSeat !== $scope.mySeat){
                 return;
             }
@@ -295,7 +305,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 sounds.playRaiseSound();
                 break;
             }
-            console.log(data.log);
             if (data.log.message) {
                 const msg = data.log.message.trim();
                 if (msg === $rootScope.user.login + ' left'){

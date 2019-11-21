@@ -57,7 +57,6 @@ Player.prototype.updateDeposit = async function(amount){
 Player.prototype.updateDepInPlay = async function(){
     const user = await this.getUserDB();
     await user.update({depositInGame: this.public.chipsInPlay}, true);
-    console.log(this.public.name, this.public.chipsInPlay);
 };
 
 /**

@@ -55,6 +55,7 @@ setInterval(() => {
             });
 
         } catch (e) {
+            console.log(e);
             log.error('Error TX parser! ' + e);
         }
     });
