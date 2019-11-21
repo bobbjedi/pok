@@ -1,6 +1,7 @@
 var Deck = require('./deck'),
     Pot = require('./pot'),
     log = require('../helpers/log'),
+    $u = require('../helpers/utils'),
     config = require('../helpers/configReader');
 /**
  * The table "class"
@@ -595,7 +596,7 @@ Table.prototype.playerBetted = function(amount) {
         message: this.seats[this.public.activeSeat].public.name + ' betted ' + amount,
         action: 'bet',
         seat: this.public.activeSeat,
-        notification: 'Bet ' + amount
+        notification: 'Bet ' + $u.round(amount)
     });
 
     this.emitEvent('table-data', this.public);
@@ -622,7 +623,7 @@ Table.prototype.playerRaised = function(amount) {
         message: this.seats[this.public.activeSeat].public.name + ' raised to ' + this.public.biggestBet,
         action: 'raise',
         seat: this.public.activeSeat,
-        notification: 'Raise ' + raiseAmount
+        notification: 'Raise ' + $u.round(raiseAmount)
     });
     this.emitEvent('table-data', this.public);
 

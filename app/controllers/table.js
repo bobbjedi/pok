@@ -4,6 +4,7 @@
  * depending on the replies from the server.
  */
 import angular from 'angular';
+import $u from '../libs/utils';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
@@ -17,6 +18,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.mySeat = null;
         $scope.betAmount = 0;
         $scope.inToLobby = false;
+        $scope.round = $u.round;
         $rootScope.winnerName = null;
         $rootScope.winnersData = {};
         $rootScope.winnerMsgArr = [];

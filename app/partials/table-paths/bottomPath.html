@@ -23,24 +23,24 @@
             ({{table.bigBlind}})
         </button> -->
         <button class="control-button" ng-click="check()" ng-show="showCheckButton()">Check</button>
-        <button class="control-button" ng-click="call()" ng-show="showCallButton()">Call {{callAmount()}}</button>
+        <button class="control-button" ng-click="call()" ng-show="showCallButton()">Call {{round(callAmount())}}</button>
     </div>
     <div class="button-control">
-        <button class="control-button" ng-click="bet()" ng-show="showBetButton()">Bet {{betAmount}}</button>
+        <button class="control-button" ng-click="bet()" ng-show="showBetButton()">Bet {{round(betAmount)}}</button>
         <button class="control-button" ng-click="raise()" ng-show="showRaiseButton()">Raise to
-            {{betAmount}}</button>
+            {{round(betAmount)}}</button>
     </div>
     <div class="block-buttons-bet">
         <div class="buttons-bet" ng-show="showBetRange()">
-            <div class="button-bet hovered" ng-click="betAmount = minBetAmount()">Мин.</div>
-            <div class="button-bet hovered" ng-click="betAmount = table.bigBlind * 3">3xBB</div>
-            <div class="button-bet hovered" ng-click="betAmount = potAmount() || table.bigBlind">Банк</div>
-            <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Макс.</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount())">Мин.</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(table.bigBlind * 3)">3xBB</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(potAmount() || table.bigBlind)">Банк</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(maxBetAmount())">Макс.</div>
         </div>
         <div class="range-input">
-            <input type="number" id="bet-input" ng-show="showBetInput()" min="{{minBetAmount()}}"
-                max="{{maxBetAmount()}}" ng-model="betAmount" value="{{betAmount}}">
-            <input type="range" ng-show="showBetRange()" min="{{minBetAmount()}}" max="{{maxBetAmount()}}"
+            <input type="number" id="bet-input" ng-show="showBetInput()" min="{{round(minBetAmount())}}"
+                max="{{round(maxBetAmount())}}" ng-model="betAmount" value="{{round(betAmount)}}">
+            <input type="range" ng-show="showBetRange()" min="{{round(minBetAmount())}}" max="{{round(maxBetAmount())}}"
                 ng-model="betAmount">
         </div>
     </div>

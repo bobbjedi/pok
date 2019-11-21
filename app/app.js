@@ -3,6 +3,7 @@ import includeHtml from './partials/table-paths';
 import config from '../config';
 import angular from 'angular';
 import _ from 'underscore';
+import $u from './libs/utils';
 
 window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -80,6 +81,7 @@ app.run(function($rootScope, $location) {
     $rootScope.user.token = localStorage.getItem('token');
     $rootScope.totalChips = 0;
     $rootScope.sittingOnTable = '';
+    $rootScope.round = $u.round;
     $rootScope.updateUser();
     window.onbeforeunload = ()=> {
         if (!$rootScope.sittingOnTable && $rootScope.sittingOnTable !== ''){

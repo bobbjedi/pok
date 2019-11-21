@@ -29,6 +29,9 @@ const throttle = (func, ms) => {
 
 
 export default {
-    throttle
+    throttle,
+    round(n){
+        return Number(n.toFixed(2));
+    }
 };
 

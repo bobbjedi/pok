@@ -28,6 +28,6 @@
     </div>
     <div id="dealer-wrap-{{cellNumber}}" class="dealer-button" ng-show="dealerSeat===seatIndex"><i class="fa fa-gg-circle" aria-hidden="true"></i></div>
     <div id="bets-{{cellNumber}}" class="bets">
-        <span ng-show="player.bet"><img src="/images/cheap.png">&nbsp;{{player.bet}}</span>
+        <span ng-show="player.bet"><img src="/images/cheap.png">&nbsp;{{$root.round(player.bet)}}</span>
     </div>
 </div>
