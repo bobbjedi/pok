@@ -737,7 +737,6 @@ div#board-wrap .card-container {
     width: 100%;
     font-weight: bold;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-    font-size: 0.7em;
 }
 
 .bets .ng-binding {

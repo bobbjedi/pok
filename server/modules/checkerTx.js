@@ -49,7 +49,7 @@ setInterval(() => {
                     user.save();
                     log.info(`newDeposit:
                     hash: ${hash}
-                    user_id: ${user._id}
+                    user: ${user.login}
                     amount: ${amount}`);
                 }
             });

@@ -307,7 +307,9 @@ input[type=range]:focus::-ms-fill-upper {
 div.row {
     height: calc((100% - 50px) / 3);
 }
-
+#chat {
+    font-size: 0.8em;
+}
 #messages {
     position: absolute;
     height: 50px;
