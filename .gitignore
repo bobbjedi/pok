@@ -13,6 +13,8 @@ results
 db_
 npm-debug.log
 node_modules
+ssl
+.ssl
 config.js
 public/dist
 public/dist/build.js

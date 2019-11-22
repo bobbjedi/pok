@@ -2,13 +2,26 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     fileUpload = require('express-fileupload'),
     app = express(),
-    server = require('http').createServer(app),
+    server = createServer(app),
     io = require('socket.io').listen(server),
     path = require('path'),
     Table = require('./poker_modules/table'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
     log = require('./helpers/log');
+
+
+
+function createServer(app){
+    const ssl = getSSLFiles();
+    if (!ssl){
+        app.listen(port, () => log.info('Server listening on port ' + port + ' http://localhost:' + port));
+        return require('http').createServer(app);
+    }
+    log.info('HTTPS Poker server listening on port ' + port);
+    return require('https').createServer(ssl, app).listen(port);
+}
+
 
 // require('./modules/tlgGame');
 require('./modules/checkerTx');
@@ -28,7 +41,6 @@ var eventEmitter = {};
 
 var port = process.env.PORT || 3000;
 server.listen(port);
-log.info('Poker server listening on port ' + port);
 
 app.post('/upload', function(req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -532,6 +544,29 @@ function htmlEntities(str) {
 
 $u.createTables(tables, eventEmitter, Table);
 
+
+
+
+function getSSLFiles(){
+    const fs = require('fs');
+    if (!fs.existsSync('./ssl')){
+        return false;
+    }
+    let key = null;
+    let cert = null;
+    fs.readdirSync('./ssl').forEach(f=>{
+        if (f.includes('.key')){
+            key = fs.readFileSync('./ssl/' + f);
+        } else if (f.includes('.crt')){
+            cert = fs.readFileSync('./ssl/' + f);
+        }
+    });
+    if (key && cert){
+        return {key, cert};
+    }
+    return false;
+}
+
 // (async ()=>{
 //     var Player1 = new Player({}, await $u.getUserFromQ({login: 'Dev'}));
 //     const commonCards = ['3c', 'Jh', 'Ks'];
@@ -546,3 +581,4 @@ $u.createTables(tables, eventEmitter, Table);
 //     'Ac', 'Jh',
 //     'Ks'
 //   ]
+
