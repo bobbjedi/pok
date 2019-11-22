@@ -472,14 +472,25 @@ div.row {
 }
 
 .avatar-img-seat{
+    background: black;
+    overflow: hidden;
     border: 2px solid rgb(80, 80, 80);
     width: 72px;
+    height: 72;
     border-radius: 30px;
     position: absolute;
     margin-left: -55%;
     z-index: 10;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.avatar-img-seat img{
+    max-width: 100%;
+    flex-shrink: 0;
+}
 .mask-avatar{
     /* background: rgba(0, 0, 0, 0.5);
     transition: .3s;
