@@ -31,6 +31,10 @@ module.exports = [{
     type: 'light'
 }, {
     count: 6,
+    sb: 1,
+    type: 'classic'
+}, {
+    count: 6,
     sb: 2,
     type: 'middle'
 },
@@ -54,6 +58,10 @@ module.exports = [{
     // minBuyIn: 40,
     // maxBuyIn: 200,
     type: 'light'
+}, {
+    count: 2,
+    sb: 1,
+    type: 'classic'
 }, {
     count: 2,
     sb: 4,
