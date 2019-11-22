@@ -18,9 +18,23 @@ module.exports = {
     },
 
     async createUser(params){
+        const {login, password, address} = params;
+        if (!login.length || !password.length || !address.length) {
+            return {error: 'Неполные данные.'};
+        }
+        if (/[A-Za-z]/.test(params.login) && /[А-яф-я]/.test(params.login)){
+            return {error: 'Запрещено мешать кириллицу и латиницу.'};
+        }
+        const checkUser = await usersDb.findOne({
+            $or: [{address}, {login}, {loginLowCase: login.toLowerCase()}]
+        });
+        if (checkUser){
+            return {error: 'Логин или адрес уже занят.'};
+        }
         const user = new usersDb({
             address: params.address,
             login: params.login,
+            loginLowCase: params.login.toLowerCase(),
             password: sha256(params.password.toString()),
             deposit: config.regDrop || 0,
             depositInGame: 0
@@ -29,7 +43,7 @@ module.exports = {
         if (config.regDrop > 0){
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
         }
-        return user;
+        return {user};
     },
     // воозвращаем после падения сервера
     async returnChepsInplay(){

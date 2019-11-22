@@ -35,21 +35,12 @@ module.exports = (app) => {
                 break;
 
             case ('registration'):
-                const {login, password, address} = GET;
-                if (!login.length || !password.length || !address.length) {
-                    error('No full data', res);
-                    return;
+                const newUser = await $u.createUser(GET);
+                if (newUser.error){
+                    return error(newUser.error, res);
                 }
-                checkUser = await usersDb.findOne({
-                    $or: [{ address }, { login }]
-                });
-                if (checkUser){
-                    error('Login or address already exists!', res);
-                    return;
-                }
-                const newUser = await $u.createUser({address, login, password});
-
-                success(await assignUser(newUser), res);
+                console.log({newUser});
+                success(await assignUser(newUser.user), res);
                 break;
 
             case ('withdraw'):
@@ -125,15 +116,17 @@ async function success(data, res) {
 }
 
 async function assignUser (user){
+    console.log(user);
     try {
-        const token = sha256(new Date().toString());
+        const token = sha256(new Date().toString() + Math.random());
         user.token = token;
         await user.save();
         delete user._id;
         delete user.password;
         return user;
     } catch (e){
-        console.log('assignUser: ' + e);
+        log.error('assignUser: ' + e);
+        console.log(e);
     }
 }
 
