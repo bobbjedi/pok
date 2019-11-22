@@ -1,3 +1,4 @@
+import _ from 'underscore';
 const throttle = (func, ms) => {
     let isThrottled = false,
         savedArgs,
@@ -31,6 +32,9 @@ const throttle = (func, ms) => {
 export default {
     throttle,
     round(n){
+        if (!_.isNumber(n)){
+            return 0.00; 
+        }
         return Number(n.toFixed(2));
     }
 };
