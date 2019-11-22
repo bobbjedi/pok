@@ -37,7 +37,7 @@
             <div class="button-bet hovered" ng-click="betAmount = round(table.bigBlind * 3)">3xBB</div>
             <div class="button-bet hovered" ng-click="betAmount = round(potAmount() || table.bigBlind * 5)">
                 {{potAmount() ? 'Банк' : '5xBB'}}</div>
-            <div class="button-bet hovered" ng-click="betAmount = round(maxBetAmount())">Макс.</div>
+            <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Макс.</div>
         </div>
         <div class="range-input">
             <input type="number" id="bet-input" min="{{round(minBetAmount())}}"
