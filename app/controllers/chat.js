@@ -4,6 +4,8 @@
  * depending on the replies from the server.
  */
 import angular from 'angular';
+import mat from '../libs/mat';
+
 app.controller('ChatController', ['$scope', function($scope) {
     /**
 	 * Chat
@@ -23,7 +25,13 @@ app.controller('ChatController', ['$scope', function($scope) {
 
     socket.on('receiveMessage', function(data) {
         var messageBox = document.querySelector('#messages');
-        var messageElement = angular.element('<p class="message"><b>' + data.sender + '</b>: ' + data.message + '</p>');
+        let msg = data.message;
+        msg.split(' ').forEach(w=>{
+            if (mat.includes(w)){
+                msg = '<span class="txt-red">я черный жёпа</span>';
+            }
+        });
+        var messageElement = angular.element('<p class="message"><b>' + data.sender + '</b>: ' + msg + '</p>');
         angular.element(messageBox).append(messageElement);
         messageBox.scrollTop = messageBox.scrollHeight;
     });
