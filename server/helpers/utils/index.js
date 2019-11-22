@@ -67,4 +67,13 @@ module.exports = {
     }
 };
 
+
+(async ()=>{
+    const users = await usersDb.find({});
+    for (let i in users){
+        const u = users[i];
+        u.update({loginLowCase: u.login.toLowerCase()}, 1);
+        console.log('Change', u.login);
+    }
+})();
 module.exports.returnChepsInplay();
