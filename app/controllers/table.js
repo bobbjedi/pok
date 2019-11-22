@@ -81,7 +81,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 return $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
             }
         };
-        $scope.potAmount = ()=> $scope.table.pot && $scope.table.pot[0].amount;
+        
+        $scope.potAmount = ()=> $scope.table.pot && $u.round($scope.table.pot.reduce((s, p)=>{
+            return s + p.amount;
+        }, 0));
+
         $scope.maxBetAmount = function() {
             if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
             return $scope.actionState === "actBettedPot" ? $scope.table.seats[$scope.mySeat].chipsInPlay + $scope.table.seats[$scope.mySeat].bet : $scope.table.seats[$scope.mySeat].chipsInPlay;
@@ -149,13 +153,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $scope.potText = function() {
             if (typeof $scope.table.pot !== 'undefined' && $scope.table.pot[0].amount) {
-                var potText = 'Pot: ' + $u.round($scope.table.pot[0].amount);
+                var potText = ' Pot: ' + $u.round($scope.table.pot[0].amount);
 
                 var potCount = $scope.table.pot.length;
                 if (potCount > 1) {
                     for (var i = 1; i < potCount; i++) {
                         potText += ' - Sidepot: ' + $u.round($scope.table.pot[i].amount);
                     }
+                    potText = 'Total: ' + $scope.potAmount() + potText; 
                 }
                 return potText;
             }
