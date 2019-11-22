@@ -59,6 +59,13 @@
                 userDep: 0,
                 resultTxs: 0
             },
+            calculate: {
+                totDep() {
+                    return this.users.reduce((s, d) => {
+                        return s + d.deposit + d.depositInGame;
+                    }, 0);
+                }
+            },
             created() {
                 this.updUsers();
             },
