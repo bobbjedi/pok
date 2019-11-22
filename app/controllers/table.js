@@ -312,6 +312,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 };
                 if (msg.includes('{DATA}')){
                     const data = JSON.parse(msg).winnersData;
+                    console.log(data);
                     $rootScope.winnersData = data;
                     $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
                     return $scope.$digest();

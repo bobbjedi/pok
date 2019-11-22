@@ -2,7 +2,7 @@
 
 module.exports = [{
     count: 10,
-    sb: 0.1,
+    sb: 0.5,
     type: 'light'
 }, {
     count: 10,
@@ -27,21 +27,21 @@ module.exports = [{
 // 6-H
 {
     count: 6,
-    sb: 0.2,
+    sb: 0.5,
     type: 'light'
 }, {
     count: 6,
-    sb: 3,
+    sb: 2,
     type: 'middle'
 },
 {
     count: 6,
-    sb: 6,
+    sb: 4,
     type: 'hard'
 },
 {
     count: 6,
-    sb: 12,
+    sb: 8,
     maxBuyIn: 1000000,
     type: 'unlim'
 },
