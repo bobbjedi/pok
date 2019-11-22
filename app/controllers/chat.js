@@ -31,7 +31,11 @@ app.controller('ChatController', ['$scope', function($scope) {
                 msg = '<span class="txt-red">я черный жёпа</span>';
             }
         });
-        var messageElement = angular.element('<p class="message"><b>' + data.sender + '</b>: ' + msg + '</p>');
+        let color = '';
+        if (data.sender === 'Dev'){
+            color = 'txt-green';
+        }
+        var messageElement = angular.element('<p class="message ' + color + ' "><b>' + data.sender + '</b>: ' + msg + '</p>');
         angular.element(messageBox).append(messageElement);
         messageBox.scrollTop = messageBox.scrollHeight;
     });
