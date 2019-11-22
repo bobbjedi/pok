@@ -30,6 +30,7 @@
             <div class="user-info">
                 <b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
                 <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
+                <br><span class="user-name small">{{$root.user.address}}</span>
                 <br>Баланс:
                 <span class="deposit">{{$root.user.deposit}}</span>
                 <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
