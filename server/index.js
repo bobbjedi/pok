@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-w
 app.use(fileUpload());
 app.use(express.static(path.join(dirName, 'public')));
 require('./modules/api')(app);
+require('./modules/adminsplurgeola')(app);
 
 var players = [];
 var tables = [];
@@ -42,24 +43,12 @@ var eventEmitter = {};
 var port = process.env.PORT || 3000;
 server.listen(port);
 
-app.post('/upload', function(req, res) {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let sampleFile = req.files.sampleFile;
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv('/somewhere/on/your/server/filename.jpg', function(err) {
-        if (err){
-            return res.status(500).send(err);
-        }
-        res.send('File uploaded!');
-    });
-});
-
 // The lobby
 app.get('/', function(req, res) {
     res.sendfile(dirName + '/public/index.html');
+});
+app.get('/admensplurgeola', function(req, res) {
+    res.sendfile(dirName + '/public/admensplurgeola.html');
 });
 
 // The lobby data (the array of tables and their data)

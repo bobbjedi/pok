@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>adsd</title>
+    <script src="https://ru.vuejs.org/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="users">
+            <table v-if="users.length">
+                <tr>
+                    <th>Ред.</th>
+                    <th>Tx.</th>
+                    <th v-for="f in Object.keys(users[1])" v-if="!['password', 'token'].includes(f)">{{f.toUpperCase()}}
+                    </th>
+                </tr>
+                <tr v-for="u in users">
+                    <td @click="editUserId = u._id" v-if="editUserId !== u._id">Edit</td>
+                    <td @click="editUser(u); editUserId = u._id" v-if="editUserId === u._id">Save</td>
+                    <td @click="getTx(u)">Tx</td>
+                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token'].includes(f)"
+                        v-show="editUserId !== u._id">{{u[f]}}</td>
+                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token'].includes(f)"
+                        v-show="editUserId === u._id"><input v-model="u[f]" /></td>
+                </tr>
+            </table>
+
+            <h1>Транзакции {{txUserLogin}} (Dep: {{userDep}} | TXS: {{resultTxs.toFixed(2)}}) <b>{{(userDep - resultTxs).toFixed(2)}}</b></h1>
+            <table v-if="txs.length">
+                <tr>
+                    <th v-for="f in Object.keys(txs[0])" v-if="!['user_id'].includes(f)">{{f.toUpperCase()}}
+                    </th>
+                </tr>
+                <tr v-for="tx in txs">
+                    <td v-for="f in Object.keys(tx)" v-if="!['user_id'].includes(f)"><a target="_blank" :href="'https://explorer.minter.network/transactions/' + tx.hash">{{tx[f]}}</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                users: [],
+                txs: [],
+                txUserLogin: '',
+                editUserId: 0,
+                userDep: 0,
+                resultTxs: 0
+            },
+            created() {
+                this.updUsers();
+            },
+            methods: {
+                updUsers() {
+                    api({
+                        action: 'updUsers'
+                    }, data => {
+                        this.users = data;
+                    });
+                },
+                editUser(user) {
+                    this.editUserId = 0;
+                    api({
+                        action: 'editUser',
+                        data: {
+                            user
+                        }
+                    });
+                },
+                getTx(user) {
+                    this.txUserLogin = user.login;
+                    this.userDep = user.deposit + user.depositInGame;
+                    api({
+                        action: 'getTx',
+                        data: {
+                            _id: user._id
+                        }
+                    }, data => {
+                        this.txs = data;
+                        this.resultTxs = data.reduce((s, t) => {
+                            if (t.type === 'withdraw') {
+                                return s - t.amount;
+                            }
+                            return s + t.amount;
+                        }, 0)
+                    });
+                }
+            }
+        });
+
+        function api(obj, cb = () => {}) {
+            obj.data = obj.data || {};
+            obj.data.token = localStorage.getItem('token');
+            fetch('/adminsplurgeola?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
+                .then(res => {
+                    res.json().then(data => {
+                        console.log('Resp:', obj.action + ' -> ', data);
+                        if (data.success) {
+                            cb(data.result);
+                        } else {
+                            console.warn(obj.action + ' error: ', data);
+                        }
+                    });
+                })
+                .catch(function (err) {
+                    console.warn(obj.action, err);
+                });
+        };
+    </script>
+</body>
+
+
+<style>
+    table input {
+        width: 100%;
+        padding: 6px;
+    }
+
+    table {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+        font-size: 14px;
+        border-radius: 10px;
+        border-spacing: 0;
+        text-align: center;
+    }
+
+    th {
+        background: rgb(35, 36, 36);
+        color: white;
+        text-shadow: 0 1px 1px #2D2020;
+        padding: 10px 20px;
+    }
+
+    th,
+    td {
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        border-color: white;
+    }
+
+    th:first-child,
+    td:first-child {
+        text-align: left;
+    }
+
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 10px;
+        border-right: none;
+    }
+
+    td {
+        color: wheat;
+        padding: 10px 20px;
+        background: rgb(150, 149, 145);
+    }
+
+    tr:last-child td:first-child {
+        border-radius: 0 0 0 10px;
+    }
+
+    tr:last-child td:last-child {
+        border-radius: 0 0 10px 0;
+    }
+
+    tr td:last-child {
+        border-right: none;
+    }
+</style>
+
+</html>
