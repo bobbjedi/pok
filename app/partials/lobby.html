@@ -65,27 +65,24 @@
         <tr>
             <th class="dark-border">#</th>
             <th class="dark-border">Комната</th>
-            <th class="dark-border">BB/SB</th>
+            <th class="dark-border">SB/BB</th>
             <th>Игроков</th>
             <th>Buy in</th>
-            <th>Тип</th>
         </tr>
         <tr ng-repeat="table in lobbyTables" ng-show="table">
             <td>{{table.id + 1}}</td>
             <td>
                 <a href="/table-{{table.seatsCount}}/{{table.id}}">
                     <span class="table-name-img">
-                        {{table.name}}&nbsp;<span class="red-cheap"
+                        {{table.name}}&nbsp;<span ng-class="{'txt-green': table.type === 'light', 'txt-yellow': table.type === 'hard', 'txt-red': table.type === 'unlim'}">
+                            {{table.type}}</span>&nbsp;<span class="red-cheap"
                             ng-class="{img_animate: table.playersSeatedCount}"></span>
                     </span>
                 </a>
             </td>
-            <td class="centered-text">{{table.bigBlind}}/{{table.smallBlind}}</td>
+            <td class="centered-text">{{table.smallBlind}}/{{table.bigBlind}}</td>
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.seatsCount}}</td>
             <td class="centered-text">{{table.minBuyIn}}/{{table.maxBuyIn}}</td>
-            <td class="centered-text"
-                ng-class="{'txt-green': table.type === 'light', 'txt-yellow': table.type === 'hard', 'txt-red': table.type === 'unlim'}">
-                {{table.type}}</td>
         </tr>
     </table>
 </div>

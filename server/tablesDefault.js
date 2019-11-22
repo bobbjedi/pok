@@ -6,6 +6,10 @@ module.exports = [{
     type: 'light'
 }, {
     count: 10,
+    sb: 1,
+    type: 'classic'
+}, {
+    count: 10,
     sb: 2,
     type: 'middle'
 },
