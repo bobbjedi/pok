@@ -549,12 +549,13 @@ $u.createTables(tables, eventEmitter, Table);
 
 function getSSLFiles(){
     const fs = require('fs');
-    if (!fs.existsSync('./ssl')){
+    if (!fs.existsSync('./.ssl')){
         return false;
     }
+    log.info('Is SSL');
     let key = null;
     let cert = null;
-    fs.readdirSync('./ssl').forEach(f=>{
+    fs.readdirSync('./.ssl').forEach(f=>{
         if (f.includes('.key')){
             key = fs.readFileSync('./ssl/' + f);
         } else if (f.includes('.crt')){
