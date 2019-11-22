@@ -29,18 +29,22 @@
                         v-show="editUserId === u._id"><input v-model="u[f]" /></td>
                 </tr>
             </table>
-
-            <h1>Транзакции {{txUserLogin}} (Dep: {{userDep}} | TXS: {{resultTxs.toFixed(2)}}) <b>{{(userDep - resultTxs).toFixed(2)}}</b></h1>
+        </div>
+        <div id="txs">
+            <h1>Транзакции {{txUserLogin}} (Dep: {{userDep}} | TXS: {{resultTxs.toFixed(2)}})
+                <b>{{(userDep - resultTxs).toFixed(2)}}</b></h1>
             <table v-if="txs.length">
                 <tr>
                     <th v-for="f in Object.keys(txs[0])" v-if="!['user_id'].includes(f)">{{f.toUpperCase()}}
                     </th>
                 </tr>
                 <tr v-for="tx in txs">
-                    <td v-for="f in Object.keys(tx)" v-if="!['user_id'].includes(f)"><a target="_blank" :href="'https://explorer.minter.network/transactions/' + tx.hash">{{tx[f]}}</a></td>
+                    <td v-for="f in Object.keys(tx)" v-if="!['user_id'].includes(f)"><a target="_blank"
+                            :href="'https://explorer.minter.network/transactions/' + tx.hash">{{tx[f]}}</a></td>
                 </tr>
             </table>
         </div>
+    </div>
     </div>
 
 
@@ -119,6 +123,12 @@
 
 
 <style>
+    #users {
+        width: 100%;
+        height: 800px;
+        overflow: scroll;
+    }
+
     table input {
         width: 100%;
         padding: 6px;
