@@ -19,7 +19,8 @@ input[type="password"] {
     border: 1px solid #afaabe;
     border-radius: 5px;
     color: #afaabe;
-    font-size: 1.4em
+    font-size: 1.4em;
+    background: #020202;
 }
 
 input {
@@ -117,7 +118,7 @@ table {
     font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     text-align: left;
     border-collapse: collapse;
-    margin: 50px auto
+    margin: 10px auto
 }
 
 .table_dark th {
@@ -853,6 +854,34 @@ div#board-wrap .card-container {
 .settings-label{
     opacity: 0.7;
 }
+.setting-line input, .setting-line select{
+    background: #020202;
+    padding: 3px;
+    font-size: 0.9em;
+    border: 1px solid grey;
+    border-radius: 3px;
+    color: rgb(189, 185, 185);
+    width: 100px;
+}
+.setting-line span {
+    width: 200px;
+}
+
+#room-create .setting-line{
+    margin: 3px auto;
+    width: 300px;
+    align-items: center;
+    display: flex;
+    font-size: 1.2em;
+    color: rgb(235, 227, 227);
+}
+
+.create-room {
+    width: 190px !important;
+    background-color: #459e51;
+    margin: 2px !important;
+}
+
 @media screen and (max-width:767px),
 screen and (max-device-width:480px) {
     #content {

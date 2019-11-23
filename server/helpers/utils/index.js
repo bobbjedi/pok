@@ -2,9 +2,9 @@ const {usersDb, depositsDb} = require('../../modules/DB');
 const config = require('../../helpers/configReader');
 const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
-// const $u = require('../utils');
+const log = require('../log');
 
-let tables, eventEmitter, Table;
+let tables_, eventEmitter_, Table_, lastTableId = 0;
 module.exports = {
     round(n) {
         return Number(n.toFixed(2));
@@ -57,24 +57,46 @@ module.exports = {
             }, 1);
         }
     },
-    createTables(tables = tables, eventEmitter = eventEmitter, Table = Table){
-        tables = tables;
-        eventEmitter = eventEmitter;
-        Table = Table;
+    createTables(tables = tables_, eventEmitter = eventEmitter_, Table = Table_){
+        tables_ = tables;
+        eventEmitter_ = eventEmitter;
+        Table_ = Table;
         tablesData.forEach((t, i)=>{
             tables[i] = new Table(i, t.count + ' местный стол', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false);
+            lastTableId = i;
         });
         // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, 'hard', false);
+    },
+    /**
+     * @param {Object} params {name, id(0), count, sb, isPrivat}
+     */
+
+    createCustomTable(params){// TODO: проверка что еще есть активные комнаты у юзера!
+        log.info('Custom room:' + JSON.stringify(params));
+        let i;
+        if (params.isPrivate){
+            i = sha256((new Date().getTime() + Math.random()).toString());
+        } else {
+            i = ++lastTableId;
+        }
+        tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, params.maxBuyIn || params.sb * 2 * 100, params.sb * 2 * 40, 'custom', params.isPrivate, params.creator_user_id);
+        return i;
+    },
+    rmCustomTable(tableId){ // TODO: удалять комнату eventEmmiter!
+        delete tables_[tableId];
     }
 };
 
 
-(async ()=>{
-    const users = await usersDb.find({});
-    for (let i in users){
-        const u = users[i];
-        u.update({loginLowCase: u.login.toLowerCase()}, 1);
-        console.log('Change', u.login);
-    }
-})();
+// (async ()=>{
+//     const users = await usersDb.find({});
+//     for (let i in users){
+//         const u = users[i];
+//         u.update({loginLowCase: u.login.toLowerCase()}, 1);
+
+//     }
+// })();
 module.exports.returnChepsInplay();
+// setTimeout(()=>{
+//     // module.exports.createCustomTable({count: 10, name: 'Вася', sb: 51, creator_user_id: 103345});
+// }, 1000);

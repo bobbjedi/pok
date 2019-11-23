@@ -27,6 +27,7 @@ setInterval(() => {
                 const user = await $u.getUserFromQ({address: tx.from});
                 if (!user){
                     log.warn('Cant find user! ' + tx.from);
+                    depositsDb.db.insert({hash, user_id: 'none', from: tx.from, type: 'deposit', amount: +tx.data.value});
                     return;
                 }
 

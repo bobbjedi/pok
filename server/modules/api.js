@@ -52,6 +52,16 @@ module.exports = (app) => {
                 }
                 break;
 
+            case ('roomCreate'):
+                GET.creator_user_id = User._id;
+                const createdRoomId = $u.createCustomTable(GET);
+                if (createdRoomId){
+                    success({createdRoomId}, res);
+                } else {
+                    error('Произошла ошибка, попробуйте еще раз!', res);
+                }
+                break;
+
             default:
                 error('error endpoint', res);
                 break;

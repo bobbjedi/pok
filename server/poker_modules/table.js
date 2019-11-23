@@ -16,7 +16,8 @@ var Deck = require('./deck'),
  * @param int 		minBuyIn (the minimum amount of chips that one can bring to the table)
  * @param bool 		privateTable (flag that shows whether the table will be shown in the lobby)
  */
-var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable) {
+var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator) {
+    // console.log({privateTable, id})
     // The table is not displayed in the lobby
     this.privateTable = privateTable;
     // The number of players who receive cards at the begining of each round
@@ -37,8 +38,11 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.eventEmitter = eventEmitter;
     // The pot with its methods
     this.pot = new Pot;
-    // All the public table data
+    // таймаут ожидания действия игрока
     this.timeOutWaitUserAction = null;
+    // user_id создателя таблицы
+    this.idCreator = idCreator;
+    // All the public table data
     this.public = {
         type,
         // The table id
@@ -83,6 +87,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     for (var i = 0; i < this.public.seatsCount; i++) {
         this.seats[i] = null;
     }
+    this.setTimeOutRm();
 };
 
 Table.prototype.setTimeoutWait = function(){
@@ -254,10 +259,31 @@ Table.prototype.stateAction = async function(player, type){
     await stat.save();
 };
 
+Table.prototype.resetTimeOutRm = function() {
+    if (this.timeOutRmTable){
+        // console.log('Сбросили удаление кастомной таблицы');
+        clearTimeout(this.timeOutRmTable);
+        this.timeOutRmTable = null;
+    }
+};
+
+Table.prototype.setTimeOutRm = async function() {
+    if (this.idCreator){
+        this.public.creatorName = this.public.creatorName || (await $u.getUserFromQ({_id: this.idCreator}));
+        this.resetTimeOutRm();
+        // console.log('Задали таймаут');
+        this.timeOutRmTable = setTimeout(()=>{
+            // console.log('Удалили кастомную таблицу');
+            $u.rmCustomTable(this.public.id);
+        }, 1000 * 60 * config.tableTimeOutLive);
+    }
+};
+
 /**
  * Method that starts a new game
  */
 Table.prototype.initializeRound = function(changeDealer) {
+    this.resetTimeOutRm();
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
     this.clearTimeoutWait();
     if (this.playersSittingInCount > 1) {
@@ -438,6 +464,7 @@ Table.prototype.showdown = function() {
     this.emitEvent('table-data', this.public);
 
     this.updateDepsInPlay();
+    // ставим таймаут на удаление
     setTimeout(()=>{
         this.endRound(true); // не нужно обновлять
     }, config.timeOutBeforeNewGame * 1000);
@@ -880,6 +907,8 @@ Table.prototype.removeAllCardsFromPlay = function() {
  * Actions that should be taken when the round has ended
  */
 Table.prototype.endRound = function() {
+    // ставим таймаут на удаление
+    this.setTimeOutRm();
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
     if (!this.pot.isEmpty()) {

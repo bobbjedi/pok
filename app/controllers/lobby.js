@@ -1,12 +1,20 @@
 import _ from 'underscore';
+import config from '../../config';
 
-app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', function($scope, $rootScope, $http, $location) {
     $scope.lobbyTables = [];
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
     $scope.status = 'login';
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
+    $scope.createdTable = {
+        name: '',
+        sb: 1,
+        count: "2",
+        isPrivate: false,
+        maxBuyIn: 100
+    };
     const preloader = document.getElementById('preloader');
     preloader.style.opacity = 1;
     preloader.style.display = 'flex';
@@ -21,6 +29,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     };
 
     const checkUser = _.throttle(() => {
+        $scope.createdTable.name = ' (' + $rootScope.user.login + ')' || '';
         socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login}, response => {
             if (response.success){
                 $rootScope.updateUser();
@@ -41,8 +50,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     }).then(res => {
         if (res.status === 200){
             const data = res.data;
+            $scope.lobbyTables = [];
             for (const tableId in data) {
-                $scope.lobbyTables[tableId] = data[tableId];
+                if (data[tableId]){
+                    $scope.lobbyTables.push(data[tableId]);
+                }
             }
             $scope.hidePreloader();
         }
@@ -65,13 +77,19 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             return;
         }
         const action = $scope.isLoginned ? 'login' : 'registration';
-        $rootScope.api({
-            action,
-            data: user
-        }, (data) => {
+        $rootScope.api({action, data: user}, (data) => {
             $rootScope.user = data;
             $rootScope.user.isLogged = true;
             noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
+        });
+    };
+    $scope.createRoom = function(){
+        console.log($scope.createdTable);
+        $rootScope.api({action: 'roomCreate', data: $scope.createdTable}, data=>{
+            const path = '/table-' + $scope.createdTable.count + '/' + data.createdRoomId;
+            const link = location.origin + '/#!' + path;
+            window.copy(link, 'Комната успешно создана. Cсылка на нее скопирована в Ваш буфер обмена, делитесь ей со своими друзьями! Комната будет удалена по истечении ' + config.tableTimeOutLive + ' минут неактивности. Хорошей игры!');
+            $location.path(path);
         });
     };
 

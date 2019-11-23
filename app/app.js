@@ -26,13 +26,13 @@ window.app = angular.module('app', ['ngRoute']).config(function($routeProvider, 
         controller: 'LobbyController',
     });
 
-    $routeProvider.otherwise({ redirectTo: '/' });
+    // $routeProvider.otherwise({ redirectTo: '/' });
 
-    $locationProvider.html5Mode(true).hashPrefix('!');
+    $locationProvider.html5Mode({hash: true});
+    // $locationProvider.html5Mode(true).hashPrefix('!');
 });
 
 app.run(function($rootScope, $location) {
-    $location.path('/');
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,
