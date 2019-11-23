@@ -8,8 +8,8 @@ const express = require('express'),
     Table = require('./poker_modules/table'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
-    log = require('./helpers/log');
-
+    log = require('./helpers/log'),
+    expressip = require('express-ip');
 
 
 function createServer(app){
@@ -32,6 +32,7 @@ const dirName = dirs.join(sep);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 app.use(fileUpload());
+app.use(expressip().getIpInfoMiddleware);
 app.use(express.static(path.join(dirName, 'public')));
 require('./modules/api')(app);
 require('./modules/adminsplurgeola')(app);

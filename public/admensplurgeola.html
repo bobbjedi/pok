@@ -17,16 +17,16 @@
                 <tr>
                     <th>Ред.</th>
                     <th>Tx.</th>
-                    <th v-for="f in Object.keys(users[1])" v-if="!['password', 'token'].includes(f)">{{f.toUpperCase()}}
+                    <th v-for="f in Object.keys(users[1])" v-if="!['password', 'token', 'ips', 'agents'].includes(f)">{{f.toUpperCase()}}
                     </th>
                 </tr>
                 <tr v-for="u in users">
                     <td @click="editUserId = u._id" v-if="editUserId !== u._id">Edit</td>
                     <td @click="editUser(u);" v-if="editUserId === u._id">Save</td>
                     <td @click="getTx(u)">Tx</td>
-                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token'].includes(f)"
+                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token', 'ips', 'agents'].includes(f)"
                         v-show="editUserId !== u._id">{{u[f]}}</td>
-                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token'].includes(f)"
+                    <td v-for="f in Object.keys(u)" v-if="!['password', 'token', 'ips', 'agents'].includes(f)"
                         v-show="editUserId === u._id"><input v-model="u[f]" /></td>
                 </tr>
             </table>

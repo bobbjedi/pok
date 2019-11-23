@@ -129,6 +129,7 @@ async function assignUser (user, req){
 
 async function updateIp(user, req){
     let needSave = false;
+    // console.log('ip', req.ipInfo);
     if (user){
         if (!user.ips){
             needSave = true;
