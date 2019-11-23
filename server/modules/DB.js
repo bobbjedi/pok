@@ -16,4 +16,9 @@ module.exports = {
         filename: 'db_/store',
         autoload: true
     }), 10)),
+
+    actionsStatDb: modelDb(syncNedb(new Datastore({
+        filename: 'db_/actionStat',
+        autoload: true
+    }), 5)),
 };

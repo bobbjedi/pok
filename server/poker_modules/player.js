@@ -6,8 +6,9 @@
  * @param int chips (the total amount of chip the user has)
  */
 const $u = require('../helpers/utils');
+const {actionsStatDb} = require('../modules/DB');
 
-var Player = function(socket, user) {
+var Player = function (socket, user) {
     this.public = {
         // The name of the user
         name: user.login,
@@ -41,39 +42,60 @@ var Player = function(socket, user) {
     // id user
     this._id = user._id;
     this.token = user.token;
+    this.initState(user);
 };
 
+Player.prototype.initState = async function(user){
+    this.stat = await actionsStatDb.findOne({user_id: user._id});
+    if (!this.stat){
+        console.log('СОздали стату на ' + user.login);
+        this.stat = new actionsStatDb({
+            user_id: user._id,
+            login: user.login,
+            games: {},
+            check: {},
+            call: {},
+            fold: {},
+            rase: {},
+            bet: {}
+        }, 1);
+    }
+};
 
-Player.prototype.roundCheapsInPlay = function (){
+Player.prototype.roundCheapsInPlay = function () {
     this.public.chipsInPlay = $u.round(this.public.chipsInPlay);
     this.public.bet = $u.round(this.public.bet);
 };
-Player.prototype.getUserDB = async function(){
-    return await $u.getUserFromQ({_id: this._id});
+Player.prototype.getUserDB = async function () {
+    return await $u.getUserFromQ({
+        _id: this._id
+    });
 };
-Player.prototype.updateDeposit = async function(amount){
+Player.prototype.updateDeposit = async function (amount) {
     const user = await this.getUserDB();
     user.deposit = $u.round(user.deposit + amount);
     await user.save();
 };
 
-Player.prototype.updateDepInPlay = async function(){
+Player.prototype.updateDepInPlay = async function () {
     const user = await this.getUserDB();
-    await user.update({depositInGame: this.public.chipsInPlay}, true);
+    await user.update({
+        depositInGame: this.public.chipsInPlay
+    }, true);
 };
 
 /**
  * Updates the player data when they leave the table
  */
-Player.prototype.onDisconnect = function(cb){
+Player.prototype.onDisconnect = function (cb) {
     this.setTimeOutDisconnect = setTimeout(cb, 0 * 1000);
 };
 
-Player.prototype.return = function(){
+Player.prototype.return = function () {
     clearTimeout(this.setTimeOutDisconnect);
 };
 
-Player.prototype.leaveTable = async function() {
+Player.prototype.leaveTable = async function () {
     if (this.sittingOnTable !== false) {
         this.sitOut();
         this.chips += this.public.chipsInPlay;
@@ -90,10 +112,10 @@ Player.prototype.leaveTable = async function() {
 /**
  * Sits the player on the table
  * @param  string   tableId
- * @param  number   seat    
- * @param  number   chips   
+ * @param  number   seat
+ * @param  number   chips
  */
-Player.prototype.sitOnTable = async function(tableId, seat, chips) {
+Player.prototype.sitOnTable = async function (tableId, seat, chips) {
     // Remove the chips that player will have on the table, from the player object
     chips = $u.round(chips);
     this.chips -= chips;
@@ -108,7 +130,7 @@ Player.prototype.sitOnTable = async function(tableId, seat, chips) {
 /**
  * Updates the player data when they sit out
  */
-Player.prototype.sitOut = function() {
+Player.prototype.sitOut = function () {
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
@@ -118,7 +140,7 @@ Player.prototype.sitOut = function() {
 /**
  * The action of folding the hand
  */
-Player.prototype.fold = function() {
+Player.prototype.fold = function () {
     // The player has no cards now
     this.cards = [];
     this.public.hasCards = false;
@@ -129,7 +151,7 @@ Player.prototype.fold = function() {
  * The action of betting
  * @param number amount
  */
-Player.prototype.bet = function(amount) {
+Player.prototype.bet = function (amount) {
     amount = $u.round(amount);
     if (amount > this.public.chipsInPlay) {
         amount = this.public.chipsInPlay;
@@ -143,7 +165,7 @@ Player.prototype.bet = function(amount) {
  * The action of raising
  * @param number amount
  */
-Player.prototype.raise = function(amount) {
+Player.prototype.raise = function (amount) {
     amount = $u.round(amount);
     if (amount > this.public.chipsInPlay) {
         amount = this.public.chipsInPlay;
@@ -156,7 +178,7 @@ Player.prototype.raise = function(amount) {
 /**
  * Resets the player's round data
  */
-Player.prototype.prepareForNewRound = function() {
+Player.prototype.prepareForNewRound = function () {
     this.cards = [];
     this.public.cards = [];
     this.public.hasCards = false;
@@ -170,16 +192,30 @@ Player.prototype.prepareForNewRound = function() {
  * @param array board (the cards that are on the board in the current round)
  * @return object this (for chaining)
  */
-Player.prototype.evaluateHand = function(board) {
+Player.prototype.evaluateHand = function (board) {
     // console.log('this.cards>', this.cards);
     // console.log('board>', board);
     var cards = this.cards.concat(board);
     // console.log(cards);
     var cardNamess = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
-    var cardNames = { 'A': 'ace', 'K': 'king', 'Q': 'queen', 'J': 'jack', 'T': 'ten', '9': 'nine', '8': 'eight', '7': 'seven', '6': 'six', '5': 'five', '4': 'four', '3': 'three', '2': 'deuce' };
+    var cardNames = {
+        'A': 'ace',
+        'K': 'king',
+        'Q': 'queen',
+        'J': 'jack',
+        'T': 'ten',
+        '9': 'nine',
+        '8': 'eight',
+        '7': 'seven',
+        '6': 'six',
+        '5': 'five',
+        '4': 'four',
+        '3': 'three',
+        '2': 'deuce'
+    };
     // console.log({cards});
     // Returns the name of the card, in singular or in plural
-    var getCardName = function(cardValue, plural) {
+    var getCardName = function (cardValue, plural) {
         if (typeof plural !== 'undefined' && plural === true) {
             return cardValue === '6' ? cardNames[cardValue] + 'es' : cardNames[cardValue] + 's';
         } else {
@@ -188,20 +224,20 @@ Player.prototype.evaluateHand = function(board) {
     };
 
     // Swaps the position of the cards of the first one is smaller than the second one
-    var swap = function(index1, index2) {
-        if (cardNamess.indexOf(cards[index1][0]) < cardNamess.indexOf(cards[index2][0])){
+    var swap = function (index1, index2) {
+        if (cardNamess.indexOf(cards[index1][0]) < cardNamess.indexOf(cards[index2][0])) {
             var tmp = cards[index1];
             cards[index1] = cards[index2];
             cards[index2] = tmp;
         }
     };
-	
-    var rateHand = function(hand) {
+
+    var rateHand = function (hand) {
         return cardNamess.indexOf(hand[0][0]) * 30941 + cardNamess.indexOf(hand[1][0]) * 2380 + cardNamess.indexOf(hand[2][0]) * 183 + cardNamess.indexOf(hand[3][0]) * 14 + cardNamess.indexOf(hand[4][0]);
     };
-    
+
     // Sorting the 7 cards
-    cards.sort(function(a, b) {
+    cards.sort(function (a, b) {
         return cardNamess.indexOf(b[0]) - cardNamess.indexOf(a[0]);
     });
 
@@ -218,7 +254,7 @@ Player.prototype.evaluateHand = function(board) {
         'rating': 0,
         'cards': [],
     };
-        
+
     // Getting the suit of the first card
     flushes[cards[0][1]].push(cards[0]);
     // Pushing the first card in the array of the straight
@@ -232,7 +268,7 @@ Player.prototype.evaluateHand = function(board) {
         // Get the card value
         var currentCardValue = cardNamess.indexOf(cards[i][0]);
         var previousCardValue = cardNamess.indexOf(straight[straight.length - 1][0]);
-        
+
         // If the current value is smaller than the value of the previous card by one, push it to the straight array
         if (currentCardValue + 1 === previousCardValue) {
             straight.push(cards[i]);
@@ -257,14 +293,14 @@ Player.prototype.evaluateHand = function(board) {
         if (straight[straight.length - 1][0] === '2' && cards[0][0] === 'A') {
             straight.push(cards[0]);
         }
-        
+
         // If there is a straight, change the evaluated hand to a straight
         if (straight.length >= 5) {
             evaluatedHand.rank = 'straight';
             evaluatedHand.cards = straight.slice(0, 5);
         }
     }
-	
+
     // If there is a flush
     for (var i in flushes) {
         var flushLength = flushes[i].length;
@@ -279,8 +315,7 @@ Player.prototype.evaluateHand = function(board) {
 
                     if (currentCardValue + 1 === previousCardValue) {
                         straightFlush.push(flushes[i][j]);
-                    }
-                    else if (currentCardValue !== previousCardValue && straightFlush.length < 5) {
+                    } else if (currentCardValue !== previousCardValue && straightFlush.length < 5) {
                         straightFlush = [flushes[i][j]];
                     }
                     j++;
@@ -296,7 +331,7 @@ Player.prototype.evaluateHand = function(board) {
                         evaluatedHand.rank = 'straight flush';
                     }
                 }
-            } 
+            }
             // If the hand isn't a straight flush, change it to a flush
             if (evaluatedHand.rank !== 'straight flush' && evaluatedHand.rank !== 'royal flush') {
                 evaluatedHand.rank = 'flush';
@@ -357,14 +392,14 @@ Player.prototype.evaluateHand = function(board) {
             // If there are two pairs
             else if (numberOfPairs === 2) {
                 // Add to the evaluated hand, the pair with the greatest value
-                if (pairs[Object.keys(pairs)[0]].length > pairs[Object.keys(pairs)[1]].length || (pairs[Object.keys(pairs)[0]].length === pairs[Object.keys(pairs)[1]].length && cardNamess.indexOf(Object.keys(pairs)[0]) > cardNamess.indexOf(Object.keys(pairs)[1]))){
+                if (pairs[Object.keys(pairs)[0]].length > pairs[Object.keys(pairs)[1]].length || (pairs[Object.keys(pairs)[0]].length === pairs[Object.keys(pairs)[1]].length && cardNamess.indexOf(Object.keys(pairs)[0]) > cardNamess.indexOf(Object.keys(pairs)[1]))) {
                     evaluatedHand.cards = pairs[Object.keys(pairs)[0]];
                     delete pairs[Object.keys(pairs)[0]];
-                } else { 
+                } else {
                     evaluatedHand.cards = pairs[Object.keys(pairs)[1]];
                     delete pairs[Object.keys(pairs)[1]];
                 }
-                
+
                 // If the biggest pair has two cards
                 if (evaluatedHand.cards.length === 2) {
                     // Add the other two cards to the evaluated hand
@@ -398,7 +433,7 @@ Player.prototype.evaluateHand = function(board) {
                         i++;
                     }
                 }
-            // If there are three pairs
+                // If there are three pairs
             } else {
                 var pairKeys = [Object.keys(pairs)[0], Object.keys(pairs)[1], Object.keys(pairs)[2]];
                 // If there is a pair with three cards, it's the biggest pair
@@ -441,7 +476,7 @@ Player.prototype.evaluateHand = function(board) {
                         evaluatedHand.cards.push(pairs[Object.keys(pairs)[1]][j]);
                     }
                 }
-                
+
                 // If the biggest pair has two cards, add one kicker
                 if (evaluatedHand.rank === 'two pair') {
                     while (kickers < 1) {
@@ -460,7 +495,7 @@ Player.prototype.evaluateHand = function(board) {
         evaluatedHand.rank = 'high card';
         evaluatedHand.cards = cards.slice(0, 5);
     }
-	
+
     switch (evaluatedHand.rank) {
     case 'high card':
         evaluatedHand.name = getCardName(evaluatedHand.cards[0][0]) + ' high';
@@ -507,4 +542,3 @@ Player.prototype.evaluateHand = function(board) {
 };
 
 module.exports = Player;
-

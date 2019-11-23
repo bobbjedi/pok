@@ -232,6 +232,28 @@ Table.prototype.findPreviousPlayer = function(offset, status) {
     return null;
 };
 
+Table.prototype.initStats = async function() {
+    for (var i = 0; i < this.seats.length; i++) {
+        const player = this.seats[i];
+        if (player){
+            await this.stateAction(player, 'games');
+        }
+    };
+};
+Table.prototype.stateAction = async function(player, type){
+    console.log(player.public.name, type);
+    const {stat} = player;
+    this.seats.forEach(opponent =>{
+        if (opponent && opponent.name !== player.public.name){
+            const {name} = opponent.public;
+            if (name !== player.public.name){
+                stat[type][name] = (player.stat[type][name] || 0) + 1;
+            }
+        };
+    });
+    await stat.save();
+};
+
 /**
  * Method that starts a new game
  */
@@ -261,6 +283,9 @@ Table.prototype.initializeRound = function(changeDealer) {
                 }
             }
         }
+
+        // стата!
+        this.initStats();
 
         // Giving the dealer button to a random player
         if (this.public.dealerSeat === null) {
@@ -476,6 +501,7 @@ Table.prototype.playerPostedBigBlind = function() {
  * Checks if the round should continue after a player has folded
  */
 Table.prototype.playerFolded = function() {
+    this.stateAction(this.seats[this.public.activeSeat], 'fold');
     this.seats[this.public.activeSeat].fold();
     this.log({
         message: this.seats[this.public.activeSeat].public.name + ' folded',
@@ -508,7 +534,7 @@ Table.prototype.playerFolded = function() {
 Table.prototype.actionToNextPlayer = function() {
     this.clearTimeoutWait();
     this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['inHand']);
-   
+
     switch (this.public.phase) {
     case 'smallBlind':
         this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
@@ -547,6 +573,7 @@ Table.prototype.actionToNextPlayer = function() {
  * When a player checks
  */
 Table.prototype.playerChecked = function() {
+    this.stateAction(this.seats[this.public.activeSeat], 'check');
     this.log({
         message: this.seats[this.public.activeSeat].public.name + ' checked',
         action: 'check',
@@ -566,6 +593,7 @@ Table.prototype.playerChecked = function() {
  * When a player calls
  */
 Table.prototype.playerCalled = function() {
+    this.stateAction(this.seats[this.public.activeSeat], 'call');
     var calledAmount = this.public.biggestBet - this.seats[this.public.activeSeat].public.bet;
     this.seats[this.public.activeSeat].bet(calledAmount);
 
@@ -589,6 +617,7 @@ Table.prototype.playerCalled = function() {
  * When a player bets
  */
 Table.prototype.playerBetted = function(amount) {
+    this.stateAction(this.seats[this.public.activeSeat], 'bet');
     this.seats[this.public.activeSeat].bet(amount);
     this.public.biggestBet = this.public.biggestBet < this.seats[this.public.activeSeat].public.bet ? this.seats[this.public.activeSeat].public.bet : this.public.biggestBet;
 
@@ -615,6 +644,7 @@ Table.prototype.playerBetted = function(amount) {
  * When a player raises
  */
 Table.prototype.playerRaised = function(amount) {
+    this.stateAction(this.seats[this.public.activeSeat], 'raise');
     this.seats[this.public.activeSeat].raise(amount);
     var oldBiggestBet = this.public.biggestBet;
     this.public.biggestBet = this.public.biggestBet < this.seats[this.public.activeSeat].public.bet ? this.seats[this.public.activeSeat].public.bet : this.public.biggestBet;

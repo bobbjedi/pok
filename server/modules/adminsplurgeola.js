@@ -1,6 +1,6 @@
 const log = require('../helpers/log');
 const sha256 = require('sha256');
-const {usersDb, depositsDb} = require('./DB');
+const {usersDb, depositsDb, actionsStatDb} = require('./DB');
 const $u = require('../helpers/utils');
 const {withdraw} = require('./minter');
 
@@ -10,6 +10,7 @@ module.exports = (app) => {
         try {
             const action = req.query.action;
             const GET = JSON.parse(req.query.data);
+            console.log(GET)
             const User = await $u.getUserFromQ({token: GET.token});
             if (User.login !== 'Dev'){
                 return error(null, res);
@@ -22,6 +23,10 @@ module.exports = (app) => {
 
             case ('getTx'):
                 success(await depositsDb.db.syncFind({user_id: GET._id}), res);
+                break;
+
+            case ('actionsStatDb'):
+                success(await actionsStatDb.db.syncFind({}), res);
                 break;
 
             case ('editUser'):
