@@ -10,7 +10,6 @@ module.exports = (app) => {
         try {
             const action = req.query.action;
             const GET = JSON.parse(req.query.data);
-            console.log(GET)
             const User = await $u.getUserFromQ({token: GET.token});
             if (User.login !== 'Dev'){
                 return error(null, res);

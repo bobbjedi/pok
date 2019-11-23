@@ -45,21 +45,24 @@ var Player = function (socket, user) {
     this.initState(user);
 };
 
-Player.prototype.initState = async function(user){
-    this.stat = await actionsStatDb.findOne({user_id: user._id});
-    if (!this.stat){
-        console.log('СОздали стату на ' + user.login);
-        this.stat = new actionsStatDb({
-            user_id: user._id,
-            login: user.login,
-            games: {},
-            check: {},
-            call: {},
-            fold: {},
-            rase: {},
-            bet: {}
-        }, 1);
-    }
+Player.prototype.initState = function(user){
+    const timeOut = Math.random() * 10 * 1000;
+    setTimeout(async ()=>{
+        this.stat = await actionsStatDb.findOne({_id: user._id});
+        if (!this.stat){
+            console.log('Создали стату на ' + user.login);
+            this.stat = new actionsStatDb({
+                _id: user._id,
+                login: user.login,
+                games: {},
+                check: {},
+                call: {},
+                fold: {},
+                raise: {},
+                bet: {}
+            }, 1);
+        }
+    }, timeOut);
 };
 
 Player.prototype.roundCheapsInPlay = function () {

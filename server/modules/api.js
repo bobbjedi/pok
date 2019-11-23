@@ -15,10 +15,10 @@ module.exports = (app) => {
             switch (action) {
             case ('getUser'):
                 if (User) {
+                    await updateIp(User, req);
                     //TODO: приделать время жизни токена
                     User.isLogged = true;
-                    delete User.password;
-                    delete User._id;
+                    clearUser(User);
                     success(User, res);
                 } else {
                     error(null, res);
@@ -31,7 +31,7 @@ module.exports = (app) => {
                     error('This login and password not found', res);
                     return;
                 }
-                success(await assignUser(checkUser), res);
+                success(await assignUser(checkUser, req), res);
                 break;
 
             case ('registration'):
@@ -40,7 +40,7 @@ module.exports = (app) => {
                     return error(newUser.error, res);
                 }
                 console.log({newUser});
-                success(await assignUser(newUser.user), res);
+                success(await assignUser(newUser.user, req), res);
                 break;
 
             case ('withdraw'):
@@ -64,7 +64,6 @@ module.exports = (app) => {
     });
 
     app.post('/upload', async (req, res) => {
-        console.log('UPLOAD')
         if (!req.files || Object.keys(req.files).length === 0) {
             console.log('No files were uploaded.')
             return res.status(400).send('No files were uploaded.');
@@ -72,7 +71,6 @@ module.exports = (app) => {
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
         let sampleFile = req.files.sampleFile;
         let token = req.body.token;
-        console.log({token});
         const user = await $u.getUserFromQ({token});
         if (!user){
             return res.redirect('/#eui');
@@ -115,14 +113,12 @@ async function success(data, res) {
     }
 }
 
-async function assignUser (user){
-    console.log(user);
+async function assignUser (user, req){
     try {
         const token = sha256(new Date().toString() + Math.random());
         user.token = token;
         await user.save();
-        delete user._id;
-        delete user.password;
+        clearUser(user);
         return user;
     } catch (e){
         log.error('assignUser: ' + e);
@@ -131,3 +127,31 @@ async function assignUser (user){
 }
 
 
+async function updateIp(user, req){
+    let needSave = false;
+    if (user){
+        if (!user.ips){
+            needSave = true;
+            user.ips = [req.ip];
+            user.agents = [req.headers['user-agent']];
+        } else {
+            if (!user.ips.includes(req.ip)){
+                needSave = true;
+                user.ips.push(req.ip);
+            };
+            if (!user.agents.includes(req.headers['user-agent'])){
+                needSave = true;
+                user.agents.push(req.headers['user-agent']);
+            };
+        }
+    }
+    needSave && await user.save();
+}
+
+
+function clearUser(user){
+    delete user._id;
+    delete user.password;
+    delete user.ips;
+    delete user.agents;
+}

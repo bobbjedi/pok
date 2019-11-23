@@ -10,7 +10,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
     const preloader = document.getElementById('preloader');
     preloader.style.opacity = 1;
     preloader.style.display = 'flex';
-   
+
     $scope.hidePreloader = () =>{
         setTimeout(()=>{
             preloader.style.opacity = 0;
@@ -20,7 +20,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
         }, 1000);
     };
 
-    const checkUser = () => {
+    const checkUser = _.throttle(() => {
         socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login}, response => {
             if (response.success){
                 $rootScope.updateUser();
@@ -31,11 +31,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', function($sc
             }
             $scope.$digest();
         });
-
-    };
+    }, 500);
     window.reconnectSocket(checkUser);
-    $rootScope.$watch('user.isLogged', checkUser);
-   
+    $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
+
     $http({
         url: window.Domain + '/lobby-data',
         method: 'GET'
