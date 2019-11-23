@@ -2,7 +2,7 @@ const {usersDb, depositsDb} = require('../../modules/DB');
 const config = require('../../helpers/configReader');
 const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
-
+// const $u = require('../utils');
 
 let tables, eventEmitter, Table;
 module.exports = {
@@ -34,6 +34,7 @@ module.exports = {
         const user = new usersDb({
             address: params.address,
             login: params.login,
+            timestamp: this.unix(),
             loginLowCase: params.login.toLowerCase(),
             password: sha256(params.password.toString()),
             deposit: config.regDrop || 0,

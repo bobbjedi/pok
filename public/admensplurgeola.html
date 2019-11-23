@@ -17,7 +17,8 @@
                 <tr>
                     <th>Ред.</th>
                     <th>Tx.</th>
-                    <th v-for="f in Object.keys(users[1])" v-if="!['password', 'token', 'ips', 'agents'].includes(f)">{{f.toUpperCase()}}
+                    <th v-for="f in Object.keys(users[1])" v-if="!['password', 'token', 'ips', 'agents'].includes(f)">
+                        {{f.toUpperCase()}}
                     </th>
                 </tr>
                 <tr v-for="u in users">
@@ -126,6 +127,61 @@
                     console.warn(obj.action, err);
                 });
         };
+
+
+api({action: 'actionsStatDb'}, multi);
+
+
+
+        function multi(res) {
+
+            res.forEach(u => {
+                const {games, bet, raise, fold, call} = u;
+                u.maxGamesWith = getMax(games);
+                u.maxFoldWith = getMax(fold, games, 'fold');
+                u.maxBetWith = getMax(bet, games, 'bet');
+                u.maxRaiseWith = getMax(raise, games, 'raise');
+            });
+            console.log(res);
+
+            res.forEach(u => {
+                const maxGamesOpponent = res.find(o => o.login === u.maxGamesWith.login);
+                if (maxGamesOpponent) {
+                    const maxGamesFromOpponent = maxGamesOpponent.maxGamesWith;
+                    if (maxGamesFromOpponent.login === u.login) {
+                        console.log('---------------');
+                        console.log('>>>>>', u.login + ' is ' + maxGamesOpponent.login);
+                        console.log(getString(u));
+                        console.log(getString(maxGamesOpponent));
+                        console.log('opponentData:', maxGamesFromOpponent.login, maxGamesFromOpponent.count);
+                    }
+                }
+            });
+
+            function getString(u) {
+                if (!u) {
+                    return 'not find';
+                }
+                return `${u.login} maxGames: ${u.maxGamesWith.login} (${u.maxGamesWith.count}) | maxFold: ${u.maxFoldWith.login} (${+u.maxFoldWith.koef}) maxRaise: ${u.maxRaiseWith.login} (${+u.maxRaiseWith.koef})`;
+            }
+
+            function getMax(type, games, nameType) {
+                let max = {
+                    count: 0,
+                    login: 'none'
+                };
+                for (let login in type) {
+                    if (max.count < type[login]) {
+                        max.count = type[login];
+                        max.login = login;
+                        if (nameType) {
+                            max['koef'] = games[login] / max.count;
+                        }
+                    }
+                }
+                return max;
+            }
+        }
     </script>
 </body>
 
