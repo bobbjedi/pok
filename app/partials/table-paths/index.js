@@ -3,9 +3,13 @@ import bottom from './bottomPath.html';
 import card from './cardPath.html';
 import bon from './bon.html';
 import seatVar from './seatVar.html';
+import settings from './settings.html';
 
 export default (count) => {
-    let bon_ = bon.replace('<!--bottomPath-->', bottom).replace('<!--topPath-->', top).replace('<!--cardPath-->', card);
+    let bon_ = bon.replace('<!--bottomPath-->', bottom)
+        .replace('<!--topPath-->', top)
+        .replace('<!--settings-->', settings)
+        .replace('<!--cardPath-->', card);
     const nums = counts[count];
     for (let s in nums) {
         const c = nums[s];

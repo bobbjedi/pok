@@ -1,7 +1,7 @@
 <div class="player-wrap">
     <div class="player-cards" ng-class="{dealt: player.hasCards}">
-        <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 )"></div>
-        <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 )"></div>
+        <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 ) + ' ' + $root.settings.cardColors"></div>
+        <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>
     <div class="seat" ng-show="seatOccupied(seatIndex)" ng-class="{active: activeSeat===seatIndex, winner: $root.winnerName && $root.winnerName === player.name}">
             <div ng-show="player.name" class="avatar-img-seat"><img ng-src="{{'/avatars/' + player.name + '.jpg'}}" onerror="this.src='/avatars/default.jpg';"></div>
@@ -9,8 +9,8 @@
         <div class="time-out" ng-show="activeSeat === seatIndex && $root.timeOutCurrent >=0 && !$root.winnerMsgArr.length">
             <span class="img_animate red-cheap"></span>&#160;{{$root.timeOutCurrent}}s
         </div>
-        
-        <!-- Выигрыш --> 
+
+        <!-- Выигрыш -->
         <div class="time-out txt-green" ng-show="$root.winnersData[player.name]">+{{$root.winnersData[player.name].amount}}</div>
 
         <a class="sitIn" ng-show="!player.name" ng-click="showBuyInModal( {seat:seatIndex} )">Занять место</a>

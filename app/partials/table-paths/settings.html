@@ -1,0 +1,16 @@
+<div class="modal-wrap" ng-show="isOpenSettings">
+    <div class="modal">
+        <div id="settings big">
+            <h4>Настройки</h4>
+            <div class="setting-line" ng-click="$root.settings.cardColors = ($root.settings.cardColors === 'card2' ? 'card4' : 'card2')">
+                <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.cardColors === 'card4' ? 'on' : 'off')" aria-hidden="true"></i>
+                <div class="settings-label">4х цветная колода</div>
+            </div>
+            <div class="setting-line" ng-click="$root.settings.sound = !$root.settings.sound">
+                    <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.sound ? 'on' : 'off')" aria-hidden="true"></i>
+                    <div class="settings-label">Звук в игре</div>
+                </div>
+            <div class="but bg-blue" ng-click="isOpenSettings = false">Ок</div>
+        </div>
+    </div>
+</div>

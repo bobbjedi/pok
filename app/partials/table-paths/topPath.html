@@ -1,4 +1,4 @@
-<div id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
+<div class="right-icon" id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
 <div class="modal-wrap" ng-show="buyInModalVisible">
     <div class="modal">
         <form ng-submit="sitOnTheTable()">
@@ -13,6 +13,8 @@
     </div>
     <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
 </div>
+
+<!--settings-->
 
 <div class="modal-wrap" ng-show="inToLobby">
     <div class="modal">

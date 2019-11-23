@@ -18,6 +18,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.mySeat = null;
         $scope.betAmount = 0;
         $scope.inToLobby = false;
+        $scope.isOpenSettings = false;
         $scope.round = $u.round;
         $rootScope.winnerName = null;
         $rootScope.winnersData = {};
@@ -81,7 +82,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 return $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
             }
         };
-        
+
         $scope.potAmount = ()=> $scope.table.pot && $u.round($scope.table.pot.reduce((s, p)=>{
             return s + p.amount;
         }, 0));
@@ -160,7 +161,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     for (var i = 1; i < potCount; i++) {
                         potText += ' - Sidepot: ' + $u.round($scope.table.pot[i].amount);
                     }
-                    potText = 'Total: ' + $scope.potAmount() + potText; 
+                    potText = 'Total: ' + $scope.potAmount() + potText;
                 }
                 return potText;
             }
@@ -344,7 +345,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
-        // 
+        //
         // When the game has stopped
         socket.on('gameStopped', function(data) {
             $scope.table = data;

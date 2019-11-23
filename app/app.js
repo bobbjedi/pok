@@ -82,6 +82,11 @@ app.run(function($rootScope, $location) {
     $rootScope.totalChips = 0;
     $rootScope.sittingOnTable = '';
     $rootScope.round = $u.round;
+    $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
+        cardColors: 'card2',
+        sound: true
+    };
+
     $rootScope.updateUser();
     window.onbeforeunload = ()=> {
         if (!$rootScope.sittingOnTable && $rootScope.sittingOnTable !== ''){
@@ -89,6 +94,9 @@ app.run(function($rootScope, $location) {
         }
         return true;
     };
+    $rootScope.$watch('settings', ()=>{
+        localStorage.setItem('user_settings', JSON.stringify($rootScope.settings));
+    }, true);
     setInterval(() => {
         $rootScope.updateUser();
     }, 30 * 1000);
