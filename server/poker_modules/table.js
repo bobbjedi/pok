@@ -241,7 +241,7 @@ Table.prototype.initStats = async function() {
     };
 };
 Table.prototype.stateAction = async function(player, type){
-    console.log(player.public.name, type);
+    // console.log(player.public.name, type);
     const {stat} = player;
     this.seats.forEach(opponent =>{
         if (opponent && opponent.name !== player.public.name){
