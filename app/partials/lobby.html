@@ -23,7 +23,7 @@
     <div class="right-icon" id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt"
             aria-hidden="true"></i></div>
     <div id="user-panel">
-        <img src="/images/ligapoker.gif" class="label-poker">
+        <img src="/images/logo.png" class="label-poker">
         <div class="login-path" ng-show="isLogged()">
             <div class="avatar" ng-click="uploadAvatar()">
                 <img class="avatar-img" ng-src="{{'/avatars/' + $root.user.login + '.jpg'}}"
@@ -32,7 +32,7 @@
             <div class="user-info">
                 <b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
                 <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
-                <br><span class="user-name small">{{$root.user.address}}</span>
+                <br><span class="user-name small">{{addressShort()}}</span>
                 <br>Баланс:
                 <span class="deposit">{{$root.user.deposit}}</span>
                 <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>

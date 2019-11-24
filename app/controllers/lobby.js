@@ -8,6 +8,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.status = 'login';
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
+    $scope.addressShort = ()=>{
+        const address = $rootScope.user.address;
+        return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
+    };
     $scope.createdTable = {
         name: '',
         sb: 1,
@@ -18,7 +22,6 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     const preloader = document.getElementById('preloader');
     preloader.style.opacity = 1;
     preloader.style.display = 'flex';
-
     $scope.hidePreloader = () =>{
         setTimeout(()=>{
             preloader.style.opacity = 0;
