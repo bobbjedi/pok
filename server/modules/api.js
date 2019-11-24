@@ -2,6 +2,7 @@ const log = require('../helpers/log');
 const sha256 = require('sha256');
 const {usersDb} = require('./DB');
 const $u = require('../helpers/utils');
+const publicApi = require('./publicApi');
 const {withdraw} = require('./minter');
 
 module.exports = (app) => {
@@ -98,7 +99,7 @@ module.exports = (app) => {
 
 
     app.get('/public', async (req, res) => {
-        // publicApi(req, res);
+        publicApi(req, res);
     });
 };
 

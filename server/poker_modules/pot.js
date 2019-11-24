@@ -1,7 +1,7 @@
 const log = require('../helpers/log');
 const config = require('../helpers/configReader');
 const $u = require('../helpers/utils');
-const Store = require('../modules/DB');
+const Store = require('../modules/Store');
 
 /**
  * The pot object
@@ -96,7 +96,6 @@ Pot.prototype.addTableBets = function(players) {
         // Recursion
         this.addTableBets(players);
     }
-    console.log(this.pots);
 };
   
 /**
@@ -114,19 +113,20 @@ Pot.prototype.addPlayersBets = function(player) {
     }
 };
   
-Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
+Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     const {system} = Store;
-    const table =  Store.tables[this.tableId];
-
+    const table = Store.tables[this.tableId];
     system.totalGamesCount++;
     table.public.gamesCount++;
     
     var potsCount = this.pots.length;
     var messages = [];
     var messages_ = [];
+    const tIdstr = '[table#' + this.tableId + '] | ';
     const winnersData = {};
     log.info('[table#' + this.tableId + '] *** Game finished **');
-    log.info('[table#' + this.tableId + ']' + ' Pots: ' + JSON.stringify(this.pots));
+    log.info(tIdstr + 'Cards: ' + JSON.stringify(board));
+    log.info(tIdstr + 'Pots: ' + JSON.stringify(this.pots));
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
@@ -140,25 +140,28 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
         var playersCount = players.length;
         for (var j = 0; j < playersCount; j++) {
             if (players[j] && players[j].public.inHand && pot.contributors.indexOf(players[j].seat) >= 0) {
+                log.info(tIdstr + players[j].public.name + ' cards: [' + players[j].cards + '] ' +  ' rating: ' +players[j].evaluatedHand.rating + JSON.stringify(players[j].evaluatedHand));
                 if (players[j].evaluatedHand.rating > bestRating) {
                     bestRating = players[j].evaluatedHand.rating;
                     winners = [players[j].seat];
+                    log.info(tIdstr + players[j].public.name + ' new best rating');
                 }
                 else if (players[j].evaluatedHand.rating === bestRating) {
+                    log.info(tIdstr + players[j].public.name + ' === best rating');
                     winners.push(players[j].seat);
                 }
             }
         }
-        log.info('[table#' + this.tableId + ']' + ' Winners для pot:' + JSON.stringify(pot) + ' Winners:' + winners);
+        log.info(tIdstr + 'Winners для pot:' + JSON.stringify(pot) + ' Winners:' + winners);
         if (winners.length === 1) {
             const winner = players[winners[0]];
-            log.info('[table#' + this.tableId + ']' + ' winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);
-            log.info('[table#' + this.tableId + ']' + ' s135: ' + winner.public.name + ' #' + winner.seat + ' + ' + pot.amount);
+            log.info(tIdstr + 'winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);
+            log.info(tIdstr + 's135: ' + winner.public.name + ' #' + winner.seat + ' + ' + pot.amount);
             winner.public.chipsInPlay += pot.amount;
             var htmlHand_ = '[' + winner.evaluatedHand.cards.join(', ') + ']';
             var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
-            messages.push(winner.public.name + ' wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand);
-            messages_.push(winner.public.name + ' wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand_);
+            messages.push(winner.public.name + 'wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand);
+            messages_.push(winner.public.name + 'wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand_);
                       
             winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_};
             winnersData[winner.public.name].amount += pot.amount;
@@ -180,7 +183,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
                 }
   
                 jPlayer.public.chipsInPlay += playersWinnings;
-                log.info('[table#' + this.tableId + ']' + ' s154: ' + jPlayer.public.name + ' #' + winners[j] + ' + ' + playersWinnings);
+                log.info(tIdstr + ' s154: ' + jPlayer.public.name + ' #' + winners[j] + ' + ' + playersWinnings);
                 var htmlHand_ = '[' + jPlayer.evaluatedHand.cards.join(', ') + ']';
                 var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
                 messages.push(jPlayer.public.name + ' ties the pot (' + playersWinnings + ') with ' + jPlayer.evaluatedHand.name + ' ' + htmlHand);

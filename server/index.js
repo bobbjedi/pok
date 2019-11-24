@@ -106,7 +106,6 @@ io.sockets.on('connection', function(socket) {
 	 * @param object table-data
 	 */
     socket.on('enterRoom', function(tableId) {
-        console.log('ENTER room')
         try {
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
             // Add the player to the socket room
@@ -183,20 +182,19 @@ io.sockets.on('connection', function(socket) {
                         }
                     }
                     if (playerExists){
-                        console.log('УЖЕ ЕСТЬ!', name);
                         if (socket.id === playerExists.socket.id){
-                            console.log('Сокет тотже!', name);
+                            // console.log('Сокет тотже!', name);
                             return;
                         }
                         $u.removePlayer(playerExists.socket);
                     } // создаем нового
-                    console.log('Создаем!');
                     const user = await $u.getUserFromQ({token});
                     if (!user){
                         return;
                     }
                     players[socket.id] = new Player(socket, user);
-                    console.log('Создали', name, Object.keys(players).length);
+                    Store.system.online = Object.keys(players).length;
+                    console.log('Создали', name, 'online:', Object.keys(players).length);
                     callback({'success': true});
                     return;
                     // }
@@ -233,12 +231,7 @@ io.sockets.on('connection', function(socket) {
 	 * @param function callback
 	 */
     socket.on('sitOnTheTable', function(data, callback) {
-        console.log('sitOnTheTable', data);
         try {
-            console.log(
-			players[socket.id].room === data.tableId
-			// The chips number chosen is a number
-	)
             if (
             // A seat has been specified
                 typeof data.seat !== 'undefined'
@@ -500,7 +493,7 @@ io.sockets.on('connection', function(socket) {
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
-        console.log('Disconnect!>>>>>.', player.public.name, player.sittingOnTable, player.seat);
+        console.log('Disconnect>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
         // player.onDisconnect(()=>{
@@ -514,9 +507,7 @@ $u.removePlayer = socket =>{
             tables[tableId].playerLeft(seat);
         }
         // Remove the player object from the players array
-        console.log(!!players[socket.id]);
         delete players[socket.id];
-        console.log(!!players[socket.id]);
         // });
     }
 };
@@ -565,18 +556,5 @@ function getSSLFiles(){
     return false;
 }
 
-// (async ()=>{
-//     var Player1 = new Player({}, await $u.getUserFromQ({login: 'Dev'}));
-//     const commonCards = ['3c', 'Jh', 'Ks'];
-//     Player1.cards = ['9s', '7d'];
-//     Player1.evaluateHand(commonCards);
-//     console.log(Player1.evaluateHand.rank);
-// })();
-
-// cards: [
-//     'Th', '3d',
-//     'Kh', '4s',
-//     'Ac', 'Jh',
-//     'Ks'
-//   ]
+// require('./tests');
 

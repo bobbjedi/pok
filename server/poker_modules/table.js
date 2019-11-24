@@ -435,7 +435,7 @@ Table.prototype.showdown = function() {
 
     var currentPlayer = this.findNextPlayer(this.public.dealerSeat);
     var bestHandRating = 0;
-
+    const board = this.public.board.slice();
     for (var i = 0; i < this.playersInHandCount; i++) {
         this.seats[currentPlayer].evaluateHand(this.public.board);
         // If the hand of the current player is the best one yet,
@@ -446,7 +446,7 @@ Table.prototype.showdown = function() {
         currentPlayer = this.findNextPlayer(currentPlayer);
     }
 
-    const {messages, msgStr} = this.pot.destributeToWinners(this.seats, currentPlayer);
+    const {messages, msgStr} = this.pot.destributeToWinners(this.seats, currentPlayer, board);
 
     var messagesCount = messages.length;
     for (var i = 0; i < messagesCount; i++) {
@@ -547,7 +547,13 @@ Table.prototype.playerFolded = function() {
     if (this.playersInHandCount <= 1) {
         this.pot.addTableBets(this.seats);
         var winnersSeat = this.findNextPlayer();
-        this.pot.giveToWinner(this.seats[winnersSeat]);
+        const message = this.pot.giveToWinner(this.seats[winnersSeat]);
+        this.log({
+            message,
+            action: '',
+            seat: '',
+            notification: ''
+        });
         this.endRound();
     } else {
         if (this.lastPlayerToAct === this.public.activeSeat) {
@@ -917,7 +923,13 @@ Table.prototype.endRound = function() {
     this.pot.addTableBets(this.seats);
     if (!this.pot.isEmpty()) {
         var winnersSeat = this.findNextPlayer(0);
-        this.pot.giveToWinner(this.seats[winnersSeat]);
+        const message = this.pot.giveToWinner(this.seats[winnersSeat]);
+        this.log({
+            message,
+            action: '',
+            seat: '',
+            notification: ''
+        });
     }
 
     // Sitting out the players who don't have chips

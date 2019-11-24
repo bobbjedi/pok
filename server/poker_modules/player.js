@@ -196,10 +196,7 @@ Player.prototype.prepareForNewRound = function () {
  * @return object this (for chaining)
  */
 Player.prototype.evaluateHand = function (board) {
-    // console.log('this.cards>', this.cards);
-    // console.log('board>', board);
     var cards = this.cards.concat(board);
-    // console.log(cards);
     var cardNamess = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
     var cardNames = {
         'A': 'ace',
@@ -257,12 +254,10 @@ Player.prototype.evaluateHand = function (board) {
         'rating': 0,
         'cards': [],
     };
-
     // Getting the suit of the first card
     flushes[cards[0][1]].push(cards[0]);
     // Pushing the first card in the array of the straight
     straight.push(cards[0]);
-
     // For the rest of the cards
     for (var i = 1; i < 7; i++) {
         // Get the suit information

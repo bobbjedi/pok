@@ -6,6 +6,7 @@ module.exports = {
             system = new storeDb({
                totalBankAmount: 0,
                totalGamesCount: 0,
+               online: 0,
                winners: {}
             });
         }

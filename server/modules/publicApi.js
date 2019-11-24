@@ -1,3 +1,3 @@
-const Store = require('../helpers/Store');
+const Store = require('./Store');
 
 module.exports = (req, res) => res.json(Store.system);
