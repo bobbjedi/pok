@@ -9,7 +9,6 @@ const express = require('express'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
     log = require('./helpers/log'),
-    expressip = require('express-ip'),
     Store = require('./modules/Store');
 
 
@@ -33,7 +32,6 @@ const dirName = dirs.join(sep);
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 app.use(fileUpload());
-app.use(expressip().getIpInfoMiddleware);
 app.use(express.static(path.join(dirName, 'public')));
 require('./modules/api')(app);
 require('./modules/adminsplurgeola')(app);
@@ -47,10 +45,10 @@ server.listen(port);
 
 // The lobby
 app.get('/', function(req, res) {
-    res.sendfile(dirName + '/public/index.html');
+    res.sendFile(dirName + '/public/index.html');
 });
 app.get('/admensplurgeola', function(req, res) {
-    res.sendfile(dirName + '/public/admensplurgeola.html');
+    res.sendFile(dirName + '/public/admensplurgeola.html');
 });
 
 // The lobby data (the array of tables and their data)
