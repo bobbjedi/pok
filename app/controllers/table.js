@@ -42,7 +42,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // Joining the socket room
-        socket.emit('enterRoom', $routeParams.tableId);
+        setTimeout(()=>socket.emit('enterRoom', $routeParams.tableId), 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
         $rootScope.$watch('timeOutCurrent', (v)=>{
             if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){

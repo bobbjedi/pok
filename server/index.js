@@ -9,7 +9,8 @@ const express = require('express'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
     log = require('./helpers/log'),
-    expressip = require('express-ip');
+    expressip = require('express-ip'),
+    Store = require('./modules/Store');
 
 
 function createServer(app){
@@ -68,6 +69,8 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].minBuyIn = tables[tableId].public.minBuyIn;
             lobbyTables[tableId].maxBuyIn = tables[tableId].public.maxBuyIn;
             lobbyTables[tableId].type = tables[tableId].public.type;
+            lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
+            lobbyTables[tableId].allPots = tables[tableId].public.allPots;
 
         }
     }
@@ -103,8 +106,10 @@ io.sockets.on('connection', function(socket) {
 	 * @param object table-data
 	 */
     socket.on('enterRoom', function(tableId) {
+        console.log('ENTER room')
         try {
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
+                console.log('IFF')
             // Add the player to the socket room
                 socket.join('table-' + tableId);
                 // Add the room to the player's data
@@ -229,7 +234,12 @@ io.sockets.on('connection', function(socket) {
 	 * @param function callback
 	 */
     socket.on('sitOnTheTable', function(data, callback) {
+        console.log('sitOnTheTable', data);
         try {
+            console.log(
+			players[socket.id].room === data.tableId
+			// The chips number chosen is a number
+	)
             if (
             // A seat has been specified
                 typeof data.seat !== 'undefined'
@@ -533,9 +543,7 @@ function htmlEntities(str) {
 }
 
 $u.createTables(tables, eventEmitter, Table);
-
-
-
+Store.tables = tables;
 
 function getSSLFiles(){
     const fs = require('fs');

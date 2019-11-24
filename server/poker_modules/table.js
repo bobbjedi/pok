@@ -76,6 +76,10 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         lastWaitPhase: null,
         // The cards on the board
         board: ['', '', '', '', ''],
+        // Count games
+        gamesCount: 0,
+        // bank sum
+        allPots: 0,
         // Log of an action, displayed in the chat
         log: {
             message: '',

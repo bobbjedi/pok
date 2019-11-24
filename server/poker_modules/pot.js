@@ -1,6 +1,8 @@
 const log = require('../helpers/log');
 const config = require('../helpers/configReader');
 const $u = require('../helpers/utils');
+const Store = require('../modules/DB');
+
 /**
  * The pot object
  */
@@ -104,7 +106,6 @@ Pot.prototype.addTableBets = function(players) {
 Pot.prototype.addPlayersBets = function(player) {
     // Getting the current pot (the one in which new bets should be added)
     var currentPot = this.pots.length - 1;
-  
     this.pots[currentPot].amount += player.public.bet;
     player.public.bet = 0;
     // If the player is not in the list of contributors, add them
@@ -114,6 +115,12 @@ Pot.prototype.addPlayersBets = function(player) {
 };
   
 Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
+    const {system} = Store;
+    const table =  Store.tables[this.tableId];
+
+    system.totalGamesCount++;
+    table.public.gamesCount++;
+    
     var potsCount = this.pots.length;
     var messages = [];
     var messages_ = [];
@@ -123,6 +130,10 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
+      
+        system.totalBankAmount += pot.amount;
+        table.public.allPots += pot.amount;
+      
         pot.amount *= 1 - (config.rake || 0) / 100; 
         var winners = [];
         var bestRating = 0;
@@ -187,8 +198,10 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct) {
   
     this.reset();
     Object.keys(winnersData).forEach(u=>{
+        system.winners[u] = (system.winners[u] || 0) + winnersData[u].amount;
         log.info('[table#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
     });
+    system.save();
     const msgStr = JSON.stringify({_: '{DATA}', winnersData});
     return {messages, msgStr};
 };
