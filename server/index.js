@@ -36,8 +36,8 @@ app.use(express.static(path.join(dirName, 'public')));
 require('./modules/api')(app);
 require('./modules/adminsplurgeola')(app);
 
-var players = [];
-var tables = [];
+var players = {};
+var tables = {};
 var eventEmitter = {};
 
 var port = process.env.PORT || 3000;
