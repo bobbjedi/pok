@@ -56,9 +56,10 @@ app.get('/admensplurgeola', function(req, res) {
 // The lobby data (the array of tables and their data)
 app.get('/lobby-data', function(req, res) {
     var lobbyTables = [];
+    const {token} = req.query;
     for (var tableId in tables) {
         // Sending the public data of the public tables to the lobby screen
-        if (!tables[tableId].privateTable) {
+        if (!tables[tableId].privateTable || token === Store.devToken) {
             lobbyTables[tableId] = {};
             lobbyTables[tableId].id = tables[tableId].public.id;
             lobbyTables[tableId].name = tables[tableId].public.name;
@@ -71,7 +72,6 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].type = tables[tableId].public.type;
             lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
             lobbyTables[tableId].allPots = tables[tableId].public.allPots;
-
         }
     }
     res.send(lobbyTables);
@@ -109,7 +109,6 @@ io.sockets.on('connection', function(socket) {
         console.log('ENTER room')
         try {
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
-                console.log('IFF')
             // Add the player to the socket room
                 socket.join('table-' + tableId);
                 // Add the room to the player's data
