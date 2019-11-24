@@ -217,7 +217,6 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         try {
         // If the socket points to a player object
-            console.log('Disconnect');
             $u.removePlayer(socket);
         } catch (e){
             console.log(e);
