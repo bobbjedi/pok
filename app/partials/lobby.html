@@ -123,7 +123,7 @@
             </td>
             <td class="centered-text">{{table.smallBlind}}/{{table.bigBlind}}</td>
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.seatsCount}}</td>
-            <td class="centered-text">{{table.minBuyIn}}/{{table.maxBuyIn}}</td>
+            <td class="centered-text">{{$root.tsp(table.minBuyIn)}}/{{$root.tsp(table.maxBuyIn)}}</td>
             <td class="centered-text">{{table.gamesCount}}/{{$root.tsp(table.allPots)}}</td>
             <td class="centered-text"><a href="#!/table-{{table.seatsCount}}/{{table.id}}" class="but_pol brd-green">Вход</a></td>
         </tr>
