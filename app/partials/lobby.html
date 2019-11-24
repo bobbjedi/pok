@@ -94,6 +94,10 @@
 
     <div id="buttons-lobby">
         <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users" aria-hidden="true"></i> &nbsp; Создать комнату</div>
+        <div class="lobby-stat txt-green" >
+            <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
+            <span> | Игр: {{$root.tsp(public.totalGamesCount)}}</span>
+            <span> | Online: {{public.online}}</span></div>
     </div>
     <table id="table-list" class="table_dark">
         <tr>
@@ -102,6 +106,8 @@
             <th class="dark-border">SB/BB</th>
             <th>Игроков</th>
             <th>Buy in</th>
+            <th>Игр/Обьем</th>
+            <th>Войти</th>
         </tr>
         <tr ng-repeat="table in lobbyTables">
             <td>#{{table.id + 1}}</td>
@@ -118,6 +124,8 @@
             <td class="centered-text">{{table.smallBlind}}/{{table.bigBlind}}</td>
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.seatsCount}}</td>
             <td class="centered-text">{{table.minBuyIn}}/{{table.maxBuyIn}}</td>
+            <td class="centered-text">{{table.gamesCount}}/{{$root.tsp(table.allPots)}}</td>
+            <td class="centered-text"><a href="#!/table-{{table.seatsCount}}/{{table.id}}" class="but_pol brd-green">Вход</a></td>
         </tr>
     </table>
 </div>

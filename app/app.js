@@ -63,7 +63,6 @@ app.run(function($rootScope, $location) {
         }, true);
     }, 2000);
 
-
     $rootScope.withdraw = _.throttle(function(){
         $rootScope.api({action: 'withdraw'}, data => {
             noty('success', 'Успешно вывели!');
@@ -100,6 +99,7 @@ app.run(function($rootScope, $location) {
     setInterval(() => {
         $rootScope.updateUser();
     }, 30 * 1000);
+    $rootScope.tsp = thousandSeparator;
 });
 
 
@@ -125,4 +125,31 @@ function api(obj, cb = () => {}, silent, type = 'api') {
         .catch(function (err) {
             console.warn(obj.action, err);
         });
+};
+
+
+const thousandSeparator = num => {
+    let fixed = 2;
+    if (num > 0.8){
+        fixed = 0;
+    }
+    if (+num === 0 || !num){
+        return '0.00';
+    }
+    var parts = num.toFixed(fixed).split('.'),
+        main = parts[0],
+        len = main.length,
+        output = '',
+        i = len - 1;
+    while (i >= 0) {
+        output = main.charAt(i) + output;
+        if ((len - i) % 3 === 0 && i > 0) {
+            output = ',' + output;
+        }
+        --i;
+    }
+    if (parts.length > 1) {
+        output = `${output}.${parts[1]}`;
+    }
+    return output;
 };

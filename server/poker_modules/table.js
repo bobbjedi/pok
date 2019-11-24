@@ -37,7 +37,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // The function that emits the events of the table
     this.eventEmitter = eventEmitter;
     // The pot with its methods
-    this.pot = new Pot;
+    this.pot = new Pot(id);
     // таймаут ожидания действия игрока
     this.timeOutWaitUserAction = null;
     // user_id создателя таблицы

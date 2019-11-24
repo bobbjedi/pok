@@ -6,13 +6,13 @@ const Store = require('../modules/Store');
 /**
  * The pot object
  */
-var Pot = function() {
+var Pot = function(tableId) {
     // The pot may be split to several amounts, since not all players
     // have the same money on the table
     // Each portion of the pot has an amount and an array of the
     // contributors (players who have betted in the pot and can
     // win it in the showdown)
-    // this.tableId = ;
+    this.tableId = tableId;
     this.pots = [{ 
         amount: 0,
         contributors: []
@@ -33,7 +33,7 @@ Pot.prototype.reset = function() {
    * @param array players (the array of the tables as it exists in the table)
    */
 Pot.prototype.addTableBets = function(players) {
-    this.tableId = this.tableId || getTableId(players);
+    // this.tableId = this.tableId || getTableId(players);
     // 
     // Getting the current pot (the one in which new bets should be added)
     var currentPot = this.pots.length - 1;

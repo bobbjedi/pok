@@ -406,6 +406,32 @@ div.row {
     height: 130px;
 }
 
+.but_pol{
+    border-radius: 13px;
+    display: block;
+    text-align: center;
+    color: #63a76c;
+    border: 1px solid #63a76c;
+    padding: 2px;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.but_pol:hover{
+   background: #63a76c;
+   color: #f9f9fc;
+}
+
+
+#buttons-lobby{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lobby-stat{
+    
+}
 /* FULLSCREEN */
 @media screen and (max-width: 768px) {
     .button-top{

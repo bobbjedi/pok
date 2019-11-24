@@ -8,6 +8,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.status = 'login';
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
+    $scope.public = {};
     $scope.addressShort = ()=>{
         const address = $rootScope.user.address;
         return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
@@ -53,6 +54,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     }).then(res => {
         if (res.status === 200){
             const data = res.data;
+            console.log(data);
             $scope.lobbyTables = [];
             for (const tableId in data) {
                 if (data[tableId]){
@@ -60,6 +62,15 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
                 }
             }
             $scope.hidePreloader();
+        }
+    });
+
+    $http({
+        url: window.Domain + '/public',
+        method: 'GET'
+    }).then(res => {
+        if (res.status === 200) {
+            $scope.public = res.data;
         }
     });
 

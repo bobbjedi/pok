@@ -123,6 +123,7 @@ table {
 .table_dark tr {
     border-bottom: 1px solid #afaabe;
 }
+
 .table_dark th {
     color: #EDB749;
     border-bottom: 1px solid #EDB749;
@@ -150,7 +151,7 @@ table {
 }
 
 .table_dark tr:hover td {
-    text-decoration: underline
+
 }
 
 .login-path {
