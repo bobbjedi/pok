@@ -154,7 +154,7 @@ table {
 #user-panel {
     display: flex;
     margin: 10px;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center
 }
 
