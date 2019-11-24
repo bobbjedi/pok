@@ -178,7 +178,7 @@ table {
 }
 
 #table {
-    background-color: #724f39;
+    background-color: #605f6e;
     border-radius: 200px;
     left: 10%;
     position: absolute;
@@ -189,14 +189,14 @@ table {
 }
 
 #table #felt {
-    background-color: #387c41;
+    background-color: #326142;
     border-radius: 175px;
     width: 92%;
     height: 86%;
     position: relative;
     top: 7%;
     left: 4%;
-    box-shadow: 0 0 20px 0 #17541D inset
+    box-shadow: 0 0 20px 0 #070707 inset;
 }
 
 div.row {
