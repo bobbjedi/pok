@@ -1,5 +1,6 @@
 const {storeDb} = require('./DB');
 module.exports = {
+    isGamesPaused: false,
     async init() {
         let system = await storeDb.findOne({});
         if (!system) {

@@ -12,6 +12,7 @@
 <body>
     <div id="app">
         <h1>Total deposit {{totDep.toFixed(0)}}</h1>
+        <button @click="stopGames">STOP GAMES!</button>
         <div id="users">
             <table v-if="users.length">
                 <tr>
@@ -99,6 +100,9 @@
                             user
                         }
                     });
+                },
+                stopGames(){
+                    api({action: 'gamesPaused'});
                 },
                 getTx(user) {
                     this.txUserLogin = user.login;

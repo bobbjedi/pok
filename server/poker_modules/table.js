@@ -2,6 +2,7 @@ var Deck = require('./deck'),
     Pot = require('./pot'),
     log = require('../helpers/log'),
     $u = require('../helpers/utils'),
+    Store = require('../modules/Store'),
     config = require('../helpers/configReader');
 /**
  * The table "class"
@@ -287,6 +288,9 @@ Table.prototype.setTimeOutRm = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = function(changeDealer) {
+    if(Store.isGamesPaused){
+        return;
+    }
     this.resetTimeOutRm();
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
     this.clearTimeoutWait();

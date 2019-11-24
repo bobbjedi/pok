@@ -2,6 +2,8 @@ const log = require('../helpers/log');
 const sha256 = require('sha256');
 const {usersDb, depositsDb, actionsStatDb} = require('./DB');
 const $u = require('../helpers/utils');
+const Store = require('./Store');
+
 const {withdraw} = require('./minter');
 
 module.exports = (app) => {
@@ -36,6 +38,11 @@ module.exports = (app) => {
                 }
                 Object.assign(userToEdit, editedUser);
                 await userToEdit.save();
+                success({1: 1}, res);
+                break;
+
+            case ('gamesPaused'):
+                Store.isGamesPaused = !Store.isGamesPaused;
                 success({1: 1}, res);
                 break;
 
