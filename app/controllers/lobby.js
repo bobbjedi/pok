@@ -65,7 +65,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         }
     });
 
-    $http({
+    const updatePublic = ()=> $http({
         url: window.Domain + '/public',
         method: 'GET'
     }).then(res => {
@@ -73,6 +73,8 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $scope.public = res.data;
         }
     });
+    updatePublic();
+    setInterval(updatePublic, 30 * 1000);
 
     $scope.logreg = function() {
         const user = $rootScope.user;
