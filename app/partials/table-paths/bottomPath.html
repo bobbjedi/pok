@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="button-control">
-        <button class="control-button" ng-click="fold()" ng-show="showFoldButton()">Fold</button>
+        <button class="control-button" ng-click="fold()" ng-if="showFoldButton()">Fold</button>
         <!-- <button class="control-button" ng-click="postBlind(false)"
             ng-show="actionState === 'postSmallBlind' || actionState === 'postBigBlind'">Отказаться</button> -->
         <button class="control-button" ng-click="leaveTable()" ng-show="showLeaveTableButton()">Покинуть стол</button>
@@ -22,9 +22,8 @@
         <button class="control-button" ng-click="postBlind(true)" ng-show="actionState === 'postBigBlind'">Big Blind
             ({{table.bigBlind}})
         </button> -->
-        <button class="control-button" ng-click="check()" ng-show="showCheckButton()">Check</button>
-        <button class="control-button" ng-click="call()" ng-show="showCallButton()">Call
-            {{round(callAmount())}}</button>
+        <button class="control-button" ng-click="check()" ng-if="showCheckButton()">Check</button>
+        <button class="control-button" ng-click="call()" ng-if="showCallButton()">Call {{round(callAmount())}}</button>
     </div>
     <div class="button-control">
         <button class="control-button" ng-click="bet()" ng-show="showBetButton()">Bet {{round(betAmount)}}</button>
