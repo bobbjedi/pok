@@ -252,16 +252,21 @@ Table.prototype.initStats = async function() {
 };
 Table.prototype.stateAction = async function(player, type){
     // console.log(player.public.name, type);
-    const {stat} = player;
-    this.seats.forEach(opponent =>{
-        if (opponent && opponent.name !== player.public.name){
-            const {name} = opponent.public;
-            if (name !== player.public.name){
-                stat[type][name] = (player.stat[type][name] || 0) + 1;
-            }
-        };
-    });
-    await stat.save();
+    try {
+        const {stat} = player;
+        this.seats.forEach(opponent =>{
+            if (opponent && opponent.name !== player.public.name){
+                const {name} = opponent.public;
+                if (name !== player.public.name){
+                    stat[type][name] = (player.stat[type][name] || 0) + 1;
+                }
+            };
+        });
+        await stat.save();
+    } catch (e){
+        console.log(e);
+        log.error('[Table stateAction]: ' + e);
+    }
 };
 
 Table.prototype.resetTimeOutRm = function() {
@@ -288,7 +293,7 @@ Table.prototype.setTimeOutRm = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = function(changeDealer) {
-    if(Store.isGamesPaused){
+    if (Store.isGamesPaused){
         return;
     }
     this.resetTimeOutRm();

@@ -3,9 +3,12 @@ if (!fs.existsSync('./logs')) {
     fs.mkdirSync('./logs');
 }
 
-let infoStr = fs.createWriteStream('./logs/' + date() + '.log', {
-    flags: "a"
-});
+const creteLogFile = () =>{
+    return fs.createWriteStream('./logs/' + date() + '.log', {
+        flags: "a"
+    });
+};
+let infoStr = creteLogFile();
 
 infoStr.write(`
 _________________${fullTime()}_________________
@@ -54,3 +57,12 @@ function date () {
 function fullTime () {
     return `${date()}  ${time()}`;
 }
+
+let lastDate = date();
+
+setInterval(() => {
+    if (lastDate !== date()){
+        console.log('Новый файл логов');
+        infoStr = creteLogFile();
+    }
+}, 60 * 1000);

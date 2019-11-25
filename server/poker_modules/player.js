@@ -46,7 +46,7 @@ var Player = function (socket, user) {
 };
 
 Player.prototype.initState = function(user){
-    const timeOut = Math.random() * 10 * 1000;
+    const timeOut = Math.random() * 1000;
     setTimeout(async ()=>{
         this.stat = await actionsStatDb.findOne({_id: user._id});
         if (!this.stat){
