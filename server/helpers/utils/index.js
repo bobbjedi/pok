@@ -7,7 +7,7 @@ const log = require('../log');
 let tables_, eventEmitter_, Table_, lastTableId = 0;
 module.exports = {
     round(n) {
-        return Number((n - 0.001).toFixed(2));
+        return Number((n - 0.000001).toFixed(2));
     },
     unix(){
         return new Date().getTime();
