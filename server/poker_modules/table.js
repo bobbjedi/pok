@@ -313,7 +313,6 @@ Table.prototype.initializeRound = function(changeDealer) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (!this.seats[i].public.chipsInPlay) {
-                    // console.log('SEAT!!!??? i?');
                     this.seats[i].sitOut(); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
@@ -418,7 +417,7 @@ Table.prototype.initializeNextPhase = function() {
         this.public.board[4] = this.deck.deal(1)[0];
         break;
     }
-
+    log.info('[#' + this.public.id + '] Cards: ' + this.public.board);
     this.pot.addTableBets(this.seats);
     this.public.biggestBet = 0;
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);

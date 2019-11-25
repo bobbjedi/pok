@@ -33,8 +33,7 @@ Pot.prototype.reset = function() {
    * @param array players (the array of the tables as it exists in the table)
    */
 Pot.prototype.addTableBets = function(players) {
-    // this.tableId = this.tableId || getTableId(players);
-    // 
+
     // Getting the current pot (the one in which new bets should be added)
     var currentPot = this.pots.length - 1;
   
@@ -140,7 +139,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
         var playersCount = players.length;
         for (var j = 0; j < playersCount; j++) {
             if (players[j] && players[j].public.inHand && pot.contributors.indexOf(players[j].seat) >= 0) {
-                log.info(tIdstr + players[j].public.name + ' cards: [' + players[j].cards + '] ' +  ' rating: ' +players[j].evaluatedHand.rating + JSON.stringify(players[j].evaluatedHand));
+                log.info(tIdstr + players[j].public.name + ' cards: [' + players[j].cards + '] ' + ' rating: ' + players[j].evaluatedHand.rating + JSON.stringify(players[j].evaluatedHand));
                 if (players[j].evaluatedHand.rating > bestRating) {
                     bestRating = players[j].evaluatedHand.rating;
                     winners = [players[j].seat];
@@ -249,8 +248,3 @@ Pot.prototype.isEmpty = function() {
   
   
 module.exports = Pot;
-
-
-function getTableId(players){
-    return Number((players.find(p=>p) || {}).room) + 1;
-}

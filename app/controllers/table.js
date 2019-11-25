@@ -24,7 +24,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnersData = {};
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
-
+        $scope.lastEventTime = 0;
+        $scope.checkEmitAction = (action) =>{
+            if (new Date().getTime() - $scope.lastEventTime > 500){
+                $scope.lastEventTime = new Date().getTime();   
+                return true;
+            }
+            return false;
+        };
         // Existing listeners should be removed
         socket.removeAllListeners();
 
@@ -223,6 +230,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // Post a blind (or not)
         $scope.postBlind = function(posted) {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('postBlind', posted, function(response) {
                 if (response.success && !posted) {
                     $rootScope.sittingIn = false;
@@ -235,6 +245,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.check = function() {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('check', function(response) {
                 if (response.success) {
                     sounds.playCheckSound();
@@ -245,6 +258,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.fold = function() {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('fold', function(response) {
                 if (response.success) {
                     sounds.playFoldSound();
@@ -255,6 +271,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.call = function() {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('call', function(response) {
                 if (response.success) {
                     sounds.playCallSound();
@@ -265,6 +284,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.bet = function() {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('bet', $scope.betAmount, function(response) {
                 if (response.success) {
                     sounds.playBetSound();
@@ -275,6 +297,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.raise = function() {
+            if (!$scope.checkEmitAction('fold')){
+                return;
+            }
             socket.emit('raise', $scope.betAmount, function(response) {
                 if (response.success) {
                     sounds.playRaiseSound();

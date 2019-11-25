@@ -52,7 +52,7 @@ app.run(function($rootScope, $location) {
         $rootScope.timeOutCurrent--;
     }, 1000);
     $rootScope.updateTimeOut = function(){
-        $rootScope.timeOutCurrent = config.timeOutWait - 3;
+        $rootScope.timeOutCurrent = config.timeOutWait;
     };
 
     $rootScope.updateUser = _.throttle(function(){
