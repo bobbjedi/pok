@@ -69,7 +69,6 @@ let lastDate = date();
 
 setInterval(() => {
     if (lastDate !== date()){
-        console.log('Новый файл логов');
         infoStr = creteLogFile();
     }
 }, 60 * 1000);
@@ -86,6 +85,5 @@ function setTableLog(str) {
 
     } catch (e) {
         console.log('ERROR table log', e);
-
     }
 }
