@@ -13,12 +13,12 @@ var Pot = function(tableId) {
     // contributors (players who have betted in the pot and can
     // win it in the showdown)
     this.tableId = tableId;
-    this.pots = [{ 
+    this.pots = [{
         amount: 0,
         contributors: []
     }];
 };
-  
+
 /**
    * Method that resets the pot to its initial state
    */
@@ -27,21 +27,21 @@ Pot.prototype.reset = function() {
     this.pots[0].amount = 0;
     this.pots[0].contributors = [];
 };
-  
+
 /**
    * Method that gets the bets of the players and adds them to the pot
    * @param array players (the array of the tables as it exists in the table)
    */
 Pot.prototype.addTableBets = function(players) {
-
+    const tableId = this.tableId;
     // Getting the current pot (the one in which new bets should be added)
     var currentPot = this.pots.length - 1;
-  
+
     // The smallest bet of the round
     var smallestBet = 0;
     // Flag that shows if all the bets have the same amount
     var allBetsAreEqual = true;
-  
+
     // Trying to find the smallest bet of the player
     // and if all the bets are equal
     for (var i in players) {
@@ -52,51 +52,58 @@ Pot.prototype.addTableBets = function(players) {
             // eslint-disable-next-line eqeqeq
             else if (players[i].public.bet != smallestBet) {
                 allBetsAreEqual = false;
-          
+
                 if (players[i].public.bet < smallestBet) {
                     smallestBet = players[i].public.bet;
                 }
             }
         }
     }
-  
+
     // If all the bets are equal, then remove the bets of the players and add
     // them to the pot as they are
     if (allBetsAreEqual) {
+        log.info('[#' + tableId + ']' + ' allBetsAreEqual');
         for (var i in players) {
+            players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
                 this.pots[currentPot].amount += players[i].public.bet;
                 players[i].public.bet = 0;
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
+                    log.info('[#' + tableId + '] add to contributors to pot#' + currentPot + ' ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
                 }
+                console.log(this.pots, currentPot, this.pots[currentPot].contributors);
             }
         }
     } else {
         // If not all the bets are equal, remove from each player's bet the smallest bet
         // amount of the table, add these bets to the pot and then create a new empty pot
         // and recursively add the bets that remained, to the new pot
+        log.info('[#' + tableId + '] is n ot equal, create pot#' + currentPot);
         for (var i in players) {
+            players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
                 this.pots[currentPot].amount += smallestBet;
                 players[i].public.bet = players[i].public.bet - smallestBet;
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
+                    log.info('[#' + tableId + '] add to contributors to New pot ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
                 }
             }
         }
-  
+
         // Creating a new pot
-        this.pots.push({ 
+        this.pots.push({
             amount: 0,
             contributors: []
         });
-  
+
         // Recursion
         this.addTableBets(players);
     }
 };
-  
+
 /**
    * Adds the player's bets to the pot
    * @param {[type]} player [description]
@@ -111,29 +118,29 @@ Pot.prototype.addPlayersBets = function(player) {
         this.pots[currentPot].contributors.push(player.seat);
     }
 };
-  
+
 Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     const {system} = Store;
     const table = Store.tables[this.tableId];
     system.totalGamesCount++;
     table.public.gamesCount++;
-    
+
     var potsCount = this.pots.length;
     var messages = [];
     var messages_ = [];
-    const tIdstr = '[table#' + this.tableId + '] | ';
+    const tIdstr = '[#' + this.tableId + '] | ';
     const winnersData = {};
-    log.info('[table#' + this.tableId + '] *** Game finished **');
+    log.info('[#' + this.tableId + '] *** Game finished **');
     log.info(tIdstr + 'Cards: ' + JSON.stringify(board));
     log.info(tIdstr + 'Pots: ' + JSON.stringify(this.pots));
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
-      
+
         system.totalBankAmount += pot.amount;
         table.public.allPots += pot.amount;
-      
-        pot.amount *= 1 - (config.rake || 0) / 100; 
+
+        pot.amount *= 1 - (config.rake || 0) / 100;
         var winners = [];
         var bestRating = 0;
         var playersCount = players.length;
@@ -161,17 +168,17 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
             messages.push(winner.public.name + 'wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand);
             messages_.push(winner.public.name + 'wins the pot (' + pot.amount + ') with ' + winner.evaluatedHand.name + ' ' + htmlHand_);
-                      
+
             winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_};
             winnersData[winner.public.name].amount += pot.amount;
             winnersData[winner.public.name].amount = $u.round(winnersData[winner.public.name].amount);
             winner.roundCheapsInPlay();
         } else {
             var winnersCount = winners.length;
-  
+
             var winnings = ~~(pot.amount / winnersCount);
             var oddChip = winnings * winnersCount !== pot.amount;
-  
+
             for (var j in winners) {
                 var playersWinnings = 0;
                 const jPlayer = players[winners[j]];
@@ -180,7 +187,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
                 } else {
                     playersWinnings = winnings;
                 }
-  
+
                 jPlayer.public.chipsInPlay += playersWinnings;
                 log.info(tIdstr + ' s154: ' + jPlayer.public.name + ' #' + winners[j] + ' + ' + playersWinnings);
                 var htmlHand_ = '[' + jPlayer.evaluatedHand.cards.join(', ') + ']';
@@ -197,17 +204,17 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             }
         }
     }
-  
+
     this.reset();
     Object.keys(winnersData).forEach(u=>{
         system.winners[u] = (system.winners[u] || 0) + winnersData[u].amount;
-        log.info('[table#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
+        log.info('[#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
     });
     system.save();
     const msgStr = JSON.stringify({_: '{DATA}', winnersData});
     return {messages, msgStr};
 };
-  
+
 /**
    * Method that gives the pot to the winner, if the winner is already known
    * (e.g. everyone has folded)
@@ -217,17 +224,17 @@ Pot.prototype.giveToWinner = function(winner) {
     var potsCount = this.pots.length;
     var totalAmount = 0;
     for (var i = potsCount - 1; i >= 0; i--) {
-        log.info('[table#' + this.tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
+        log.info('[#' + this.tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
-  
+
     this.reset();
     const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
-    log.info('[table#' + this.tableId + '] ' + msg);
+    log.info('[#' + this.tableId + '] ' + msg);
     return msg;
 };
-  
+
 /**
    * Removing a player from all the pots
    * @param  number   seat
@@ -241,10 +248,10 @@ Pot.prototype.removePlayer = function(seat) {
         }
     }
 };
-  
+
 Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
-  
-  
+
+
 module.exports = Pot;

@@ -296,6 +296,7 @@ Table.prototype.initializeRound = function(changeDealer) {
     if (Store.isGamesPaused){
         return;
     }
+    log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****<b>');
     this.resetTimeOutRm();
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
     this.clearTimeoutWait();

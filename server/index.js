@@ -288,7 +288,7 @@ io.sockets.on('connection', function(socket) {
             // Getting the table id from the player object
                 var tableId = players[socket.id].sittingOnTable;
                 log.info('[#' + tableId + ']' + players[socket.id].public.name + ' sitIt ' + players[socket.id].seat);
-                tables[tableId].playerSatIn(players[socket.id].seat);        
+                tables[tableId].playerSatIn(players[socket.id].seat);
                 callback({ 'success': true });
             }
         } catch (e){
@@ -351,7 +351,7 @@ io.sockets.on('connection', function(socket) {
 				&& ['preflop', 'flop', 'turn', 'river'].indexOf(tables[tableId].public.phase) > -1
                 ) {
                 // Sending the callback first, because the next functions may need to send data to the same player, that shouldn't be overwritten
-                    log.info('[#' + tableId + ']' + players[socket.id].public.name + ' check ');    
+                    log.info('[#' + tableId + ']' + players[socket.id].public.name + ' check ');
                     callback({ 'success': true });
                     tables[tableId].playerChecked();
                 }
@@ -395,7 +395,7 @@ io.sockets.on('connection', function(socket) {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
 
-                if (tables[tableId] && tables[tableId].seats[activeSeat].socket.id === socket.id && tables[tableId].public.biggestBet && ['preflop', 'flop', 'turn', 'river'].indexOf(tables[tableId].public.phase) > -1) {
+                if (tables[tableId] && tables[tableId].seats[activeSeat].socket.id === socket.id && tables[tableId].public.biggestBet && ['preflop', 'flop', 'turn', 'river'].indexOf(tables[tableId].public.phase) > -1) { // TODO: проверка средств на счету!
                 // Sending the callback first, because the next functions may need to send data to the same player, that shouldn't be overwritten
                     log.info('[#' + tableId + ']' + players[socket.id].public.name + ' call ');
                     callback({ 'success': true });
@@ -424,9 +424,9 @@ io.sockets.on('connection', function(socket) {
                     amount = $u.round(amount);
                     if (amount && isFinite(amount) && amount <= tables[tableId].seats[activeSeat].public.chipsInPlay) {
                     // Sending the callback first, because the next functions may need to send data to the same player, that shouldn't be overwritten
-                        log.info('[#' + tableId + ']' + players[socket.id].public.name + ' bet ' + amount);    
+                        log.info('[#' + tableId + ']' + players[socket.id].public.name + ' bet ' + amount);
                         callback({ 'success': true });
-                        tables[tableId].playerBetted(amount);        
+                        tables[tableId].playerBetted(amount);
                     }
                 }
             }
@@ -463,10 +463,10 @@ io.sockets.on('connection', function(socket) {
                         amount -= tables[tableId].seats[activeSeat].public.bet;
                         if (amount <= tables[tableId].seats[activeSeat].public.chipsInPlay) {
                         // Sending the callback first, because the next functions may need to send data to the same player, that shouldn't be overwritten
-                            log.info('[#' + tableId + ']' + players[socket.id].public.name + ' raise ' + amount);    
+                            log.info('[#' + tableId + ']' + players[socket.id].public.name + ' raise ' + amount);
                             callback({ 'success': true });
                             // The amount should not include amounts previously betted
-                            tables[tableId].playerRaised(amount);     
+                            tables[tableId].playerRaised(amount);
                         }
                     }
                 }

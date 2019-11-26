@@ -8,6 +8,10 @@ const creteLogFile = () =>{
         flags: "a"
     });
 };
+
+const tablesLog = {
+
+};
 let infoStr = creteLogFile();
 
 infoStr.write(`
@@ -26,6 +30,9 @@ module.exports = {
 
         infoStr.write(`
 ` + 'info|' + fullTime() + '|' + str);
+        if (str.includes('[#')){
+            setTableLog(str);
+        };
     },
     warn (str) {
         console.log('\x1b[33m', 'warn|' + fullTime(), "\x1b[0m", str);
@@ -66,3 +73,19 @@ setInterval(() => {
         infoStr = creteLogFile();
     }
 }, 60 * 1000);
+function setTableLog(str) {
+    try {
+        const id = str.match(/\[.*?\]/)[0].replace('[#', '_'). replace(']', '');
+        if (!tablesLog[id]){
+            tablesLog[id] = fs.createWriteStream('./logs/table#' + id + '.log', {
+                flags: "a"
+            });
+        }
+        tablesLog[id].write(`
+        <i>` + fullTime() + '</i>:' + str);
+
+    } catch (e) {
+        console.log('ERROR table log', e);
+
+    }
+}
