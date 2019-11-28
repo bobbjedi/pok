@@ -37,6 +37,23 @@
     </div>
     <div class="row">
         <div class="cell">
+            <div id="checkbox-auto-moves">
+                <div class="setting-line" ng-click="automoves.isCheckFold = !automoves.isCheckFold">
+                    <i class="fa hovered" ng-class="'fa-toggle-' + (automoves.isCheckFold ? 'on' : 'off')"
+                        aria-hidden="true"></i>
+                    <div class="settings-label">Авто check/fold</div>
+                </div>
+                <div class="setting-line" ng-click="automoves.isCheck = !automoves.isCheck">
+                    <i class="fa hovered" ng-class="'fa-toggle-' + (automoves.isCheck ? 'on' : 'off')"
+                        aria-hidden="true"></i>
+                    <div class="settings-label">Авто check</div>
+                </div>
+                <div class="setting-line" ng-click="automoves.isCall = !automoves.isCall">
+                    <i class="fa hovered" ng-class="'fa-toggle-' + (automoves.isCall ? 'on' : 'off')"
+                        aria-hidden="true"></i>
+                    <div class="settings-label">Авто call</div>
+                </div>
+            </div>
             <!--set8-->
         </div>
         <div class="cell">

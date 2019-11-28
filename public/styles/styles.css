@@ -891,6 +891,16 @@ div#board-wrap .card-container {
     margin: 2px !important;
 }
 
+
+#checkbox-auto-moves{
+    position: absolute;
+    width: 191px;
+    left: -100px;
+}
+
+#checkbox-auto-moves .fa-toggle-on {
+    color: #fab41d;
+}
 @media screen and (max-width:767px),
 screen and (max-device-width:480px) {
     #content {

@@ -38,15 +38,15 @@ Pot.prototype.addTableBets = function(players) {
     var currentPot = this.pots.length - 1;
 
     // The smallest bet of the round
-    var smallestBet = 0;
+    let smallestBet = 0;
     // Flag that shows if all the bets have the same amount
     var allBetsAreEqual = true;
 
     // Trying to find the smallest bet of the player
     // and if all the bets are equal
     for (var i in players) {
-        // if (players[i] && players[i].public.bet) {
-        if (players[i] && players[i].public.inHand) {
+        if (players[i] && players[i].public.bet) {
+        // if (players[i] && players[i].public.inHand) {
             if (!smallestBet) {
                 smallestBet = players[i].public.bet;
             }
@@ -64,6 +64,7 @@ Pot.prototype.addTableBets = function(players) {
     // If all the bets are equal, then remove the bets of the players and add
     // them to the pot as they are
     if (allBetsAreEqual) {
+        let isNeedNewPot = false;
         log.info('[#' + tableId + ']' + ' allBetsAreEqual');
         for (var i in players) {
             players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
@@ -74,8 +75,17 @@ Pot.prototype.addTableBets = function(players) {
                     this.pots[currentPot].contributors.push(players[i].seat);
                     log.info('[#' + tableId + '] add to contributors to pot#' + currentPot + ' ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
                 }
-                console.log(this.pots, currentPot, this.pots[currentPot].contributors);
+                if (players[i].public.chipsInPlay === 0){
+                    isNeedNewPot = players[i].public.name;
+                }
             }
+        }
+        if (isNeedNewPot){
+            log.info('[#' + tableId + '] all In #' + isNeedNewPot + ' create new pot!');
+            this.pots.push({
+                amount: 0,
+                contributors: []
+            });
         }
     } else {
         // If not all the bets are equal, remove from each player's bet the smallest bet

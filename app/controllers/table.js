@@ -5,9 +5,11 @@
  */
 import angular from 'angular';
 import $u from '../libs/utils';
+import automoves from './mixins/automoves';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
+        automoves($scope);
         var selectedSeat = null;
         $scope.table = {};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -49,34 +51,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // Joining the socket room
-        setTimeout(()=>socket.emit('enterRoom', $routeParams.tableId), 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
+        setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
-        $rootScope.$watch('timeOutCurrent', (v)=>{
-            if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){
-                $scope.postBlind(true);
-            }
-
-            if ($scope.showCallButton() && $scope.callAmount() === 0){ // сходил в алл ин и ждет автокалит 0
-                console.log('Автоколл после аллин');
-                return $scope.call();
-            }
-            if ($scope.showCheckButton() && $scope.table.seats[$scope.mySeat].chipsInPlay <= 0){
-                console.log('Авточек после аллин');
-                return $scope.check();
-            }
-
-            if (v !== 1 || $scope.table.activeSeat !== $scope.mySeat){
-                return;
-            }
-            if ($scope.showCheckButton()){
-                $scope.check();
-            } else if ($scope.showFoldButton()){
-                $scope.fold();
-            } else if ($scope.showSitOutButton()){
-                $scope.postBlind(false);
-            } else if ($scope.showLeaveTableButton()){
-                $scope.leaveTable();
-            }
+        $rootScope.$watch('timeOutCurrent', v=> {
+            $scope.automoves.callback(v);
         });
 
         $scope.minBetAmount = function() {
@@ -318,6 +296,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 $rootScope.winnerName = null;
                 $rootScope.winnerMsgArr = [];
                 $rootScope.winnersData = {};
+                $scope.isSendActionAuto = false;
             }
             switch (data.log.action) {
             case 'fold':
@@ -346,6 +325,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     console.log(data);
                     $rootScope.winnersData = data;
                     $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
+                    $scope.automoves.reset();                    
                     return $scope.$digest();
                 }
                 var messageBox = document.querySelector('#messages');
@@ -376,7 +356,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.table = data;
             $scope.actionState = 'waiting';
             $scope.myCards[0] = '';
-            $scope.myCards[1] = '';
+            $scope.myCards[1] = '';            
             $scope.$digest();
         });
 
@@ -406,6 +386,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.actionState = 'actBettedPot';
             var proposedBet = +$scope.table.biggestBet + $scope.table.bigBlind;
             $scope.betAmount = $scope.table.seats[$scope.mySeat].chipsInPlay < proposedBet ? $scope.table.seats[$scope.mySeat].chipsInPlay : proposedBet;
+            $scope.isSendActionAuto = false;
             $scope.$digest();
             sounds.playMyStepSound();
         });
@@ -416,6 +397,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.actionState = 'actNotBettedPot';
 
             $scope.betAmount = $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
+            $scope.isSendActionAuto = false;
             $scope.$digest();
         });
 
@@ -423,7 +405,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.on('actOthersAllIn', function() {
             sounds.playMyStepSound();
             $scope.actionState = 'actOthersAllIn';
-
+            $scope.isSendActionAuto = false;
             $scope.$digest();
         });
     }]);
