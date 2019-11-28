@@ -37,7 +37,7 @@
     </div>
     <div class="row">
         <div class="cell">
-            <div id="checkbox-auto-moves">
+            <div id="checkbox-auto-moves" ng-show="table.seats[mySeat].chipsInPlay > 0">
                 <div class="setting-line" ng-click="automoves.isCheckFold = !automoves.isCheckFold">
                     <i class="fa hovered" ng-class="'fa-toggle-' + (automoves.isCheckFold ? 'on' : 'off')"
                         aria-hidden="true"></i>
