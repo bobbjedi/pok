@@ -45,7 +45,8 @@ Pot.prototype.addTableBets = function(players) {
     // Trying to find the smallest bet of the player
     // and if all the bets are equal
     for (var i in players) {
-        if (players[i] && players[i].public.bet) {
+        // if (players[i] && players[i].public.bet) {
+        if (players[i] && players[i].public.inHand) {
             if (!smallestBet) {
                 smallestBet = players[i].public.bet;
             }

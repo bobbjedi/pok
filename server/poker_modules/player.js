@@ -54,6 +54,7 @@ Player.prototype.initState = function(user){
             this.stat = new actionsStatDb({
                 _id: user._id,
                 login: user.login,
+                gamesCount: 0,
                 games: {},
                 check: {},
                 call: {},

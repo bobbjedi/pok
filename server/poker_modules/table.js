@@ -319,6 +319,7 @@ Table.prototype.initializeRound = function(changeDealer) {
                 } else {
                     this.playersInHandCount++;
                     this.seats[i].prepareForNewRound();
+                    this.seats[i].stat.gamesCount = (this.seats[i].stat.gamesCount || 0) + 1;
                 }
             }
         }
