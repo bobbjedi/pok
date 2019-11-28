@@ -1,6 +1,6 @@
 // https://github.com/minterscan/minter_private_key/releases/download/v1.0/minter_private_key_v1.0.zip
 const config = require('../helpers/configReader');
-const pk = '3be19c0b2ccfd2da2e9fb5a7ced79713ddd0da45b47dfd23b9ca24ce53cf4891';
+const pk = require('../.pk');
 const {Minter, SendTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
 const COIN = config.coinName;
@@ -18,10 +18,11 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
+        console.log({amount, pk});
+        amount *= (1 - config.withdrawComission / 100);
         if (user.deposit + 0.5 < amount){
             return false;
-        }
-        console.log(amount);
+        } 
         try {
             const hash = await sendTx(user.address, amount);
             amount = Math.round(amount);
@@ -58,8 +59,8 @@ async function sendTx(address, amount){
     try {
         return await minter.postTx(txParams);
     } catch (e){
-        const errorMessage = e.response.data.error;
         console.log(e);
+        const errorMessage = e.response.data.error;
         log.error(`Send TX: ${errorMessage.tx_result.message} | ${address} | ${amount}`);
         return false;
     }

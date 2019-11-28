@@ -1,11 +1,13 @@
 <div id="lobby">
 
     <div class="modal-wrap" ng-show="isShowWithdraw">
-        <div class="modal">
-            <div class="modal-text">Вы действительно хотите вывести {{$root.user.deposit}} {{$root.config.coinName}}?
+        <div class="modal withdraw">
+            <div class="modal-text">
+                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposit}}</span> {{$root.config.coinName}}</div>
+                <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow" ng-click="withdrawAmount = $root.user.deposit"> Все </span></div>
             </div>
             <div class="buts" ng-click="isShowWithdraw = false">
-                <div class="but bg-green" ng-click="$root.withdraw();">Да</div>
+                <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount);">Да</div>
                 <div class="but bg-red">Нет</div>
             </div>
         </div>

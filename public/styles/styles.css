@@ -898,6 +898,13 @@ div#board-wrap .card-container {
     left: -100px;
 }
 
+.withdraw input{
+    padding: 3px;
+    width: 120px;
+    border-radius: 5px;
+    font-size: 1.2em;
+    text-align: center;
+}
 #checkbox-auto-moves .fa-toggle-on {
     color: #fab41d;
 }

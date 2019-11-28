@@ -63,8 +63,9 @@ app.run(function($rootScope, $location) {
         }, true);
     }, 2000);
 
-    $rootScope.withdraw = _.throttle(function(){
-        $rootScope.api({action: 'withdraw'}, data => {
+    $rootScope.withdraw = _.throttle(function(amount){
+        console.log({amount})
+        $rootScope.api({action: 'withdraw', data: {amount}}, data => {
             noty('success', 'Успешно вывели!');
             $rootScope.updateUser();
         });

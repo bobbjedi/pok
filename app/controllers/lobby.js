@@ -9,6 +9,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
     $scope.public = {};
+    $scope.withdrawAmount = 0;
     $scope.addressShort = ()=>{
         const address = $rootScope.user.address;
         return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
