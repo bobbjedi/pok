@@ -50,8 +50,8 @@ if (isDev) {
         const fs = require('fs');
         const fileName = Dist + '/build.js';
         const code = fs.readFileSync(fileName, 'utf8');
-        const newCode = code.replace(/(\/\/ .*?\n)|(\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\/)/g, '');
+        const newCode = code.replace(/(\/\/ .*?\n)|(\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\/)/g, '\n');
         fs.writeFileSync(fileName, newCode);
         console.log('done;');
-    }, 15000);
+    }, 5000);
 }
