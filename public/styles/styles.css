@@ -751,7 +751,7 @@ div#board-wrap .card-container {
     position: absolute;
     text-align: center;
     width: 100%;
-    font-weight: bold;
+    color: gold;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
