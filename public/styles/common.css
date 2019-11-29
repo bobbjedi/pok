@@ -450,7 +450,7 @@ div.row {
     div.seat {
         height: 45px;
     }
-    .avatar-img-seat{
+    div.seat .avatar-img-seat{
         height: 45px;
         width: 45px;
     }
