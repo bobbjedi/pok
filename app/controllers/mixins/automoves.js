@@ -20,6 +20,7 @@ export default $scope =>{
                     $scope.isSendActionAuto = true;
                     console.log('Автоколл чекбокс');
                     noty('info', 'Авто call ' + $scope.callAmount());
+                    this.reset();
                     return $scope.call();
                 } else if ($scope.showCallButton() && $scope.callAmount() >= $scope.table.bigBlind * 3){
                     automoves.isCall = false;
@@ -29,6 +30,7 @@ export default $scope =>{
                     $scope.isSendActionAuto = true;
                     console.log('Авточек чекбокс');
                     noty('info', 'Авто check ');
+                    this.reset();
                     return $scope.check();
                 }
 
@@ -37,12 +39,14 @@ export default $scope =>{
                         console.log('Авточек чекбокс');
                         $scope.isSendActionAuto = true;
                         noty('info', 'Авто check');
+                        this.reset();
                         return $scope.check();
                     }
                     if ($scope.showFoldButton()){
                         console.log('Автофолд чекбокс');
                         $scope.isSendActionAuto = true;
                         noty('info', 'Авто fold');
+                        this.reset();
                         return $scope.fold();
                     }
                 }
