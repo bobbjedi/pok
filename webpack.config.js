@@ -53,5 +53,5 @@ if (isDev) {
         const newCode = code.replace(/(\/\/ .*?\n)|(\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\/)/g, '\n');
         fs.writeFileSync(fileName, newCode);
         console.log('done;');
-    }, 5000);
+    }, 15000);
 }
