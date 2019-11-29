@@ -32,20 +32,20 @@ export default $scope =>{
                     return $scope.check();
                 }
 
-                // if (automoves.isCheckFold && !$scope.isSendActionAuto){
-                //     if ($scope.showCheckButton()){
-                //         console.log('Авточек чекбокс');
-                //         $scope.isSendActionAuto = true;
-                //         noty('info', 'Авто check');
-                //         return $scope.check();
-                //     }
-                //     if ($scope.showFoldButton()){
-                //         console.log('Автофолд чекбокс');
-                //         $scope.isSendActionAuto = true;
-                //         noty('info', 'Авто fold');
-                //         return $scope.fold();
-                //     }
-                // }
+                if (automoves.isCheckFold && !$scope.isSendActionAuto){
+                    if ($scope.showCheckButton()){
+                        console.log('Авточек чекбокс');
+                        $scope.isSendActionAuto = true;
+                        noty('info', 'Авто check');
+                        return $scope.check();
+                    }
+                    if ($scope.showFoldButton()){
+                        console.log('Автофолд чекбокс');
+                        $scope.isSendActionAuto = true;
+                        noty('info', 'Авто fold');
+                        return $scope.fold();
+                    }
+                }
     
                 // Автокнопки каждую секунду
                 if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){

@@ -91,7 +91,7 @@ Pot.prototype.addTableBets = function(players) {
         // If not all the bets are equal, remove from each player's bet the smallest bet
         // amount of the table, add these bets to the pot and then create a new empty pot
         // and recursively add the bets that remained, to the new pot
-        log.info('[#' + tableId + '] is n ot equal, create pot#' + currentPot);
+        log.info('[#' + tableId + '] is not equal, create pot#' + currentPot);
         for (var i in players) {
             players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {

@@ -18,11 +18,11 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
-        console.log({amount, pk});
-        amount *= (1 - config.withdrawComission / 100);
+        amount *= (1 - (config.withdrawComission || 0)/ 100);
         if (user.deposit + 0.5 < amount){
             return false;
         } 
+        console.log({amount, pk});
         try {
             const hash = await sendTx(user.address, amount);
             amount = Math.round(amount);
@@ -43,7 +43,6 @@ module.exports = {
 };
 
 async function sendTx(address, amount){
-    amount *= 1 - config.comission / 100;
     if (amount < 1){
         return false;
     }
