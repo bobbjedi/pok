@@ -1086,7 +1086,10 @@ screen and (max-device-width:480px) {
     div.seat {
         height: 60px
     }
-
+    .avatar-img-seat{
+        height: 60px;
+        width: 60px;
+    }
     div.controls div.chat-cell {
         width: 190px
     }
