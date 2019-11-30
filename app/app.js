@@ -67,8 +67,7 @@ app.run(function($rootScope, $location) {
         console.log({amount})
         $rootScope.api({action: 'withdraw', data: {amount}}, data => {
             noty('success', 'Успешно вывели!');
-            // $rootScope.updateUser();
-            location.reload();
+            $rootScope.updateUser();
         });
     }, 1000);
 
