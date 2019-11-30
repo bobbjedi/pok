@@ -6,12 +6,13 @@
 import angular from 'angular';
 import $u from '../libs/utils';
 import automoves from './mixins/automoves';
+import { isNumber } from 'util';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
         automoves($scope);
         var selectedSeat = null;
-        $scope.table = {};
+        $scope.table = {seats:[]};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         $scope.showingChipsModal = false;
         $scope.actionState = '';
@@ -27,6 +28,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
         $scope.lastEventTime = 0;
+        console.log('$rootScope.sittingOnTable', $rootScope.sittingOnTable)
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
                 $scope.lastEventTime = new Date().getTime();
@@ -36,9 +38,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
         $scope.checkUserSeat = ()=>{
             const {table} = $scope;
+            console.log(table.seats)
             for (let seat in table.seats){
                 const player = table.seats[seat];
-                if (player && player.name === $rootScope.user.login){
+                if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     $rootScope.sittingIn = true;
                     $scope.mySeat = seat;
@@ -51,6 +54,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
+        // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
 
@@ -179,6 +183,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // A request to sit on a specific seat on the table
         $scope.sitOnTheTable = function() {
+            if ($rootScope.sittingOnTable){
+                noty('error', 'Вы уже сидите за этим столом.');
+                return;
+            }
             socket.emit('sitOnTheTable', { 'seat': selectedSeat, 'tableId': $routeParams.tableId, 'chips': $scope.buyInAmount }, function(response) {
                 if (response.success){
                     $scope.buyInModalVisible = false;
@@ -309,6 +317,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         socket.on('table-data', function(data) {
             $scope.table = data;
+            $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();
                 $rootScope.winnerName = null;
