@@ -31,10 +31,7 @@ module.exports = {
                 await user.save();
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
                 console.log(hash);
-                const player = $u.getPlayerByUserId(user._id);
-                if (player){
-                    player.chips = user.deposit;
-                }
+                $u.updateChipsUserPlayers(user);
                 return true;
             }
             return false;

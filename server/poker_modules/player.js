@@ -75,17 +75,25 @@ Player.prototype.getUserDB = async function () {
         _id: this._id
     });
 };
-Player.prototype.updateDeposit = async function (amount) {
-    const user = await this.getUserDB();
+Player.prototype.updateDeposit = async function (amount, user) {
+    user = user || await this.getUserDB();
     user.deposit = $u.round(user.deposit + amount);
+    $u.updateChipsUserPlayers(user);
     await user.save();
 };
 
-Player.prototype.updateDepInPlay = async function () {
-    const user = await this.getUserDB();
-    await user.update({
-        depositInGame: this.public.chipsInPlay
-    }, true);
+Player.prototype.updateDepInPlay = async function (user) {
+    user = user || await this.getUserDB();
+    user.depositInRoom[this.sittingOnTable] = this.public.chipsInPlay;
+    let totalInGame = 0;
+    for (let room in user.depositInRoom){
+        totalInGame += user.depositInRoom[room];
+        if (user.depositInRoom[room] <= 0){
+            delete user.depositInRoom[room];
+        }
+    }
+    user.depositInGame = totalInGame;
+    await user.save();
 };
 
 /**
@@ -102,14 +110,13 @@ Player.prototype.return = function () {
 Player.prototype.leaveTable = async function () {
     if (this.sittingOnTable !== false) {
         this.sitOut();
-        this.chips += this.public.chipsInPlay;
-        // Remove the player from the table
-        this.sittingOnTable = false;
-        this.seat = null;
         await this.updateDeposit(this.public.chipsInPlay);
         // Remove the chips from play
         this.public.chipsInPlay = 0;
         await this.updateDepInPlay();
+        // Remove the player from the table
+        this.sittingOnTable = false;
+        this.seat = null;
     }
 };
 
@@ -122,13 +129,13 @@ Player.prototype.leaveTable = async function () {
 Player.prototype.sitOnTable = async function (tableId, seat, chips) {
     // Remove the chips that player will have on the table, from the player object
     chips = $u.round(chips);
-    this.chips -= chips;
     this.public.chipsInPlay = chips;
+    const user = await this.getUserDB();
     // Add the table info in the player object
     this.seat = seat;
     this.sittingOnTable = tableId;
-    await this.updateDeposit(-chips);
-    await this.updateDepInPlay();
+    await this.updateDeposit(-chips, user);
+    await this.updateDepInPlay(user);
 };
 
 /**

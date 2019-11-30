@@ -12,13 +12,20 @@ module.exports = {
     init(data){
         players_ = data.players;
     },
-    getPlayerByUserId(user_id){
+    getPlayersByUserId(user_id){
+        const players = [];
         for (let sId in players_){
             if (players_[sId]._id === user_id){
-                return players_[sId];
+                players.push(players_[sId]);
             };
         };
-        return null;
+        return players;
+    },
+    updateChipsUserPlayers(user){
+        const players = this.getPlayersByUserId(user._id);
+        players.forEach(p=> {
+            p.chips = user.deposit;
+        });
     },
     unix(){
         return new Date().getTime();
@@ -49,7 +56,8 @@ module.exports = {
             loginLowCase: params.login.toLowerCase(),
             password: sha256(params.password.toString()),
             deposit: config.regDrop || 0,
-            depositInGame: 0
+            depositInGame: 0,
+            depositInRoom: {},
         });
         await user.save();
         if (config.regDrop > 0){
@@ -62,10 +70,13 @@ module.exports = {
         const users = await usersDb.find({depositInGame: {$gt: 0}});
         for (let u in users){
             const user = users[u];
+            log.info('[returnChepsInplay] ' + user.login + ': ' + user.depositInGame);
             await user.update({
                 deposit: user.deposit + user.depositInGame,
-                depositInGame: 0
+                depositInGame: 0,
+                depositInRoom: {}
             }, 1);
+            this.updateChipsUserPlayers(users);
         }
     },
     createTables(tables = tables_, eventEmitter = eventEmitter_, Table = Table_){
@@ -99,18 +110,16 @@ module.exports = {
 };
 
 
-setTimeout(()=>{
-    console.log(module.exports.getPlayerByUserId('MxsjhgdjgosaUDYTUyadshjbajsKHDGKJASHJDHG'));
-}, 10000);
+// MIGRATE
 
-// (async ()=>{
-//     const users = await usersDb.find({});
-//     for (let i in users){
-//         const u = users[i];
-//         u.update({loginLowCase: u.login.toLowerCase()}, 1);
-
-//     }
-// })();
+setTimeout(async ()=>{
+    const users = await usersDb.find({});
+    for (let i in users){
+        const u = users[i];
+        u.depositInRoom = {};
+        await u.save();
+    }
+}, 2000);
 module.exports.returnChepsInplay();
 // setTimeout(()=>{
 //     // module.exports.createCustomTable({count: 10, name: 'Вася', sb: 51, creator_user_id: 103345});

@@ -29,11 +29,28 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.lastEventTime = 0;
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
-                $scope.lastEventTime = new Date().getTime();   
+                $scope.lastEventTime = new Date().getTime();
                 return true;
             }
             return false;
         };
+        $scope.checkUserSeat = ()=>{
+            const {table} = $scope;
+            for (let seat in table.seats){
+                const player = table.seats[seat];
+                if (player && player.name === $rootScope.user.login){
+                    $rootScope.sittingOnTable = $routeParams.tableId;
+                    $rootScope.sittingIn = true;
+                    $scope.mySeat = seat;
+                }
+            }
+            // $rootScope.sittingOnTable = $routeParams.tableId;
+            // $rootScope.sittingIn = true;
+            // $scope.mySeat = selectedSeat;
+            // $scope.actionState = 'waiting';
+        };
+
+        $rootScope.$watch('user.login', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
 
@@ -47,6 +64,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 $scope.table = data.table;
                 $scope.buyInAmount = data.table.maxBuyIn;
                 $scope.betAmount = data.table.bigBlind;
+                $scope.checkUserSeat();
             }
         });
 
@@ -324,7 +342,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     const data = JSON.parse(msg).winnersData;
                     $rootScope.winnersData = data;
                     $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
-                    $scope.automoves.reset();                    
+                    $scope.automoves.reset();
                     return $scope.$digest();
                 }
                 var messageBox = document.querySelector('#messages');
@@ -355,7 +373,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.table = data;
             $scope.actionState = 'waiting';
             $scope.myCards[0] = '';
-            $scope.myCards[1] = '';            
+            $scope.myCards[1] = '';
             $scope.$digest();
         });
 

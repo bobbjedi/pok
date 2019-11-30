@@ -174,17 +174,18 @@ io.sockets.on('connection', function(socket) {
                     let playerExists = false;
                     for (var i in players) {
                         const player = players[i];
-                        if (player.public.name && player.public.name === name) {
+                        // if (player.public.name && player.public.name === name) {
+                        if (socket.id === player.socket.id) {
                             playerExists = player;
                             break;
                         }
                     }
                     if (playerExists){
-                        if (socket.id === playerExists.socket.id){
-                            // console.log('Сокет тотже!', name);
-                            return;
-                        }
-                        $u.removePlayer(playerExists.socket);
+                        // if (socket.id === playerExists.socket.id){
+                        console.log('Сокет тотже!', name);
+                        return;
+                        // }
+                        // $u.removePlayer(playerExists.socket);
                     } // создаем нового
                     const user = await $u.getUserFromQ({token});
                     if (!user){
