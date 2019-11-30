@@ -4,10 +4,21 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const log = require('../log');
 
-let tables_, eventEmitter_, Table_, lastTableId = 0;
+let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
 module.exports = {
     round(n) {
         return Number((n - 0.000001).toFixed(2));
+    },
+    init(data){
+        players_ = data.players;
+    },
+    getPlayerByUserId(user_id){
+        for (let sId in players_){
+            if (players_[sId]._id === user_id){
+                return players_[sId];
+            };
+        };
+        return null;
     },
     unix(){
         return new Date().getTime();
@@ -87,6 +98,10 @@ module.exports = {
     }
 };
 
+
+setTimeout(()=>{
+    console.log(module.exports.getPlayerByUserId('MxsjhgdjgosaUDYTUyadshjbajsKHDGKJASHJDHG'));
+}, 10000);
 
 // (async ()=>{
 //     const users = await usersDb.find({});

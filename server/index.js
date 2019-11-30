@@ -560,5 +560,6 @@ function getSSLFiles(){
     return false;
 }
 
+$u.init({players, tables, eventEmitter});
 // require('./tests');
 

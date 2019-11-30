@@ -21,7 +21,7 @@ module.exports = {
         amount *= (1 - (config.withdrawComission || 0) / 100);
         if (user.deposit + 0.5 < amount){
             return false;
-        } 
+        }
 
         try {
             const hash = await sendTx(user.address, amount);
@@ -31,6 +31,10 @@ module.exports = {
                 await user.save();
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
                 console.log(hash);
+                const player = $u.getPlayerByUserId(user._id);
+                if (player){
+                    player.chips = user.deposit;
+                }
                 return true;
             }
             return false;

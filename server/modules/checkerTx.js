@@ -53,6 +53,10 @@ setInterval(() => {
                     user: ${user.login}
                     amount: ${amount}`);
                 }
+                const player = $u.getPlayerByUserId(user._id);
+                if (player){
+                    player.chips = user.deposit;
+                }
             });
 
         } catch (e) {
