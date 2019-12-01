@@ -103,7 +103,7 @@
         <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users" aria-hidden="true"></i> &nbsp; Создать комнату</div>
         <div class="lobby-stat txt-green" >
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
-            <span> | Игр: {{$root.tsp(public.totalGamesCount)}}</span>
+            <span> | Игр: <span class="big txt-yellow">{{$root.tsp(public.totalGamesCount)}}</span></span>
             <span> | Онлайн: <span class="txt-yellow">{{public.online}}</span></span>
             <span> | Играют: <span class="txt-yellow">{{playersInGame}}</span></span>
         </div>
