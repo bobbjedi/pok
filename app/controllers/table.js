@@ -28,7 +28,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
         $scope.lastEventTime = 0;
-        console.log('$rootScope.sittingOnTable', $rootScope.sittingOnTable)
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
                 $scope.lastEventTime = new Date().getTime();
@@ -38,13 +37,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
         $scope.checkUserSeat = ()=>{
             const {table} = $scope;
-            console.log(table.seats)
             for (let seat in table.seats){
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
-                    $rootScope.sittingIn = true;
-                    $scope.mySeat = seat;
+                    // $rootScope.sittingIn = true;
+                    // $scope.mySeat = seat;
                 }
             }
             // $rootScope.sittingOnTable = $routeParams.tableId;
