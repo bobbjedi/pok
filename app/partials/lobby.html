@@ -104,7 +104,9 @@
         <div class="lobby-stat txt-green" >
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
             <span> | Игр: {{$root.tsp(public.totalGamesCount)}}</span>
-            <span> | Online: {{public.online}}</span></div>
+            <span> | Онлайн: {{public.online}}</span>
+            <span> | Играют: {{playersInGame}}</span>
+        </div>
     </div>
     <table id="table-list" class="table_dark">
         <tr>

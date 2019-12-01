@@ -10,6 +10,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.user = $rootScope.user;
     $scope.public = {};
     $scope.withdrawAmount = 0;
+    $scope.playersInGame = 0;
     $scope.addressShort = ()=>{
         const address = $rootScope.user.address;
         return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
@@ -63,9 +64,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             if (res.status === 200){
                 const data = res.data;
                 $scope.lobbyTables = [];
+                $scope.playersInGame = 0;
                 for (const tableId in data) {
                     if (data[tableId]){
                         $scope.lobbyTables.push(data[tableId]);
+                        $scope.playersInGame += data[tableId].playersSeatedCount;
                     }
                 }
                 $scope.hidePreloader();
