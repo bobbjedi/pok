@@ -93,6 +93,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
             return;
         }
+
+        if (!$scope.isLoginned && !$scope.years18){
+            noty('error', 'Подтвердите Ваше совершеннолетие!');
+            return;
+        }
         const action = $scope.isLoginned ? 'login' : 'registration';
         $rootScope.api({action, data: user}, (data) => {
             $rootScope.user = data;

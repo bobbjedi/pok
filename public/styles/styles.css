@@ -24,10 +24,23 @@ input[type="password"] {
 }
 
 input {
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     border-radius: 0
 }
 
+.block-18{
+    display: flex;
+    margin-top: 25px;
+}
+
+#screen-18-input{
+    display: block;
+}
+
+.label-18-input{
+font-size: .9em;
+color: #999;
+}
 button,
 input[type="submit"],
 .button {

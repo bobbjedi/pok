@@ -55,8 +55,13 @@
                     ng-trim="true">
 
                 <label for="screen-password-input">Пароль</label>
-                <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true"
-                    required>
+                <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true" required>
+                    <br>
+                    <div class="block-18" ng-show="!isLoginned">
+                        <input id="screen-18-input" type="checkbox" ng-model="years18">
+                        <label class="label-18-input  txt-yellow small" for="screen-18-input">Я подтверждаю, что мой возраст не младше 18, и
+                            я полностью понимаю и принимаю риски с использованием криптовалют и участием в азартных играх.</label>
+                    </div>
                 <br>
                 <br>
                 <input type="submit" value="Submit">
