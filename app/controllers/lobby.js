@@ -49,23 +49,6 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     window.reconnectSocket(checkUser);
     $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
 
-    $http({
-        url: window.Domain + '/lobby-data',
-        method: 'GET'
-    }).then(res => {
-        if (res.status === 200){
-            const data = res.data;
-            console.log(data);
-            $scope.lobbyTables = [];
-            for (const tableId in data) {
-                if (data[tableId]){
-                    $scope.lobbyTables.push(data[tableId]);
-                }
-            }
-            $scope.hidePreloader();
-        }
-    });
-
     const updatePublic = ()=> $http({
         url: window.Domain + '/public',
         method: 'GET'
@@ -73,6 +56,21 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         if (res.status === 200) {
             $scope.public = res.data;
         }
+        $http({
+            url: window.Domain + '/lobby-data',
+            method: 'GET'
+        }).then(res => {
+            if (res.status === 200){
+                const data = res.data;
+                $scope.lobbyTables = [];
+                for (const tableId in data) {
+                    if (data[tableId]){
+                        $scope.lobbyTables.push(data[tableId]);
+                    }
+                }
+                $scope.hidePreloader();
+            }
+        });
     });
     updatePublic();
     setInterval(updatePublic, 30 * 1000);
