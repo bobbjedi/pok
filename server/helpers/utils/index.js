@@ -24,6 +24,10 @@ module.exports = {
     updateChipsUserPlayers(user){
         const players = this.getPlayersByUserId(user._id);
         players.forEach(p=> {
+            if (p.isTourn){
+                console.log(user.login, 'В турнире!');
+                return;
+            }
             p.chips = user.deposit;
         });
     },
@@ -93,7 +97,7 @@ module.exports = {
      * @param {Object} params {name, id(0), count, sb, isPrivat}
      */
 
-    createCustomTable(params){// TODO: проверка что еще есть активные комнаты у юзера!
+    createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify(params));
         let i;
         if (params.isPrivate){
@@ -101,26 +105,46 @@ module.exports = {
         } else {
             i = ++lastTableId;
         }
-        tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, params.maxBuyIn || params.sb * 2 * 100, params.sb * 2 * 40, 'custom', params.isPrivate, params.creator_user_id);
+        
+        const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
+        const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
+        
+        tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
         return i;
     },
     rmCustomTable(tableId){ // TODO: удалять комнату eventEmmiter!
+        console.log({tableId});
+        const table = tables_[tableId];
+        table.allPlayersLeft();
+        log.info('RM custom table ' + tableId);
         delete tables_[tableId];
+
+    },
+    tmpTourn(){
+        setTimeout(()=>{
+            this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, {
+                isTourn: true,
+                buyIn: 10,
+                winnersCount: 1,
+                playersCount: null,
+                chips: 1000
+            });
+        }, 1000);
     }
 };
 
 
 // MIGRATE
 
-setTimeout(async ()=>{
-    const users = await usersDb.find({});
-    for (let i in users){
-        const u = users[i];
-        u.depositInRoom = {};
-        await u.save();
-    }
-}, 2000);
+// setTimeout(async ()=>{
+//     const users = await usersDb.find({});
+//     for (let i in users){
+//         const u = users[i];
+//         u.depositInRoom = {};
+//         await u.save();
+//     }
+// }, 2000);
 module.exports.returnChepsInplay();
-// setTimeout(()=>{
-//     // module.exports.createCustomTable({count: 10, name: 'Вася', sb: 51, creator_user_id: 103345});
-// }, 1000);
+// module.exports.tmpTourn();
+
+

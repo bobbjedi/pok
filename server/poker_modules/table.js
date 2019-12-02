@@ -17,7 +17,7 @@ var Deck = require('./deck'),
  * @param int 		minBuyIn (the minimum amount of chips that one can bring to the table)
  * @param bool 		privateTable (flag that shows whether the table will be shown in the lobby)
  */
-var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator) {
+var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator, data = {}) {
     // console.log({privateTable, id})
     // The table is not displayed in the lobby
     this.privateTable = privateTable;
@@ -43,6 +43,20 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.timeOutWaitUserAction = null;
     // user_id создателя таблицы
     this.idCreator = idCreator;
+    
+    
+    // Tournir data
+
+    this.isTourn = data.isTourn;
+    // start tournir;
+    this.isTournStart = false;
+    // количество победителей в турнире
+    this.tournWinnersCount = data.winnersCount || 1;
+    // количество для игры
+    this.tournPlayersCount = data.playersCount || seatsCount;
+    // фишек на старте турнира
+    this.tournChips = data.chips;
+
     // All the public table data
     this.public = {
         type,
@@ -81,7 +95,10 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         gamesCount: 0,
         // bank sum
         allPots: 0,
-        // Log of an action, displayed in the chat
+        // Log of an action, displayed in the chat,
+        tournPrize: 0,
+        // Места в турнире
+        tournSeats: {},
         log: {
             message: '',
             seat: '',
@@ -93,6 +110,51 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         this.seats[i] = null;
     }
     this.setTimeOutRm();
+};
+
+
+Table.prototype.tournStart = async function(){
+    if (!this.isTourn || this.isTournStart){
+        return;
+    }
+    console.log('Start turn');
+    this.public.tournPrize = this.public.minBuyIn * this.tournPlayersCount;
+    this.isTournStart = true;
+    for (let i = 0; i < this.public.seatsCount; i++){
+        const s = this.seats[i];
+        if (!this.seats[i]){
+            continue;
+        }
+        this.public.tournSeats[i] = {name: s.public.name, chipsInPlay: 0};
+        s.public.chipsInPlay = 0;
+        await s.updateDepInPlay();
+        s.public.chipsInPlay = this.tournChips;
+        s.chips = 0;
+        s.isTourn = true; // определяем что в турнире
+        log.info('in Tourn: ' + s.public.name);
+    };
+};
+
+Table.prototype.tournStop = async function(){
+    if (!this.isTourn){
+        return;
+    }
+    log.info('Tourn STOP');
+    this.stopGame();
+    this.isTournStart = false;
+    const winners = Array.from(this.seats).filter(player => player && player.public.sittingIn && player.public.chipsInPlay);
+    const prizePath = $u.round(this.public.tournPrize / winners.length); 
+    if (!(prizePath > 0)){
+        return log.error('prizePath isNaN:' + prizePath);
+    }
+    for (let w in winners){
+        const user = await winners[w].getUserDB();
+        user.deposit = $u.round(user.deposit + prizePath);
+        log.info('Tourn prize: ' + user.login + ' ' + prizePath);
+        await user.save();
+        $u.updateChipsUserPlayers(user);
+    }
+    $u.rmCustomTable(this.public.id);
 };
 
 Table.prototype.setTimeoutWait = function(){
@@ -296,21 +358,30 @@ Table.prototype.initializeRound = function(changeDealer) {
     if (Store.isGamesPaused){
         return;
     }
-    log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****<b>');
-    this.resetTimeOutRm();
-    changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
+    
     this.clearTimeoutWait();
+    this.resetTimeOutRm();
+
+    log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****<b>');
+    changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
+
     if (this.playersSittingInCount > 1) {
         // The game is on now
         this.gameIsOn = true;
         this.public.board = ['', '', '', '', ''];
         this.deck.shuffle();
-        this.headsUp = this.playersSittingInCount === 2;
+        this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
         this.playersInHandCount = 0;
         this.biggestBet = 0;
         this.public.biggestBet = 0;
 
         for (var i = 0; i < this.public.seatsCount; i++) {
+            // отсутвует в турнире - снимаем 1ББ
+            const {tournSeats} = this.public;
+            if (this.isTournStart && tournSeats[i] && tournSeats[i].isOut){
+                tournSeats[i].chipsInPlay = $u.round(tournSeats[i].chipsInPlay - this.public.bigBlind);
+            }
+
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (!this.seats[i].public.chipsInPlay) {
@@ -332,7 +403,6 @@ Table.prototype.initializeRound = function(changeDealer) {
             var randomDealerSeat = Math.ceil(Math.random() * this.playersSittingInCount);
             var playerCounter = 0;
             var i = -1;
-
             // Assinging the dealer button to the random player
             while (playerCounter !== randomDealerSeat && i < this.public.seatsCount) {
                 i++;
@@ -348,6 +418,9 @@ Table.prototype.initializeRound = function(changeDealer) {
         }
 
         this.initializeSmallBlind();
+    } else {
+        console.log('Stop 426');
+        this.tournStop();
     }
 };
 
@@ -720,11 +793,10 @@ Table.prototype.playerRaised = function(amount) {
  * @param object 	player
  * @param int 		seat
  */
-Table.prototype.playerSatOnTheTable = function(player, seat, chips) {
+Table.prototype.playerSatOnTheTable = async function(player, seat, chips) {
     this.seats[seat] = player;
     this.public.seats[seat] = player.public;
-
-    this.seats[seat].sitOnTable(this.public.id, seat, chips);
+    await this.seats[seat].sitOnTable(this.public.id, seat, chips);
 
     // Increase the counters of the table
     this.public.playersSeatedCount++;
@@ -736,7 +808,7 @@ Table.prototype.playerSatOnTheTable = function(player, seat, chips) {
  * Adds a player who is sitting on the table, to the game
  * @param int seat
  */
-Table.prototype.playerSatIn = function(seat) {
+Table.prototype.playerSatIn = async function(seat) {
     this.log({
         message: this.seats[seat].public.name + ' sat in',
         action: '',
@@ -752,9 +824,19 @@ Table.prototype.playerSatIn = function(seat) {
     this.emitEvent('table-data', this.public);
 
     // If there are no players playing right now, try to initialize a game with the new player
-    if (!this.gameIsOn && this.playersSittingInCount > 1) {
+    if (!this.gameIsOn && this.playersSittingInCount > (this.isTourn && (this.tournPlayersCount - 1) || 1)) {
         // Initialize the game
+        await this.tournStart();
         this.initializeRound(false);
+    }
+};
+
+
+Table.prototype.allPlayersLeft = function () {
+    for (let seat in this.seats) {
+        if (this.seats[seat]) {
+            this.playerLeft(seat); 
+        }
     }
 };
 
@@ -778,6 +860,13 @@ Table.prototype.playerLeft = function(seat) {
             // If the player is sitting in, make them sit out first
             if (this.seats[seat].public.sittingIn) {
                 this.playerSatOut(seat, true);
+            }
+            
+            // если турнир - обновляем данные по фишкам в остатке при удалении игрока
+            const {tournSeats} = this.public;
+            if (this.isTournStart && tournSeats[seat]){
+                tournSeats[seat].chipsInPlay = this.seats[seat].public.chipsInPlay - this.public.bigBlind;
+                tournSeats[seat].isOut = true;
             }
 
             this.seats[seat].leaveTable();
@@ -950,6 +1039,12 @@ Table.prototype.endRound = function() {
         }
     }
 
+    console.log(this.tournWinnersCount, this.playersSittingInCount);
+    if (this.isTourn && this.tournWinnersCount >= this.playersSittingInCount){ // завершили турнир!
+        console.log('Stop', 1047);
+        this.tournStop();
+        return;
+    }
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {
         this.stopGame();

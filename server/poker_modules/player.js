@@ -76,6 +76,10 @@ Player.prototype.getUserDB = async function () {
     });
 };
 Player.prototype.updateDeposit = async function (amount, user) {
+    if (this.isTourn){
+        console.log('updateDeposit isTourn', this.public.name);
+        return;
+    }
     user = user || await this.getUserDB();
     user.deposit = $u.round(user.deposit + amount);
     $u.updateChipsUserPlayers(user);
@@ -83,6 +87,10 @@ Player.prototype.updateDeposit = async function (amount, user) {
 };
 
 Player.prototype.updateDepInPlay = async function (user) {
+    if (this.isTourn){
+        console.log('updateDepInPlay isTourn', this.public.name);
+        return;
+    }
     user = user || await this.getUserDB();
     user.depositInRoom[this.sittingOnTable] = this.public.chipsInPlay;
     let totalInGame = 0;

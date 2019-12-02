@@ -228,8 +228,29 @@ io.sockets.on('connection', function(socket) {
 	 * When a player requests to sit on a table
 	 * @param function callback
 	 */
-    socket.on('sitOnTheTable', function(data, callback) {
+    socket.on('sitOnTheTable', async function(data, callback) {
         try {
+            const table = tables[data.tableId];
+            const player = players[socket.id];
+
+            if (table.isTournStart){ // если турнир
+                const {tournSeats} = table.public;
+                for (let s in tournSeats){
+                    if (tournSeats[s] && tournSeats[s].name === player.public.name){
+                        player.public.chipsInPlay = 0;
+                        await player.updateDepInPlay();
+                        player.public.chipsInPlay = tournSeats[s].chipsInPlay;
+                        player.chips = 0;
+                        player.isTourn = true; // определяем что в турнире
+                        tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
+                        callback({ 'success': true });
+                        return log.info('Return in Tourn: ' + player.public.name);
+                    }
+                } 
+                return callback({ 'success': false, error: 'Вы не участвуете в турнире.'}); 
+            }
+
+            // Простая игра
             if (
             // A seat has been specified
                 typeof data.seat !== 'undefined'

@@ -45,7 +45,6 @@ module.exports = (app) => {
                 break;
 
             case ('withdraw'):
-                console.log({GET})
                 const resWithdraw = await withdraw(User, GET.amount);
                 if (resWithdraw){
                     success({}, res);
