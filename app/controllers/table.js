@@ -71,7 +71,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // Joining the socket room
-        setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
+        setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 2000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
@@ -191,7 +191,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     $rootScope.sittingIn = true;
                     $scope.buyInError = null;
-                    $scope.mySeat = selectedSeat;
+                    $scope.mySeat = response.seat || selectedSeat; // если response.seats - турнир
                     $scope.actionState = 'waiting';
                     $rootScope.updateUser();
                     $scope.$digest();

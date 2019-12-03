@@ -47,6 +47,10 @@ module.exports = {
         if (/[A-Za-z]/.test(params.login) && /[А-яф-я]/.test(params.login)){
             return {error: 'Запрещено мешать кириллицу и латиницу.'};
         }
+        if (/^.*[^A-zА-яЁё].*$/.test(params.login)){
+            return {error: 'Запрещено использовать знаки.'};
+        }
+
         const checkUser = await usersDb.findOne({
             $or: [{address}, {login}, {loginLowCase: login.toLowerCase()}]
         });
@@ -97,7 +101,7 @@ module.exports = {
      * @param {Object} params {name, id(0), count, sb, isPrivat}
      */
 
-    createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
+    createCustomTable(params, data = {}){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify(params));
         let i;
         if (params.isPrivate){
@@ -105,10 +109,10 @@ module.exports = {
         } else {
             i = ++lastTableId;
         }
-        
+
         const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
         const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
-        
+
         tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
         return i;
     },
@@ -124,10 +128,10 @@ module.exports = {
         setTimeout(()=>{
             this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, {
                 isTourn: true,
-                buyIn: 10,
+                buyIn: 100,
                 winnersCount: 1,
-                playersCount: null,
-                chips: 1000
+                playersCount: 3,
+                chips: 1500
             });
         }, 1000);
     }
@@ -145,6 +149,6 @@ module.exports = {
 //     }
 // }, 2000);
 module.exports.returnChepsInplay();
-// module.exports.tmpTourn();
+module.exports.tmpTourn();
 
 

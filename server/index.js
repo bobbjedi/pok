@@ -70,6 +70,7 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].type = tables[tableId].public.type;
             lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
             lobbyTables[tableId].allPots = tables[tableId].public.allPots;
+            lobbyTables[tableId].ante = tables[tableId].public.ante;
         }
     }
     res.send(lobbyTables);
@@ -232,7 +233,9 @@ io.sockets.on('connection', function(socket) {
         try {
             const table = tables[data.tableId];
             const player = players[socket.id];
-
+            if (!table){
+                callback({ 'success': false, 'error': 'Стола не существует' });
+            }
             if (table.isTournStart){ // если турнир
                 const {tournSeats} = table.public;
                 for (let s in tournSeats){
@@ -243,14 +246,15 @@ io.sockets.on('connection', function(socket) {
                         player.chips = 0;
                         player.isTourn = true; // определяем что в турнире
                         tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
-                        callback({ 'success': true });
+                        callback({ 'success': true, seat: s});
                         return log.info('Return in Tourn: ' + player.public.name);
                     }
-                } 
-                return callback({ 'success': false, error: 'Вы не участвуете в турнире.'}); 
+                }
+                return callback({ 'success': false, error: 'Вы не участвуете в турнире.'});
             }
-
+            player.isTourn = false; // сбрасываем турнир
             // Простая игра
+
             if (
             // A seat has been specified
                 typeof data.seat !== 'undefined'
@@ -585,3 +589,28 @@ function getSSLFiles(){
 $u.init({players, tables, eventEmitter});
 // require('./tests');
 
+
+
+// console.log(
+//     1, typeof data.seat !== 'undefined'
+//     // A table id is specified
+//     , 2, typeof data.tableId !== 'undefined'
+//     // The table exists
+//     , 3, typeof tables[data.tableId] !== 'undefined'
+//     // The seat number is an integer and less than the total number of seats
+//     , 4, typeof data.seat === 'number'
+//     , 5, data.seat >= 0
+//     , 5.1, data.seat < tables[data.tableId].public.seatsCount
+//     , 6, typeof players[socket.id] !== 'undefined'
+//     // The seat is empty
+//     , 7, tables[data.tableId].seats[data.seat] === null
+//     // The player isn't sitting on any other tables
+//     , 8, players[socket.id].sittingOnTable === false
+//     // The player had joined the room of the table
+//     , 9, players[socket.id].room === data.tableId
+//     // The chips number chosen is a number
+//     , 10, typeof data.chips !== 'undefined'
+//     , 11, !isNaN(parseInt(data.chips))
+//     , 12, isFinite(data.chips)
+//     // The chips number is an integer
+//     , 13, data.chips % 1 === 0);

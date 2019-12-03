@@ -30,7 +30,7 @@
 <div id="table">
     <div class="table-name">
         <div>{{table.name}}</div>
-        <div>Big blind: {{table.bigBlind}}, Max buy in: {{table.maxBuyIn}}</div>
+        <div>Big blind: {{table.bigBlind}}, Max buy in: {{table.maxBuyIn}}<span ng-show="table.ante">, Ante: {{table.ante}}</span></div>
     </div>
     <div id="felt"></div>
 </div>

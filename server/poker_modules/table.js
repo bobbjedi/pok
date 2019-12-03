@@ -3,6 +3,7 @@ var Deck = require('./deck'),
     log = require('../helpers/log'),
     $u = require('../helpers/utils'),
     Store = require('../modules/Store'),
+    sng = require('../helpers/utils/sng'),
     config = require('../helpers/configReader');
 /**
  * The table "class"
@@ -43,10 +44,9 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.timeOutWaitUserAction = null;
     // user_id создателя таблицы
     this.idCreator = idCreator;
-    
-    
-    // Tournir data
 
+
+    // Tournir data
     this.isTourn = data.isTourn;
     // start tournir;
     this.isTournStart = false;
@@ -57,6 +57,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // фишек на старте турнира
     this.tournChips = data.chips;
 
+    this.timeParams = data.isTourn && sng();
     // All the public table data
     this.public = {
         type,
@@ -112,12 +113,31 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.setTimeOutRm();
 };
 
+Table.prototype.updateTournParams = function () {
+    if (!this.timeParams.length) {
+        return;
+    }
+    const next = this.timeParams.shift();
+    this.public.smallBlind = next.sb;
+    this.public.bigBlind = next.sb * 2;
+    this.public.ante = next.ante;
+    log.info('updateTournParams: ' + JSON.stringify(next));
+};
+
+Table.prototype.timeOutUpdateTournParams = function () {
+    this.updateTournParams();
+    this.timeOutUpdateTourn = setTimeout(()=>{
+        this.timeOutUpdateTournParams();
+    }, 30 * 1000);
+};
+
 
 Table.prototype.tournStart = async function(){
     if (!this.isTourn || this.isTournStart){
         return;
     }
     console.log('Start turn');
+    this.timeOutUpdateTournParams();
     this.public.tournPrize = this.public.minBuyIn * this.tournPlayersCount;
     this.isTournStart = true;
     for (let i = 0; i < this.public.seatsCount; i++){
@@ -136,14 +156,15 @@ Table.prototype.tournStart = async function(){
 };
 
 Table.prototype.tournStop = async function(){
-    if (!this.isTourn){
+    if (!this.isTourn || !this.isTournStart){
         return;
     }
-    log.info('Tourn STOP');
-    this.stopGame();
     this.isTournStart = false;
+    log.info('Tourn STOP');
+    clearTimeout(this.timeOutUpdateTourn);
+    this.stopGame();
     const winners = Array.from(this.seats).filter(player => player && player.public.sittingIn && player.public.chipsInPlay);
-    const prizePath = $u.round(this.public.tournPrize / winners.length); 
+    const prizePath = $u.round(this.public.tournPrize / winners.length);
     if (!(prizePath > 0)){
         return log.error('prizePath isNaN:' + prizePath);
     }
@@ -154,6 +175,7 @@ Table.prototype.tournStop = async function(){
         await user.save();
         $u.updateChipsUserPlayers(user);
     }
+    $u.tmpTourn();
     $u.rmCustomTable(this.public.id);
 };
 
@@ -312,6 +334,7 @@ Table.prototype.initStats = async function() {
         }
     };
 };
+
 Table.prototype.stateAction = async function(player, type){
     // console.log(player.public.name, type);
     try {
@@ -358,7 +381,7 @@ Table.prototype.initializeRound = function(changeDealer) {
     if (Store.isGamesPaused){
         return;
     }
-    
+
     this.clearTimeoutWait();
     this.resetTimeOutRm();
 
@@ -379,7 +402,7 @@ Table.prototype.initializeRound = function(changeDealer) {
             // отсутвует в турнире - снимаем 1ББ
             const {tournSeats} = this.public;
             if (this.isTournStart && tournSeats[i] && tournSeats[i].isOut){
-                tournSeats[i].chipsInPlay = $u.round(tournSeats[i].chipsInPlay - this.public.bigBlind);
+                tournSeats[i].chipsInPlay = $u.round(tournSeats[i].chipsInPlay - this.public.ante);
             }
 
             // If a player is sitting on the current seat
@@ -835,7 +858,7 @@ Table.prototype.playerSatIn = async function(seat) {
 Table.prototype.allPlayersLeft = function () {
     for (let seat in this.seats) {
         if (this.seats[seat]) {
-            this.playerLeft(seat); 
+            this.playerLeft(seat);
         }
     }
 };
@@ -861,11 +884,11 @@ Table.prototype.playerLeft = function(seat) {
             if (this.seats[seat].public.sittingIn) {
                 this.playerSatOut(seat, true);
             }
-            
+
             // если турнир - обновляем данные по фишкам в остатке при удалении игрока
             const {tournSeats} = this.public;
             if (this.isTournStart && tournSeats[seat]){
-                tournSeats[seat].chipsInPlay = this.seats[seat].public.chipsInPlay - this.public.bigBlind;
+                tournSeats[seat].chipsInPlay = this.seats[seat].public.chipsInPlay - this.public.ante;
                 tournSeats[seat].isOut = true;
             }
 
