@@ -128,9 +128,9 @@ module.exports = {
         setTimeout(()=>{
             this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, {
                 isTourn: true,
-                buyIn: 100,
+                buyIn: 10,
                 winnersCount: 1,
-                playersCount: 3,
+                playersCount: null,
                 chips: 1500
             });
         }, 1000);
