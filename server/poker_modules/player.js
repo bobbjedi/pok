@@ -25,6 +25,8 @@ var Player = function (socket, user) {
         // The amount the player has betted in thze current round
         bet: 0
     };
+    // восстанавливается одключение
+    this.isDisconnect = false;
     // The socket object of the user
     this.socket = socket;
     // The chips that are available in the user's account
@@ -41,6 +43,7 @@ var Player = function (socket, user) {
     this.evaluatedHand = {};
     // id user
     this._id = user._id;
+    this.playerId = (new Date().getTime() + Math.random() * 100).toFixed(0);
     this.token = user.token;
     this.initState(user);
 };
@@ -50,7 +53,6 @@ Player.prototype.initState = function(user){
     setTimeout(async ()=>{
         this.stat = await actionsStatDb.findOne({_id: user._id});
         if (!this.stat){
-            console.log('Создали стату на ' + user.login);
             this.stat = new actionsStatDb({
                 _id: user._id,
                 login: user.login,
@@ -108,11 +110,15 @@ Player.prototype.updateDepInPlay = async function (user) {
  * Updates the player data when they leave the table
  */
 Player.prototype.onDisconnect = function (cb) {
-    this.setTimeOutDisconnect = setTimeout(cb, 0 * 1000);
+    this.setTimeOutDisconnect = setTimeout(cb, 20 * 1000);
+    this.isDisconnect = true;
+    console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };
 
-Player.prototype.return = function () {
+Player.prototype.return = function () { // успел вернуться
     clearTimeout(this.setTimeOutDisconnect);
+    this.isDisconnect = false;
+    return this.socket.id; 
 };
 
 Player.prototype.leaveTable = async function () {

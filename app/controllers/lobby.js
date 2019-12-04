@@ -36,9 +36,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
 
     const checkUser = _.throttle(() => {
         $scope.createdTable.name = ' (' + $rootScope.user.login + ')' || '';
-        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login}, response => {
+        console.log('$rootScope.playerId', $rootScope.playerId);
+        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login, playerId: $rootScope.playerId}, response => {
             if (response.success){
                 $rootScope.updateUser();
+                $rootScope.playerId = response.playerId;
             }
             else if (response.message) {
                 $scope.registerError = response.message;
@@ -47,7 +49,9 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $scope.$digest();
         });
     }, 500);
-    window.reconnectSocket(checkUser);
+
+    window.initSocket(checkUser);
+    
     $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
 
     const updatePublic = ()=> $http({

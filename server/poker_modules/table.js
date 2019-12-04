@@ -824,7 +824,6 @@ Table.prototype.playerSatOnTheTable = async function(player, seat, chips) {
 
     // Increase the counters of the table
     this.public.playersSeatedCount++;
-
     this.playerSatIn(seat);
 };
 

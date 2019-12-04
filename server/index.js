@@ -159,59 +159,7 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-    /**
-	 * When a new player enters the application
-	 * @param string token
-	 * @param function callback
-	 */
-    socket.on('checkUser', async (data, callback) => {
-        const {name, token} = data;
-        // If a new screen name is posted
-        try {
-            if (typeof token !== 'undefined') {
-                // If the new screen name is not an empty string
-                // if (token && typeof players[socket.id] === 'undefined') {
-                if (name) {
-                    let playerExists = false;
-                    for (var i in players) {
-                        const player = players[i];
-                        // if (player.public.name && player.public.name === name) {
-                        if (socket.id === player.socket.id) {
-                            playerExists = player;
-                            break;
-                        }
-                    }
-                    if (playerExists){
-                        // if (socket.id === playerExists.socket.id){
-                        console.log('Сокет тотже!', name);
-                        return;
-                        // }
-                        // $u.removePlayer(playerExists.socket);
-                    } // создаем нового
-                    const user = await $u.getUserFromQ({token});
-                    if (!user){
-                        return;
-                    }
-                    players[socket.id] = new Player(socket, user);
-                    Store.system.online = Object.keys(players).length;
-                    console.log('Создали', name, 'online:', Object.keys(players).length);
-                    callback({'success': true});
-                    return;
-                    // }
-                    console.log('ЕЩЕ ЖИВ!');
-                    // Обновляем данные
-                    // players[socket.id] = playerExists;
-                    // players[socket.id].socket = socket;
-                    // const {sittingOnTable, seat, room} = players[socket.id];
-                    // console.log(players[socket.id])
-                    // callback({'success': true, position: {sittingOnTable, seat, room}});
-                }
-            }
-        } catch (e){
-            console.log(e);
-            log.error('checkUser: ' + e);
-        }
-    });
+
 
     /**
 	 * When a player disconnects
@@ -219,12 +167,80 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         try {
         // If the socket points to a player object
-            $u.removePlayer(socket);
+            players[socket.id] && players[socket.id].onDisconnect(()=>$u.removePlayer(socket));
         } catch (e){
             console.log(e);
             log.error('disconnect: ' + e);
+        } 
+    });
+
+    /**
+	 * When a new player enters the application
+	 * @param string token
+	 * @param function callback
+	 */
+    socket.on('checkUser', async (data, callback) => {
+        const {name, token, playerId} = data;
+        // If a new screen name is posted
+        // console.log({name, token, playerId});
+        try {
+            if (token && name) {
+                // If the new screen name is not an empty string
+                if (players[socket.id]){
+                    // console.log('Сокет тотже!', name);
+                    return;
+                } 
+                if (playerId) {
+                    let playerExists = false;
+                    for (let sId in players){
+                        const p = players[sId];
+                        if (p.playerId === playerId){
+                            playerExists = p;
+                        };
+                    };
+                    if (playerExists){
+                        console.log('playerExists', playerExists.public.name);
+                        const oldSocketId = playerExists.return();
+                        playerExists.socket = socket;
+                        delete players[oldSocketId];
+                        return;
+                    }
+                } else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
+                    for (let sId in players){
+                        const p = players[sId];
+                        if (p.public.name === name && p.isDisconnect){
+                            console.log(p.public.name, 'isDisconnected видимо обновление страницы - удаляем');
+                            $u.removePlayer(p.socket);
+                        };
+                    };
+                }
+                // создаем нового
+
+                const user = await $u.getUserFromQ({token});
+                if (!user){
+                    return;
+                }
+                players[socket.id] = new Player(socket, user);
+                Store.system.online = Object.keys(players).length;
+                console.log('Создали', name, 'online:', Object.keys(players).length);
+                callback({'success': true, playerId: players[socket.id].playerId});
+                return;
+                // }
+                console.log('ЕЩЕ ЖИВ!');
+                // Обновляем данные
+                // players[socket.id] = playerExists;
+                // players[socket.id].socket = socket;
+                // const {sittingOnTable, seat, room} = players[socket.id];
+                // console.log(players[socket.id])
+                // callback({'success': true, position: {sittingOnTable, seat, room}});
+               
+            }
+        } catch (e){
+            console.log(e);
+            log.error('checkUser: ' + e);
         }
     });
+
     /**
 	 * When a player requests to sit on a table
 	 * @param function callback
@@ -236,7 +252,7 @@ io.sockets.on('connection', function(socket) {
             if (!table){
                 callback({ 'success': false, 'error': 'Стола не существует' });
             }
-            if (table.isTournStart){ // если турнир
+            if (table.isTournStart && !player.sittingOnTable){ // если турнир
                 const {tournSeats} = table.public;
                 for (let s in tournSeats){
                     if (tournSeats[s] && tournSeats[s].name === player.public.name){
@@ -245,6 +261,7 @@ io.sockets.on('connection', function(socket) {
                         player.public.chipsInPlay = tournSeats[s].chipsInPlay;
                         player.chips = 0;
                         player.isTourn = true; // определяем что в турнире
+                        player.sittingOnTable = true;
                         tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
                         callback({ 'success': true, seat: s});
                         return log.info('Return in Tourn: ' + player.public.name);
@@ -523,10 +540,9 @@ io.sockets.on('connection', function(socket) {
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
-        console.log('Disconnect>', player.public.name, player.sittingOnTable, player.seat);
+        console.log('removePlayer>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
-        // player.onDisconnect(()=>{
         if (player.sittingOnTable !== false && typeof tables[player.sittingOnTable] !== 'undefined' && socket.id === player.socket.id) {
             console.log('RM TABLE', player.public.name);
             // The seat on which the player was sitting
@@ -537,8 +553,8 @@ $u.removePlayer = socket =>{
             tables[tableId].playerLeft(seat);
         }
         // Remove the player object from the players array
+        player.return(); // удалим на всякий случай таймаут
         delete players[socket.id];
-        // });
     }
 };
 

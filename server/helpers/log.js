@@ -72,16 +72,18 @@ setInterval(() => {
         infoStr = creteLogFile();
     }
 }, 60 * 1000);
+
 function setTableLog(str) {
     try {
         const id = str.match(/\[.*?\]/)[0].replace('[#', '_'). replace(']', '');
-        if (!tablesLog[id]){
-            tablesLog[id] = fs.createWriteStream('./logs/table#' + id + '.log', {
+        const logName = id + '_' + lastDate;
+        if (!tablesLog[logName]){
+            tablesLog[logName] = fs.createWriteStream('./logs/table#' + logName + '.html', {
                 flags: "a"
             });
         }
-        tablesLog[id].write(`
-        <i>` + fullTime() + '</i>:' + str);
+        tablesLog[logName].write(`
+        <br><i>` + fullTime() + '</i>:' + str);
 
     } catch (e) {
         console.log('ERROR table log', e);

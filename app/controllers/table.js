@@ -6,13 +6,12 @@
 import angular from 'angular';
 import $u from '../libs/utils';
 import automoves from './mixins/automoves';
-import { isNumber } from 'util';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
         automoves($scope);
         var selectedSeat = null;
-        $scope.table = {seats:[]};
+        $scope.table = {seats: []};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         $scope.showingChipsModal = false;
         $scope.actionState = '';
@@ -71,7 +70,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // Joining the socket room
-        setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 2000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
+        setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
@@ -174,6 +173,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // Leaving the socket room
         $scope.leaveRoom = function() {
+            $scope.leaveTable();
             socket.emit('leaveRoom');
             $location.path('/');
             $scope.inToLobby = false;
@@ -355,7 +355,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 var messageBox = document.querySelector('#messages');
                 var messageElement = angular.element('<p class="log-message">' + msg + '</p>');
                 angular.element(messageBox).append(messageElement);
-                messageBox.scrollTop = messageBox.scrollHeight;
+                if (messageBox){
+                    messageBox.scrollTop = messageBox.scrollHeight;
+                }
                 if (data.log.notification && data.log.seat !== '') {
                     if (!$scope.notifications[data.log.seat].message) {
                         $scope.notifications[data.log.seat].message = data.log.notification;
