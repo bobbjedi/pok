@@ -130,7 +130,7 @@ module.exports = {
                 isTourn: true,
                 buyIn: 10,
                 winnersCount: 1,
-                playersCount: null,
+                playersCount: 6,
                 chips: 1500
             });
         }, 1000);
