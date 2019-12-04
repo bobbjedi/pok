@@ -378,7 +378,8 @@ Table.prototype.setTimeOutRm = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = function(changeDealer) {
-    if (Store.isGamesPaused){
+    if (Store.isGamesPaused 
+        || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ // пока не наполнилось - турнир не стартует
         return;
     }
 
