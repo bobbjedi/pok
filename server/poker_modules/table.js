@@ -379,7 +379,7 @@ Table.prototype.setTimeOutRm = async function() {
  */
 Table.prototype.initializeRound = function(changeDealer) {
     if (Store.isGamesPaused 
-        || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ // пока не наполнилось - турнир не стартует
+        || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         return;
     }
 
