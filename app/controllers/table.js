@@ -42,9 +42,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     // $rootScope.sittingIn = true;
                     // $scope.mySeat = seat;
+                } else {
+                    $rootScope.sittingOnTable = null;
                 }
             }
-            cb && cb();
+            typeof cb === 'function' && cb();
             // $rootScope.sittingOnTable = $routeParams.tableId;
             // $rootScope.sittingIn = true;
             // $scope.mySeat = selectedSeat;
@@ -54,7 +56,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
-        socket.removeAllListeners();
+        // socket.removeAllListeners();
 
         // Getting the table data
         const updateTableData = () => {
