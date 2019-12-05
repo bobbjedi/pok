@@ -94,6 +94,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $rootScope.user = data;
             $rootScope.user.isLogged = true;
             noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
+            $rootScope.checkUser();
         });
     };
     $scope.createRoom = function(){

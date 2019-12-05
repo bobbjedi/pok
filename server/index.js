@@ -200,7 +200,7 @@ io.sockets.on('connection', function(socket) {
                         };
                     };
                     if (playerExists){
-                        console.log('playerExists', playerExists.public.name);
+                        console.log('playerExists id', playerExists.public.name);
                         const oldSocketId = playerExists.return();
                         playerExists.socket = socket;
                         players[socket.id] = playerExists;
@@ -272,7 +272,6 @@ io.sockets.on('connection', function(socket) {
                 }
                 return callback({ 'success': false, error: 'Вы не участвуете в турнире.'});
             }
-            player.isTourn = false; // сбрасываем турнир
             // Простая игра
 
             if (
@@ -300,6 +299,7 @@ io.sockets.on('connection', function(socket) {
 			// The chips number is an integer
 			&& data.chips % 1 === 0
             ){
+                player.isTourn = false; // сбрасываем турнир
             // The chips the player chose are less than the total chips the player has
                 if (data.chips > players[socket.id].chips){
                     callback({ 'success': false, 'error': 'У вас недостаточно фишек.' });

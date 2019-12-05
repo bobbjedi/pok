@@ -26,6 +26,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnersData = {};
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
+        $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
@@ -40,10 +41,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
-                    // $rootScope.sittingIn = true;
+                    $rootScope.sittingIn = true;
                     // $scope.mySeat = seat;
                 } else {
-                    $rootScope.sittingOnTable = null;
+                    // $rootScope.sittingOnTable = null;
                 }
             }
             typeof cb === 'function' && cb();
@@ -56,7 +57,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
-        // socket.removeAllListeners();
+        socket.removeAllListeners();
 
         // Getting the table data
         const updateTableData = () => {
@@ -69,7 +70,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.table = data.table;
                     $scope.buyInAmount = data.table.maxBuyIn;
                     $scope.betAmount = data.table.bigBlind;
-                    $scope.checkUserSeat(updateTableData);
+                    $scope.checkUserSeat();
                 }
             });
         };

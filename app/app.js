@@ -76,6 +76,7 @@ app.run(function($rootScope, $location) {
             $rootScope.$digest();
         });
     };
+    $rootScope.checkUser = checkUser;
     window.initSocket(checkUser);
 
     $rootScope.withdraw = _.throttle(function(amount){
