@@ -26,7 +26,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnersData = {};
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
-        $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
@@ -41,7 +40,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
-                    $rootScope.sittingIn = true;
+                    // $rootScope.sittingIn = true;
                     // $scope.mySeat = seat;
                 } else {
                     // $rootScope.sittingOnTable = null;
@@ -55,6 +54,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
+        // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
 
@@ -73,7 +73,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-        setTimeout(()=>updateTableData, 500);
+        updateTableData();
         // Joining the socket room
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
