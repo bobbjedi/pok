@@ -35,7 +35,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             return false;
         };
-        $scope.checkUserSeat = ()=>{
+        $scope.checkUserSeat = ()=>{ 
             const {table} = $scope;
             for (let seat in table.seats){
                 const player = table.seats[seat];
@@ -43,9 +43,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     $rootScope.sittingIn = true;
                     // $scope.mySeat = seat;
-                } else {
-                    $rootScope.sittingOnTable = false;
-                    $rootScope.sittingIn = false;
                 }
             }
         };
@@ -78,6 +75,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
         });
+
+        $scope.toLobby = ()=>{
+            if ($scope.mySeat !== null && $scope.table.dealerSeat !== null){
+                $scope.inToLobby = true;
+            } else {
+                $scope.leaveRoom(); 
+            }
+        };
 
         $scope.minBetAmount = function() {
             if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
@@ -405,6 +410,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // When the player is dealt cards
         socket.on('dealingCards', function(cards) {
+            console.log({cards});
             $scope.myCards[0] = 'card-' + cards[0];
             $scope.myCards[1] = 'card-' + cards[1];
             $scope.$digest();
