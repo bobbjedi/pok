@@ -6,9 +6,20 @@ window.Domain = domain;
 window.socket = io.connect(domain);
 
 window.initSocket = checkUser =>{
+    
     console.log('init');
-    window.socket.on('reconnect', ()=>{
-        console.log('RECCONECT');
+    let socketConnectTimeInterval;
+    
+    window.socket.on('disconnect', function() {
+        console.log('DISCONNECT');
+        socketConnectTimeInterval = setInterval(function () {
+            window.socket.connect();
+        }, 1000);
+    });
+    
+    window.socket.on('connect', ()=>{
+        console.log('CONNECT');
+        clearInterval(socketConnectTimeInterval);
         checkUser();
     });
 };

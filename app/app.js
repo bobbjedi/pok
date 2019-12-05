@@ -64,18 +64,18 @@ app.run(function($rootScope, $location) {
         }, true);
     }, 2000);
 
-    const checkUser = _.throttle(() => {
+    const checkUser = () => {
         socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login, playerId: $rootScope.playerId}, response => {
             if (response.success){
-                $rootScope.updateUser();
                 $rootScope.playerId = response.playerId;
+                console.log($rootScope.playerId);
             }
             else if (response.message) {
                 console.log('Error checkUser', response.message);
             }
             $rootScope.$digest();
         });
-    }, 500);
+    };
     window.initSocket(checkUser);
 
     $rootScope.withdraw = _.throttle(function(amount){

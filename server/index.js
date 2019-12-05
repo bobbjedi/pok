@@ -188,6 +188,7 @@ io.sockets.on('connection', function(socket) {
                 // If the new screen name is not an empty string
                 if (players[socket.id]){
                     // console.log('Сокет тотже!', name);
+                    callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 } 
                 if (playerId) {
@@ -202,6 +203,8 @@ io.sockets.on('connection', function(socket) {
                         console.log('playerExists', playerExists.public.name);
                         const oldSocketId = playerExists.return();
                         playerExists.socket = socket;
+                        players[socket.id] = playerExists;
+                        callback({'success': true, playerId: players[socket.id].playerId});
                         delete players[oldSocketId];
                         return;
                     }
