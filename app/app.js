@@ -55,11 +55,11 @@ app.run(function($rootScope, $location) {
         $rootScope.timeOutCurrent = config.timeOutWait;
     };
 
-    $rootScope.updateUser = _.throttle(function(){
+    $rootScope.updateUser = _.throttle(function(needCheck){
         $rootScope.api({action: 'getUser'}, data => {
             Object.assign($rootScope.user, data);
             $rootScope.totalChips = data.deposit;
-            checkUser();
+            needCheck && checkUser();
             $rootScope.$digest();
         }, true);
     }, 2000);
@@ -101,7 +101,7 @@ app.run(function($rootScope, $location) {
         sound: true
     };
 
-    $rootScope.updateUser();
+    $rootScope.updateUser(true);
     window.onbeforeunload = ()=> {
         if (!$rootScope.sittingOnTable && $rootScope.sittingOnTable !== ''){
             return null;
