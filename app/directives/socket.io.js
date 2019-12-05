@@ -6,7 +6,8 @@ window.Domain = domain;
 window.socket = io.connect(domain);
 
 window.initSocket = checkUser =>{
-    window.socket.on('connect', ()=>{
+    console.log('init');
+    window.socket.on('reconnect', ()=>{
         console.log('RECCONECT');
         checkUser();
     });

@@ -34,25 +34,11 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         }, 1000);
     };
 
-    const checkUser = _.throttle(() => {
-        $scope.createdTable.name = ' (' + $rootScope.user.login + ')' || '';
-        console.log('$rootScope.playerId', $rootScope.playerId);
-        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login, playerId: $rootScope.playerId}, response => {
-            if (response.success){
-                $rootScope.updateUser();
-                $rootScope.playerId = response.playerId;
-            }
-            else if (response.message) {
-                $scope.registerError = response.message;
-                console.log('Error checkUser', response.message);
-            }
-            $scope.$digest();
-        });
-    }, 500);
+  
 
-    window.initSocket(checkUser);
+    // window.initSocket(checkUser);
     
-    $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
+    // $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
 
     const updatePublic = ()=> $http({
         url: window.Domain + '/public',
