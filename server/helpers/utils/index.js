@@ -126,13 +126,7 @@ module.exports = {
     },
     tmpTourn(){
         setTimeout(()=>{
-            this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, {
-                isTourn: true,
-                buyIn: 10,
-                winnersCount: 1,
-                playersCount: 6,
-                chips: 1500
-            });
+            this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, config.sng);
         }, 1000);
     }
 };
