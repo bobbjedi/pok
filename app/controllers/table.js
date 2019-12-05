@@ -55,7 +55,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
-        // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
 
@@ -74,7 +73,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-        updateTableData();
+        setTimeout(()=>updateTableData, 500);
         // Joining the socket room
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
