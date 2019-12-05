@@ -99,7 +99,7 @@ app.get('/table-data/:tableId', function(req, res) {
 });
 
 io.sockets.on('connection', function(socket) {
-
+    console.log('Connection', players[socket.id] && players[socket.id].public.name);
     /**
 	 * When a player enters a room
 	 * @param object table-data
@@ -167,7 +167,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         try {
         // If the socket points to a player object
-            players[socket.id] && players[socket.id].onDisconnect(()=>$u.removePlayer(socket));
+            console.log('Disconnect', players[socket.id] && players[socket.id].public.name);
+            $u.removePlayer(socket);
+            // players[socket.id] && players[socket.id].onDisconnect(()=>$u.removePlayer(socket));
         } catch (e){
             console.log(e);
             log.error('disconnect: ' + e);
@@ -191,32 +193,33 @@ io.sockets.on('connection', function(socket) {
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 } 
-                if (playerId) {
-                    let playerExists = false;
-                    for (let sId in players){
-                        const p = players[sId];
-                        if (p.playerId === playerId){
-                            playerExists = p;
-                        };
-                    };
-                    if (playerExists){
-                        console.log('playerExists id', playerExists.public.name);
-                        const oldSocketId = playerExists.return();
-                        playerExists.socket = socket;
-                        players[socket.id] = playerExists;
-                        callback({'success': true, playerId: players[socket.id].playerId});
-                        delete players[oldSocketId];
-                        return;
-                    }
-                } else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
-                    for (let sId in players){
-                        const p = players[sId];
-                        if (p.public.name === name && p.isDisconnect){
-                            console.log(p.public.name, 'isDisconnected видимо обновление страницы - удаляем');
-                            $u.removePlayer(p.socket);
-                        };
-                    };
-                }
+
+                // if (playerId) {
+                //     let playerExists = false;
+                //     for (let sId in players){
+                //         const p = players[sId];
+                //         if (p.playerId === playerId){
+                //             playerExists = p;
+                //         };
+                //     };
+                //     if (playerExists){
+                //         console.log('playerExists id', playerExists.public.name);
+                //         const oldSocketId = playerExists.return();
+                //         playerExists.socket = socket;
+                //         players[socket.id] = playerExists;
+                //         callback({'success': true, playerId: players[socket.id].playerId});
+                //         delete players[oldSocketId];
+                //         return;
+                //     }
+                // } else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
+                //     for (let sId in players){
+                //         const p = players[sId];
+                //         if (p.public.name === name && p.isDisconnect){
+                //             console.log(p.public.name, 'isDisconnected видимо обновление страницы - удаляем');
+                //             $u.removePlayer(p.socket);
+                //         };
+                //     };
+                // }
                 // создаем нового
 
                 const user = await $u.getUserFromQ({token});
@@ -300,7 +303,7 @@ io.sockets.on('connection', function(socket) {
 			&& data.chips % 1 === 0
             ){
                 player.isTourn = false; // сбрасываем турнир
-            // The chips the player chose are less than the total chips the player has
+                // The chips the player chose are less than the total chips the player has
                 if (data.chips > players[socket.id].chips){
                     callback({ 'success': false, 'error': 'У вас недостаточно фишек.' });
                 }

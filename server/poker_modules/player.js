@@ -110,7 +110,7 @@ Player.prototype.updateDepInPlay = async function (user) {
  * Updates the player data when they leave the table
  */
 Player.prototype.onDisconnect = function (cb) {
-    this.setTimeOutDisconnect = setTimeout(cb, 20 * 2000);
+    this.setTimeOutDisconnect = setTimeout(cb, 0 * 2000);
     this.isDisconnect = true;
     console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };
@@ -148,6 +148,7 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
     // Add the table info in the player object
     this.seat = seat;
     this.sittingOnTable = tableId;
+    this.public.hasCards = false;
     await this.updateDeposit(-chips, user);
     await this.updateDepInPlay(user);
 };

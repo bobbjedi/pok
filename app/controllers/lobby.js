@@ -37,6 +37,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
   
 
     // window.initSocket(checkUser);
+    window.refreshSocket($rootScope.checkUser);
     
     // $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
 
@@ -98,7 +99,6 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         });
     };
     $scope.createRoom = function(){
-        console.log($scope.createdTable);
         $rootScope.api({action: 'roomCreate', data: $scope.createdTable}, data=>{
             const path = '/table-' + $scope.createdTable.count + '/' + data.createdRoomId;
             const link = location.origin + '/#!' + path;
