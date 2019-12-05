@@ -110,7 +110,7 @@ Player.prototype.updateDepInPlay = async function (user) {
  * Updates the player data when they leave the table
  */
 Player.prototype.onDisconnect = function (cb) {
-    this.setTimeOutDisconnect = setTimeout(cb, 20 * 1000);
+    this.setTimeOutDisconnect = setTimeout(cb, 20 * 2000);
     this.isDisconnect = true;
     console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };

@@ -34,7 +34,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             return false;
         };
-        $scope.checkUserSeat = ()=>{
+        $scope.checkUserSeat = (cb)=>{
             const {table} = $scope;
             for (let seat in table.seats){
                 const player = table.seats[seat];
@@ -44,6 +44,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     // $scope.mySeat = seat;
                 }
             }
+            cb && cb();
             // $rootScope.sittingOnTable = $routeParams.tableId;
             // $rootScope.sittingIn = true;
             // $scope.mySeat = selectedSeat;
@@ -56,19 +57,21 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.removeAllListeners();
 
         // Getting the table data
-        $http({
-            url: window.Domain + '/table-data/' + $routeParams.tableId,
-            method: 'GET'
-        }).then(res => {
-            if (res.status === 200){
-                const data = res.data;
-                $scope.table = data.table;
-                $scope.buyInAmount = data.table.maxBuyIn;
-                $scope.betAmount = data.table.bigBlind;
-                $scope.checkUserSeat();
-            }
-        });
-
+        const updateTableData = () => {
+            $http({
+                url: window.Domain + '/table-data/' + $routeParams.tableId,
+                method: 'GET'
+            }).then(res => {
+                if (res.status === 200) {
+                    const data = res.data;
+                    $scope.table = data.table;
+                    $scope.buyInAmount = data.table.maxBuyIn;
+                    $scope.betAmount = data.table.bigBlind;
+                    $scope.checkUserSeat(updateTableData);
+                }
+            });
+        };
+        updateTableData();
         // Joining the socket room
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
