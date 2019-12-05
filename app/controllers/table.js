@@ -26,6 +26,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.winnersData = {};
         $rootScope.winnerMsgArr = [];
         $rootScope.sittingOnTable = null;
+        $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
@@ -34,23 +35,19 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             return false;
         };
-        $scope.checkUserSeat = (cb)=>{
+        $scope.checkUserSeat = ()=>{
             const {table} = $scope;
             for (let seat in table.seats){
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
-                    // $rootScope.sittingIn = true;
+                    $rootScope.sittingIn = true;
                     // $scope.mySeat = seat;
                 } else {
-                    // $rootScope.sittingOnTable = null;
+                    $rootScope.sittingOnTable = false;
+                    $rootScope.sittingIn = false;
                 }
             }
-            typeof cb === 'function' && cb();
-            // $rootScope.sittingOnTable = $routeParams.tableId;
-            // $rootScope.sittingIn = true;
-            // $scope.mySeat = selectedSeat;
-            // $scope.actionState = 'waiting';
         };
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
@@ -76,6 +73,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         updateTableData();
         // Joining the socket room
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
+        setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
