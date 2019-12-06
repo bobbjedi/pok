@@ -104,8 +104,10 @@ io.sockets.on('connection', function(socket) {
 	 * When a player enters a room
 	 * @param object table-data
 	 */
+
     socket.on('enterRoom', function(tableId) {
         try {
+            players[socket.id] && players[socket.id].return();
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
             // Add the player to the socket room
                 socket.join('table-' + tableId);
@@ -123,6 +125,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('leaveRoom', function() {
         try {
+            players[socket.id] && players[socket.id].return();
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room !== null && players[socket.id].sittingOnTable === false) {
             // Remove the player from the socket room
                 socket.leave('table-' + players[socket.id].room);
@@ -142,7 +145,8 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('leaveTable', function(callback) {
         try {
-        // If the player was sitting on a table
+            players[socket.id] && players[socket.id].return();
+            // If the player was sitting on a table
             if (players[socket.id].sittingOnTable !== false && tables[players[socket.id].sittingOnTable] !== false) {
             // The seat on which the player was sitting
                 var seat = players[socket.id].seat;
@@ -159,23 +163,36 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-
-
     /**
 	 * When a player disconnects
 	 */
+    socket.on('forceDisconnect', function(cb) {
+        try {
+            players[socket.id] && players[socket.id].return();
+            console.log('forceDisconnect', players[socket.id] && players[socket.id].public.name);
+            $u.removePlayer(socket);
+            cb();
+        } catch (e){
+            console.log(e);
+            log.error('forceDisconnect: ' + e);
+        }
+    });
     socket.on('disconnect', function() {
         try {
-        // If the socket points to a player object
-            console.log('Disconnect', players[socket.id] && players[socket.id].public.name);
-            $u.removePlayer(socket);
-            // players[socket.id] && players[socket.id].onDisconnect(()=>$u.removePlayer(socket));
+            return $u.removePlayer(socket);
+            const player = players[socket.id];
+            console.log('Disconnect', player && player.public.name);
+            if (!player.public.inHand){ // если не в игре - удаляем
+                log.info(player.public.name + ' not hand -> remove');
+                return $u.removePlayer(socket);
+            }
+            log.info(player.public.name + ' isDisconnect');
+            player.isDisconnect = true;
         } catch (e){
             console.log(e);
             log.error('disconnect: ' + e);
-        } 
+        }
     });
-
     /**
 	 * When a new player enters the application
 	 * @param string token
@@ -184,15 +201,35 @@ io.sockets.on('connection', function(socket) {
     socket.on('checkUser', async (data, callback) => {
         const {name, token, playerId} = data;
         // If a new screen name is posted
-        // console.log({name, token, playerId});
         try {
+            players[socket.id] && players[socket.id].return();
             if (token && name) {
                 // If the new screen name is not an empty string
                 if (players[socket.id]){
                     // console.log('Сокет тотже!', name);
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
-                } 
+                }
+
+                // ищем отключившегося
+                let playerExists = false;
+                for (let sId in players) {
+                    const p = players[sId];
+                    if (p.public.name === name && p.isDisconnect) {
+                        playerExists = p;
+                        continue;
+                    };
+                };
+                if (playerExists) {
+                    console.log('playerExists isDisconnect', playerExists.public.name);
+                    const oldSocketId = playerExists.return();
+                    playerExists.socket = socket;
+                    players[socket.id] = playerExists;
+                    playerExists.isDisconnect = false;
+                    callback({'success': true, playerId: players[socket.id].playerId});
+                    delete players[oldSocketId];
+                    return;
+                }
 
                 // if (playerId) {
                 //     let playerExists = false;
@@ -211,7 +248,8 @@ io.sockets.on('connection', function(socket) {
                 //         delete players[oldSocketId];
                 //         return;
                 //     }
-                // } else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
+                // }
+                //  else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
                 //     for (let sId in players){
                 //         const p = players[sId];
                 //         if (p.public.name === name && p.isDisconnect){
@@ -239,7 +277,7 @@ io.sockets.on('connection', function(socket) {
                 // const {sittingOnTable, seat, room} = players[socket.id];
                 // console.log(players[socket.id])
                 // callback({'success': true, position: {sittingOnTable, seat, room}});
-               
+
             }
         } catch (e){
             console.log(e);
@@ -253,6 +291,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('sitOnTheTable', async function(data, callback) {
         try {
+            players[socket.id] && players[socket.id].return();
             const table = tables[data.tableId];
             const player = players[socket.id];
             if (!table){
@@ -333,6 +372,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('sitIn', function(callback) {
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== false && players[socket.id].seat !== null && !players[socket.id].public.sittingIn) {
             // Getting the table id from the player object
                 var tableId = players[socket.id].sittingOnTable;
@@ -353,6 +393,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('postBlind', function(postedBlind, callback) {
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== false) {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -390,6 +431,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('check', function(callback){
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== 'undefined') {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -417,6 +459,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('fold', function(callback){
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== false) {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -440,6 +483,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('call', function(callback){
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== 'undefined') {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -464,6 +508,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('bet', function(amount, callback){
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== 'undefined') {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -491,6 +536,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('raise', function(amount, callback){
         try {
+            players[socket.id] && players[socket.id].return();
             if (players[socket.id].sittingOnTable !== 'undefined') {
                 var tableId = players[socket.id].sittingOnTable;
                 var activeSeat = tables[tableId].public.activeSeat;
@@ -532,6 +578,7 @@ io.sockets.on('connection', function(socket) {
 	 */
     socket.on('sendMessage', function(message) {
         try {
+            players[socket.id] && players[socket.id].return();
             message = message.trim();
             if (message && players[socket.id] && players[socket.id].room) {
                 socket.broadcast.to('table-' + players[socket.id].room).emit('receiveMessage', { 'message': htmlEntities(message), 'sender': players[socket.id].public.name });

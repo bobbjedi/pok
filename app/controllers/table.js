@@ -6,6 +6,7 @@
 import angular from 'angular';
 import $u from '../libs/utils';
 import automoves from './mixins/automoves';
+import socket from '../directives/socket.io';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
@@ -35,7 +36,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             return false;
         };
-        $scope.checkUserSeat = ()=>{ 
+        $scope.checkUserSeat = ()=>{
             const {table} = $scope;
             for (let seat in table.seats){
                 const player = table.seats[seat];
@@ -80,7 +81,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if ($scope.mySeat !== null && $scope.table.dealerSeat !== null){
                 $scope.inToLobby = true;
             } else {
-                $scope.leaveRoom(); 
+                $scope.leaveRoom();
             }
         };
 

@@ -133,8 +133,24 @@ Table.prototype.setTimeoutWait = function(){
         const seat = this.public.seats[activeSeat];
         const currentSeatName = seat && seat.name;
         if (currentSeatName === lastActiveUserLogin){
-            this.playerLeft(activeSeat);
-            console.log('Высадили ', lastActiveUserLogin);
+            const player = this.seats[activeSeat];
+            if (this.public.phase === 'smallBlind') {
+                this.playerPostedSmallBlind();
+                return log.info('Auto SB ' + lastActiveUserLogin);
+            } else if (this.public.phase === 'bigBlind'){
+                this.playerPostedBigBlind();
+                return log.info('Auto BB ' + lastActiveUserLogin);
+            } else if (player.public.bet === this.public.biggestBet){
+                log.info('Autocheck ' + lastActiveUserLogin);
+                return this.playerChecked();
+            } else {
+                log.info('Autofold ' + lastActiveUserLogin);
+                if (++player.autoFoldTimes > config.maxAutoFoldTimes){
+                    $u.removePlayer(player.soket);
+                    log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+                }
+                return this.playerFolded();
+            }
         }
     }, (config.timeOutWait + 5) * 1000);
 };
@@ -317,7 +333,7 @@ Table.prototype.setTimeOutRm = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = function(changeDealer) {
-    if (Store.isGamesPaused 
+    if (Store.isGamesPaused
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         return;
     }

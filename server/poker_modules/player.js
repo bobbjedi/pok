@@ -25,6 +25,8 @@ var Player = function (socket, user) {
         // The amount the player has betted in thze current round
         bet: 0
     };
+    // Автодействия сервера за юзера подряд(если инет отвалился)
+    this.autoFoldTimes = 0;
     // восстанавливается одключение
     this.isDisconnect = false;
     // The socket object of the user
@@ -118,7 +120,8 @@ Player.prototype.onDisconnect = function (cb) {
 Player.prototype.return = function () { // успел вернуться
     clearTimeout(this.setTimeOutDisconnect);
     this.isDisconnect = false;
-    return this.socket.id; 
+    this.autoFoldTimes = 0;
+    return this.socket.id;
 };
 
 Player.prototype.leaveTable = async function () {

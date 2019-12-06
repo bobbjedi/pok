@@ -5,6 +5,7 @@
  */
 import angular from 'angular';
 import mat from '../libs/mat';
+import socket from '../directives/socket.io';
 
 app.controller('ChatController', ['$scope', function($scope) {
     /**
@@ -41,6 +42,6 @@ app.controller('ChatController', ['$scope', function($scope) {
     });
 
     function htmlEntities(str) {
-	    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 }]);
