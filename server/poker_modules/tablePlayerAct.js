@@ -76,7 +76,7 @@ module.exports = Table =>{
         this.clearTimeoutWait();
     };
 
-    
+
 
     /**
  * When a player checks

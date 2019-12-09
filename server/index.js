@@ -99,7 +99,7 @@ app.get('/table-data/:tableId', function(req, res) {
 });
 
 io.sockets.on('connection', function(socket) {
-    console.log('Connection', players[socket.id] && players[socket.id].public.name);
+    // console.log('Connection', players[socket.id] && players[socket.id].public.name);
     /**
 	 * When a player enters a room
 	 * @param object table-data

@@ -325,7 +325,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         socket.on('table-data', function(data) {
             $scope.table = data;
-            console.log(data.phase);
             $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();

@@ -132,7 +132,7 @@ Pot.prototype.addPlayersBets = function(player) {
 
 Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     const {system} = Store;
-    const table = Store.tables[this.tableId];
+    const table = Store.tables && Store.tables[this.tableId] || {public: {}};
     system.totalGamesCount++;
     table.public.gamesCount++;
 
