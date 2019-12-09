@@ -1,6 +1,6 @@
 <div class="double-cell">
     <div id="pot-wrap">
-        <span id="pot" ng-show="table.pot[0].amount">{{potText()}}</span>
+        <span id="pot" ng-show="table.pot[0].amount">Pot: {{potAmount()}}</span>
     </div>
     <div class="winner-msg txt-yellow" ng-show="winnerMsgArr.length">
         <div ng-repeat="msg in winnerMsgArr">{{msg}}</div>

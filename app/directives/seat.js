@@ -25,7 +25,7 @@ app.directive('seat', [function() {
             scope.cellNumber = parseInt(attributes.cellNumber);
 
             scope.getCardClass = function(seat, card) {
-                if (+scope.mySeat === seat) {
+                if (scope.mySeat !== null && +scope.mySeat === seat) {
                     return scope.myCards[card];
                 }
                 else if (typeof scope.player !== 'undefined' && scope.player && scope.player.cards && scope.player.cards[card]) {

@@ -40,30 +40,38 @@
     padding: 10px;
     z-index: 10;
 }
-.small{
+
+.small {
     font-size: 0.8em !important;
 }
-.big{
+
+.big {
     font-size: 1.2em;
 }
-.bigbig{
+
+.bigbig {
     font-size: 1.5em;
 }
-.center{
+
+.center {
     text-align: center;
 }
+
 .w100 {
     width: 100%;
 }
-.modal-text{
+
+.modal-text {
     font-size: 1.3em;
     color: white;
     margin: 20px 0;
     text-align: center;
 }
+
 .m1 {
     margin: 1px;
 }
+
 .m10 {
     margin: 10px;
 }
@@ -264,16 +272,20 @@ input[type=range]:focus::-ms-fill-upper {
 }
 
 
-.range-red{
+.range-red {
     background: #e95d5f;
 }
 
-.range-green{
+.range-green {
     background-color: #459e51;
 }
+
 .button-range {
     width: 60px;
-};
+}
+
+;
+
 .range-input input {
     margin: 0;
     padding: 0;
@@ -306,13 +318,14 @@ input[type=range]:focus::-ms-fill-upper {
     padding-right: 20px;
 }
 
-.player-content .deposit{
+.player-content .deposit {
     font-size: 1.3em;
 }
+
 .controls {
     display: flex;
     height: 80px;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     z-index: 2;
     position: relative;
@@ -323,9 +336,11 @@ input[type=range]:focus::-ms-fill-upper {
 div.row {
     height: calc((100% - 50px) / 3);
 }
+
 #chat {
     font-size: 0.8em;
 }
+
 #messages {
     position: absolute;
     height: 50px;
@@ -370,7 +385,7 @@ div.row {
 
 
 
-.button-top{
+.button-top {
     border: 1px solid grey;
     padding: 0px;
     width: 80px;
@@ -381,19 +396,20 @@ div.row {
     padding: 12px;
     border-radius: 4px;
     font-size: 1.3em;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     cursor: pointer;
     z-index: 11;
 }
 
-#go-to-lobby{
+#go-to-lobby {
     left: 12px;
 }
-#buy-coins{
+
+#buy-coins {
     right: 12px;
 }
 
-.winner-msg{
+.winner-msg {
     left: 0;
     width: 100%;
     text-align: center;
@@ -403,11 +419,11 @@ div.row {
 }
 
 
-.label-poker{
+.label-poker {
     height: 130px;
 }
 
-.but_pol{
+.but_pol {
     border-radius: 13px;
     display: block;
     text-align: center;
@@ -418,42 +434,46 @@ div.row {
     cursor: pointer;
 }
 
-.but_pol:hover{
-   background: #63a76c;
-   color: #f9f9fc;
+.but_pol:hover {
+    background: #63a76c;
+    color: #f9f9fc;
 }
 
 
-#buttons-lobby{
+#buttons-lobby {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.lobby-stat{
+.lobby-stat {}
 
-}
 /* FULLSCREEN */
 @media screen and (max-width: 768px) {
-    .button-top{
+    .button-top {
         width: 55px;
         position: fixed;
     }
+
     #table {
         top: 12%;
         height: calc(100% - 135px);
     }
-    #table #felt{
+
+    #table #felt {
         top: 6%;
         height: 88%;
     }
+
     div.seat {
         height: 45px;
     }
-    div.seat .avatar-img-seat{
+
+    div.seat .avatar-img-seat {
         height: 45px;
         width: 45px;
     }
+
     .controls {
         height: 60px;
     }
@@ -487,9 +507,28 @@ div.row {
         left: 30px;
     }
 
-    #buy-coins{
+    #buy-coins {
         position: fixed;
         right: 30px;
+    }
+
+    .table_dark {
+        position: absolute;
+        /* font-size: 1.8em; */
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+        text-align: left;
+        border-collapse: collapse;
+        margin: 10px auto;
+        width: 100%;
+        left: 0;
+        font-size: 1.4em;
+    }
+    #user-panel{
+        font-size: 1.5em;
+        display: flex;
+        margin: 10px;
+        justify-content: space-around;
+        align-items: center;
     }
 }
 
@@ -501,7 +540,7 @@ div.row {
     margin: 30px;
 }
 
-.avatar-img{
+.avatar-img {
     border: 1px solid grey;
     margin-right: 15px;
     width: 100px;
@@ -509,7 +548,7 @@ div.row {
     cursor: pointer;
 }
 
-.avatar-img-seat{
+.avatar-img-seat {
     background: black;
     overflow: hidden;
     border: 2px solid rgb(80, 80, 80);
@@ -525,11 +564,12 @@ div.row {
     align-items: center;
 }
 
-.avatar-img-seat img{
+.avatar-img-seat img {
     max-width: 100%;
     flex-shrink: 0;
 }
-.mask-avatar{
+
+.mask-avatar {
     /* background: rgba(0, 0, 0, 0.5);
     transition: .3s;
     position: absolute;

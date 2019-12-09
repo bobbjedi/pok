@@ -167,16 +167,17 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $scope.potText = function() {
             if (typeof $scope.table.pot !== 'undefined' && $scope.table.pot[0].amount) {
-                var potText = ' Pot: ' + $u.round($scope.table.pot[0].amount);
+                // return $scope.potAmount();
+                // var potText = ' Pot: ' + $u.round($scope.table.pot[0].amount);
 
-                var potCount = $scope.table.pot.length;
-                if (potCount > 1) {
-                    for (var i = 1; i < potCount; i++) {
-                        potText += ' - Sidepot: ' + $u.round($scope.table.pot[i].amount);
-                    }
-                    potText = 'Total: ' + $scope.potAmount() + potText;
-                }
-                return potText;
+                // var potCount = $scope.table.pot.length;
+                // if (potCount > 1) {
+                //     for (var i = 1; i < potCount; i++) {
+                //         potText += ' - Sidepot: ' + $u.round($scope.table.pot[i].amount);
+                //     }
+                // potText = 'Total: ' + $scope.potAmount() + potText;
+                // }
+                // return potText;
             }
         };
 
@@ -324,6 +325,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         socket.on('table-data', function(data) {
             $scope.table = data;
+            console.log(data.phase);
             $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();
