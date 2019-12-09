@@ -7,11 +7,14 @@ window.Domain = domain;
 const socket = io.connect(domain);
 
 window.refreshSocket = checkUser =>{
-    socket.emit('forceDisconnect', ()=>{
+    // socket.emit('forceDisconnect', ()=>{
+    //     checkUser();
+    // });
+    socket.disconnect();
+    setTimeout(()=>{
+        socket.connect();
         checkUser();
-    });
-    // socket.disconnect();
-    // setTimeout(()=>socket.connect(), 500);
+    }, 500);
 };
 
 window.initSocket = checkUser =>{

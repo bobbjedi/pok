@@ -71,7 +71,7 @@ Pot.prototype.addTableBets = function(players) {
             if (players[i] && players[i].public.bet) {
                 this.pots[currentPot].amount += players[i].public.bet;
                 players[i].public.bet = 0;
-                if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
+                if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0 && players[i].public.inHand) {
                     this.pots[currentPot].contributors.push(players[i].seat);
                     log.info('[#' + tableId + '] add to contributors to pot#' + currentPot + ' ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
                 }

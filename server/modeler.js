@@ -24,15 +24,40 @@ const $u = require('./helpers/utils');
     players[1] = new Player(socket, await $u.getUserFromQ({login: 'Dev1'}));
     players[2] = new Player(socket, await $u.getUserFromQ({login: 'Devi'}));
     players[3] = new Player(socket, await $u.getUserFromQ({login: 'Devid'}));
+    players[4] = new Player(socket, await $u.getUserFromQ({login: 'Dev'}));
     initialChips = 1000;
+
 
     table.playerSatOnTheTable(players[0], 2, initialChips);
     await wait(1);
     table.playerSatOnTheTable(players[1], 6, initialChips);
     await wait(1);
-    table.playerSatOnTheTable(players[2], 4, initialChips);
+    table.playerSatOnTheTable(players[2], 3, initialChips);
+    await wait(1);
+    table.playerSatOnTheTable(players[3], 4, initialChips);
+    await wait(1);
+    table.playerSatOnTheTable(players[4], 5, initialChips);
+    await wait(1);
 
+    players[4].public.bet = 0;
+    players[3].public.chipsInPlay = 0;
 
+    players[0].public.bet = 4;
+    players[1].public.bet = 4;
+    players[2].public.bet = 4;
+    players[3].public.bet = 4;
+
+    table.pot.addTableBets(players);
+    console.log(table.pot.pots);
+
+    players[0].public.bet = 0;
+    players[1].public.bet = 0;
+    players[2].public.bet = 0;
+
+    table.pot.addTableBets(players);
+    console.log(table.pot.pots);
+
+    return;
     table.deck.cards[0] = 'Ah';
     table.deck.cards[1] = 'Kh';
 
