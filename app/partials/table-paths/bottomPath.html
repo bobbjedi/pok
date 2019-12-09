@@ -1,7 +1,13 @@
 <div class="controls">
     <div class="chat-cell">
         <div id="chat" ng-controller="ChatController">
-            <div id="messages"></div>
+            <div id="chat-tabs">
+                <div class="chat-tab hovered" ng-class="{'bg-blue': isShowSystem}" ng-click="isShowSystem = !isShowSystem">System</div>
+                <div class="chat-tab hovered" ng-class="{'bg-blue': isShowMessages}" ng-click="isShowMessages = !isShowMessages">Chat</div>
+            </div>
+            <div id="messages">
+                    <div ng-repeat="msg in messages" ng-show="isShowMessages && msg.type === 'msg' || isShowSystem && msg.type === 'system'" ng:bind-html="renderHtml(msg.html)"></div>
+            </div>
             <form ng-submit="sendMessage()">
                 <input type="text" ng-model="messageText" placeholder="Message">
                 <input type="submit" value="↵">

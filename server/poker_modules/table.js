@@ -129,28 +129,33 @@ Table.prototype.setTimeoutWait = function(){
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
     this.timeOutWaitUserAction = setTimeout(()=>{
-        this.timeOutWaitUserAction = null;
-        const seat = this.public.seats[activeSeat];
-        const currentSeatName = seat && seat.name;
-        if (currentSeatName === lastActiveUserLogin){
-            const player = this.seats[activeSeat];
-            if (this.public.phase === 'smallBlind') {
-                this.playerPostedSmallBlind();
-                return log.info('Auto SB ' + lastActiveUserLogin);
-            } else if (this.public.phase === 'bigBlind'){
-                this.playerPostedBigBlind();
-                return log.info('Auto BB ' + lastActiveUserLogin);
-            } else if (player.public.bet === this.public.biggestBet){
-                log.info('Autocheck ' + lastActiveUserLogin);
-                return this.playerChecked();
-            } else {
-                log.info('Autofold ' + lastActiveUserLogin);
-                if (++player.autoFoldTimes > config.maxAutoFoldTimes){
-                    $u.removePlayer(player.soket);
-                    log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+        try {
+            this.timeOutWaitUserAction = null;
+            const seat = this.public.seats[activeSeat];
+            const currentSeatName = seat && seat.name;
+            if (currentSeatName === lastActiveUserLogin){
+                const player = this.seats[activeSeat];
+                if (this.public.phase === 'smallBlind') {
+                    this.playerPostedSmallBlind();
+                    return log.info('Auto SB ' + lastActiveUserLogin);
+                } else if (this.public.phase === 'bigBlind'){
+                    this.playerPostedBigBlind();
+                    return log.info('Auto BB ' + lastActiveUserLogin);
+                } else if (player.public.bet === this.public.biggestBet){
+                    log.info('Autocheck ' + lastActiveUserLogin);
+                    return this.playerChecked();
+                } else {
+                    log.info('Autofold ' + lastActiveUserLogin);
+                    if (++player.autoFoldTimes > config.maxAutoFoldTimes){
+                        $u.removePlayer(player.soket);
+                        log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+                    }
+                    return this.playerFolded();
                 }
-                return this.playerFolded();
             }
+        } catch (e){
+            console.log(e);
+            log.error('Auto moves: ' + e);
         }
     }, (config.timeOutWait + 5) * 1000);
 };

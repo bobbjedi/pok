@@ -266,9 +266,24 @@ input[type="range"] {
     display: block
 }
 
+#chat-tabs{
+    display: flex;
+    margin-top: -115px;
+    position: absolute;
+    font-size: 1.3em;
+}
+
+#chat-tabs .chat-tab{
+    margin-left: 3px;
+    border: 1px solid grey;
+    padding: 3px;
+    width: 55px;
+    text-align: center;
+    background: black;
+}
+
 div#messages {
     border: 1px solid;
-    border-radius: 8px;
     height: 75px;
     background-color: black;
     padding: 8px;
@@ -289,7 +304,6 @@ div#chat input[type="submit"] {
     padding: 5px 8px;
     margin: 1px 0 0 2px;
     background-color: rgba(46, 31, 62, 0.9);
-    border-radius: 8px
 }
 
 div#chat input[type="text"] {
@@ -374,6 +388,9 @@ div.seat {
     transition: box-shadow .2s ease, border .2s ease
 }
 
+.no-hand {
+    opacity: 0.8;
+}
 div.seat.active {
     color: #e9e0ee;
     border: 2px solid #a1a6a9;
@@ -1067,7 +1084,9 @@ screen and (max-device-width:480px) {
         height: 50px;
         width: 135px
     }
-
+    #chat-tabs{
+        margin-top: -85px;
+    }
     div#chat input[type="text"] {
         width: 137px;
         font-size: 1.3em;

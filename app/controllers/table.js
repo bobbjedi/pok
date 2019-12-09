@@ -361,12 +361,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.automoves.reset();
                     return $scope.$digest();
                 }
-                var messageBox = document.querySelector('#messages');
-                var messageElement = angular.element('<p class="log-message">' + msg + '</p>');
-                angular.element(messageBox).append(messageElement);
-                if (messageBox){
-                    messageBox.scrollTop = messageBox.scrollHeight;
-                }
+                window.pushSystemMsg('<p class="log-message">' + msg + '</p>');
                 if (data.log.notification && data.log.seat !== '') {
                     if (!$scope.notifications[data.log.seat].message) {
                         $scope.notifications[data.log.seat].message = data.log.notification;
@@ -411,7 +406,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // When the player is dealt cards
         socket.on('dealingCards', function(cards) {
-            console.log({cards});
             $scope.myCards[0] = 'card-' + cards[0];
             $scope.myCards[1] = 'card-' + cards[1];
             $scope.$digest();
