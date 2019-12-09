@@ -103,6 +103,9 @@ module.exports = {
 
     createCustomTable(params, data = {}){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify(params));
+        if (!eventEmitter_){
+            return log.info('Custom room: is not eventEmitter!!');
+        }
         let i;
         if (params.isPrivate){
             i = sha256((new Date().getTime() + Math.random()).toString());
