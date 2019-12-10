@@ -21,4 +21,9 @@ module.exports = {
         filename: 'db_/actionStat',
         autoload: true
     }), 5)),
+
+    restorePswdDb: modelDb(syncNedb(new Datastore({
+        filename: 'db_/restorePswd',
+        autoload: true
+    }), 600)),
 };

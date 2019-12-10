@@ -7,8 +7,9 @@
             <span class="table-requirements">Min buy-in {{table.minBuyIn}}</span>
             <span class="table-requirements">Ваш депозит {{$root.totalChips}} фишек</span>
             <span class="table-requirements error" ng-show="buyInError">{{buyInError}}</span>
+            <br>
             <input class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
-            <input type="submit" value="Сесть">
+            <input class="hovered bg-green" type="submit" value="Сесть">
         </form>
     </div>
     <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>

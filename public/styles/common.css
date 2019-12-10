@@ -73,7 +73,7 @@
 }
 
 .m10 {
-    margin: 10px;
+    margin: 10px !important;
 }
 
 .hovered {
@@ -95,7 +95,7 @@
 }
 
 .bg-green {
-    background-color: #425a3c;
+    background-color: #425a3c !important;
 }
 
 .bg-red {
@@ -103,7 +103,7 @@
 }
 
 .bg-yellow {
-    background-color: #745512;
+    background-color: #ebe83e;
 }
 
 .bg-blue {
@@ -341,6 +341,10 @@ div.row {
     font-size: 0.8em;
 }
 
+.chat-send-msg{
+    width: 35px !important;
+    height: 30px;
+}
 #messages {
     position: absolute;
     height: 50px;

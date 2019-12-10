@@ -6,6 +6,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
     $scope.status = 'login';
+    $scope.newPassword = '';
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
     $scope.public = {};
@@ -96,6 +97,13 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $rootScope.user.isLogged = true;
             noty('success', 'Здравствуйте, <i>' + $rootScope.user.login + '</i>!');
             $rootScope.checkUser();
+        });
+    };
+
+    $scope.restorePswd = () =>{
+        $rootScope.api({action: 'restorePswd', data: {pswd: $scope.newPassword}}, data => {
+            $scope.checkStrNewPswd = data.controlWord;
+            noty('success', 'Заявка успешено создана, ожидается подтверждающая транзакция c <u>Вашего</u> кошелька!');
         });
     };
     $scope.createRoom = function(){

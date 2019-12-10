@@ -1,6 +1,6 @@
 const log = require('../helpers/log');
 const sha256 = require('sha256');
-const {usersDb} = require('./DB');
+const {usersDb, restorePswdDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
 const {withdraw} = require('./minter');
@@ -61,6 +61,16 @@ module.exports = (app) => {
                 } else {
                     error('Произошла ошибка, попробуйте еще раз!', res);
                 }
+                break;
+            case ('restorePswd'):
+                const {pswd} = GET;
+                if (!pswd || pswd.length < 3){
+                    return error('Пароль слишком короткий!', res);
+                }
+                const newPswd = $u.createPswd(pswd);
+                const controlWord = $u.createPswd(newPswd + new Date().getTime()).substr(-8);
+                new restorePswdDb({password: newPswd, controlWord, time: $u.unix()}, 1);
+                success({controlWord}, res);
                 break;
 
             default:

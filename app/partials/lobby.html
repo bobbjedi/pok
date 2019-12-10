@@ -3,8 +3,10 @@
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
-                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposit}}</span> {{$root.config.coinName}} (комиссия ~0.5-0.7%)</div>
-                <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow" ng-click="withdrawAmount = $root.user.deposit"> Все </span></div>
+                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposit}}</span>
+                    {{$root.config.coinName}} (комиссия ~0.5-0.7%)</div>
+                <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow"
+                        ng-click="withdrawAmount = $root.user.deposit"> Все </span></div>
             </div>
             <div class="buts" ng-click="isShowWithdraw = false">
                 <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount);">Да</div>
@@ -47,26 +49,57 @@
     <div class="modal-wrap" ng-show="!isLogged()">
         <div class="modal">
             <form ng-submit="logreg()">
-                <label for="screen-login-input">Ваш логин</label>
-                <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true" required>
+                <span ng-show="!isShowFogotPswd">
+                    <label for="screen-login-input">Ваш логин</label>
+                    <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true"
+                        required>
 
-                <label for="screen-address-input" ng-show="!isLoginned">Минтер адрес</label>
-                <input id="screen-address-input" class="input-left" type="text" ng-model="address" ng-show="!isLoginned"
-                    ng-trim="true">
+                    <label for="screen-address-input" ng-show="!isLoginned">Минтер адрес</label>
+                    <input id="screen-address-input" class="input-left" type="text" ng-model="address"
+                        ng-show="!isLoginned" ng-trim="true">
 
-                <label for="screen-password-input">Пароль</label>
-                <input id="screen-password-input" class="input-left" type="password" ng-model="password" ng-trim="true" required>
+                    <label for="screen-password-input">Пароль</label>
+                    <input id="screen-password-input" class="input-left" type="password" ng-model="password"
+                        ng-trim="true" required>
                     <br>
                     <div class="block-18" ng-show="!isLoginned">
                         <input id="screen-18-input" type="checkbox" ng-model="years18">
-                        <label class="label-18-input  txt-yellow small" for="screen-18-input">Я подтверждаю, что мой возраст не младше 18, и
-                            я полностью понимаю и принимаю риски связанные с использованием криптовалют и участием в азартных играх.</label>
+                        <label class="label-18-input  txt-yellow small" for="screen-18-input">Я подтверждаю, что мой
+                            возраст не младше 18, и
+                            я полностью понимаю и принимаю риски связанные с использованием криптовалют и участием в
+                            азартных играх.</label>
                     </div>
-                <br>
-                <br>
-                <input type="submit" value="Отправить">
+                    <br>
+                    <input class="but bg-blue" type="submit" value="Отправить">
+                    <br>
+                    <br>
+                    <a class="txt-blue hovered"
+                        ng-click="isLoginned = !isLoginned">{{isLoginned ? 'Зарегистрироваться?' : 'Есть аккаунт?'}}</a>
+                    |
+                </span>
 
-                <a ng-click="isLoginned =! isLoginned">{{isLoginned ? 'Зарегистрироваться?' : 'Есть аккаунт?'}}</a>
+                <!-- ВОССТАНОВЛЕНИЕ ПАРОЛЯ -->
+                <span ng-show="isShowFogotPswd">
+                    <br>
+                    <h3>Восстановление пароля</h3>
+                    <span ng-show="!checkStrNewPswd">
+                        <label for="screen-password-input">Введите новый пароль:</label>
+                        <input id="screen-password-input" class="input-left" type="password" ng-model="newPassword"
+                            ng-trim="true">
+                            <br>
+                            <div class="but hovered create-room m10" ng-click="restorePswd()">Восстановить</div>
+                    </span>
+                    <span ng-show="checkStrNewPswd">
+                        <div class="">Отправьте пустую транзакцию c <u>Вашего</u> кошелька на системный адрес: 
+                            <div class="txt-green big">{{$root.config.gameMinterAddress}}</div>
+                            с комментарием:
+                            <div class="txt-green big">{{checkStrNewPswd}}</div>
+                        </div>
+                    </span>
+                    <br>
+                </span>
+                <a class="txt-blue hovered"
+                    ng-click="isShowFogotPswd = !isShowFogotPswd">{{!isShowFogotPswd ? 'Забыл пароль?' : 'Войти?'}}</a>
             </form>
         </div>
         <div id="curtain" ng-show="!isLogged()"></div>
@@ -85,11 +118,13 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" /></div>
-                <div class="setting-line"><span>Макс BuyIn:</span> <input type="number" ng-model="createdTable.maxBuyIn" /></div>
+                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" />
+                </div>
+                <div class="setting-line"><span>Макс BuyIn:</span> <input type="number"
+                        ng-model="createdTable.maxBuyIn" /></div>
                 <div class="setting-line" ng-click="createdTable.isPrivate = !createdTable.isPrivate">
-                    <span>Приватная</span><i class="fa hovered" ng-class="'fa-toggle-' + (createdTable.isPrivate ? 'on' : 'off')"
-                    aria-hidden="true"></i>
+                    <span>Приватная</span><i class="fa hovered"
+                        ng-class="'fa-toggle-' + (createdTable.isPrivate ? 'on' : 'off')" aria-hidden="true"></i>
                 </div>
                 <div class="buts" ng-click="isCreateRoom = false">
                     <div class="but bg-green" ng-click="createRoom();">Создать</div>
@@ -100,8 +135,9 @@
     </div>
 
     <div id="buttons-lobby">
-        <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users" aria-hidden="true"></i> &nbsp; Создать комнату</div>
-        <div class="lobby-stat txt-green" >
+        <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users"
+                aria-hidden="true"></i> &nbsp; Создать комнату</div>
+        <div class="lobby-stat txt-green">
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
             <span> | Игр: <span class="big txt-yellow">{{$root.tsp(public.totalGamesCount)}}</span></span>
             <span> | Онлайн: <span class="txt-yellow">{{public.online}}</span></span>
@@ -134,7 +170,8 @@
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.seatsCount}}</td>
             <td class="centered-text">{{$root.tsp(table.minBuyIn)}}/{{$root.tsp(table.maxBuyIn)}}</td>
             <td class="centered-text">{{table.gamesCount}}/{{$root.tsp(table.allPots)}}</td>
-            <td class="centered-text"><a href="#!/table-{{table.seatsCount}}/{{table.id}}" class="but_pol brd-green">Вход</a></td>
+            <td class="centered-text"><a href="#!/table-{{table.seatsCount}}/{{table.id}}"
+                    class="but_pol brd-green">Вход</a></td>
         </tr>
     </table>
 </div>

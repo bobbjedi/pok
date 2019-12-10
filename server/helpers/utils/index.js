@@ -62,7 +62,7 @@ module.exports = {
             login: params.login,
             timestamp: this.unix(),
             loginLowCase: params.login.toLowerCase(),
-            password: sha256(params.password.toString()),
+            password: this.createPswd(password),
             deposit: config.regDrop || 0,
             depositInGame: 0,
             depositInRoom: {},
@@ -72,6 +72,9 @@ module.exports = {
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
         }
         return {user};
+    },
+    createPswd(password){
+        return sha256(password.toString());
     },
     // воозвращаем после падения сервера
     async returnChepsInplay(){

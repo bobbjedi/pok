@@ -8,6 +8,7 @@ const socket = io.connect(domain);
 
 window.refreshSocket = checkUser =>{
     // socket.emit('forceDisconnect', ()=>{
+    //     socket.removeAllListeners();
     //     checkUser();
     // });
     socket.disconnect();
@@ -17,7 +18,7 @@ window.refreshSocket = checkUser =>{
     }, 500);
 };
 
-window.initSocket = checkUser =>{
+window.initSocket = checkUser =>{ 
     // console.log('init');
 
     // let socketConnectTimeInterval;

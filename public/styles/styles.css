@@ -45,13 +45,13 @@ input {
 button,
 input[type="submit"],
 .button {
-    padding: 16px;
     background-color: rgba(0, 0, 0, 0);
     border: 1px solid #afaabe;
     border-radius: 5px;
     color: #afaabe;
-    font-size: 2em;
-    font-weight: lighter
+    font-weight: lighter;
+    width: 145px;
+    padding: 9px;
 }
 
 button.small,
@@ -69,7 +69,7 @@ input[type="submit"].control-button,
     font-size: 1.7em;
     background-color: #459e51;
     border: 1px solid #afaabe;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     cursor: pointer
 }
 
@@ -846,7 +846,7 @@ div#board-wrap .card-container {
 .modal-wrap .modal label {
     display: block;
     font-size: large;
-    margin-bottom: 10px
+    margin: 10px;
 }
 
 .modal-wrap .modal .input-left {

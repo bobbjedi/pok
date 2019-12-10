@@ -40,7 +40,8 @@ module.exports = {
             log.error('Withdraw: ' + e);
         }
     },
-    getEqual
+    getEqual,
+    sendTx
 };
 
 async function sendTx(address, amount){
