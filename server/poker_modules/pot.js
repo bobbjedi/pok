@@ -101,6 +101,7 @@ Pot.prototype.addTableBets = function(players) {
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
                     log.info('[#' + tableId + '] add to contributors to New pot ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
+                    log.info('[#' + tableId + ']' + JSON.stringify(this.pots));
                 }
             }
         }
