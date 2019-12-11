@@ -92,7 +92,6 @@ Pot.prototype.addTableBets = function(players) {
         // If not all the bets are equal, remove from each player's bet the smallest bet
         // amount of the table, add these bets to the pot and then create a new empty pot
         // and recursively add the bets that remained, to the new pot
-        log.info('[#' + tableId + '] is not equal, create pot#' + currentPot);
         for (var i in players) {
             players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
@@ -111,10 +110,12 @@ Pot.prototype.addTableBets = function(players) {
             amount: 0,
             contributors: []
         });
-
+        
+        log.info('[#' + tableId + '] is not equal, create pot#' + this.pots.length);
         // Recursion
         this.addTableBets(players);
     }
+    log.info('[#' + tableId + ']allPots: ' + JSON.stringify(this.pots));
 };
 
 /**
@@ -253,6 +254,7 @@ Pot.prototype.giveToWinner = function(winner) {
    * @param  number   seat
    */
 Pot.prototype.removePlayer = function(seat) {
+    log.info('[#' + this.tableId + '] удаляем из потов #' + seat);
     var potsCount = this.pots.length;
     for (var i = 0; i < potsCount; i++) {
         var placeInArray = this.pots[i].contributors.indexOf(seat);
