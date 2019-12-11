@@ -76,7 +76,7 @@ setInterval(() => {
 function setTableLog(str) {
     try {
         const id = str.match(/\[.*?\]/)[0].replace('[#', ''). replace(']', '');
-        const logName = id + 1 + '_' + lastDate;
+        const logName = (+id + 1) + '_' + lastDate;
         if (!tablesLog[logName]){
             tablesLog[logName] = fs.createWriteStream('./public/logs/' + logName + '.html', {
                 flags: "a"

@@ -806,6 +806,7 @@ div#board-wrap .card-container {
 }
 
 #pot-wrap #pot {
+    opacity: 0.8;
     color: white;
     background: rgb(138, 152, 165);
     text-align: center;
