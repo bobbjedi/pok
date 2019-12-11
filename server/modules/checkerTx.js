@@ -33,8 +33,8 @@ setInterval(() => {
                     if (amount < 2){
                         return;
                     }
-                    const hashBack = await sendTx(address, amount);
-                    depositsDb.db.insert({hash, hashBack, user_id: 'none', from: address, type: 'back', amount});
+                    // const hashBack = await sendTx(address, amount);
+                    // depositsDb.db.insert({hash, hashBack, user_id: 'none', from: address, type: 'back', amount});
                     return;
                 }
 
