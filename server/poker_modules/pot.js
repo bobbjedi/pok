@@ -42,6 +42,7 @@ Pot.prototype.addTableBets = function(players) {
     // Flag that shows if all the bets have the same amount
     var allBetsAreEqual = true;
 
+    const table = Store.tables[tableId]; 
     // Trying to find the smallest bet of the player
     // and if all the bets are equal
     for (var i in players) {
@@ -69,7 +70,8 @@ Pot.prototype.addTableBets = function(players) {
         for (var i in players) {
             players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
-                this.pots[currentPot].amount += players[i].public.bet;
+                const amount = players[i].public.bet;
+                this.pots[currentPot].amount += amount;
                 players[i].public.bet = 0;
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
@@ -78,11 +80,13 @@ Pot.prototype.addTableBets = function(players) {
                 }
                 if (players[i].public.chipsInPlay === 0){
                     isNeedNewPot = players[i].public.name;
+                    table.currentGameLog += '<b>' + isNeedNewPot + ' ALL IN ' + amount + '</b><br>';
+                    log.info('[#' + tableId + '] all In #' + isNeedNewPot + ' ' + amount);
                 }
             }
         }
         if (isNeedNewPot){
-            log.info('[#' + tableId + '] all In #' + isNeedNewPot + ' create new pot!');
+            log.info('[#' + tableId + '] all In new pot');
             this.pots.push({
                 amount: 0,
                 contributors: []
@@ -144,9 +148,19 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     var messages_ = [];
     const tIdstr = '[#' + this.tableId + '] | ';
     const winnersData = {};
+    var playersCount = players.length;
+    table.currentGameLog += '<b>Game finished</b></br>';
     log.info('[#' + this.tableId + '] *** Game finished **');
     log.info(tIdstr + 'Cards: ' + JSON.stringify(board));
     log.info(tIdstr + 'Pots: ' + JSON.stringify(this.pots));
+    
+    for (var j = 0; j < playersCount; j++) {
+        if (players[j]) {
+            table.currentGameLog += players[j].public.name + ' cards: [' + players[j].cards + '] |';
+        }
+    };
+    
+    table.currentGameLog += '<br>';
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
@@ -157,7 +171,6 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
         pot.amount *= 1 - (config.rake || 0) / 100;
         var winners = [];
         var bestRating = 0;
-        var playersCount = players.length;
         for (var j = 0; j < playersCount; j++) {
             if (players[j] && players[j].public.inHand && pot.contributors.indexOf(players[j].seat) >= 0) {
                 log.info(tIdstr + players[j].public.name + ' cards: [' + players[j].cards + '] ' + ' rating: ' + players[j].evaluatedHand.rating + JSON.stringify(players[j].evaluatedHand));
@@ -223,6 +236,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     Object.keys(winnersData).forEach(u=>{
         system.winners[u] = (system.winners[u] || 0) + winnersData[u].amount;
         log.info('[#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
+        table.currentGameLog += `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards}) <br>`;
     });
     system.save();
     const msgStr = JSON.stringify({_: '{DATA}', winnersData});

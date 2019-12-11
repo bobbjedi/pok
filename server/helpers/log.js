@@ -40,6 +40,9 @@ module.exports = {
         infoStr.write(`
 		` + 'warn|' + fullTime() + '|' + str);
     },
+    time,
+    date,
+    fullTime
 };
 
 function time () {

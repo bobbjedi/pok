@@ -4,6 +4,7 @@ var Deck = require('./deck'),
     $u = require('../helpers/utils'),
     Store = require('../modules/Store'),
     sng = require('../helpers/utils/sng'),
+    fs = require('fs'),
     config = require('../helpers/configReader');
 
 
@@ -60,6 +61,10 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.tournChips = data.chips;
 
     this.timeParams = data.isTourn && sng();
+    
+    // История последних раздач
+    this.lastGames = [];
+
     // All the public table data
     this.public = {
         type,
@@ -118,6 +123,12 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
 require('./tableTourns')(Table);
 require('./tablePlayerAct')(Table);
 
+Table.prototype.prepPublicLog = function(){
+    this.lastGames.unshift(this.currentGameLog);
+    this.lastGames = this.lastGames.splice(0, 5);
+    const html = this.lastGames.join('<b>---------------------------------------------------</b><br>');
+    fs.writeFile('./public/logs/' + (1 + this.public.id) + '.html', '<body style="background:#1d1b1b;color:burlywood;padding:10;margin:0;">' + html + '</body>', ()=>{});
+}; 
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
     // console.log('попытка', activeSeat, phase);
@@ -342,11 +353,10 @@ Table.prototype.initializeRound = function(changeDealer) {
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         return;
     }
-
     this.clearTimeoutWait();
     this.resetTimeOutRm();
-
-    log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****<b>');
+    this.currentGameLog = '<br></br><b>**** ' + log.fullTime() + ' ****</b><br>';
+    log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****</b>');
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
 
     if (this.playersSittingInCount > 1) {
@@ -372,12 +382,14 @@ Table.prototype.initializeRound = function(changeDealer) {
                     this.seats[i].sitOut(); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
+                    this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;   
                     this.playersInHandCount++;
                     this.seats[i].prepareForNewRound();
                     this.seats[i].stat.gamesCount = (this.seats[i].stat.gamesCount || 0) + 1;
                 }
             }
         }
+        this.currentGameLog += '<br>';
 
         // стата!
         this.initStats();
@@ -477,6 +489,7 @@ Table.prototype.initializeNextPhase = function() {
         break;
     }
     log.info('[#' + this.public.id + '] Cards: ' + this.public.board);
+    this.currentGameLog += '<b>' + this.public.board + '</b><br>';
     this.pot.addTableBets(this.seats);
     this.public.biggestBet = 0;
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
@@ -651,6 +664,7 @@ Table.prototype.removeAllCardsFromPlay = function() {
  * Actions that should be taken when the round has ended
  */
 Table.prototype.endRound = function() {
+    this.prepPublicLog();
     // ставим таймаут на удаление
     this.setTimeOutRm();
     // If there were any bets, they are added to the pot
