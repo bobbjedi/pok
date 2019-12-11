@@ -115,7 +115,8 @@ module.exports = Table =>{
 
         this.emitEvent('table-data', this.public);
 
-        if (this.lastPlayerToAct === this.public.activeSeat || this.otherPlayersAreAllIn()) {
+        // if (this.lastPlayerToAct === this.public.activeSeat || this.otherPlayersAreAllIn('pact!')) {
+        if (this.lastPlayerToAct === this.public.activeSeat) {
             this.endPhase();
         } else {
             this.actionToNextPlayer();
