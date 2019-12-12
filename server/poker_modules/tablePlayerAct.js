@@ -321,7 +321,8 @@ module.exports = Table =>{
         if (this.seats[seat].public.bet) {
             this.pot.addPlayersBets(this.seats[seat]);
         }
-        this.pot.removePlayer(this.public.activeSeat);
+        console.log({seat}, this.public.activeSeat);
+        this.pot.removePlayer(seat);
 
         var nextAction = '';
         this.playersSittingInCount--;
