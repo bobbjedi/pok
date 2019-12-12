@@ -61,7 +61,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.tournChips = data.chips;
 
     this.timeParams = data.isTourn && sng();
-    
+
     // История последних раздач
     this.lastGames = [];
 
@@ -128,7 +128,7 @@ Table.prototype.prepPublicLog = function(){
     this.lastGames = this.lastGames.splice(0, 50);
     const html = this.lastGames.join('<b>---------------------------------------------------</b><br>');
     fs.writeFile('./public/logs/' + (1 + this.public.id) + '.html', '<body style="background:#1d1b1b;color:burlywood;padding:10;margin:0;">' + html + '</body>', ()=>{});
-}; 
+};
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
     // console.log('попытка', activeSeat, phase);
@@ -382,7 +382,7 @@ Table.prototype.initializeRound = function(changeDealer) {
                     this.seats[i].sitOut(); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
-                    this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;   
+                    this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;
                     this.playersInHandCount++;
                     this.seats[i].prepareForNewRound();
                     this.seats[i].stat.gamesCount = (this.seats[i].stat.gamesCount || 0) + 1;
@@ -663,12 +663,14 @@ Table.prototype.removeAllCardsFromPlay = function() {
 /**
  * Actions that should be taken when the round has ended
  */
-Table.prototype.endRound = function() {
+Table.prototype.endRound = async function(str) {
+    log.info('[#' + this.public.id + ']: ' + str);
     this.prepPublicLog();
     // ставим таймаут на удаление
     this.setTimeOutRm();
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
+
     if (!this.pot.isEmpty()) {
         var winnersSeat = this.findNextPlayer(0);
         const message = this.pot.giveToWinner(this.seats[winnersSeat]);
@@ -688,11 +690,13 @@ Table.prototype.endRound = function() {
         }
     }
 
-    console.log(this.tournWinnersCount, this.playersSittingInCount);
     if (this.isTourn && this.tournWinnersCount >= this.playersSittingInCount){ // завершили турнир!
-        console.log('Stop', 1047);
         this.tournStop();
         return;
+    }
+    // уже обновлено
+    if (str !== true){
+        await this.updateDepsInPlay();
     }
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {

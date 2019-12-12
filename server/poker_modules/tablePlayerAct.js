@@ -65,7 +65,7 @@ module.exports = Table =>{
                 seat: '',
                 notification: ''
             });
-            this.endRound();
+            this.endRound(68);
         } else {
             if (this.lastPlayerToAct === this.public.activeSeat) {
                 this.endPhase();
@@ -274,7 +274,7 @@ module.exports = Table =>{
 
                 // If a player left a heads-up match and there are people waiting to play, start a new round
                 if (this.playersInHandCount < 2) {
-                    this.endRound();
+                    this.endRound(277);
                 }
                 // Else if the player was the last to act in this phase, end the phase
                 else if (this.lastPlayerToAct === seat && this.public.activeSeat === seat) {
@@ -286,6 +286,8 @@ module.exports = Table =>{
             log.error('TABLE playerLeft' + e);
         }
     };
+
+    // Обновление депозитов
     Table.prototype.updateDepsInPlay = function(){
         for (let i = 0; i < this.public.seatsCount; i++) {
             this.seats[i] && this.seats[i].updateDepInPlay();
@@ -330,7 +332,7 @@ module.exports = Table =>{
 
             if (this.playersInHandCount < 2) {
                 if (!playerLeft) {
-                    this.endRound();
+                    this.endRound(333);
                 }
             } else {
             // If the player was not the last player to act but they were the player who should act in this round
