@@ -462,6 +462,107 @@ div.row {
 
 .lobby-stat {}
 
+
+@media screen and (min-width:768px) and (max-width:1024px) {
+    #content {
+        width: 768px;
+        height: 520px
+    }
+
+    body {
+        font-size: 0.75em
+    }
+
+    div.row.controls {
+        position: absolute;
+        width: 100%;
+        border-radius: 8px;
+        bottom: 0;
+        height: 116px
+    }
+
+    .bottom-corrector {
+        display: block
+    }
+
+    div.player-wrap {
+        margin: 34% auto 0
+    }
+
+    div.player-wrap .player-cards {
+        left: 17px;
+        height: 50px
+    }
+
+    div.player-wrap .player-cards.dealt {
+        top: -50px
+    }
+
+    .card {
+        background-size: 900px auto;
+        width: 61px;
+        height: 93px
+    }
+
+    .bets {
+        font-size: 1.2em
+    }
+
+    div#chat div#messages {
+        height: 50px;
+        width: 135px
+    }
+
+    #chat-tabs {
+        margin-top: -85px;
+    }
+
+    div#chat input[type="text"] {
+        width: 137px;
+        font-size: 1.3em;
+        padding: 8px
+    }
+
+    div#chat input[type="submit"] {
+        transform: translate(0, -2px);
+        padding: 1px 8px;
+        width: 35px
+    }
+
+    div#chat input[type="text"] {
+        width: 140px
+    }
+
+    #pot {
+        font-size: 1.3em
+    }
+
+    .modal-wrap .modal {
+        width: 320px
+    }
+
+    #developer-info {
+        font-size: 1em
+    }
+
+    div.seat {
+        height: 60px
+    }
+
+    div.seat .avatar-img-seat {
+        height: 60px;
+        width: 60px;
+    }
+
+    div.controls div.chat-cell {
+        width: 190px
+    }
+
+    div.row {
+        height: calc((100% - 85px) / 3) !important;
+    }
+}
+
 /* FULLSCREEN */
 @media screen and (max-width: 768px) {
     .button-top {
@@ -577,6 +678,12 @@ screen and (max-device-width:480px) {
     div.player-wrap.side {
         margin-top: 28%
     }
+
+    div.seat .avatar-img-seat {
+        height: 45px;
+        width: 45px;
+    }
+
 
     div.player-wrap .player-cards {
         left: 8px;
