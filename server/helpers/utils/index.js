@@ -132,7 +132,7 @@ module.exports = {
     },
     tmpTourn(){
         setTimeout(()=>{
-            this.createCustomTable({count: 6, name: 'SitN-GO', sb: 10, type: 'SNG'}, config.sng);
+            this.createCustomTable({count: 10, name: 'Sit-And-GO', sb: 10, type: 'SNG'}, config.sng);
         }, 1000);
     }
 };

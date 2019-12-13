@@ -3,13 +3,42 @@
     <div class="modal">
         <form ng-submit="sitOnTheTable()">
             <h1>{{table.name}}</h1>
-            <span class="table-requirements">Max buy-in {{table.maxBuyIn}}</span>
-            <span class="table-requirements">Min buy-in {{table.minBuyIn}}</span>
-            <span class="table-requirements">Ваш депозит {{$root.totalChips}} фишек</span>
-            <span class="table-requirements error" ng-show="buyInError">{{buyInError}}</span>
+            <span ng-show="!table.isTourn">
+                <div class="table-requirements">
+                    <span class="table-modal-line">Min Buy-in:</span><span class="big txt-green">{{table.minBuyIn}}</span>
+                </div>
+                <div class="table-requirements">
+                    <span class="table-modal-line">Max Buy-in:</span><span class="big txt-green">{{table.maxBuyIn}}</span>
+                </div>
+            </span>
+            
+            <span ng-show="table.isTourn">
+                <div class="big txt-blue">Турнирный стол</div>
+                <br>
+                    <div class="table-requirements">
+                        <span class="table-modal-line">Победителей:</span><span class="txt-white">{{table.data.winnersCount}}</span>
+                    </div>
+                    <div class="table-requirements">
+                        <span class="table-modal-line">Фишек:</span><span class="txt-white">{{table.data.chips}}</span>
+                    </div>
+                    <div class="table-requirements">
+                        <span class="table-modal-line">Интервал:</span><span class="txt-white">{{table.data.timeOutMult}}</span> мин.
+                    </div>
+                <div class="table-requirements">
+                    <span class="table-modal-line">Buy-in:</span><span class="big txt-green">{{table.minBuyIn}}</span>
+                </div>
+            </span>
+
+            <div class="table-requirements">
+                <span class="table-modal-line">Ваш депозит:</span>
+                <span class="big txt-yellow">{{$root.totalChips}} фишек</span>
+            </div>
             <br>
-            <input class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
-            <input class="hovered bg-green" type="submit" value="Сесть">
+            <input ng-show="!table.isTourn" class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
+            <br>
+            <span class="table-requirements txt-red small" ng-show="buyInError">{{buyInError}}</span>
+            <br>
+            <input class="hovered bg-green big" type="submit" value="Сесть">
         </form>
     </div>
     <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
@@ -30,8 +59,9 @@
 
 <div id="table">
     <div class="table-name">
+        <img src="/images/logo.png">
         <div>{{table.name}}</div>
-        <div>Big blind: {{table.bigBlind}}, Max buy in: {{table.maxBuyIn}}<span ng-show="table.ante">, Ante: {{table.ante}}</span></div>
+        <div>Big blind: {{table.bigBlind}}, {{table.isTourn ? 'Buy in' : 'Max buy in'}}: {{table.maxBuyIn}}<span ng-show="table.ante">, Ante: {{table.ante}}</span></div>
     </div>
     <div id="felt"></div>
 </div>

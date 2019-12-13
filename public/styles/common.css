@@ -131,6 +131,9 @@
     color: #3c8ab9;
 }
 
+.txt-white{
+    color: #e5e6e7;   
+}
 
 
 input[type=range] {
@@ -366,10 +369,17 @@ div.row {
     width: 100%;
     position: absolute;
     text-align: center;
-    top: 60%;
+    top: calc( 60% - 130px);
     z-index: 10;
     font-size: 1.6em;
     opacity: 0.5;
+}
+.table-name img{
+    height: 130px;
+}
+.table-modal-line{
+    display: inline-block;
+    width: 114px;
 }
 
 .button-control {
@@ -536,6 +546,146 @@ div.row {
     }
 }
 
+@media screen and (max-width:767px),
+screen and (max-device-width:480px) {
+    #content {
+        width: 480px;
+        height: 320px
+    }
+
+    body {
+        font-size: 0.5em
+    }
+
+    #to-lobby {
+        padding: 10px;
+        font-size: 1.3em
+    }
+
+    .table-requirements {
+        font-size: 1.6em
+    }
+
+    div.player-wrap {
+        margin: 25% auto 0
+    }
+
+    div.player-wrap.top {
+        margin-top: 36%
+    }
+
+    div.player-wrap.side {
+        margin-top: 28%
+    }
+
+    div.player-wrap .player-cards {
+        left: 8px;
+        height: 25px
+    }
+
+    div.player-wrap .player-cards.dealt {
+        top: -25px
+    }
+
+    .card {
+        background-size: 460px auto;
+        width: 32px;
+        height: 47px
+    }
+
+    #pot {
+        font-size: 1.6em
+    }
+
+    .bets {
+        font-size: 1.6em
+    }
+
+    div.row.controls .cell {
+        width: 20%
+    }
+
+    div.row.controls .cell button {
+        margin: 15%
+    }
+
+    div.row.controls .double-cell {
+        width: 40%
+    }
+
+    div.row.controls .double-cell .cell-content {
+        padding: 4% 8%
+    }
+
+    div.row.controls .double-cell .cell-content input[type="range"] {
+        margin-top: 0
+    }
+
+    div.row.controls .double-cell .cell-content #bet-input {
+        margin-top: 5px
+    }
+
+    .modal-wrap .modal {
+        width: 300px
+    }
+
+    .modal-wrap .modal .input-left {
+        font-size: 2em
+    }
+
+    #developer-info {
+        font-size: 1.4em
+    }
+
+    div#messages {
+        position: absolute;
+        height: 42px;
+        bottom: 25px;
+        left: 2px;
+        width: 115px;
+        padding: 1px;
+    }
+    div#chat input[type="text"] {
+        width: 90px;
+    }
+    .chat-send-msg {
+        width: 25px !important;
+        height: 22px;
+    }
+    #chat-tabs{
+        margin-top: -63px;
+    }
+    
+    #chat-tabs .chat-tab {
+        width: 30px;
+    }
+    
+    div.row {
+        height: calc((100% - 65px) / 3);
+    }
+
+    .controls{
+       
+    }
+    .button-control {
+        width: 17%;
+    }
+    div.seat {
+        height: 40px;
+    }
+    .table-name img {
+        height: 85px;
+    }
+    .table-name{
+        top: calc(60% - 65px);
+    } 
+    .button-control {
+        margin: 1px;
+    }
+    div#board-wrap .card-container {
+        width: 16%;
+    }
+}
 
 
 .login-path {

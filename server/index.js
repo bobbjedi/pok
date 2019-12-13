@@ -68,6 +68,7 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].minBuyIn = tables[tableId].public.minBuyIn;
             lobbyTables[tableId].maxBuyIn = tables[tableId].public.maxBuyIn;
             lobbyTables[tableId].type = tables[tableId].public.type;
+            lobbyTables[tableId].isTourn = tables[tableId].isTourn;
             lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
             lobbyTables[tableId].allPots = tables[tableId].public.allPots;
             lobbyTables[tableId].ante = tables[tableId].public.ante;

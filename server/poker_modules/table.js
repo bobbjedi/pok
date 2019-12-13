@@ -107,6 +107,8 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         tournPrize: 0,
         // Места в турнире
         tournSeats: {},
+        isTourn: data.isTourn,
+        data,
         log: {
             message: '',
             seat: '',
