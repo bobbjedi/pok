@@ -42,7 +42,7 @@ Pot.prototype.addTableBets = function(players) {
     // Flag that shows if all the bets have the same amount
     var allBetsAreEqual = true;
 
-    const table = Store.tables[tableId]; 
+    const table = Store.tables[tableId];
     // Trying to find the smallest bet of the player
     // and if all the bets are equal
     for (var i in players) {
@@ -114,7 +114,7 @@ Pot.prototype.addTableBets = function(players) {
             amount: 0,
             contributors: []
         });
-        
+
         log.info('[#' + tableId + '] is not equal, create pot#' + this.pots.length);
         // Recursion
         this.addTableBets(players);
@@ -153,13 +153,13 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     log.info('[#' + this.tableId + '] *** Game finished **');
     log.info(tIdstr + 'Cards: ' + JSON.stringify(board));
     log.info(tIdstr + 'Pots: ' + JSON.stringify(this.pots));
-    
+
     for (var j = 0; j < playersCount; j++) {
         if (players[j]) {
             table.currentGameLog += players[j].public.name + ' cards: [' + players[j].cards + '] |';
         }
     };
-    
+
     table.currentGameLog += '<br>';
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
@@ -251,15 +251,18 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
 Pot.prototype.giveToWinner = function(winner) {
     var potsCount = this.pots.length;
     var totalAmount = 0;
+    const tableId = this.tableId;
+    const table = Store.tables[tableId];
     for (var i = potsCount - 1; i >= 0; i--) {
-        log.info('[#' + this.tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
+        log.info('[#' + tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
 
     this.reset();
     const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
-    log.info('[#' + this.tableId + '] ' + msg);
+    log.info('[#' + tableId + '] ' + msg);
+    table.currentGameLog += msg + '<br>';
     return msg;
 };
 

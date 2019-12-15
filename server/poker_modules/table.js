@@ -47,7 +47,8 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.timeOutWaitUserAction = null;
     // user_id создателя таблицы
     this.idCreator = idCreator;
-
+    // показываем победителей после ривера
+    this.isShowDown = false;
 
     // Tournir data
     this.isTourn = data.isTourn;
@@ -513,6 +514,7 @@ Table.prototype.initializeNextPhase = function() {
  * The phase when the players show their hands until a winner is found
  */
 Table.prototype.showdown = function() {
+    this.isShowDown = true;
     this.pot.addTableBets(this.seats);
 
     var currentPlayer = this.findNextPlayer(this.public.dealerSeat);
@@ -552,6 +554,7 @@ Table.prototype.showdown = function() {
     this.updateDepsInPlay();
     // ставим таймаут на удаление
     setTimeout(()=>{
+        this.isShowDown = false;
         this.endRound(true); // не нужно обновлять
     }, config.timeOutBeforeNewGame * 1000);
 };
@@ -666,7 +669,10 @@ Table.prototype.removeAllCardsFromPlay = function() {
  * Actions that should be taken when the round has ended
  */
 Table.prototype.endRound = async function(str) {
-    log.info('[#' + this.public.id + ']: ' + str);
+    if (this.isShowDown){
+        return log.error('[#' + this.public.id + ']: endRound isShowDawn str> ' + str);
+    }
+    log.info('[#' + this.public.id + ']: endRound' + str);
     this.prepPublicLog();
     // ставим таймаут на удаление
     this.setTimeOutRm();

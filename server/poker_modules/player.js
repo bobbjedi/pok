@@ -7,6 +7,7 @@
  */
 const $u = require('../helpers/utils');
 const {actionsStatDb} = require('../modules/DB');
+const log = require('../helpers/log');
 
 var Player = function (socket, user) {
     this.public = {
@@ -88,6 +89,9 @@ Player.prototype.updateDeposit = async function (amount, user) {
     user.deposit = $u.round(user.deposit + amount);
     $u.updateChipsUserPlayers(user);
     await user.save();
+    if (amount > 0){
+        log.info('User return chipsInPlay: ' + amount);
+    }
 };
 
 Player.prototype.updateDepInPlay = async function (user) {
