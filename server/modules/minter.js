@@ -1,7 +1,7 @@
 // https://github.com/minterscan/minter_private_key/releases/download/v1.0/minter_private_key_v1.0.zip
 const config = require('../helpers/configReader');
 const pk = require('../.pk');
-const {Minter, SendTxParams} = require('minter-js-sdk');
+const {Minter, SendTxParams, BuyTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
 const COIN = config.coinName;
 const minter = new Minter({chainId: 1, apiType: 'node', baseURL: 'https://api.minter.stakeholder.space/'});
@@ -44,6 +44,25 @@ module.exports = {
     async getAddressData(address = config.gameMinterAddress){
         return await $u.asyncReq('https://explorer-api.minter.network/api/v1/addresses/' + address);
     },
+    async buy(data){
+        const {coinTo, coinFrom, buyAmount} = data;
+        const txParams = new BuyTxParams({
+            privateKey: pk,
+            chainId: 1,
+            coinFrom,
+            coinTo,
+            buyAmount
+        });
+
+        try {
+            return await minter.postTx(txParams);
+        } catch (e){
+            console.log(e);
+            const errorMessage = e.response.data.error;
+            log.error(`Buy TX: ${errorMessage.tx_result.message} | ${buyAmount} | ${coinTo}`);
+            return false;
+        }
+    },
     getEqual,
     sendTx
 };
@@ -75,16 +94,15 @@ async function getNonce(){
     return await minter.getNonce(ADDRESS);
 }
 
-async function getEqual(sellCoin, value){
-    return await minter.estimateCoinSell({
-        coinToSell: sellCoin,
-        valueToSell: value,
-        coinToBuy: COIN,
-    });
+async function getEqual(sellCoin, value, buyCoin){
+    try {
+        return await minter.estimateCoinSell({
+            coinToSell: sellCoin,
+            valueToSell: value,
+            coinToBuy: buyCoin || COIN,
+        });
+    } catch (e){
+        log.error('Error estimateCoinSell:' + e);
+        return false;
+    }
 }
-
-
-
-(async ()=>{
-
-})();

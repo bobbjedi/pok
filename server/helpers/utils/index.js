@@ -170,7 +170,7 @@ setTimeout(()=>{
     data.winnersCount = 2;
     module.exports.tmpTourn(data);
 
-    data.count = 2;
+    data.count = 1;
     data.buyIn = 30;
     module.exports.tmpTourn(data);
 });
