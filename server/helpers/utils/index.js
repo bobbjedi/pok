@@ -130,10 +130,8 @@ module.exports = {
         delete tables_[tableId];
 
     },
-    tmpTourn(){
-        setTimeout(()=>{
-            this.createCustomTable({count: 10, name: 'Sit-And-GO', sb: 10, type: 'SNG'}, config.sng);
-        }, 1000);
+    tmpTourn(data){
+        this.createCustomTable({count: data.count, name: 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
     }
 };
 
@@ -149,6 +147,18 @@ module.exports = {
 //     }
 // }, 2000);
 module.exports.returnChepsInplay();
-module.exports.tmpTourn();
+setTimeout(()=>{
+    let data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 10;
+    data.buyIn = 10;
+    module.exports.tmpTourn(data);
 
+    data.count = 6;
+    data.buyIn = 20;
+    module.exports.tmpTourn(data);
+
+    data.count = 2;
+    data.buyIn = 30;
+    module.exports.tmpTourn(data);
+});
 

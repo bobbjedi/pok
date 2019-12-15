@@ -12,7 +12,7 @@ module.exports = Table =>{
         this.public.ante = next.ante;
         log.info('updateTournParams: ' + JSON.stringify(next));
     };
-    
+
     Table.prototype.timeOutUpdateTournParams = function () {
         this.updateTournParams();
         this.timeOutUpdateTourn = setTimeout(()=>{
@@ -43,7 +43,7 @@ module.exports = Table =>{
             log.info('in Tourn: ' + s.public.name);
         };
     };
-    
+
     Table.prototype.tournStop = async function(){
         if (!this.isTourn || !this.isTournStart){
             return;
@@ -64,7 +64,7 @@ module.exports = Table =>{
             await user.save();
             $u.updateChipsUserPlayers(user);
         }
-        $u.tmpTourn();
+        $u.tmpTourn(this.public.data);
         $u.rmCustomTable(this.public.id);
     };
 };
