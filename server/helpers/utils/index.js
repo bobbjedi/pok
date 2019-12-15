@@ -2,6 +2,7 @@ const {usersDb, depositsDb} = require('../../modules/DB');
 const config = require('../../helpers/configReader');
 const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
+const request = require('request');
 const log = require('../log');
 
 let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
@@ -38,7 +39,17 @@ module.exports = {
         const user = await usersDb.findOne(q);
         return user;
     },
-
+    async asyncReq(url){
+        return new Promise(resolve=>{
+            request({url, json: true}, (error, response, body)=>{
+                if (error){
+                    log.error('async req:' + error);
+                    return resolve(null);
+                }
+                resolve(body);
+            });
+        });
+    },
     async createUser(params){
         const {login, password, address} = params;
         if (!login.length || !password.length || !address.length) {
@@ -151,10 +162,12 @@ setTimeout(()=>{
     let data = JSON.parse(JSON.stringify(config.sng));
     data.count = 10;
     data.buyIn = 10;
+    data.winnersCount = 3;
     module.exports.tmpTourn(data);
 
     data.count = 6;
     data.buyIn = 20;
+    data.winnersCount = 2;
     module.exports.tmpTourn(data);
 
     data.count = 2;

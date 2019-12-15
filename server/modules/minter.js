@@ -8,6 +8,7 @@ const minter = new Minter({chainId: 1, apiType: 'node', baseURL: 'https://api.mi
 const log = require('../helpers/log');
 const {depositsDb} = require('./DB');
 const $u = require('../helpers/utils');
+
 // TEST
 // Mx7116ac9bed12a97cfc50e807521be66304722761
 //whale fetch pledge ancient rug shell burger demise swear already teach match
@@ -39,6 +40,9 @@ module.exports = {
             console.log(e);
             log.error('Withdraw: ' + e);
         }
+    },
+    async getAddressData(address = config.gameMinterAddress){
+        return await $u.asyncReq('https://explorer-api.minter.network/api/v1/addresses/' + address);
     },
     getEqual,
     sendTx
@@ -81,8 +85,6 @@ async function getEqual(sellCoin, value){
 
 
 
-// (async ()=>{
-//     const user = await $u.getUserFromQ({login: 'Dev4'});
-//     console.log(user);
-//     console.log('>>', await module.exports.withdraw(user, 1));
-// })();
+(async ()=>{
+
+})();

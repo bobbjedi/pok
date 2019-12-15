@@ -21,3 +21,4 @@ public/dist/build.js
 public/config.xml
 public/avatars/
 server/.pk.js
+configMain.js

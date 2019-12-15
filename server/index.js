@@ -23,18 +23,22 @@ function createServer(app){
 }
 
 
+function init(){
 // require('./modules/tlgGame');
-require('./modules/checkerTx');
-const sep = __dirname.includes('/') ? '/' : '\\';
-const dirs = __dirname.split(sep);
-dirs.pop();
-const dirName = dirs.join(sep);
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
-app.use(fileUpload());
-app.use(express.static(path.join(dirName, 'public')));
-require('./modules/api')(app);
-require('./modules/adminsplurgeola')(app);
+    require('./modules/checkerTx');
+    // require('./modules/main').init();
+    const sep = __dirname.includes('/') ? '/' : '\\';
+    const dirs = __dirname.split(sep);
+    dirs.pop();
+    const dirName = dirs.join(sep);
+    app.use(bodyParser.json()); // for parsing application/json
+    app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+    app.use(fileUpload());
+    app.use(express.static(path.join(dirName, 'public')));
+    require('./modules/api')(app);
+    require('./modules/adminsplurgeola')(app);
+}
+init();
 
 var players = {};
 var tables = {};
