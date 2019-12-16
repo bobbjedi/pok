@@ -72,7 +72,7 @@ module.exports = {
             const {bipBalance, maxDeposit} = data;
             const returnedBip = Math.round(maxDeposit + configMain.upFromMaxDep - bipBalance);
             log.warn(`Отзываем из майна bip:${returnedBip} [bipBalance: ${bipBalance} | maxDeposit: ${maxDeposit}]`);
-            return;
+            // return;
             const res = await minter.buy({coinTo: config.coinName, coinFrom: configMain.coin, buyAmount: returnedBip});
             if (res){
                 this.updatePriceCoinToDb();
@@ -91,7 +91,7 @@ module.exports = {
             if (!isClean){
                 return log.error('isClear FAIL!');
             }
-            return;
+            // return;
             const res = await minter.sell({coinTo: config.coinName, coinFrom: configMain.coin, sellAmount: sendedCountBip});
             if (res){
                 this.updatePriceCoinToDb();
