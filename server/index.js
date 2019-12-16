@@ -22,7 +22,7 @@ function createServer(app){
     return require('https').createServer(ssl, app).listen(port);
 }
 
-
+let dirName;
 function init(){
 // require('./modules/tlgGame');
     require('./modules/checkerTx');
@@ -30,7 +30,7 @@ function init(){
     const sep = __dirname.includes('/') ? '/' : '\\';
     const dirs = __dirname.split(sep);
     dirs.pop();
-    const dirName = dirs.join(sep);
+    dirName = dirs.join(sep);
     app.use(bodyParser.json()); // for parsing application/json
     app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
     app.use(fileUpload());
