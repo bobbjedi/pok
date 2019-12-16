@@ -17,10 +17,11 @@ module.exports = {
             }
             // console.log('Buy>', await minter.buy({coinTo: 'BIP', coinFrom: 'ESCAPE', buyAmount: 1}));
             // console.log('Sell>', await minter.sell({coinTo: 'BIP', coinFrom: 'ESCAPE', sellAmount: 1}));
+            this.checkMain();
             setInterval(()=>{
                 this.checkMain();
             }, 60000);
-        }, 500);
+        }, 5000);
     },
     async getMaxDeposit(){
         try {
