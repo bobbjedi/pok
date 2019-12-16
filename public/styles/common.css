@@ -529,10 +529,6 @@ div.row {
         width: 35px
     }
 
-    div#chat input[type="text"] {
-        width: 140px
-    }
-
     #pot {
         font-size: 1.3em
     }
@@ -672,6 +668,8 @@ div.row {
     }
     div#chat input[type="text"] {
         width: 90px;
+        margin: 3px 0 0 2px;
+        padding: 6px;
     }
     .chat-send-msg {
         width: 25px !important;
@@ -684,10 +682,6 @@ div.row {
     #chat-tabs .chat-tab {
         width: 30px;
     }
-    
-    /* div.row {
-        height: calc((100% - 65px) / 3);
-    } */
 
     .controls{
        
@@ -719,8 +713,8 @@ div.row {
     }
 
     #table {
-        top: 12%;
-        height: calc(100% - 135px);
+        top: 15%;
+        height: calc(100% - 115px);
     }
 
     #table #felt {
@@ -742,7 +736,7 @@ div.row {
     }
 
     div.row {
-        height: calc((100% - 20px) / 3);
+        height: calc((100% - 30px) / 3);
     }
 
     #chat form {
@@ -758,13 +752,6 @@ div.row {
     div.controls div.chat-cell {
         width: 175px;
     }
-
-    div#chat input[type="text"] {
-        width: 140px;
-        margin: 3px 0 0 2px;
-        padding: 6px;
-    }
-
     #to-lobby {
         position: fixed;
         left: 30px;
