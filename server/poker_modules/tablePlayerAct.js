@@ -327,7 +327,7 @@ module.exports = Table =>{
         var nextAction = '';
         this.playersSittingInCount--;
 
-        if (this.seats[seat].public.inHand) {
+        if (this.seats[seat].public.inHand && !this.isShowDown) { // вылетел во время игры
             this.seats[seat].sitOut();
             this.playersInHandCount--;
 
