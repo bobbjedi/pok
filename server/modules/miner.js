@@ -11,11 +11,15 @@ let isAlarm = false;
 module.exports = {
     async init(){
         log.info('Mainer started');
-        setTimeout(()=>{
+        setTimeout(async()=>{
             if (Store.system.failCoins.includes(configMain.coin)){
                 return log.error('Коин для майнинга зафачен!!!:' + configMain.coin);
             }
-            this.checkMain();
+            // console.log('Buy>', await minter.buy({coinTo: 'BIP', coinFrom: 'ESCAPE', buyAmount: 1}));
+            // console.log('Sell>', await minter.sell({coinTo: 'BIP', coinFrom: 'ESCAPE', sellAmount: 1}));
+            setInterval(()=>{
+                this.checkMain();
+            }, 60000);
         }, 500);
     },
     async getMaxDeposit(){
@@ -34,11 +38,14 @@ module.exports = {
             return log.error('Mainer ALARM');
         }
         try {
-            // const maxDeposit = await this.getMaxDeposit();
-            const maxDeposit = 100; //FIXME:
+  
+            // const bipBalance = 5;// FIXME:
+            // const maxDeposit = 10; //FIXME:
+
+            const maxDeposit = await this.getMaxDeposit();
             const {balances} = (await minter.getAddressData()).data;
-            // const bipBalance = Math.round(+balances.find(c=>c.coin === 'BIP').amount);
-            const bipBalance = 500;// FIXME:
+            const bipBalance = Math.round(+balances.find(c=>c.coin === 'BIP').amount);
+          
             if (!(bipBalance > 0)){
                 return log.error('bipBalance > 0 fail');
             }
@@ -62,10 +69,16 @@ module.exports = {
     async retunFromMain (data){
         try {
             const {bipBalance, maxDeposit} = data;
-            log.warn(`Отзываем из майна bip:${bipBalance}, maxDeposit: ${maxDeposit}`);
+            const returnedBip = Math.round(maxDeposit + configMain.upFromMaxDep - bipBalance);
+            log.warn(`Отзываем из майна bip:${returnedBip} [bipBalance: ${bipBalance} | maxDeposit: ${maxDeposit}]`);
+            return;
+            const res = await minter.buy({coinTo: config.coinName, coinFrom: configMain.coin, buyAmount: returnedBip});
+            if (res){
+                this.updatePriceCoinToDb();
+            }
         } catch (e){
             console.log(e);
-            log.error('retunFromMain: ' + e);
+            log.error('retunFromMine: ' + e);
         }
     },
     async sendToMain (data){
@@ -77,15 +90,14 @@ module.exports = {
             if (!isClean){
                 return log.error('isClear FAIL!');
             }
-            // конвертим в коин
-            console.log({isClean});
-
-            // обновляем через 1 секунду цену
-            // this.updatePriceCoinToDb(); //FIXME:
-
+            return;
+            const res = await minter.sell({coinTo: config.coinName, coinFrom: configMain.coin, sellAmount: sendedCountBip});
+            if (res){
+                this.updatePriceCoinToDb();
+            }
         } catch (e){
             console.log(e);
-            log.error('sendToMain: ' + e);
+            log.error('sendToMine: ' + e);
         }
     },
     async checkRat() {
@@ -117,7 +129,8 @@ module.exports = {
     updatePriceCoinToDb() {
         setTimeout(async () => {
             const price = await this.getCurretPriceMainerCoin();
-            if (!price) {
+            console.log({price});
+            if (!price || price === Store.system.lastPriceMainerCoin) {
                 return this.updatePriceCoinToDb();
             }
             Store.system.lastPriceMainerCoin = price;

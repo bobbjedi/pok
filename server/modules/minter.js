@@ -1,7 +1,7 @@
 // https://github.com/minterscan/minter_private_key/releases/download/v1.0/minter_private_key_v1.0.zip
 const config = require('../helpers/configReader');
 const pk = require('../.pk');
-const {Minter, SendTxParams, BuyTxParams} = require('minter-js-sdk');
+const {Minter, SendTxParams, BuyTxParams, SellTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
 const COIN = config.coinName;
 const minter = new Minter({chainId: 1, apiType: 'node', baseURL: 'https://api.minter.stakeholder.space/'});
@@ -46,6 +46,7 @@ module.exports = {
     },
     async buy(data){
         const {coinTo, coinFrom, buyAmount} = data;
+        log.info(`BUY ${coinFrom}>${coinTo} ${buyAmount}`);
         const txParams = new BuyTxParams({
             privateKey: pk,
             chainId: 1,
@@ -53,13 +54,31 @@ module.exports = {
             coinTo,
             buyAmount
         });
-
         try {
             return await minter.postTx(txParams);
         } catch (e){
             console.log(e);
             const errorMessage = e.response.data.error;
             log.error(`Buy TX: ${errorMessage.tx_result.message} | ${buyAmount} | ${coinTo}`);
+            return false;
+        }
+    },
+    async sell(data){
+        const {coinTo, coinFrom, sellAmount} = data;
+        log.info(`BUY ${coinFrom}>${coinTo} ${sellAmount}`);
+        const txParams = new SellTxParams({
+            privateKey: pk,
+            chainId: 1,
+            coinFrom,
+            coinTo,
+            sellAmount
+        });
+        try {
+            return await minter.postTx(txParams);
+        } catch (e){
+            console.log(e);
+            const errorMessage = e.response.data.error;
+            log.error(`Sell TX: ${errorMessage.tx_result.message} | ${sellAmount} | ${coinTo}`);
             return false;
         }
     },
