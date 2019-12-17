@@ -19,13 +19,22 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
-        amount *= (1 - (config.withdrawComission || 0) / 100);
+        const amountSend = amount * (1 + (config.withdrawComission || 0) / 100);
         if (user.deposit + 0.5 < amount){
             return false;
         }
 
         try {
-            const hash = await sendTx(user.address, amount);
+            const balance = await this.getBaseBalance(); // баланс игрового кошелька
+            if (balance < amountSend){ // надо отзывать из майна
+                log.warn(`Отзывам из майна на выплату Balance: ${balance} recived: ${amount}`);
+                const res = await this.returnAmountFromMine(amountSend);
+                log.info('Отзыв: ' + res);
+                if (!res){
+                    return false;
+                }
+            }
+            const hash = await sendTx(user.address, amountSend);
             amount = Math.round(amount);
             if (hash){
                 user.deposit = Math.round(user.deposit - amount);
@@ -43,6 +52,10 @@ module.exports = {
     },
     async getAddressData(address = config.gameMinterAddress){
         return await $u.asyncReq('https://explorer-api.minter.network/api/v1/addresses/' + address);
+    },
+    async getCoinBalance(coinName = config.coinName){
+        const {balances} = (await this.getAddressData()).data;
+        return Math.round(+balances.find(c=>c.coin === coinName).amount);
     },
     async buy(data){
         const {coinTo, coinFrom, buyAmount} = data;

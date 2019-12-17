@@ -3,7 +3,7 @@ const sha256 = require('sha256');
 const {usersDb, restorePswdDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
-const {withdraw} = require('./minter');
+const minter = require('./minter');
 
 module.exports = (app) => {
     app.get('/api', async (req, res) => {
@@ -45,7 +45,7 @@ module.exports = (app) => {
                 break;
 
             case ('withdraw'):
-                const resWithdraw = await withdraw(User, GET.amount);
+                const resWithdraw = await minter.withdraw(User, GET.amount);
                 if (resWithdraw){
                     success({}, res);
                 } else {
