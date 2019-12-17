@@ -320,14 +320,15 @@ module.exports = Table =>{
         // If the player had betted, add the bets to the pot
         if (this.seats[seat].public.bet) {
             this.pot.addPlayersBets(this.seats[seat]);
-        }
-        console.log({seat}, this.public.activeSeat);
+        }     
+        console.log({seat, isShowDown: this.isShowDown}, this.public.activeSeat);
         this.pot.removePlayer(seat);
 
         var nextAction = '';
         this.playersSittingInCount--;
 
         if (this.seats[seat].public.inHand && !this.isShowDown) { // вылетел во время игры
+            console.log(':>', 331);
             this.seats[seat].sitOut();
             this.playersInHandCount--;
 

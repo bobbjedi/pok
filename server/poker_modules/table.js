@@ -514,6 +514,9 @@ Table.prototype.initializeNextPhase = function() {
  * The phase when the players show their hands until a winner is found
  */
 Table.prototype.showdown = function() {
+    if (this.isShowDown){
+        return;
+    }
     this.isShowDown = true;
     this.pot.addTableBets(this.seats);
 
@@ -672,7 +675,7 @@ Table.prototype.endRound = async function(str) {
     if (this.isShowDown){
         return log.error('[#' + this.public.id + ']: endRound isShowDawn str> ' + str);
     }
-    log.info('[#' + this.public.id + ']: endRound' + str);
+    log.info('[#' + this.public.id + ']: endRound ' + str);
     this.prepPublicLog();
     // ставим таймаут на удаление
     this.setTimeOutRm();
