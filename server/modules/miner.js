@@ -128,6 +128,7 @@ module.exports = {
     updatePriceCoinToDb() {
         setTimeout(async () => {
             const price = await this.getCurretPriceMainerCoin();
+            console.log({price});
             if (!price || price === Store.system.lastPriceMainerCoin) {
                 return this.updatePriceCoinToDb();
             }

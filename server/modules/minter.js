@@ -25,7 +25,7 @@ module.exports = {
         }
 
         try {
-            const balance = await this.getBaseBalance(); // баланс игрового кошелька
+            const balance = await this.getCoinBalance(); // баланс игрового кошелька
             if (balance < amountSend){ // надо отзывать из майна
                 log.warn(`Отзывам из майна на выплату Balance: ${balance} recived: ${amount}`);
                 const res = await this.returnAmountFromMine(amountSend);
