@@ -43,7 +43,7 @@ module.exports = {
         try {
 
             // const baseBalance = 70;// FIXME:
-            const baseBalance = await this.getCoinBalance();
+            const baseBalance = await minter.getCoinBalance();
             console.log({baseBalance});
             if (!(baseBalance > 0)){
                 return log.error('baseBalance > 0 fail');
