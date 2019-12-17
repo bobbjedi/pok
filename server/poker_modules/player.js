@@ -23,8 +23,11 @@ var Player = function (socket, user) {
         hasCards: false,
         // The cards the player is holding, made public at the showdown
         cards: [],
-        // The amount the player has betted in thze current round
-        bet: 0
+        // The amount the player has betted in the current round
+        bet: 0,
+        // Last move
+        lastAct: null
+
     };
     // Автодействия сервера за юзера подряд(если инет отвалился)
     this.autoFoldTimes = 0;
@@ -216,8 +219,10 @@ Player.prototype.prepareForNewRound = function () {
     this.public.cards = [];
     this.public.hasCards = false;
     this.public.bet = 0;
+    this.public.lastAct = null;
     this.public.inHand = true;
     this.evaluatedHand = {};
+    
 };
 
 /**

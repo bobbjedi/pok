@@ -312,6 +312,10 @@ input[type=range]:focus::-ms-fill-upper {
     border-bottom: 1px solid #aaafb0;
 }
 
+.data-line-player{
+    display: flex;
+    justify-content: space-between;
+}
 .player-content {
     width: 100%;
     font-size: 0.7em;

@@ -17,6 +17,7 @@ module.exports = Table =>{
         });
 
         this.public.biggestBet = this.public.biggestBet < bet ? bet : this.public.biggestBet;
+        this.seats[this.public.activeSeat].public.lastAct = 'SBlind';
         this.emitEvent('table-data', this.public);
         this.initializeBigBlind();
     };
@@ -35,6 +36,7 @@ module.exports = Table =>{
             notification: 'Posted blind'
         });
         this.public.biggestBet = this.public.biggestBet < bet ? bet : this.public.biggestBet;
+        this.seats[this.public.activeSeat].public.lastAct = 'BBlind';
         this.emitEvent('table-data', this.public);
         this.initializePreflop();
     };
@@ -51,6 +53,7 @@ module.exports = Table =>{
             seat: this.public.activeSeat,
             notification: 'Fold'
         });
+        this.seats[this.public.activeSeat].public.lastAct = 'Fold';
         this.emitEvent('table-data', this.public);
 
         this.playersInHandCount--;
@@ -83,6 +86,7 @@ module.exports = Table =>{
  */
     Table.prototype.playerChecked = function() {
         this.stateAction(this.seats[this.public.activeSeat], 'check');
+        this.seats[this.public.activeSeat].public.lastAct = 'Check';
         this.log({
             message: this.seats[this.public.activeSeat].public.name + ' checked',
             action: 'check',
@@ -105,7 +109,7 @@ module.exports = Table =>{
         this.stateAction(this.seats[this.public.activeSeat], 'call');
         var calledAmount = this.public.biggestBet - this.seats[this.public.activeSeat].public.bet;
         this.seats[this.public.activeSeat].bet(calledAmount);
-
+        this.seats[this.public.activeSeat].public.lastAct = 'Call';
         this.log({
             message: this.seats[this.public.activeSeat].public.name + ' called',
             action: 'call',
@@ -137,7 +141,7 @@ module.exports = Table =>{
             seat: this.public.activeSeat,
             notification: 'Bet ' + $u.round(amount)
         });
-
+        this.seats[this.public.activeSeat].public.lastAct = 'Bet';
         this.emitEvent('table-data', this.public);
 
         var previousPlayerSeat = this.findPreviousPlayer();
@@ -165,6 +169,7 @@ module.exports = Table =>{
             seat: this.public.activeSeat,
             notification: 'Raise ' + $u.round(raiseAmount)
         });
+        this.seats[this.public.activeSeat].public.lastAct = 'Raise';
         this.emitEvent('table-data', this.public);
 
         var previousPlayerSeat = this.findPreviousPlayer();
