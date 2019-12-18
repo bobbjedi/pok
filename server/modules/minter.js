@@ -19,8 +19,8 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
-        const amountSend = amount * (1 + (config.withdrawComission || 0) / 100);
-        if (user.deposit + 0.5 < amount){
+        const amountSend = amount * (1 - (config.withdrawComission || 0) / 100);
+        if (user.deposit + 0.5 < amountSend){
             return false;
         }
 
