@@ -19,7 +19,7 @@ module.exports = {
             this.checkMain();
             setInterval(()=>{
                 this.checkMain();
-            }, 60000);
+            }, 300 * 1000);
 
             // ГРЯЗНО!!
             minter.returnAmountFromMine = async amount => await this.retunFromMain(null, amount);
