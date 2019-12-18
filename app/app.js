@@ -81,6 +81,7 @@ app.run(function($rootScope, $location) {
     window.initSocket(checkUser);
 
     $rootScope.withdraw = _.throttle(function(amount){
+        noty('info', 'Заявка сформирована!');
         $rootScope.api({action: 'withdraw', data: {amount}}, data => {
             noty('success', 'Успешно вывели!');
             $rootScope.updateUser();
@@ -178,37 +179,37 @@ const thousandSeparator = num => {
     ////////////////////////
     ///////// Настройки
     ////////////////////////
- 
+
     // количество снежинок, которое будет на экране одновременно.
     var snowmax = 40;
- 
+
     // Цвета для снежинок. Для каждой конкретной снежинки цвет выбирается случайно из этого массива.
     var snowcolor = new Array("#b9dff5", "#7fc7ff", "#7fb1ff", "#7fc7ff", "#b9dff5");
- 
+
     // Шрифт для снежинок
     var snowtype = new Array("Times");
- 
+
     // Символ (*) и есть снежинка, в место нее можно вставить любой другой символ.
     var snowletter = "&#10052;";
- 
+
     // Скорость движения снежинок (от 0.3 до 2)
     var sinkspeed = 0.4;
- 
+
     // Максимальный размер для снежинок
     var snowmaxsize = 40;
- 
+
     // Минимальный размер для снежинок
     var snowminsize = 10;
- 
+
     // Зона для снежинок
     // 1 для всей страницы, 2 в левой части страницы
     // 3 в центральной части, 4 в правой части страницы
     var snowingzone = 1;
- 
+
     ////////////////////////
     ///////// Конец настроек
     ////////////////////////
- 
+
     var snow = new Array();
     var marginbottom;
     var marginright;
@@ -227,7 +228,7 @@ const thousandSeparator = num => {
         const rand = Math.floor(range * Math.random());
         return rand;
     }
- 
+
 
     function movesnow() {
         for (i = 0; i <= snowmax; i++) {
@@ -235,7 +236,7 @@ const thousandSeparator = num => {
             snow[i].posy += snow[i].sink;
             snow[i].style.left = snow[i].posx + lftrght[i] * Math.sin(crds[i]) + 'px';
             snow[i].style.top = snow[i].posy + 'px';
-        
+
             if (snow[i].posy >= marginbottom - 2 * snow[i].size || parseInt(snow[i].style.left) > (marginright - 3 * lftrght[i])){
                 if (snowingzone == 1) {snow[i].posx = randommaker(marginright - snow[i].size);}
                 if (snowingzone == 2) {snow[i].posx = randommaker(marginright / 2 - snow[i].size);}
@@ -279,13 +280,13 @@ const thousandSeparator = num => {
         movesnow();
     }
 
- 
+
     for (i = 0; i <= snowmax; i++) {
         document.body.insertAdjacentHTML('beforeend', "<span id='s" + i + "' style='user-select:none;position:fixed;top:-" + snowmaxsize + "'>" + snowletter + "</span>");
     }
- 
+
     if (browserok) {
-        window.onload = initsnow;    
+        window.onload = initsnow;
     }
 
 })();
