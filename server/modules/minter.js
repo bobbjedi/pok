@@ -33,6 +33,7 @@ module.exports = {
                 if (!res){
                     return false;
                 }
+                await $u.wait(6);
             }
             const hash = await sendTx(user.address, amountSend);
             amount = Math.round(amount);

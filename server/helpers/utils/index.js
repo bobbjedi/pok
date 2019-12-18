@@ -35,6 +35,9 @@ module.exports = {
     unix(){
         return new Date().getTime();
     },
+    async wait(sec){
+        return new Promise(resolve=>setTimeout(resolve, 1000 * sec);
+    },
     async getUserFromQ (q) {
         const user = await usersDb.findOne(q);
         return user;
