@@ -1,3 +1,4 @@
+import app from '../app';
 import _ from 'underscore';
 import config from '../../config';
 

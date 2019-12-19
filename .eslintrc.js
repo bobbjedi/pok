@@ -35,9 +35,10 @@ module.exports = {
         "node": true
     },
     "globals": {
-        "Vue":true,
-        "Promise":true,
-        "Symbol":true,
+        "noty": true,
+        "Vue": true,
+        "Promise": true,
+        "Symbol": true,
     },
     "plugins": []
 }

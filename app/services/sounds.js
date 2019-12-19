@@ -1,7 +1,10 @@
+import app from '../app';
+
 /**
  * Returns functions that play the sounds of the application
  * @return object
  */
+
 app.factory('sounds', ['$rootScope', function ($rootScope) {
     let isSound;
     $rootScope.$watch('settings.sound', v=> {

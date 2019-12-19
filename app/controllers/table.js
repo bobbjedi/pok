@@ -3,10 +3,10 @@
  * The table controller. It keeps track of the data on the interface,
  * depending on the replies from the server.
  */
-import angular from 'angular';
 import $u from '../libs/utils';
 import automoves from './mixins/automoves';
 import socket from '../directives/socket.io';
+import app from '../app';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
@@ -52,7 +52,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
-
         // Getting the table data
         const updateTableData = () => {
             $http({
@@ -72,6 +71,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // Joining the socket room
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
+        
+        addLisstennerRecconect($routeParams.tableId, updateTableData);
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
@@ -86,7 +87,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.minBetAmount = function() {
-            if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
+            if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {
+                return 0;
+            }
             // If the pot was raised
             if ($scope.actionState === "actBettedPot") {
                 var proposedBet = +$scope.table.biggestBet + $scope.table.bigBlind;
@@ -106,7 +109,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.callAmount = function() {
-            if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] == null) {return 0;}
+            if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
             var callAmount = +$scope.table.biggestBet - $scope.table.seats[$scope.mySeat].bet;
             return callAmount > $scope.table.seats[$scope.mySeat].chipsInPlay ? $scope.table.seats[$scope.mySeat].chipsInPlay : callAmount;
         };
@@ -137,11 +140,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.showCheckButton = function() {
-            return $scope.actionState === "actNotBettedPot" || ($scope.actionState === "actBettedPot" && $scope.table.biggestBet == $scope.table.seats[$scope.mySeat].bet);
+            return $scope.actionState === "actNotBettedPot" || ($scope.actionState === "actBettedPot" && $scope.table.biggestBet === $scope.table.seats[$scope.mySeat].bet);
         };
 
         $scope.showCallButton = function() {
-            return $scope.actionState === "actOthersAllIn" || $scope.actionState === "actBettedPot" && !($scope.actionState === "actBettedPot" && $scope.table.biggestBet == $scope.table.seats[$scope.mySeat].bet);
+            return $scope.actionState === "actOthersAllIn" || $scope.actionState === "actBettedPot" && !($scope.actionState === "actBettedPot" && $scope.table.biggestBet === $scope.table.seats[$scope.mySeat].bet);
         };
 
         $scope.showBetButton = function() {
@@ -440,3 +443,17 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
     }]);
+
+
+
+function addLisstennerRecconect(tableId, restUpdatePublic){
+    setTimeout(()=>{
+        socket.on('connect', ()=>{
+            console.log('Recconect', tableId);
+            socket.emit('enterRoom', tableId, restUpdatePublic);
+        });
+        socket.on('disconnect', ()=>{
+            console.log('Disconnect: ', tableId);
+        }); 
+    }, 5000);
+};

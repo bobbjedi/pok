@@ -110,7 +110,7 @@ io.sockets.on('connection', function(socket) {
 	 * @param object table-data
 	 */
 
-    socket.on('enterRoom', function(tableId) {
+    socket.on('enterRoom', function(tableId, callback) {
         try {
             players[socket.id] && players[socket.id].return();
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
@@ -118,6 +118,7 @@ io.sockets.on('connection', function(socket) {
                 socket.join('table-' + tableId);
                 // Add the room to the player's data
                 players[socket.id].room = tableId;
+                callback && callback();
             }
         } catch (e){
             console.log(e);

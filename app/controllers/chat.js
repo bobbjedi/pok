@@ -3,8 +3,7 @@
  * The table controller. It keeps track of the data on the interface,
  * depending on the replies from the server.
  */
-import angular from 'angular';
-// import mat from '../libs/mat';
+import app from '../app';
 import socket from '../directives/socket.io';
 
 app.controller('ChatController', ['$scope', '$sce', function($scope, $sce) {
