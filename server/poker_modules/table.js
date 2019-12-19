@@ -450,7 +450,7 @@ Table.prototype.initializeSmallBlind = function() {
     // Start asking players to post the small blind
     this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
     this.emitEvent('table-data', this.public, true);
-    this.playerPostedSmallBlind();
+    // this.playerPostedSmallBlind();
 };
 
 /**
@@ -460,7 +460,7 @@ Table.prototype.initializeBigBlind = function() {
     // Set the table phase to 'bigBlind'
     this.public.phase = 'bigBlind';
     this.actionToNextPlayer();
-    this.playerPostedBigBlind();
+    // this.playerPostedBigBlind();
 };
 
 /**
