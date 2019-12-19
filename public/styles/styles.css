@@ -380,7 +380,7 @@ div.seat {
     border-radius: 3px;
     color: #afaabe;
     font-size: 1.4em;
-    font-weight: lighter;
+    /* font-weight: lighter; */
     text-align: center;
     position: relative;
     box-shadow: 0 0 5px 0 #2a272c;
