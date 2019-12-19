@@ -783,7 +783,6 @@ div.row {
     }
     .table_dark {
         position: absolute;
-        /* font-size: 1.8em; */
         font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
         text-align: left;
         border-collapse: collapse;
