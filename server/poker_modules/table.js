@@ -192,7 +192,7 @@ Table.prototype.clearTimeoutWait = function(){
 // The function that emits the events of the table
 Table.prototype.emitEvent = function(eventName, eventData){
     this.eventEmitter(eventName, eventData);
-    // this.setTimeoutWait();
+    this.setTimeoutWait();
     this.log({
         message: '',
         action: '',
