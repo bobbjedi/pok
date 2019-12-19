@@ -1,3 +1,6 @@
+html, body {
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+  }
 .buts {
     display: flex;
     justify-content: space-around;
@@ -512,9 +515,16 @@ div.row {
         font-size: 1.2em
     }
 
-    div#chat div#messages {
+    div#messages {
         height: 50px;
-        width: 135px
+        width: 170px;
+        position: absolute;
+        height: 60px;
+        padding: 2px;
+        font-size: 1.2em;
+        left: 8px;
+        bottom: 36px;
+
     }
 
     #chat-tabs {
@@ -524,7 +534,7 @@ div.row {
     div#chat input[type="text"] {
         width: 137px;
         font-size: 1.3em;
-        padding: 8px
+        padding: 2px
     }
 
     div#chat input[type="submit"] {
@@ -546,6 +556,7 @@ div.row {
     }
 
     div.seat {
+        font-weight: 500;
         height: 60px
     }
 
@@ -727,6 +738,7 @@ div.row {
     }
 
     div.seat {
+        font-weight: 500;
         height: 45px;
     }
 
@@ -734,7 +746,10 @@ div.row {
         height: 45px;
         width: 45px;
     }
-
+    .img_animate{
+        width: 15px;
+        height: 15px;
+    }
     .controls {
         height: 60px;
     }
@@ -745,12 +760,6 @@ div.row {
 
     #chat form {
         margin-top: 34px;
-    }
-
-    #messages {
-        height: 42px;
-        bottom: 25px;
-        width: 155px;
     }
 
     div.controls div.chat-cell {
@@ -765,7 +774,13 @@ div.row {
         position: fixed;
         right: 30px;
     }
-
+    .bets {
+        font-size: 1em;
+    }
+    .bets img {
+        width: 12px;
+        height: 12px;
+    }
     .table_dark {
         position: absolute;
         /* font-size: 1.8em; */
