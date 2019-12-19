@@ -186,6 +186,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('disconnect', function() {
         try {
             const player = players[socket.id];
+            if (!player){
+                return;
+            }
             if (player.public.isTourn){
                 return $u.removePlayer(socket);
             }
