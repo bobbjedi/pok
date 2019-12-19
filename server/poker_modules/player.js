@@ -32,7 +32,7 @@ var Player = function (socket, user) {
     // Автодействия сервера за юзера подряд(если инет отвалился)
     this.autoFoldTimes = 0;
     // восстанавливается одключение
-    this.isDisconnect = false;
+    this.public.isDisconnect = false;
     // The socket object of the user
     this.socket = socket;
     // The chips that are available in the user's account
@@ -120,13 +120,13 @@ Player.prototype.updateDepInPlay = async function (user) {
  */
 Player.prototype.onDisconnect = function (cb) {
     this.setTimeOutDisconnect = setTimeout(cb, 0 * 2000);
-    this.isDisconnect = true;
+    this.public.isDisconnect = true;
     console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };
 
 Player.prototype.return = function () { // успел вернуться
     clearTimeout(this.setTimeOutDisconnect);
-    this.isDisconnect = false;
+    this.public.isDisconnect = false;
     this.autoFoldTimes = 0;
     return this.socket.id;
 };

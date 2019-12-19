@@ -37,13 +37,16 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             return false;
         };
         $scope.checkUserSeat = ()=>{
+            if ($rootScope.sittingIn){
+                return;
+            }
             const {table} = $scope;
             for (let seat in table.seats){
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     $rootScope.sittingIn = true;
-                    // $scope.mySeat = seat;
+                    $scope.mySeat = seat;
                 }
             }
         };
@@ -52,6 +55,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
+        socket.on('disconnect', ()=>{
+            noty('error', '<i class="fa fa-wifi big" aria-hidden="true"></i> Разрыв соеденинения!');
+            $rootScope.makeReload = ()=>false;
+            setTimeout(()=>{
+                location.reload();
+            }, 5000); 
+        });
+      
         // Getting the table data
         const updateTableData = () => {
             $http({
@@ -72,14 +83,13 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         
-        addLisstennerRecconect($routeParams.tableId, updateTableData);
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
         });
-
+        $rootScope.makeReload = ()=>$scope.mySeat !== null && $scope.table.dealerSeat !== null;
         $scope.toLobby = ()=>{
-            if ($scope.mySeat !== null && $scope.table.dealerSeat !== null){
+            if ($rootScope.makeReload()){
                 $scope.inToLobby = true;
             } else {
                 $scope.leaveRoom();
@@ -186,7 +196,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // Leaving the socket room
         $scope.leaveRoom = function() {
-            $scope.leaveTable();
+            // $scope.leaveTable();
             socket.emit('leaveRoom');
             $location.path('/');
             $scope.inToLobby = false;
@@ -446,14 +456,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
 
 
-function addLisstennerRecconect(tableId, restUpdatePublic){
-    setTimeout(()=>{
-        socket.on('connect', ()=>{
-            console.log('Recconect', tableId);
-            socket.emit('enterRoom', tableId, restUpdatePublic);
-        });
-        socket.on('disconnect', ()=>{
-            console.log('Disconnect: ', tableId);
-        }); 
-    }, 5000);
-};
+// function addLisstennerRecconect(tableId, restUpdatePublic){
+// setTimeout(()=>{
+//     socket.on('connect', ()=>{
+//         console.log('Recconect', tableId);
+//         socket.emit('enterRoom', tableId, restUpdatePublic);
+//     });
+//     socket.on('disconnect', ()=>{
+//         console.log('Disconnect: ', tableId);
+//     }); 
+// }, 5000);
+// };

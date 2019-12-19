@@ -185,15 +185,17 @@ io.sockets.on('connection', function(socket) {
     });
     socket.on('disconnect', function() {
         try {
-            return $u.removePlayer(socket);
             const player = players[socket.id];
+            if (player.public.isTourn){
+                return $u.removePlayer(socket);
+            }
             console.log('Disconnect', player && player.public.name);
             if (!player.public.inHand){ // если не в игре - удаляем
                 log.info(player.public.name + ' not hand -> remove');
                 return $u.removePlayer(socket);
             }
-            log.info(player.public.name + ' isDisconnect');
-            player.isDisconnect = true;
+            log.info(player.public.name + ' public.isDisconnect');
+            player.public.isDisconnect = true;
         } catch (e){
             console.log(e);
             log.error('disconnect: ' + e);
@@ -221,17 +223,19 @@ io.sockets.on('connection', function(socket) {
                 let playerExists = false;
                 for (let sId in players) {
                     const p = players[sId];
-                    if (p.public.name === name && p.isDisconnect) {
+                    if (p.public.name === name && p.public.isDisconnect) {
                         playerExists = p;
                         continue;
                     };
                 };
                 if (playerExists) {
-                    console.log('playerExists isDisconnect', playerExists.public.name);
+                    console.log('playerExists public.isDisconnect', playerExists.public.name);
                     const oldSocketId = playerExists.return();
+                    playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
+                    socket.join('table-' + playerExists.room); // зашли новым сокетом
                     playerExists.socket = socket;
                     players[socket.id] = playerExists;
-                    playerExists.isDisconnect = false;
+                    playerExists.public.isDisconnect = false;
                     callback({'success': true, playerId: players[socket.id].playerId});
                     delete players[oldSocketId];
                     return;
@@ -258,8 +262,8 @@ io.sockets.on('connection', function(socket) {
                 //  else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
                 //     for (let sId in players){
                 //         const p = players[sId];
-                //         if (p.public.name === name && p.isDisconnect){
-                //             console.log(p.public.name, 'isDisconnected видимо обновление страницы - удаляем');
+                //         if (p.public.name === name && p.public.isDisconnect){
+                //             console.log(p.public.name, 'public.isDisconnected видимо обновление страницы - удаляем');
                 //             $u.removePlayer(p.socket);
                 //         };
                 //     };

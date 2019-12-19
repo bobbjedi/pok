@@ -42,8 +42,8 @@ module.exports = Table =>{
     };
 
     /**
- * Checks if the round should continue after a player has folded
- */
+     * Checks if the round should continue after a player has folded
+    */
     Table.prototype.playerFolded = function() {
         this.stateAction(this.seats[this.public.activeSeat], 'fold');
         this.seats[this.public.activeSeat].fold();
@@ -272,6 +272,11 @@ module.exports = Table =>{
                 // If there are not enough players to continue the game
                 if (this.public.playersSeatedCount < 2) {
                     this.public.dealerSeat = null;
+                    // проверяем - вдруг последний isDisconnected
+                    const lastPlayer = Array.from(this.seats).find(s=>s);
+                    if (lastPlayer && lastPlayer.public.isDisconnect){
+                        setTimeout(()=> $u.removePlayer(lastPlayer.socket), 2000);
+                    }
                 }
 
                 this.seats[seat] = null;

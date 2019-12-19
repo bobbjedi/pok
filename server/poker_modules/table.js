@@ -134,46 +134,55 @@ Table.prototype.prepPublicLog = function(){
 };
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
-    // console.log('попытка', activeSeat, phase);
+    console.log('попытка', activeSeat, phase);
     if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
         return;
     }
+    
     this.clearTimeoutWait();
     this.lastWaitPhase = phase;
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
-    this.timeOutWaitUserAction = setTimeout(()=>{
+    
+    const autoMoveCb = ()=>{
         try {
-            this.timeOutWaitUserAction = null;
             const seat = this.public.seats[activeSeat];
             const currentSeatName = seat && seat.name;
             if (currentSeatName === lastActiveUserLogin){
                 const player = this.seats[activeSeat];
+                console.log('Avtomove', player.public.name, phase);
                 if (this.public.phase === 'smallBlind') {
                     this.playerPostedSmallBlind();
-                    return log.info('Auto SB ' + lastActiveUserLogin);
+                    log.info('Auto SB ' + lastActiveUserLogin);
                 } else if (this.public.phase === 'bigBlind'){
                     this.playerPostedBigBlind();
-                    return log.info('Auto BB ' + lastActiveUserLogin);
+                    log.info('Auto BB ' + lastActiveUserLogin);
                 } else if (player.public.bet === this.public.biggestBet){
                     log.info('Autocheck ' + lastActiveUserLogin);
-                    return this.playerChecked();
+                    this.playerChecked();
                 } else {
-                    log.info('Autofold ' + lastActiveUserLogin);
+                    log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
+                    this.playerFolded();
                     if (++player.autoFoldTimes > config.maxAutoFoldTimes){
-                        $u.removePlayer(player.soket);
+                        $u.removePlayer(player.socket);
                         log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+                        return;
                     }
-                    return this.playerFolded();
                 }
             }
         } catch (e){
             console.log(e);
             log.error('Auto moves: ' + e);
         }
-    }, (config.timeOutWait + 5) * 1000);
-};
+    };
+    let timeOut = (config.timeOutWait + 3) * 1000;
+    if (this.seats[activeSeat].public.isDisconnect){
+        timeOut = 5000;
+    }
+    console.log(activeSeat, timeOut);
+    this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 
+};
 Table.prototype.clearTimeoutWait = function(){
     if (this.timeOutWaitUserAction){
         clearTimeout(this.timeOutWaitUserAction);
@@ -441,6 +450,7 @@ Table.prototype.initializeSmallBlind = function() {
     // Start asking players to post the small blind
     this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
     this.emitEvent('table-data', this.public, true);
+    this.playerPostedSmallBlind();
 };
 
 /**
@@ -450,6 +460,7 @@ Table.prototype.initializeBigBlind = function() {
     // Set the table phase to 'bigBlind'
     this.public.phase = 'bigBlind';
     this.actionToNextPlayer();
+    this.playerPostedBigBlind();
 };
 
 /**

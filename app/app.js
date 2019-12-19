@@ -105,12 +105,14 @@ app.run(function($rootScope, $location) {
     };
 
     $rootScope.updateUser(true);
+
     window.onbeforeunload = ()=> {
-        if (!$rootScope.sittingOnTable && $rootScope.sittingOnTable !== ''){
-            return null;
+        if (location.hash.includes('table') && $rootScope.makeReload()){
+            return true;
         }
-        return true;
+        return null;
     };
+    
     $rootScope.$watch('settings', ()=>{
         localStorage.setItem('user_settings', JSON.stringify($rootScope.settings));
     }, true);
