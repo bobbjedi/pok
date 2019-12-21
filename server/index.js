@@ -327,6 +327,8 @@ io.sockets.on('connection', function(socket) {
                     }
                 }
                 return callback({ 'success': false, error: 'Вы не участвуете в турнире.'});
+            } else if (table.isTourn && table.public.data.userListArray.length && !table.public.data.userListArray.includes(player.public.name)){
+                return callback({ 'success': false, error: 'Вы не заявлены на этот стол.'});
             }
             // Простая игра
 

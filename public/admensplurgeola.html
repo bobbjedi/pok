@@ -5,12 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>adsd</title>
+    <title>Admin</title>
     <script src="https://ru.vuejs.org/js/vue.js"></script>
 </head>
 
 <body>
     <div id="app">
+        <button @click="tab='createTbl'">createTbl</button>
+        <button @click="tab='users'">Users</button>
+        <span v-if="tab === 'users'">
         <h1>Total deposit {{totDep.toFixed(0)}}</h1>
         <button @click="stopGames">STOP GAMES!</button>
         <div id="users">
@@ -59,20 +62,57 @@
                 </tr>
             </table>
         </div>
-    </div>
-    </div>
-
+        </span>
+        <span v-if="tab === 'createTbl'">
+            <h3>Основные</h3>
+            Name
+            <input placeholder="Name" v-model="table.name">
+            SB
+            <input placeholder="SB" type="number" v-model.number="table.sb">
+            Count seats
+            <input placeholder="Count seats" type="number" v-model.number="table.count">
+            <h3>Дополнительно</h3>
+            buyIn
+            <input placeholder="buyIn" type="number" v-model.number="table.data.buyIn">
+            winnersCount
+            <input placeholder="winnersCount" type="number" v-model.number="table.data.winnersCount">
+            playersCount
+            <input placeholder="playersCount" type="number" v-model.number="table.data.playersCount">
+            userList
+            <textarea v-model="table.data.userList"></textarea>
+            <button @click="createTable">createTable</button>
+        </span>
+        </div>
+        </div>
 
     <script>
         const app = new Vue({
             el: '#app',
             data: {
+                tab: 'users',
                 users: [],
                 txs: [],
                 txUserLogin: '',
                 editUserId: 0,
                 userDep: 0,
-                resultTxs: 0
+                resultTxs: 0,
+                table: {
+                    name: 'Sng',
+                    sb: 1,
+                    count: 2,
+                    isPrivate: false,
+                    maxBuyIn: 100,
+                    data: {
+                        userList: '',
+                        isOnce: true,
+                        isTourn: true,
+                        buyIn: 50,
+                        winnersCount: 1,
+                        playersCount: 3,
+                        chips: 1500,
+                        timeOutMult: 5 // минут
+                    },
+                }
             },
             computed: {
                 totDep() {
@@ -103,6 +143,11 @@
                 },
                 stopGames(){
                     api({action: 'gamesPaused'});
+                },
+                createTable() {
+                  api({ action: 'roomCreate', data: this.table}, data => {
+                    console.log('Table');
+                    });
                 },
                 getTx(user) {
                     this.txUserLogin = user.login;

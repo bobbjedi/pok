@@ -118,8 +118,9 @@ module.exports = {
      * @param {Object} params {name, id(0), count, sb, isPrivat}
      */
 
-    createCustomTable(params, data = {}){// TODO: проверка что еще есть активные комнаты у юзера!
+    createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify(params));
+        data = data || params.data || {};
         if (!eventEmitter_){
             return log.info('Custom room: is not eventEmitter!!');
         }
@@ -129,7 +130,12 @@ module.exports = {
         } else {
             i = ++lastTableId;
         }
-
+        
+        data.userListArray = [];
+        if (data.userList && data.userList !== ''){
+            data.userList = data.userList.replace('  ', ' ').replace('  ', ' ');
+            data.userListArray = data.userList.split(' ');
+        }
         const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
         const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
 
@@ -137,11 +143,16 @@ module.exports = {
         return i;
     },
     rmCustomTable(tableId){ // TODO: удалять комнату eventEmmiter!
-        console.log({tableId});
-        const table = tables_[tableId];
-        table.allPlayersLeft();
-        log.info('RM custom table ' + tableId);
-        delete tables_[tableId];
+        try {
+            console.log({tableId});
+            const table = tables_[tableId];
+            table.allPlayersLeft();
+            log.info('RM custom table ' + tableId);
+            delete tables_[tableId];
+        } catch (e){
+            console.log(e);
+            log.error('rmCustomTable: ' + e);
+        }
 
     },
     tmpTourn(data){

@@ -29,6 +29,8 @@ module.exports = Table =>{
         this.timeOutUpdateTournParams();
         this.public.tournPrize = this.public.minBuyIn * this.tournPlayersCount;
         this.isTournStart = true;
+        this.public.isTournStart = true;
+
         for (let i = 0; i < this.public.seatsCount; i++){
             const s = this.seats[i];
             if (!this.seats[i]){
@@ -64,7 +66,9 @@ module.exports = Table =>{
             await user.save();
             $u.updateChipsUserPlayers(user);
         }
-        $u.tmpTourn(this.public.data);
+        if (!this.public.data.isOnce) {
+            $u.tmpTourn(this.public.data);
+        }
         $u.rmCustomTable(this.public.id);
     };
 };

@@ -55,6 +55,7 @@ module.exports = (app) => {
 
             case ('roomCreate'):
                 GET.creator_user_id = User._id;
+                console.log('GET>', GET);
                 const createdRoomId = $u.createCustomTable(GET);
                 if (createdRoomId){
                     success({createdRoomId}, res);

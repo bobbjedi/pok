@@ -381,6 +381,14 @@ div.row {
     font-size: 1.6em;
     opacity: 0.8;
 }
+.table-reg-list{
+    position: absolute;
+    background: #151515;
+    width: 70%;
+    margin-left: 15%;
+    padding: 2px;
+    opacity: 0.9;
+}
 .table-name img{
     height: 130px;
 }

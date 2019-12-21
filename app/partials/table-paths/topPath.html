@@ -16,6 +16,9 @@
                 <div class="big txt-blue">Турнирный стол</div>
                 <br>
                     <div class="table-requirements">
+                        <span class="table-modal-line">Мест:</span><span class="txt-white">{{table.data.playersCount}}</span>
+                    </div>
+                    <div class="table-requirements">
                         <span class="table-modal-line">Победителей:</span><span class="txt-white">{{table.data.winnersCount}}</span>
                     </div>
                     <div class="table-requirements">
@@ -59,6 +62,7 @@
 
 <div id="table">
     <div class="table-name">
+        <div ng-if="!table.isTournStart && table.data.userListArray.length" class="small table-reg-list">Участники: {{table.data.userListArray.join(', ')}}</div>
         <img src="/images/logo.png">
         <div>{{table.name}}</div>
         <div>Big blind: {{table.bigBlind}}, {{table.isTourn ? 'Buy in' : 'Max buy in'}}: {{table.maxBuyIn}}<span ng-show="table.ante">, Ante: {{table.ante}}</span></div>
