@@ -134,7 +134,7 @@ module.exports = {
         data.userListArray = [];
         if (data.userList && data.userList !== ''){
             data.userList = data.userList.replace('  ', ' ').replace('  ', ' ');
-            data.userListArray = data.userList.split(' ');
+            data.userListArray = data.userList.split(',');
         }
         const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
         const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
