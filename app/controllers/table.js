@@ -75,7 +75,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 if (res.status === 200) {
                     const data = res.data;
                     $scope.table = data.table;
-                    $scope.buyInAmount = data.table.maxBuyIn;
+                    $scope.buyInAmount = Math.min(data.table.maxBuyIn, $rootScope.user.deposit);
                     $scope.betAmount = data.table.bigBlind;
                     $scope.checkUserSeat();
                 }
