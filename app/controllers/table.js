@@ -47,12 +47,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingOnTable = $routeParams.tableId;
                     $rootScope.sittingIn = true;
                     $scope.mySeat = seat;
-                    console.log($scope.table.seats[seat]);
                     if ($scope.table.seats[seat].hasCards){
-                        console.log('Rfhns ghjcbv');
-                        socket.emit('getMyCards', data =>{
-                            console.log('Cards', data);
-                        });
+                        socket.emit('getMyCards');
                     }
                 }
             }
@@ -346,7 +342,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         socket.on('table-data', function(data) {
             $scope.table = data;
-            console.log(data);
             $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
                 $rootScope.updateTimeOut();
