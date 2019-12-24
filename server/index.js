@@ -183,6 +183,20 @@ io.sockets.on('connection', function(socket) {
             log.error('forceDisconnect: ' + e);
         }
     });
+    socket.on('getMyCards', function(callback) {
+        try {
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+            player.socket.emit('dealingCards', player.cards);
+        } catch (e){
+            console.log(e);
+            log.error('getMyCards: ' + e);
+        }
+    });
+
+
     socket.on('disconnect', function() {
         try {
             // return $u.removePlayer(socket);
