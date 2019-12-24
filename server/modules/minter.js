@@ -12,6 +12,7 @@ const $u = require('../helpers/utils');
 // TEST
 // Mx7116ac9bed12a97cfc50e807521be66304722761
 //whale fetch pledge ancient rug shell burger demise swear already teach match
+const withdrawBlocked = {};
 module.exports = {
     /**
      * @param {Object | User} user
@@ -19,18 +20,25 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
+        console.log({withdrawBlocked});
+        if (withdrawBlocked[user._id]){
+            log.error('withdraw withdrawBlocked:' + user.login);
+            return false;
+        }
         const amountSend = amount * (1 - (config.withdrawComission || 0) / 100);
         if (user.deposit + 0.5 < amountSend){
             return false;
         }
 
         try {
+            withdrawBlocked[user._id] = true;
             const balance = await this.getCoinBalance(); // баланс игрового кошелька
             if (balance < amountSend){ // надо отзывать из майна
                 log.warn(`Отзывам из майна на выплату Balance: ${balance} recived: ${amount}`);
                 const res = await this.returnAmountFromMine(amountSend);
                 log.info('Отзыв: ' + res);
                 if (!res){
+                    delete withdrawBlocked[user._id];
                     return false;
                 }
                 await $u.wait(6);
@@ -43,12 +51,15 @@ module.exports = {
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
                 console.log(hash);
                 $u.updateChipsUserPlayers(user);
+                delete withdrawBlocked[user._id];
                 return true;
             }
+            delete withdrawBlocked[user._id];
             return false;
         } catch (e){
             console.log(e);
             log.error('Withdraw: ' + e);
+            delete withdrawBlocked[user._id];
         }
     },
     async getAddressData(address = config.gameMinterAddress){
