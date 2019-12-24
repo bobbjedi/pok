@@ -132,9 +132,13 @@ Table.prototype.prepPublicLog = function(){
     const html = this.lastGames.join('<b>---------------------------------------------------</b><br>');
     fs.writeFile('./public/logs/' + (1 + this.public.id) + '.html', '<body style="background:#1d1b1b;color:burlywood;padding:10;margin:0;">' + html + '</body>', ()=>{});
 };
+
+/**
+ * @description автодействия на сервере (+3 сек от клиентских)
+ */
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
-    console.log('попытка', activeSeat, phase);
+    // console.log('попытка', activeSeat, phase);
     if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
         return;
     }
@@ -179,7 +183,6 @@ Table.prototype.setTimeoutWait = function(){
     if (this.seats[activeSeat].public.isDisconnect){
         timeOut = 5000;
     }
-    console.log(activeSeat, timeOut);
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 
 };
@@ -707,7 +710,7 @@ Table.prototype.endRound = async function(str) {
     // Sitting out the players who don't have chips
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
-            this.seats[i].sitOut();
+            this.seats[i].sitOut(true);
             this.playersSittingInCount--;
         }
     }

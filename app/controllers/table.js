@@ -82,6 +82,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             });
         };
         updateTableData();
+
         // Joining the socket room
         socket.emit('leaveRoom');
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!

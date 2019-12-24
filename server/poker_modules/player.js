@@ -8,7 +8,8 @@
 const $u = require('../helpers/utils');
 const {actionsStatDb} = require('../modules/DB');
 const log = require('../helpers/log');
-
+const Store = require('../modules/Store');
+const config = require('../helpers/configReader');
 var Player = function (socket, user) {
     this.public = {
         // The name of the user
@@ -166,10 +167,18 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
 /**
  * Updates the player data when they sit out
  */
-Player.prototype.sitOut = function () {
+Player.prototype.sitOut = function (isRemoved) {
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
+        // isRemoved && setTimeout(()=>{ // высаживаем из-за стола
+        //     try {
+        //         Store.tables[this.sittingOnTable].playerLeft(this.seat);
+        //     } catch (e){
+        //         console.log(e);
+        //         log.error('sitOut timeOut:' + e);
+        //     }
+        // }, 1000 * config.sitOutTimeOut);
     }
 };
 
