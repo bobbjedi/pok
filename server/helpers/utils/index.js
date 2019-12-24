@@ -175,14 +175,14 @@ module.exports.returnChepsInplay();
 setTimeout(()=>{
     let data = JSON.parse(JSON.stringify(config.sng));
     data.count = 10;
-    data.buyIn = 10;
-    data.winnersCount = 3;
+    data.buyIn = 100;
+    data.winnersCount = 1;
     module.exports.tmpTourn(data);
 
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 6;
-    data.buyIn = 20;
-    data.winnersCount = 2;
+    data.buyIn = 100;
+    data.winnersCount = 1;
     module.exports.tmpTourn(data);
 
     data = JSON.parse(JSON.stringify(config.sng));
