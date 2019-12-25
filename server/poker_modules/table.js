@@ -140,8 +140,8 @@ Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
     console.log('попытка', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
     // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (!activeSeat || !phase){
-        console.log('Return ', !activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat);
+    if (activeSeat === null || !phase){
+        console.log('setTimeoutWait Return ', !activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat);
         return;
     }
     
@@ -181,9 +181,9 @@ Table.prototype.setTimeoutWait = function(){
             log.error('Auto moves: ' + e);
         }
     };
-    let timeOut = (config.timeOutWait + 2) * 1000;
+    let timeOut = (config.timeOutWait + 3) * 1000;
     if (this.seats[activeSeat].public.isDisconnect){
-        timeOut = 4000;
+        timeOut = 5000;
     }
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 
@@ -197,7 +197,7 @@ Table.prototype.clearTimeoutWait = function(){
 // The function that emits the events of the table
 Table.prototype.emitEvent = function(eventName, eventData){
     this.eventEmitter(eventName, eventData);
-    setTimeout(()=> this.setTimeoutWait(), 1000);
+    this.setTimeoutWait();
     this.log({
         message: '',
         action: '',
