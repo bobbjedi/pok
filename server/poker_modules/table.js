@@ -181,9 +181,9 @@ Table.prototype.setTimeoutWait = function(){
             log.error('Auto moves: ' + e);
         }
     };
-    let timeOut = (config.timeOutWait + 3) * 1000;
+    let timeOut = (config.timeOutWait + 2) * 1000;
     if (this.seats[activeSeat].public.isDisconnect){
-        timeOut = 5000;
+        timeOut = 4000;
     }
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 
@@ -197,7 +197,7 @@ Table.prototype.clearTimeoutWait = function(){
 // The function that emits the events of the table
 Table.prototype.emitEvent = function(eventName, eventData){
     this.eventEmitter(eventName, eventData);
-    this.setTimeoutWait();
+    setTimeout(()=> this.setTimeoutWait(), 1000);
     this.log({
         message: '',
         action: '',
