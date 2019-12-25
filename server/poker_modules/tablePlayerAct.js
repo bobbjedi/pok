@@ -233,7 +233,6 @@ module.exports = Table =>{
             }
         }
     };
-
     /**
  * Changes the data of the table when a player leaves
  * @param int seat
@@ -259,7 +258,7 @@ module.exports = Table =>{
                 // если турнир - обновляем данные по фишкам в остатке при удалении игрока
                 const {tournSeats} = this.public;
                 if (this.isTournStart && tournSeats[seat]){
-                    tournSeats[seat].chipsInPlay = this.seats[seat].public.chipsInPlay - this.public.ante;
+                    this.updateTournSeat(seat);
                     tournSeats[seat].isOut = true;
                 }
 

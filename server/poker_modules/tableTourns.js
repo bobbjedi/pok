@@ -71,4 +71,19 @@ module.exports = Table =>{
         }
         $u.rmCustomTable(this.public.id);
     };
+
+    Table.prototype.updateTournSeat = function(seat, amount){
+        amount = amount || this.public.ante;
+        const {tournSeats} = this.public;
+        const player = this.seats[seat];
+        const chipsInPlay = player ? player.public.chipsInPlay : tournSeats[seat].chipsInPlay;
+        tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
+        if (player){
+            player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
+            console.log('PLAYER!!', chipsInPlay);
+        } else {
+            console.log('NOOOPLAYER!!', chipsInPlay);
+        }
+        console.log({seat, amount});
+    };
 };

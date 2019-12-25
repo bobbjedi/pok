@@ -204,9 +204,9 @@ io.sockets.on('connection', function(socket) {
             if (!player){
                 return;
             }
-            if (player.public.isTourn){
-                return $u.removePlayer(socket);
-            }
+            // if (player.public.isTourn){
+            //     return $u.removePlayer(socket);
+            // }
             console.log('Disconnect', player && player.public.name);
             if (!player.public.inHand){ // если не в игре - удаляем
                 log.info(player.public.name + ' not hand -> remove');

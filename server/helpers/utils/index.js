@@ -190,5 +190,11 @@ setTimeout(()=>{
     data.buyIn = 30;
     data.winnersCount = 1;
     module.exports.tmpTourn(data);
-});
 
+    data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 6;
+    data.playersCount = 3;
+    data.buyIn = 30;
+    data.winnersCount = 1;
+    module.exports.tmpTourn(data);
+});

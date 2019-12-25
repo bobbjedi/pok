@@ -141,7 +141,7 @@ Table.prototype.setTimeoutWait = function(){
     this.clearTimeoutPlayerAction('setTimeoutWait');
     console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
     // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (activeSeat === null || !phase || this.isTourn){
+    if (activeSeat === null || !phase){
         console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
         return;
     }
@@ -156,6 +156,8 @@ Table.prototype.setTimeoutWait = function(){
             const currentSeatName = seat && seat.name;
             if (currentSeatName === lastActiveUserLogin){
                 const player = this.seats[activeSeat];
+                // забираем анте
+                // this.updateTournSeat(activeSeat);
                 console.log('Avtomove', player.public.name, phase);
                 if (this.public.phase === 'smallBlind') {
                     this.playerPostedSmallBlind();
@@ -169,7 +171,7 @@ Table.prototype.setTimeoutWait = function(){
                 } else {
                     log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
                     this.playerFolded();
-                    if (++player.autoFoldTimes > config.maxAutoFoldTimes){
+                    if (++player.autoFoldTimes > config.maxAutoFoldTimes && !this.isTourn){
                         $u.removePlayer(player.socket);
                         log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
                         return;
@@ -388,12 +390,6 @@ Table.prototype.initializeRound = function(changeDealer) {
         this.public.biggestBet = 0;
 
         for (var i = 0; i < this.public.seatsCount; i++) {
-            // отсутвует в турнире - снимаем 1ББ
-            const {tournSeats} = this.public;
-            if (this.isTournStart && tournSeats[i] && tournSeats[i].isOut){
-                tournSeats[i].chipsInPlay = $u.round(tournSeats[i].chipsInPlay - this.public.ante);
-            }
-
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (!this.seats[i].public.chipsInPlay) {
@@ -514,6 +510,22 @@ Table.prototype.initializeNextPhase = function() {
     this.public.biggestBet = 0;
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
+
+    if (this.isTournStart) {
+        try {
+            const {tournSeats} = this.public;
+            console.log(tournSeats);
+            for (let i in tournSeats) {
+                console.log(i, '!this.seats[i] || tournSeats[i].isOut', tournSeats[i].isOut || !this.seats[i] || this.seats[i].public && this.seats[i].public.isDisconnect);
+                if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
+                    this.updateTournSeat(i);
+                }
+            }
+        } catch (e){
+            console.log(e);
+            log.error('updateTournSeat initializeNextPhase' + e);
+        }
+    }
     this.emitEvent('table-data', this.public, true);
 
     // If all other players are all in, there should be no actions. Move to the next round.
