@@ -47,29 +47,47 @@ module.exports = Table =>{
     };
 
     Table.prototype.tournStop = async function(){
-        if (!this.isTourn || !this.isTournStart){
-            return;
+        try {
+            if (!this.isTourn || !this.isTournStart){
+                return;
+            }
+            this.isTournStart = false;
+            log.info('Tourn STOP');
+            clearTimeout(this.timeOutUpdateTourn);
+            this.stopGame();
+            const winners = Array.from(this.seats).filter(player => player && player.public.sittingIn && player.public.chipsInPlay);
+            const prizePath = $u.round(this.public.tournPrize / winners.length);
+            if (!(prizePath > 0)){
+                return log.error('prizePath isNaN:' + prizePath);
+            }
+            for (let w in winners){
+                const user = await winners[w].getUserDB();
+                user.deposit = $u.round(user.deposit + prizePath);
+                log.info('Tourn prize: ' + user.login + ' ' + prizePath);
+                await user.save();
+                $u.updateChipsUserPlayers(user);
+            }
+
+            // удаляем трупов
+            const {tournSeats} = this.public;
+            for (let i in this.seats) {
+                if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
+                    const player = this.seats[i];
+                    if (player){
+                        $u.removePlayer(player.socket);
+                        log.info('Удалил турнирный труп: ' + player.public.name);
+                    }
+                }
+            }
+            
+            if (!this.public.data.isOnce) {
+                $u.tmpTourn(this.public.data);
+            }
+            $u.rmCustomTable(this.public.id);
+        } catch (e){
+            console.log(e);
+            log.error('tournStop' + e);
         }
-        this.isTournStart = false;
-        log.info('Tourn STOP');
-        clearTimeout(this.timeOutUpdateTourn);
-        this.stopGame();
-        const winners = Array.from(this.seats).filter(player => player && player.public.sittingIn && player.public.chipsInPlay);
-        const prizePath = $u.round(this.public.tournPrize / winners.length);
-        if (!(prizePath > 0)){
-            return log.error('prizePath isNaN:' + prizePath);
-        }
-        for (let w in winners){
-            const user = await winners[w].getUserDB();
-            user.deposit = $u.round(user.deposit + prizePath);
-            log.info('Tourn prize: ' + user.login + ' ' + prizePath);
-            await user.save();
-            $u.updateChipsUserPlayers(user);
-        }
-        if (!this.public.data.isOnce) {
-            $u.tmpTourn(this.public.data);
-        }
-        $u.rmCustomTable(this.public.id);
     };
 
     Table.prototype.updateTournSeat = function(seat, amount){

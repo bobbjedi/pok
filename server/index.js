@@ -387,7 +387,7 @@ io.sockets.on('connection', function(socket) {
                 }
             } else {
             // If the user is not allowed to sit in, notify the user
-                callback({ 'success': false, error: 'Ошибка..' });
+                callback({ 'success': false, error: 'Ошибка... Возможно вы участвуете в турнире.' });
             }
         } catch (e){
             callback({ 'success': false, error: 'Ошибка... (с)' });
@@ -630,6 +630,10 @@ io.sockets.on('connection', function(socket) {
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
+        if (player.isTourn){
+            player.public.isDisconnect = true;
+            return console.log('BLOCK removePlayer in Tourn: ', player.public.name);
+        }
         console.log('removePlayer>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
