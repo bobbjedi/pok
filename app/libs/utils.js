@@ -56,7 +56,7 @@ const upCards = hands =>{
         }, currentShows * interval);
     }
 
-    setTimeout(clearHightLight, config.timeOutBeforeNewGame * 1000);
+    setTimeout(clearHightLight, (config.timeOutBeforeNewGame - 1) * 1000);
 };
 
 const clearHightLight = () =>{
