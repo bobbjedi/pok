@@ -166,7 +166,8 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
     // For each one of the pots, starting from the last one
     for (var i = potsCount - 1; i >= 0; i--) {
         const pot = this.pots[i];
-        const isReturn = pot.contributors.length === 1;
+        // const isReturn = pot.contributors.length === 1;
+        const isReturn = false;
         if (!table.isTourn){
             system.totalBankAmount += pot.amount;
             table.public.allPots += pot.amount;
