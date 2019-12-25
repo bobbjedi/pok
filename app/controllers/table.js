@@ -374,7 +374,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.leaveTableStates();
                 };
                 if (msg.includes('{DATA}')){
-                    const data = JSON.parse(msg).winnersData;
+                    const msgJson = JSON.parse(msg);
+                    const data = msgJson.winnersData;
+                    const {winnersHands} = msgJson;
+                    $u.upCards(winnersHands);
                     $rootScope.winnersData = data;
                     $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
                     $scope.automoves.reset();

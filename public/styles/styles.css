@@ -446,7 +446,17 @@ div#board-wrap .card-container {
     overflow: hidden;
     width: 72px;
     height: 107px;
+    transition: opacity 0.5s;
     /* background-image: url("/images/deck4.png"); */
+}
+
+.card-highlight{
+    z-index: 2;
+    border: 2px solid #ffa726;
+}
+.card-unhighlight{
+    opacity: 0.5;
+    z-index: 1;
 }
 
 .card2 {

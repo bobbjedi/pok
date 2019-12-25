@@ -1,4 +1,6 @@
 import _ from 'underscore';
+import config from '../../config';
+
 const throttle = (func, ms) => {
     let isThrottled = false,
         savedArgs,
@@ -27,9 +29,44 @@ const throttle = (func, ms) => {
     return wrapper;
 };
 
+const upCards = hands =>{
+    const interval = config.timeOutBeforeNewGame / hands.length * 1000;
+    const allCardsEl = document.querySelectorAll('.card:not(.ng-hide)');
+    let currentShows = hands.length;
+    
+    while (currentShows--){
+        const hand = hands[currentShows];
+        setTimeout(()=>{
+            clearHightLight();
+           
+            allCardsEl.forEach(el =>{
+                const {classList} = el;
+               
+                hand.forEach(c=>{
+                    if (classList.contains('card-' + c)){
+                        classList.add('card-highlight');
+                    }
+                });
+               
+                if (!classList.contains('card-highlight')){
+                    classList.add('card-unhighlight');
+                }
+            });
 
+        }, currentShows * interval);
+    }
+
+    setTimeout(clearHightLight, config.timeOutBeforeNewGame * 1000);
+};
+
+const clearHightLight = () =>{
+    document.querySelectorAll('.card').forEach(el =>{
+        el.classList.remove('card-highlight', 'card-unhighlight');
+    });
+};
 
 export default {
+    upCards,
     throttle,
     round(n){
         if (!_.isNumber(n)){
