@@ -76,7 +76,7 @@ module.exports = Table =>{
                 this.actionToNextPlayer();
             }
         }
-        this.clearTimeoutWait();
+        // this.clearTimeoutPlayerAction('playerFolded');
     };
 
 

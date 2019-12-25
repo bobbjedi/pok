@@ -138,14 +138,14 @@ Table.prototype.prepPublicLog = function(){
  */
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
-    console.log('попытка', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
+    this.clearTimeoutPlayerAction('setTimeoutWait');
+    console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
     // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (activeSeat === null || !phase){
-        console.log('setTimeoutWait Return ', !activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat);
+    if (activeSeat === null || !phase || this.isTourn){
+        console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
         return;
     }
     
-    this.clearTimeoutWait();
     this.lastWaitPhase = phase;
     this.lastActiveSet = activeSeat;
     const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
@@ -188,8 +188,9 @@ Table.prototype.setTimeoutWait = function(){
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 
 };
-Table.prototype.clearTimeoutWait = function(){
+Table.prototype.clearTimeoutPlayerAction = function(src){
     if (this.timeOutWaitUserAction){
+        console.log('clearTimeoutPlayerAction', src);
         clearTimeout(this.timeOutWaitUserAction);
     }
     this.timeOutWaitUserAction = null;
@@ -342,7 +343,7 @@ Table.prototype.stateAction = async function(player, type){
     }
 };
 
-Table.prototype.resetTimeOutRm = function() {
+Table.prototype.clearTimeoutRmCustomTbl = function() {
     if (this.timeOutRmTable){
         // console.log('Сбросили удаление кастомной таблицы');
         clearTimeout(this.timeOutRmTable);
@@ -353,7 +354,7 @@ Table.prototype.resetTimeOutRm = function() {
 Table.prototype.setTimeOutRm = async function() {
     if (this.idCreator){
         this.public.creatorName = this.public.creatorName || (await $u.getUserFromQ({_id: this.idCreator}));
-        this.resetTimeOutRm();
+        this.clearTimeoutRmCustomTbl();
         // console.log('Задали таймаут');
         this.timeOutRmTable = setTimeout(()=>{
             // console.log('Удалили кастомную таблицу');
@@ -370,8 +371,8 @@ Table.prototype.initializeRound = function(changeDealer) {
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         return;
     }
-    this.clearTimeoutWait();
-    this.resetTimeOutRm();
+    // this.clearTimeoutPlayerAction('initializeRound');
+    this.clearTimeoutRmCustomTbl();
     this.currentGameLog = '<br></br><b>**** ' + log.fullTime() + ' ****</b><br>';
     log.info('[#' + this.public.id + ']' + '<b>**** NEW ROUND! ****</b>');
     changeDealer = typeof changeDealer === 'undefined' ? true : changeDealer;
@@ -492,7 +493,7 @@ Table.prototype.initializePreflop = function() {
  * Method that starts the next phase of the round
  */
 Table.prototype.initializeNextPhase = function() {
-    this.clearTimeoutWait();
+    // this.clearTimeoutPlayerAction('initializeNextPhase');
     switch (this.public.phase) {
     case 'preflop':
         this.public.phase = 'flop';
@@ -533,6 +534,7 @@ Table.prototype.showdown = function() {
     if (this.isShowDown){
         return;
     }
+    this.clearTimeoutPlayerAction('showdown');
     this.isShowDown = true;
     this.pot.addTableBets(this.seats);
 
@@ -582,7 +584,7 @@ Table.prototype.showdown = function() {
  * Ends the current phase of the round
  */
 Table.prototype.endPhase = function() {
-    this.clearTimeoutWait();
+    // this.clearTimeoutPlayerAction('endPhase');
     switch (this.public.phase) {
     case 'preflop':
     case 'flop':
@@ -600,7 +602,9 @@ Table.prototype.endPhase = function() {
  * Making the next player the active one
  */
 Table.prototype.actionToNextPlayer = function() {
-    this.clearTimeoutWait();
+    
+    this.clearTimeoutPlayerAction('actionToNextPlayer'); // сбрасываем таймер
+
     this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['inHand']);
 
     switch (this.public.phase) {
@@ -632,7 +636,7 @@ Table.prototype.actionToNextPlayer = function() {
         }
         break;
     }
-
+    // this.setTimeoutWait(); // запускаем таймер
     this.emitEvent('table-data', this.public, true);
 };
 
@@ -691,6 +695,7 @@ Table.prototype.endRound = async function(str) {
     if (this.isShowDown){
         return log.error('[#' + this.public.id + ']: endRound isShowDawn str> ' + str);
     }
+    this.clearTimeoutPlayerAction('endRound');
     log.info('[#' + this.public.id + ']: endRound ' + str);
     this.prepPublicLog();
     // ставим таймаут на удаление
