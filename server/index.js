@@ -332,6 +332,7 @@ io.sockets.on('connection', function(socket) {
                         player.public.chipsInPlay = 0;
                         await player.updateDepInPlay();
                         player.public.chipsInPlay = tournSeats[s].chipsInPlay;
+                        tournSeats[s].isOut = false;
                         player.chips = 0;
                         player.isTourn = true; // определяем что в турнире
                         player.sittingOnTable = true;
