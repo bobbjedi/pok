@@ -120,7 +120,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     for (var i = 0; i < this.public.seatsCount; i++) {
         this.seats[i] = null;
     }
-    this.setTimeOutRm();
+    this.setTimeOutRmCustomTbl();
 };
 
 require('./tableTourns')(Table);
@@ -351,7 +351,7 @@ Table.prototype.clearTimeoutRmCustomTbl = function() {
     }
 };
 
-Table.prototype.setTimeOutRm = async function() {
+Table.prototype.setTimeOutRmCustomTbl = async function() {
     if (this.idCreator){
         this.public.creatorName = this.public.creatorName || (await $u.getUserFromQ({_id: this.idCreator}));
         this.clearTimeoutRmCustomTbl();
@@ -397,7 +397,7 @@ Table.prototype.initializeRound = function(changeDealer) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (!this.seats[i].public.chipsInPlay) {
-                    this.seats[i].sitOut(); // this.seats[seat].sitOut();
+                    this.seats[i].sitOut(true); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
                     this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;
@@ -699,7 +699,7 @@ Table.prototype.endRound = async function(str) {
     log.info('[#' + this.public.id + ']: endRound ' + str);
     this.prepPublicLog();
     // ставим таймаут на удаление
-    this.setTimeOutRm();
+    this.setTimeOutRmCustomTbl();
     // If there were any bets, they are added to the pot
     this.pot.addTableBets(this.seats);
 

@@ -127,6 +127,7 @@ Player.prototype.onDisconnect = function (cb) {
 
 Player.prototype.return = function () { // успел вернуться
     clearTimeout(this.setTimeOutDisconnect);
+    clearTimeout(this.sitOutTimer);
     this.public.isDisconnect = false;
     this.autoFoldTimes = 0;
     return this.socket.id;
@@ -171,14 +172,23 @@ Player.prototype.sitOut = function (isRemoved) {
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
-        // isRemoved && setTimeout(()=>{ // высаживаем из-за стола
-        //     try {
-        //         Store.tables[this.sittingOnTable].playerLeft(this.seat);
-        //     } catch (e){
-        //         console.log(e);
-        //         log.error('sitOut timeOut:' + e);
-        //     }
-        // }, 1000 * config.sitOutTimeOut);
+        if (isRemoved){
+            const tableId = this.sittingOnTable;
+            console.log('Sit out', {tableId});
+            this.sitOutTimer = setTimeout(() => { // высаживаем из-за стола
+                try {
+                    if (this.sittingOnTable === tableId){
+                        Store.tables[tableId].playerLeft(this.seat);
+                        log.info(`Sit out timer: ${this.public.name} out table.`);
+                    } else {
+                        console.log('Sit out не сидит за столом');
+                    }
+                } catch (e) {
+                    console.log(e);
+                    log.error('sitOut timeOut:' + e);
+                }
+            }, 1000 * config.sitOutTimeOut);
+        }
     }
 };
 

@@ -643,7 +643,7 @@ $u.removePlayer = socket =>{
             tables[tableId].playerLeft(seat);
         }
         // Remove the player object from the players array
-        player.return(); // удалим на всякий случай таймаут
+        player.return(); // удалим на всякий случай таймауты
         delete players[socket.id];
     }
 };
