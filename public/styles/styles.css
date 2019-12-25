@@ -417,7 +417,9 @@ div.seat .player-content span {
     line-height: 1.2;
     display: block
 }
-
+div.seat .player-content span.me{
+    color: rgb(134, 187, 137);
+}
 div.seat .player-content .notification {
     line-height: 2.4
 }
