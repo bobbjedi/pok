@@ -952,9 +952,10 @@ div#board-wrap .card-container {
 
 
 #checkbox-auto-moves {
+    font-size: 0.9em;
     position: absolute;
-    width: 191px;
-    left: -100px;
+    width: 150px;
+    left: -72px;
 }
 
 .withdraw input {
