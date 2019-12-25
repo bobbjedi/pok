@@ -138,9 +138,10 @@ Table.prototype.prepPublicLog = function(){
  */
 Table.prototype.setTimeoutWait = function(){
     const {activeSeat, phase} = this.public;
-    console.log('попытка', {activeSeat, phase});
+    console.log('попытка', activeSeat, phase);
+    // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
     if (!activeSeat || !phase){
-        console.log('Return setTimeoutWait');
+        console.log('Return ', !activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat);
         return;
     }
     
