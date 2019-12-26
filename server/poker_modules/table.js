@@ -137,62 +137,62 @@ Table.prototype.prepPublicLog = function(){
  * @description автодействия на сервере (+3 сек от клиентских)
  */
 Table.prototype.setTimeoutWait = function(){
-    try{
-    const {activeSeat, phase} = this.public;
-    this.clearTimeoutPlayerAction('setTimeoutWait');
-    console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
-    // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (!this.public.seats[activeSeat].name || activeSeat === null || !phase){
-        console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
-        return;
-    }
-    
-    this.lastWaitPhase = phase;
-    this.lastActiveSet = activeSeat;
-    const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
-    
-    const autoMoveCb = ()=>{
-        try {
-            const seat = this.public.seats[activeSeat];
-            const currentSeatName = seat && seat.name;
-            if (currentSeatName === lastActiveUserLogin){
-                const player = this.seats[activeSeat];
-                // забираем анте
-                // this.updateTournSeat(activeSeat);
-                console.log('Avtomove', player.public.name, phase);
-                if (this.public.phase === 'smallBlind') {
-                    this.playerPostedSmallBlind();
-                    log.info('Auto SB ' + lastActiveUserLogin);
-                } else if (this.public.phase === 'bigBlind'){
-                    this.playerPostedBigBlind();
-                    log.info('Auto BB ' + lastActiveUserLogin);
-                } else if (player.public.bet === this.public.biggestBet){
-                    log.info('Autocheck ' + lastActiveUserLogin);
-                    this.playerChecked();
-                } else {
-                    log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
-                    this.playerFolded();
-                    if (++player.autoFoldTimes > config.maxAutoFoldTimes && !this.isTourn){
-                        $u.removePlayer(player.socket);
-                        log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
-                        return;
+    try {
+        const {activeSeat, phase} = this.public;
+        this.clearTimeoutPlayerAction('setTimeoutWait');
+        console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
+        // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
+        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase){
+            console.log('setTimeoutWait Return ');
+            return;
+        }
+
+        this.lastWaitPhase = phase;
+        this.lastActiveSet = activeSeat;
+        const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+
+        const autoMoveCb = ()=>{
+            try {
+                const seat = this.public.seats[activeSeat];
+                const currentSeatName = seat && seat.name;
+                if (currentSeatName === lastActiveUserLogin){
+                    const player = this.seats[activeSeat];
+                    // забираем анте
+                    // this.updateTournSeat(activeSeat);
+                    console.log('Avtomove', player.public.name, phase);
+                    if (this.public.phase === 'smallBlind') {
+                        this.playerPostedSmallBlind();
+                        log.info('Auto SB ' + lastActiveUserLogin);
+                    } else if (this.public.phase === 'bigBlind'){
+                        this.playerPostedBigBlind();
+                        log.info('Auto BB ' + lastActiveUserLogin);
+                    } else if (player.public.bet === this.public.biggestBet){
+                        log.info('Autocheck ' + lastActiveUserLogin);
+                        this.playerChecked();
+                    } else {
+                        log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
+                        this.playerFolded();
+                        if (++player.autoFoldTimes > config.maxAutoFoldTimes && !this.isTourn){
+                            $u.removePlayer(player.socket);
+                            log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+                            return;
+                        }
                     }
                 }
+            } catch (e){
+                console.log(e);
+                log.error('Auto moves: ' + e);
             }
-        } catch (e){
-            console.log(e);
-            log.error('Auto moves: ' + e);
+        };
+        let timeOut = (config.timeOutWait + 3) * 1000;
+        if (this.seats[activeSeat].public.isDisconnect){
+            timeOut = 5000;
         }
-    };
-    let timeOut = (config.timeOutWait + 3) * 1000;
-    if (this.seats[activeSeat].public.isDisconnect){
-        timeOut = 5000;
+        this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
+    } catch (e){
+        console.log(e);
+        log.error('setTimeOut player:  ' + e);
     }
-    this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
-} catch(e){
-console.log(e);
-    log.error('setTimeOut player:  '+e);
-}
 };
 Table.prototype.clearTimeoutPlayerAction = function(src){
     if (this.timeOutWaitUserAction){
@@ -618,7 +618,7 @@ Table.prototype.endPhase = function() {
  * Making the next player the active one
  */
 Table.prototype.actionToNextPlayer = function() {
-    
+
     this.clearTimeoutPlayerAction('actionToNextPlayer'); // сбрасываем таймер
 
     this.public.activeSeat = this.findNextPlayer(this.public.activeSeat, ['inHand']);

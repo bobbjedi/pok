@@ -204,7 +204,8 @@ io.sockets.on('connection', function(socket) {
             if (!player){
                 return;
             }
-            if (player.public.isTourn){
+            if (player.isTourn){
+                log.warn('Player is tourn remove ' + player.public.name);
                 return $u.removePlayer(socket);
             }
             console.log('Disconnect', player && player.public.name);
@@ -631,10 +632,10 @@ io.sockets.on('connection', function(socket) {
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
-         if (player.isTourn){ // если ьурнир 
-        player.public.isDisconnect = true;
-        return console.log('BLOCK removePlayer in Tourn: ', player.public.name);
-         }
+        // if (player.isTourn){ // если ьурнир
+        //     player.public.isDisconnect = true;
+        //     return console.log('BLOCK removePlayer in Tourn: ', player.public.name);
+        // }
         console.log('removePlayer>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
@@ -644,6 +645,10 @@ $u.removePlayer = socket =>{
             var seat = player.seat;
             // The table on which the player was sitting
             var tableId = player.sittingOnTable;
+            const table = tables[tableId];
+            if (table.isTournStart){
+                table.public.tournSeats[seat].isOut = true;
+            };
             // Remove the player from the seat
             tables[tableId].playerLeft(seat);
         }
