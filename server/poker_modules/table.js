@@ -142,7 +142,7 @@ Table.prototype.setTimeoutWait = function(){
     this.clearTimeoutPlayerAction('setTimeoutWait');
     console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
     // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (!this.public.seats[activeSeat] || activeSeat === null || !phase){
+    if (!this.public.seats[activeSeat].name || activeSeat === null || !phase){
         console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
         return;
     }
