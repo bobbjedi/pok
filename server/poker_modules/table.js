@@ -190,7 +190,7 @@ Table.prototype.setTimeoutWait = function(){
     }
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
 } catch(e){
-conole.log(e);
+console.log(e);
     log.error('setTimeOut player:  '+e);
 }
 };
