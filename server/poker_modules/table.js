@@ -137,11 +137,12 @@ Table.prototype.prepPublicLog = function(){
  * @description автодействия на сервере (+3 сек от клиентских)
  */
 Table.prototype.setTimeoutWait = function(){
+    try{
     const {activeSeat, phase} = this.public;
     this.clearTimeoutPlayerAction('setTimeoutWait');
     console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
     // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (activeSeat === null || !phase){
+    if (!this.public.seats[activeSeat] || activeSeat === null || !phase){
         console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
         return;
     }
@@ -188,7 +189,10 @@ Table.prototype.setTimeoutWait = function(){
         timeOut = 5000;
     }
     this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
-
+} catch(e){
+conole.log(e);
+    log.error('setTimeOut player:  '+e);
+}
 };
 Table.prototype.clearTimeoutPlayerAction = function(src){
     if (this.timeOutWaitUserAction){
