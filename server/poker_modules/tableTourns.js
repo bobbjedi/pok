@@ -98,10 +98,7 @@ module.exports = Table =>{
         tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
         if (player){
             player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
-            console.log('PLAYER!!', chipsInPlay);
-        } else {
-            console.log('NOOOPLAYER!!', chipsInPlay);
         }
-        console.log({seat, amount});
+        console.log('ANTE:', {name: player.public.name, seat, amount});
     };
 };

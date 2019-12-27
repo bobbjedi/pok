@@ -137,66 +137,63 @@ Table.prototype.prepPublicLog = function(){
  * @description автодействия на сервере (+3 сек от клиентских)
  */
 Table.prototype.setTimeoutWait = function(){
-    try{
-    const {activeSeat, phase} = this.public;
-    this.clearTimeoutPlayerAction('setTimeoutWait');
-    console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
-    // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-    if (!this.public.seats[activeSeat].name || activeSeat === null || !phase){
-        console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
-        return;
-    }
+    try {
+        const {activeSeat, phase} = this.public;
+        this.clearTimeoutPlayerAction('setTimeoutWait');
+        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase){
+            // console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
+            return;
+        }
     
-    this.lastWaitPhase = phase;
-    this.lastActiveSet = activeSeat;
-    const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+        this.lastWaitPhase = phase;
+        this.lastActiveSet = activeSeat;
+        const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
     
-    const autoMoveCb = ()=>{
-        try {
-            const seat = this.public.seats[activeSeat];
-            const currentSeatName = seat && seat.name;
-            if (currentSeatName === lastActiveUserLogin){
-                const player = this.seats[activeSeat];
-                // забираем анте
-                // this.updateTournSeat(activeSeat);
-                console.log('Avtomove', player.public.name, phase);
-                if (this.public.phase === 'smallBlind') {
-                    this.playerPostedSmallBlind();
-                    log.info('Auto SB ' + lastActiveUserLogin);
-                } else if (this.public.phase === 'bigBlind'){
-                    this.playerPostedBigBlind();
-                    log.info('Auto BB ' + lastActiveUserLogin);
-                } else if (player.public.bet === this.public.biggestBet){
-                    log.info('Autocheck ' + lastActiveUserLogin);
-                    this.playerChecked();
-                } else {
-                    log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
-                    this.playerFolded();
-                    if (++player.autoFoldTimes > config.maxAutoFoldTimes && !this.isTourn){
-                        $u.removePlayer(player.socket);
-                        log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
-                        return;
+        const autoMoveCb = ()=>{
+            try {
+                const seat = this.public.seats[activeSeat];
+                const currentSeatName = seat && seat.name;
+                if (currentSeatName === lastActiveUserLogin){
+                    const player = this.seats[activeSeat];
+                    console.log('Avtomove', player.public.name, phase);
+                    if (this.public.phase === 'smallBlind') {
+                        this.playerPostedSmallBlind();
+                        log.info('Auto SB ' + lastActiveUserLogin);
+                    } else if (this.public.phase === 'bigBlind'){
+                        this.playerPostedBigBlind();
+                        log.info('Auto BB ' + lastActiveUserLogin);
+                    } else if (player.public.bet === this.public.biggestBet){
+                        log.info('Autocheck ' + lastActiveUserLogin);
+                        this.playerChecked();
+                    } else {
+                        log.info('Autofold ' + player.autoFoldTimes + ' ' + lastActiveUserLogin);
+                        this.playerFolded();
+                        if (++player.autoFoldTimes > config.maxAutoFoldTimes && !this.isTourn){
+                            $u.removePlayer(player.socket);
+                            log.info('Высадили (' + player.autoFoldTimes + '): ' + lastActiveUserLogin);
+                            return;
+                        }
                     }
                 }
+            } catch (e){
+                console.log(e);
+                log.error('Auto moves: ' + e);
             }
-        } catch (e){
-            console.log(e);
-            log.error('Auto moves: ' + e);
+        };
+        let timeOut = (config.timeOutWait + 3) * 1000;
+        if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
+            console.log(lastActiveUserLogin + ' timeOut 5s');
+            timeOut = 5000;
         }
-    };
-    let timeOut = (config.timeOutWait + 3) * 1000;
-    if (this.seats[activeSeat].public.isDisconnect){
-        timeOut = 5000;
+        this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
+    } catch (e){
+        console.log(e);
+        log.error('setTimeOut player:  ' + e);
     }
-    this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
-} catch(e){
-console.log(e);
-    log.error('setTimeOut player:  '+e);
-}
 };
 Table.prototype.clearTimeoutPlayerAction = function(src){
     if (this.timeOutWaitUserAction){
-        console.log('clearTimeoutPlayerAction', src);
+        // console.log('clearTimeoutPlayerAction', src);
         clearTimeout(this.timeOutWaitUserAction);
     }
     this.timeOutWaitUserAction = null;
@@ -518,9 +515,7 @@ Table.prototype.initializeNextPhase = function() {
     if (this.isTournStart) {
         try {
             const {tournSeats} = this.public;
-            console.log(tournSeats);
             for (let i in tournSeats) {
-                console.log(i, '!this.seats[i] || tournSeats[i].isOut', tournSeats[i].isOut || !this.seats[i] || this.seats[i].public && this.seats[i].public.isDisconnect);
                 if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
                     this.updateTournSeat(i);
                 }

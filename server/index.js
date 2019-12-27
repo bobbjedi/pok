@@ -112,13 +112,21 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('enterRoom', function(tableId, callback) {
         try {
-            players[socket.id] && players[socket.id].return();
-            if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+            players[socket.id].return();
+            if (player.room === null) {
             // Add the player to the socket room
                 socket.join('table-' + tableId);
                 // Add the room to the player's data
                 players[socket.id].room = tableId;
                 callback && callback();
+            }
+            if (player.isTourn && player.sittingOnTable === +tableId){
+                log.info('Вернулся в турнир за стол: ' + player.public.name);
+                tables[player.sittingOnTable].public.tournSeats[player.seat].isOut = false;
             }
         } catch (e){
             console.log(e);
@@ -169,20 +177,7 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-    /**
-	 * When a player disconnects
-	 */
-    socket.on('forceDisconnect', function(cb) {
-        try {
-            players[socket.id] && players[socket.id].return();
-            console.log('forceDisconnect', players[socket.id] && players[socket.id].public.name);
-            $u.removePlayer(socket);
-            cb();
-        } catch (e){
-            console.log(e);
-            log.error('forceDisconnect: ' + e);
-        }
-    });
+    
     socket.on('getMyCards', function(callback) {
         try {
             const player = players[socket.id];
@@ -196,29 +191,7 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-
-    socket.on('disconnect', function() {
-        try {
-            // return $u.removePlayer(socket);
-            const player = players[socket.id];
-            if (!player){
-                return;
-            }
-            if (player.public.isTourn){
-                return $u.removePlayer(socket);
-            }
-            console.log('Disconnect', player && player.public.name);
-            if (!player.public.inHand){ // если не в игре - удаляем
-                log.info(player.public.name + ' not hand -> remove');
-                return $u.removePlayer(socket);
-            }
-            log.info(player.public.name + ' public.isDisconnect');
-            player.public.isDisconnect = true;
-        } catch (e){
-            console.log(e);
-            log.error('disconnect: ' + e);
-        }
-    });
+  
     /**
 	 * When a new player enters the application
 	 * @param string token
@@ -626,15 +599,64 @@ io.sockets.on('connection', function(socket) {
             log.error('sendMessage' + e);
         }
     });
+    /**
+	 * When a player disconnects
+	 */
+    socket.on('forceDisconnect', function(cb) {
+        try {
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+            console.log('forceDisconnect', players[socket.id].public.name);
+            player.return();
+           
+            if (player.isTourn) {
+                cb();
+                return $u.disconnectPlayerInTourn(player);
+            }
+           
+            $u.removePlayer(socket);
+            cb();
+        } catch (e){
+            console.log(e);
+            log.error('forceDisconnect: ' + e);
+        }
+    });
+
+    socket.on('disconnect', function() {
+        try {
+            // return $u.removePlayer(socket);
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+
+            log.info('Disconnect: ' + player.public.name + ' public.isDisconnect');
+            player.public.isDisconnect = true;
+            if (player.isTourn) {
+                return $u.disconnectPlayerInTourn(player);
+            }
+            if (!player.public.inHand && !player.isTourn){ // если не в игре - удаляем
+                log.info(player.public.name + ' not hand -> remove');
+                return $u.removePlayer(socket);
+            }
+        } catch (e){
+            console.log(e);
+            log.error('disconnect: ' + e);
+        }
+    });
 });
+
+$u.disconnectPlayerInTourn = player=>{
+    player.public.isDisconnect = true;
+    tables[player.sittingOnTable].public.tournSeats[player.seat].isOut = true;
+    return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
+};
 
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
-         if (player.isTourn){ // если ьурнир 
-        player.public.isDisconnect = true;
-        return console.log('BLOCK removePlayer in Tourn: ', player.public.name);
-         }
         console.log('removePlayer>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
