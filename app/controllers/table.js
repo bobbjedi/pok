@@ -10,6 +10,7 @@ import app from '../app';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
+        const tableId = +$routeParams.tableId;
         automoves($scope);
         var selectedSeat = null;
         $scope.table = {seats: []};
@@ -342,6 +343,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         let lastSeatActive = -1;
         // When the table data have changed
         socket.on('table-data', function(data) {
+            if (tableId !== data.id){
+                return;
+            }
             $scope.table = data;
             $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
