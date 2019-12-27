@@ -650,7 +650,12 @@ io.sockets.on('connection', function(socket) {
 
 $u.disconnectPlayerInTourn = player=>{
     player.public.isDisconnect = true;
-    tables[player.sittingOnTable].public.tournSeats[player.seat].isOut = true;
+    const table = tables[player.sittingOnTable];
+    if (table){
+        table.public.tournSeats[player.seat].isOut = true;
+    } else {
+        $u.removePlayer(player.socket);
+    }
     return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
 };
 
