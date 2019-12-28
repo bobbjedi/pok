@@ -749,7 +749,7 @@ Table.prototype.endRound = async function(str) {
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {
         this.stopGame();
-        this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
+        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
     } else {
         this.initializeRound();
     }
