@@ -117,7 +117,7 @@ module.exports = class Mtt{
                 setTimeout(()=>player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId}), 300);
             }
             if (this.tables.length > 1){ // не последний стол
-                this.params.timeOutShufflePlayers = 1;
+                // this.params.timeOutShufflePlayers = 1;
                 setTimeout(()=> this.stoppedGames(), this.params.timeOutShufflePlayers * 60 * 1000);
             }
             // this.backUpTables = this.tables.slice();
