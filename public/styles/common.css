@@ -78,6 +78,29 @@ html, body {
 .m10 {
     margin: 10px !important;
 }
+.m5 {
+    margin: 5px !important;
+}
+.m3 {
+    margin: 3px !important;
+}
+.w200 {
+    display: inline-block;
+    width: 200px !important;
+}
+.w150 {
+    display: inline-block;
+    width: 150px !important;
+}
+.w100 {
+    display: inline-block;
+    width: 100px !important;
+}
+
+.info-line{
+    display: flex;
+    justify-content: center;    
+}
 
 .hovered {
     opacity: 0.8;

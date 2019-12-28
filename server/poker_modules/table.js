@@ -147,12 +147,13 @@ Table.prototype.setTimeoutWait = function(){
     
         this.lastWaitPhase = phase;
         this.lastActiveSet = activeSeat;
-        const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+        const lastActiveUserLogin = activeSeat >= 0 && this.public.seats[activeSeat].name;
     
         const autoMoveCb = ()=>{
             try {
                 const seat = this.public.seats[activeSeat];
                 const currentSeatName = seat && seat.name;
+                console.log('autoMoveCb', currentSeatName, lastActiveUserLogin);
                 if (currentSeatName === lastActiveUserLogin){
                     const player = this.seats[activeSeat];
                     console.log('Avtomove', player.public.name, phase);
@@ -182,8 +183,8 @@ Table.prototype.setTimeoutWait = function(){
         };
         let timeOut = (config.timeOutWait + 3) * 1000;
         if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
-            console.log(lastActiveUserLogin + ' timeOut 5s');
-            timeOut = 5000;
+            console.log(lastActiveUserLogin + ' timeOut 3s');
+            timeOut = 3000;
         }
         this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
     } catch (e){

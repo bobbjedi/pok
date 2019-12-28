@@ -1,5 +1,4 @@
 <div id="lobby">
-
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
@@ -14,6 +13,23 @@
             </div>
         </div>
         <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
+    </div>
+
+    <div class="modal-wrap" ng-show="isShowTournModal">
+        <div class="modal tourn-info">
+            <div class="modal-text">
+                <div class="big txt-yellow m10">Турнир Minter Poker</div>
+                <div class="big m5">Условия:</div>
+                <div class="m5"><span>Дата:</span> 21.00 МСК 30.12.19</div>
+                <div class="m5"><span>Вход:</span> 10 BIP</div>
+                <div class="m5"><span>Победителей:</span> 3</div>
+                <b class="m10">Принять участие?</b>
+                <div class="buts" ng-click="isShowTournModal = false">
+                    <div class="but bg-green" ng-click="goInTourn();">GO!</div>
+                    <div class="but bg-red">Нет</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal-wrap" style="display: none;">
@@ -118,8 +134,7 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" />
-                </div>
+                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" /></div>
                 <div class="setting-line"><span>Макс BuyIn:</span> <input type="number"
                         ng-model="createdTable.maxBuyIn" /></div>
                 <div class="setting-line" ng-click="createdTable.isPrivate = !createdTable.isPrivate">
@@ -137,6 +152,8 @@
     <div id="buttons-lobby">
         <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Создать комнату</div>
+        <div class="but hovered create-room" ng-show="false" ng-click="isShowTournModal = true"><i class="fa fa-users"
+                aria-hidden="true"></i> &nbsp; Турнир MTT</div>
         <div class="lobby-stat txt-green">
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
             <span> | Игр: <span class="big txt-yellow">{{$root.tsp(public.totalGamesCount)}}</span></span>

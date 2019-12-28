@@ -1,8 +1,11 @@
 import app from '../app';
 import _ from 'underscore';
 import config from '../../config';
+import tourn from './mixins/tourn';
 
-app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', function($scope, $rootScope, $http, $location) {
+app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', '$sce', function($scope, $rootScope, $http, $location, $sce) {
+    $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
+    tourn($scope, $rootScope);
     $scope.lobbyTables = [];
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться

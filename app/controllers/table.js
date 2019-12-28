@@ -343,6 +343,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         let lastSeatActive = -1;
         // When the table data have changed
         socket.on('table-data', function(data) {
+            console.log(data.id, tableId)
             if (tableId !== data.id){
                 return;
             }

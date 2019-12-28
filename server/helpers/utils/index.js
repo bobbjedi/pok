@@ -155,11 +155,24 @@ module.exports = {
         }
 
     },
-    tmpTourn(data){
-        this.createCustomTable({count: data.count, name: 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
+    tmpTourn(data, name){
+        return this.createCustomTable({count: data.count, name: name || 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
+    },
+    async createOffLinePlayer(login){
+        // var eventEmitter = function(tableId) {
+        //     return function (eventName, eventData) {};
+        // };
+        const Player = require('../../poker_modules/player');
+        var socket = {
+            id: new Date().getTime(),
+            emit(){},
+            leave(){},
+        };
+        players_[socket.id] = new Player(socket, await this.getUserFromQ({login}));
+        players_[socket.id].public.isDisconnect = true;
+        return players_[socket.id];
     }
 };
-
 
 // MIGRATE
 
@@ -198,3 +211,5 @@ setTimeout(()=>{
     data.winnersCount = 1;
     module.exports.tmpTourn(data);
 });
+
+

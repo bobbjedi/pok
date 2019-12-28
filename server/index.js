@@ -700,8 +700,9 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-$u.createTables(tables, eventEmitter, Table);
+$u.createTables(tables, eventEmitter, Table, players);
 Store.tables = tables;
+Store.players = players;
 
 function getSSLFiles(){
     const fs = require('fs');
@@ -752,3 +753,12 @@ $u.init({players, tables, eventEmitter});
 //     , 12, isFinite(data.chips)
 //     // The chips number is an integer
 //     , 13, data.chips % 1 === 0);
+
+
+
+
+setTimeout(async () => {
+    Store.createMtt({tableSeatsCount: 10});
+    Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY']; // FIXME: !!
+    Store.startMtt();
+}, 3000);
