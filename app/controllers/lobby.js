@@ -72,6 +72,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         });
     });
     updatePublic();
+    $scope.updatePublic = updatePublic;
     setInterval(updatePublic, 30 * 1000);
 
     $scope.logreg = function() {

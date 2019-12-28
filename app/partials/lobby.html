@@ -15,19 +15,24 @@
         <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
     </div>
 
-    <div class="modal-wrap" ng-show="isShowTournModal">
+    <div class="modal-wrap" ng-show="isShowTournModal" ng-click="isShowTournModal = false">
         <div class="modal tourn-info">
             <div class="modal-text">
                 <div class="big txt-yellow m10">Турнир Minter Poker</div>
                 <div class="big m5">Условия:</div>
-                <div class="m5"><span>Дата:</span> 21.00 МСК 30.12.19</div>
-                <div class="m5"><span>Вход:</span> 10 BIP</div>
-                <div class="m5"><span>Победителей:</span> 3</div>
+                <div class="m5"><span>Дата:</span> {{public.mtt.date}}</div>
+                <div class="m5"><span>Вход:</span> {{public.mtt.buyIn}} BIP</div>
+                <div class="m5"><span>Победителей:</span> {{public.mtt.winnersCount}}</div>
+                <div class="m5"><span>Участников:</span> {{public.mtt.users.length}}</div>
+                <br>
+                <span ng-if="public.mtt.users.includes($root.user.login)" class="txt-green">Вы зарегистрированны!</span>
+                <span ng-if="!public.mtt.users.includes($root.user.login)">
                 <b class="m10">Принять участие?</b>
-                <div class="buts" ng-click="isShowTournModal = false">
+                <div class="buts">
                     <div class="but bg-green" ng-click="goInTourn();">GO!</div>
                     <div class="but bg-red">Нет</div>
                 </div>
+                </span>
             </div>
         </div>
     </div>
@@ -150,9 +155,9 @@
     </div>
 
     <div id="buttons-lobby">
-        <div class="but hovered create-room" ng-click="isCreateRoom = true"><i class="fa fa-users"
+        <div class="but hovered create-room big" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Создать комнату</div>
-        <div class="but hovered create-room" ng-show="false" ng-click="isShowTournModal = true"><i class="fa fa-users"
+        <div class="but hovered create-room bg-red big" ng-show="public.mtt.isRegOppened"  ng-click="isShowTournModal = true"><i class="fa fa-trophy"
                 aria-hidden="true"></i> &nbsp; Турнир MTT</div>
         <div class="lobby-stat txt-green">
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>

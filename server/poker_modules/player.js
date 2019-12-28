@@ -100,7 +100,7 @@ Player.prototype.updateDeposit = async function (amount, user) {
 
 Player.prototype.updateDepInPlay = async function (user) {
     if (this.isTourn){
-        console.log('updateDepInPlay isTourn', this.public.name);
+        // console.log('updateDepInPlay isTourn', this.public.name);
         return;
     }
     user = user || await this.getUserDB();

@@ -30,10 +30,13 @@ module.exports = {
      */
     createMtt(params = {}) {
         this.system.mtt = {
-            isRegStopped: false,
+            date: params.date || 'Инфа в канале',
+            isRegOppened: true,
+            buyIn: params.buyIn || 100,
             winnersCount: params.winnersCount || 3,
             timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
             tableSeatsCount: params.tableSeatsCount || 6,
+            chips: 30 || params.chips || 1500,
             users: []
         };
         this.save();
@@ -41,9 +44,12 @@ module.exports = {
     async startMtt(){
         const {system} = this;
         const params = system.mtt;
-        system.mtt = {};
-        this.save();
+        this.rmMtt();
         this.MTT = new Mtt(params, this);
+    },
+    rmMtt(){
+        this.system.mtt = {};
+        this.save();
     }
 };
 

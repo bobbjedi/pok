@@ -4,6 +4,7 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const request = require('request');
 const log = require('../log');
+const Store = require('../../modules/Store');
 
 let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
 module.exports = {
@@ -142,9 +143,9 @@ module.exports = {
         tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
         return i;
     },
+
     rmCustomTable(tableId){ // TODO: удалять комнату eventEmmiter!
         try {
-            console.log({tableId});
             const table = tables_[tableId];
             table.allPlayersLeft();
             log.info('RM custom table ' + tableId);
@@ -171,7 +172,25 @@ module.exports = {
         players_[socket.id] = new Player(socket, await this.getUserFromQ({login}));
         players_[socket.id].public.isDisconnect = true;
         return players_[socket.id];
-    }
+    },
+    async playerGoInTourn(user){
+        const {mtt} = Store.system;
+        const {buyIn} = mtt;
+        if (!mtt.isRegOppened){
+            return 'Нет запланированных МТТ турниров!';
+        }
+
+        if (user.deposit < buyIn){
+            return 'Не достаточно средств (необходимо ' + buyIn + ')!';
+        }
+        if (mtt.users.includes(user.login)){
+            return 'Этот пользователь уже зарегистрирован!';
+        }
+        user.deposit = this.round(user.deposit - buyIn);
+        mtt.users.push(user.login);
+        await user.save();
+        await Store.save();
+    },
 };
 
 // MIGRATE

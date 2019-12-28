@@ -221,7 +221,7 @@ module.exports = Table =>{
         if (!this.gameIsOn && this.playersSittingInCount > (this.isTourn && (this.tournPlayersCount - 1) || 1)) {
         // Initialize the game
             await this.tournStart();
-            this.initializeRound(false);
+            setTimeout(()=> this.initializeRound(false), this.public.data.isMtt && 10000 || 0);
         }
     };
 

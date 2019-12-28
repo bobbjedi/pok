@@ -60,8 +60,8 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.tournPlayersCount = data.playersCount || seatsCount;
     // фишек на старте турнира
     this.tournChips = data.chips;
-
-    this.timeParams = data.isTourn && sng();
+   
+    this.timeParams = data.isTourn && (data.isMtt && data.mtt.timeParams || sng());
 
     // История последних раздач
     this.lastGames = [];
@@ -109,6 +109,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         // Места в турнире
         tournSeats: {},
         isTourn: data.isTourn,
+        isStoppedGames: false,
         data,
         log: {
             message: '',
@@ -147,7 +148,7 @@ Table.prototype.setTimeoutWait = function(){
     
         this.lastWaitPhase = phase;
         this.lastActiveSet = activeSeat;
-        const lastActiveUserLogin = activeSeat >= 0 && this.public.seats[activeSeat].name;
+        const lastActiveUserLogin = activeSeat !== null && this.public.seats[activeSeat].name;
     
         const autoMoveCb = ()=>{
             try {
@@ -372,7 +373,10 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
  */
 Table.prototype.initializeRound = function(changeDealer) {
     if (Store.isGamesPaused
+        || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
+        console.log('ID:', this.public.id);
+        this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
         return;
     }
     // this.clearTimeoutPlayerAction('initializeRound');
@@ -745,6 +749,7 @@ Table.prototype.endRound = async function(str) {
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {
         this.stopGame();
+        this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
     } else {
         this.initializeRound();
     }

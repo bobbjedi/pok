@@ -1,25 +1,29 @@
-const _ = require('underscore');
-const log = require('../helpers/log');
-const config = require('../helpers/configReader');
+const _ = require('underscore'),
+    log = require('../helpers/log'),
+    config = require('../helpers/configReader'),
+    sng = require('../helpers/utils/sng');
 
 let $u,
     Store;
 
 module.exports = class Mtt{
     constructor(params){
-        return;
+        // return;
         Store = require('../modules/Store');
         $u = require('../helpers/utils');
+        this.isStarted = false;
+        this.isFinal = false;
         this.params = params;
         this.players = [];
         this.tables = [];
         this.offlinePlayersToStart = [];
+        this.timeParams = sng();
         this.init();
         console.log({params});
     }
 
     async init(){
-
+        this.updateTournParams(); // запускаем рост анте и ББ
         // Собираем игроков
         for (const u of this.params.users){ 
             let isAdded = false;
@@ -28,6 +32,7 @@ module.exports = class Mtt{
                 if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
                     this.players.push(player);
                     isAdded = true;
+                    log.info('MTT: getOnlinePlayer ' + u);
                     continue;
                 }
             }
@@ -37,9 +42,13 @@ module.exports = class Mtt{
                 this.offlinePlayersToStart.push(u);
             }
         }
-        this.nextRound(true);
+        this.isStarted = true;
+        await this.nextRound(true);
     }
-
+    /**
+    * @description рассчитывает количество игроков за каждым столов
+    * @returns {Array} массив столов и игроков за ними [5, 5, 5, 4]
+    */
     mathTables() {
         let numUsr = this.players.length;
         const {tableSeatsCount} = this.params;
@@ -58,10 +67,16 @@ module.exports = class Mtt{
             numUsr--;
         }
         console.log({ countTables, arrTables });
+        if (arrTables.length === 1){
+            log.info('Final Table!');
+            this.isFinal = true;
+        }
         return arrTables;
     }
-
-    async createTables() {
+    /**
+    * @description создаем таблици и запихиваем игроков
+    */
+    async createTables(playersLeftChips = null) {
         const arrTables = this.mathTables();
         let numTbl = arrTables.length; 
         let numUsr = this.players.length;
@@ -70,15 +85,24 @@ module.exports = class Mtt{
         this.tables = []; // сбросили старые
         while (numTbl-- > 0){
             log.info('MTT: Создаем таблицу на ' + arrTables[numTbl]);
-            const data = Object.assign(JSON.parse(JSON.stringify(config.sng)), {
+            const data = {
+                mtt: {
+                    isFinalTable: this.isFinal,
+                    timeParams: JSON.parse(JSON.stringify(this.timeParams)),
+                    playersLeftChips, // оставшиеся монеты у игроков,
+                    callBackStoppedRoundMTT: id =>this.callBackStoppedRoundMTT(id)
+                },
+                userList: '',
                 isMtt: true,
                 isOnce: true,
+                isTourn: true,
                 count: this.params.tableSeatsCount,
                 playersCount: arrTables[numTbl],
                 buyIn: 0,
-                winnersCount: -1,
-                chips: 1000 // TODO: не забыть про перенос чипов!
-            });
+                winnersCount: this.isFinal ? 1 : -1,
+                timeOutMult: this.params.timeOutMult || 5,
+                chips: this.params.chips
+            };
 
             const tableId = $u.tmpTourn(data, ' MTT ');
             this.tables.push(tableId); // создали таблицу
@@ -86,16 +110,98 @@ module.exports = class Mtt{
             let numPos = 0; // позиция юзера
             while (arrTables[numTbl]-- > 0){ // запихиваем в каждую таблицу юзера
                 const player = this.players[--numUsr];
-                await $u.wait(0.5);
+                await $u.wait(0.4);
                 log.info('Посадили за #' + numTbl + ' > ' + player.public.name + ' место ' + numPos);
                 table.playerSatOnTheTable(player, numPos++, 0);
+                player.room = tableId;
+                setTimeout(()=>player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId}), 300);
             }
+            if (this.tables.length > 1){ // не последний стол
+                this.params.timeOutShufflePlayers = 1;
+                setTimeout(()=> this.stoppedGames(), this.params.timeOutShufflePlayers * 60 * 1000);
+            }
+            // this.backUpTables = this.tables.slice();
         }
     }
+    /**
+     * @description оповещение о том что таблица закончила играть
+     * @param {Number} id 
+     */
+    callBackStoppedRoundMTT(id){
+        log.info('MTT callBackStoppedRoundMTT: ' + id);
+        console.log(' this.tables >', this.tables);
+        if (this.isFinal){
+            return this.finish(); 
+        }
+        // TODO: вывесить плашку о переходе
+        delete Store.tables[id];
+        var placeInArray = this.tables.indexOf(id);
+        if (placeInArray >= 0) {
+            this.tables.splice(placeInArray, 1);   
+        }
+        if (!this.tables.length){
+            log.info('MTT все таблицы остановились');
+            setTimeout(()=>{
+                this.nextRound();
+            }, 5000);
+        }
+    }
+    async nextRound(isFirst) {
+        let playersLeftChips = null;
+        if (!isFirst){
+            const players = this.players;
+            this.players = [];
+            playersLeftChips = {};
+            for (const i in players){
+                try {
+                    const player = players[i];
+                    if (player.public.chipsInPlay >= this.nextTimeParams.sb * 2){
+                        this.players.push(player);
+                        player.sittingOnTable = false;
+                        player.seat = null;
+                        playersLeftChips[player.public.name] = player.public.chipsInPlay;
+                    } else {
+                        console.log('Удалили:' + player.public.name);
+                        delete Store.players[player.socket.id];
+                    }
+                } catch (e){
+                    console.log(e);
+                    log.error('MTT nextRound:' + e);
+                }
+            }
+        }
+        await this.createTables(playersLeftChips);
+    }
 
-    async nextRound(isFirst) {// 
-        // проверить игроков на cheapsInGame >= 0
-        this.createTables();
+    stoppedGames (){
+        this.tables.forEach(id => Store.tables[id].public.isStoppedGames = true);
+    }
+
+    updateTournParams () {
+        if (!this.timeParams.length) {
+            return;
+        }
+        const next = this.timeParams.shift();
+        this.tables.forEach(id=>{
+            const table = Store.tables[id].public;
+            table.smallBlind = next.sb;
+            table.bigBlind = next.sb * 2;
+            table.ante = next.ante;
+        });
+        this.nextTimeParams = next;
+        log.info('MTT updateTournParams: ' + JSON.stringify(next));
+        this.timeOutUpdateTourn = setTimeout(()=>{
+            this.updateTournParams();
+        }, 300 * 1000);
+    }
+
+    finish(){
+        log.info('FINISH MTT!');
+        this.players.forEach(p=>{
+            delete Store.players[p.socket.id];
+        });
+        delete Store.tables[this.tables[0]];
+        clearTimeout(this.timeOutUpdateTourn);
     }
 };
 

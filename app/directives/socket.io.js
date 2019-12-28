@@ -17,6 +17,16 @@ window.refreshSocket = checkUser =>{
     //     checkUser();
     // }, 500);
 };
+window.listeningRedirect = () =>{
+    socket.on('redirectOntable', data =>{
+        noty('info', 'Смена столов МТТ!');
+        setTimeout(()=>{
+            location.href = location.origin + '/#!/' + data.link;
+            location.reload();
+        }, 3000);
+    });
+};
+
 
 window.initSocket = checkUser =>{ 
     // console.log('init');

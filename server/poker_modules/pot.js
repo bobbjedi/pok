@@ -66,7 +66,7 @@ Pot.prototype.addTableBets = function(players) {
     // them to the pot as they are
     if (allBetsAreEqual) {
         let isNeedNewPot = false;
-        log.info('[#' + tableId + ']' + ' allBetsAreEqual');
+        // log.info('[#' + tableId + ']' + ' allBetsAreEqual');
         for (var i in players) {
             players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
@@ -75,8 +75,8 @@ Pot.prototype.addTableBets = function(players) {
                 players[i].public.bet = 0;
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
-                    log.info('[#' + tableId + '] add to contributors to pot#' + currentPot + ' ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
-                    log.info('[#' + tableId + ']' + JSON.stringify(this.pots));
+                    // log.info('[#' + tableId + '] add to contributors to pot#' + currentPot + ' ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
+                    // log.info('[#' + tableId + ']' + JSON.stringify(this.pots));
                 }
                 if (players[i].public.chipsInPlay === 0){
                     isNeedNewPot = players[i].public.name;
@@ -86,7 +86,7 @@ Pot.prototype.addTableBets = function(players) {
             }
         }
         if (isNeedNewPot){
-            log.info('[#' + tableId + '] all In new pot');
+            // log.info('[#' + tableId + '] all In new pot');
             this.pots.push({
                 amount: 0,
                 contributors: []
@@ -103,8 +103,8 @@ Pot.prototype.addTableBets = function(players) {
                 players[i].public.bet = players[i].public.bet - smallestBet;
                 if (this.pots[currentPot].contributors.indexOf(players[i].seat) < 0) {
                     this.pots[currentPot].contributors.push(players[i].seat);
-                    log.info('[#' + tableId + '] add to contributors to New pot ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
-                    log.info('[#' + tableId + ']' + JSON.stringify(this.pots));
+                    // log.info('[#' + tableId + '] add to contributors to New pot ' + players[i].public.name + ' s:' + ' ' + players[i].seat);
+                    // log.info('[#' + tableId + ']' + JSON.stringify(this.pots));
                 }
             }
         }
@@ -115,11 +115,11 @@ Pot.prototype.addTableBets = function(players) {
             contributors: []
         });
 
-        log.info('[#' + tableId + '] is not equal, create pot#' + this.pots.length);
+        // log.info('[#' + tableId + '] is not equal, create pot#' + this.pots.length);
         // Recursion
         this.addTableBets(players);
     }
-    log.info('[#' + tableId + ']allPots: ' + JSON.stringify(this.pots));
+    // log.info('[#' + tableId + ']allPots: ' + JSON.stringify(this.pots));
 };
 
 /**

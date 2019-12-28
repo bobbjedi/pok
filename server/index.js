@@ -126,7 +126,7 @@ io.sockets.on('connection', function(socket) {
             }
             if (player.isTourn && player.sittingOnTable === +tableId){
                 log.info('Вернулся в турнир за стол: ' + player.public.name);
-                tables[player.sittingOnTable].public.tournSeats[player.seat].isOut = false;
+                tables[tableId].public.tournSeats[player.seat].isOut = false;
             }
         } catch (e){
             console.log(e);
@@ -758,7 +758,7 @@ $u.init({players, tables, eventEmitter});
 
 
 setTimeout(async () => {
-    Store.createMtt({tableSeatsCount: 10});
-    Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY']; // FIXME: !!
-    Store.startMtt();
-}, 3000);
+    // Store.createMtt({tableSeatsCount: 6});
+    // Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY']; // FIXME: !!
+    // Store.startMtt();
+}, 5000);

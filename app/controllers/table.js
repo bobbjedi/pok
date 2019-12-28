@@ -59,6 +59,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
+        window.listeningRedirect();
         socket.on('disconnect', ()=>{
             noty('error', '<i class="fa fa-wifi big" aria-hidden="true"></i> Разрыв соеденинения!');
             $rootScope.makeReload = ()=>false;
@@ -88,7 +89,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.emit('leaveRoom');
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
-        
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
@@ -343,7 +343,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         let lastSeatActive = -1;
         // When the table data have changed
         socket.on('table-data', function(data) {
-            console.log(data.id, tableId)
+            console.log(data.id, tableId);
             if (tableId !== data.id){
                 return;
             }

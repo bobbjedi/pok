@@ -13,6 +13,9 @@
     <div id="app">
         <button @click="tab='createTbl'">createTbl</button>
         <button @click="tab='users'">Users</button>
+        <button @click="createMtt">createMtt</button>
+        <button @click="startMtt">startMtt</button>
+        <button @click="rmMtt">rmMtt</button>
         <span v-if="tab === 'users'">
         <h1>Total deposit {{totDep.toFixed(0)}}</h1>
         <button @click="stopGames">STOP GAMES!</button>
@@ -125,6 +128,10 @@
                 this.updUsers();
             },
             methods: {
+                createMtt:()=>api({action: 'createMtt'}, data =>console.log('createMtt', data)),
+                rmMtt:()=>api({action: 'rmMtt'}, data =>console.log('rmMtt', data)),
+                startMtt:()=>api({action: 'startMtt'}, data =>console.log('startMtt', data)),
+
                 updUsers() {
                     api({
                         action: 'updUsers'

@@ -1,6 +1,10 @@
 export default ($scope, $rootScope) => {
     $scope.isShowTournModal = false;
     $scope.goInTourn = ()=>{
-        console.log('TOURN');
+        $rootScope.api({action: 'goInTourn'}, ()=>{
+            noty('success', 'Ваша заявка принята!');
+            $scope.updatePublic();
+            $rootScope.updateUser();
+        });
     };
 };
