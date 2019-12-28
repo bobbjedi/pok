@@ -119,7 +119,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $location.path(path);
         });
     };
-
+    window.listeningRedirect();
     setTimeout(() => {
         // работа с аватаром
         $scope.uploadAvatar = () => document.getElementById('input-upload-avatar').click();

@@ -760,5 +760,5 @@ $u.init({players, tables, eventEmitter});
 setTimeout(async () => {
     // Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY']; // FIXME: !!
-    // Store.startMtt();
-}, 5000);
+    // Store.startMtt(); 
+}, 10000);

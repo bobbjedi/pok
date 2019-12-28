@@ -18,6 +18,7 @@ window.refreshSocket = checkUser =>{
     // }, 500);
 };
 window.listeningRedirect = () =>{
+    console.log('listeningRedirect');
     socket.on('redirectOntable', data =>{
         noty('info', 'Смена столов МТТ!');
         setTimeout(()=>{

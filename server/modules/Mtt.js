@@ -18,6 +18,7 @@ module.exports = class Mtt{
         this.tables = [];
         this.offlinePlayersToStart = [];
         this.timeParams = sng();
+        this.addedPlayers = [];
         this.init();
         console.log({params});
     }
@@ -29,7 +30,7 @@ module.exports = class Mtt{
             let isAdded = false;
             for (let i in Store.players){
                 const player = Store.players[i];
-                if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
+                if (player.public.name === u && !player.public.sittingIn && !this.addedPlayers.includes(u)){ // онлайн и не за столом
                     this.players.push(player);
                     isAdded = true;
                     log.info('MTT: getOnlinePlayer ' + u);
@@ -41,6 +42,7 @@ module.exports = class Mtt{
                 log.warn('MTT: createOffLinePlayer ' + u);
                 this.offlinePlayersToStart.push(u);
             }
+            this.addedPlayers.push(u);
         }
         this.isStarted = true;
         await this.nextRound(true);
@@ -114,7 +116,7 @@ module.exports = class Mtt{
                 log.info('Посадили за #' + numTbl + ' > ' + player.public.name + ' место ' + numPos);
                 table.playerSatOnTheTable(player, numPos++, 0);
                 player.room = tableId;
-                setTimeout(()=>player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId}), 300);
+                player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId});
             }
             if (this.tables.length > 1){ // не последний стол
                 // this.params.timeOutShufflePlayers = 1;
