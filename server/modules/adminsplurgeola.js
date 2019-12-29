@@ -69,7 +69,7 @@ module.exports = (app) => {
 
             case ('rmMtt'):
                 console.log('rmMtt>', GET);
-                Store.rmMtt();
+                Store.rmMtt(GET.isReturn);
                 success({}, res);
                 break;
 
@@ -80,6 +80,12 @@ module.exports = (app) => {
                     return success({}, res);
                 } 
                 return error('МТТ не создан', res);
+                break;
+
+            case ('multReturnChips'):
+                console.log('multReturnChips>', GET);
+                $u.multSendCoins(GET.logins, GET.amount);
+                return success({}, res);
                 break;
                 
             default:

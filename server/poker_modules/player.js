@@ -90,7 +90,7 @@ Player.prototype.updateDeposit = async function (amount, user) {
         return;
     }
     user = user || await this.getUserDB();
-    user.deposit = $u.round(user.deposit + amount);
+    await $u.updateUserDeposit(user, amount, true);
     $u.updateChipsUserPlayers(user);
     await user.save();
     if (amount > 0){

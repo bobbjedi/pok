@@ -40,7 +40,7 @@ module.exports = Table =>{
             s.public.chipsInPlay = 0;
             await s.updateDepInPlay();
 
-            if (this.public.data.mtt.playersLeftChips){ // остатки фишек
+            if (this.public.data.isMtt && this.public.data.mtt.playersLeftChips){ // остатки фишек
                 s.public.chipsInPlay = this.public.data.mtt.playersLeftChips[s.public.name];
                 console.log('Left cheaps:', s.public.name, '>', s.public.chipsInPlay);
             } else {
@@ -69,9 +69,8 @@ module.exports = Table =>{
             }
             for (let w in winners){
                 const user = await winners[w].getUserDB();
-                user.deposit = $u.round(user.deposit + prizePath);
+                await $u.updateUserDeposit(user, prizePath);
                 log.info('Tourn prize: ' + user.login + ' ' + prizePath);
-                await user.save();
                 $u.updateChipsUserPlayers(user);
             }
 

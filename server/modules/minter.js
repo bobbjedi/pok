@@ -46,8 +46,7 @@ module.exports = {
             const hash = await sendTx(user.address, amountSend);
             amount = Math.round(amount);
             if (hash){
-                user.deposit = Math.round(user.deposit - amount);
-                await user.save();
+                await $u.updateUserDeposit(user, -amount);
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
                 console.log(hash);
                 $u.updateChipsUserPlayers(user);

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="styles/common.css" rel="stylesheet" type="text/css" />
     <title>Admin</title>
     <script src="https://ru.vuejs.org/js/vue.js"></script>
 </head>
@@ -14,17 +15,57 @@
         <button @click="tab='createTbl'">createTbl</button>
         <button @click="tab='users'">Users</button>
         <button @click="tab='tourn'">Tourn</button>
-        <span v-if="tab === 'tourn'">
-            <button @click="createMtt">createMtt</button>
-            <button @click="startMtt">startMtt</button>
-            <button @click="rmMtt">rmMtt</button>
-            Name
-            <input placeholder="Name" v-model="table.name">
-        </span>
+        <div v-if="tab === 'tourn'">
+            <h2>Турниры</h2>
+            <button @click="startMtt" class="bg-green but hovered">СТАРТ</button>
+            <button @click="rmMtt" class="bg-red but hovered">Удалить</button>
+            <button @click="rmMtt(true)" class="bg-red but hovered">Reset MTT (откат чипов)</button>
+            <div class="input-line">
+                <label>date</label>
+                <input v-model="tourn.date">
+            </div>
+            <div class="input-line">
+                <label>buyIn</label>
+                <input v-model.number="tourn.buyIn" type="number"> 
+            </div>
+            <div class="input-line">
+                <label>winnersCount</label>
+                <input v-model.number="tourn.winnersCount" type="number">
+            </div>
+            <div class="input-line">
+                <label>tableSeatsCount</label>
+                <select v-model.number="tourn.tableSeatsCount">
+                    <option>2</option>
+                    <option>6</option>
+                    <option>10</option>
+                </select>
+            </div>
+            <div class="input-line">
+                <label>chips</label>
+                <input v-model.number="tourn.chips" type="number">
+            </div>
+            <div class="input-line">
+                <label>timeOutShufflePlayers</label>
+                <input v-model.number="tourn.timeOutShufflePlayers" type="number">
+            </div>
+            <div class="input-line">
+                <label>timeOutMult</label>
+                <input v-model.number="tourn.timeOutMult" type="number">
+            </div>         
+            
+            <div @click="createMtt" class="but hovered bg-green">Открыть регу</div>
+        </div>
         <span v-if="tab === 'users'">
         <h1>Total deposit {{totDep.toFixed(0)}}</h1>
         <button @click="stopGames">STOP GAMES!</button>
         <div id="users">
+            <h2>Массовый откат</h2>
+            <div class="m10">
+                <input v-model.number="multReturn.amount" type="number">
+                <br>
+                <textarea v-model.number="multReturn.userList" placeholder="dev, dev1"></textarea>
+                <div class="but hovered bg-yellow" @click="multReturnChips">Откат</div>
+            </div>
             <table v-if="users.length">
                 <tr>
                     <th>Ред.</th>
@@ -104,15 +145,19 @@
                 editUserId: 0,
                 userDep: 0,
                 resultTxs: 0,
+                multReturn: {
+                    amount: 0,
+                    userList: ''
+                },
                 tourn: {
-                    date:'',
+                    date: '',
                     buyIn: 100,
                     winnersCount: 1,
                     timeOutShufflePlayers: 5,
                     tableSeatsCount: 6,
                     chips: 1500,
                     timeOutMult: 5
-                    },
+                },
                 table: {
                     name: 'Sng',
                     sb: 1,
@@ -142,10 +187,19 @@
                 this.updUsers();
             },
             methods: {
-                createMtt:()=>api({action: 'createMtt'}, data =>console.log('createMtt', data)),
-                rmMtt:()=>api({action: 'rmMtt'}, data =>console.log('rmMtt', data)),
+                createMtt:()=>api({action: 'createMtt', data: app.tourn}, data =>console.log('createMtt', data)),
                 startMtt:()=>api({action: 'startMtt'}, data =>console.log('startMtt', data)),
-
+                rmMtt: isReturn =>api({action: 'rmMtt', data: {isReturn}}, data =>console.log('rmMtt', data)),
+                multReturnChips(){
+                    api({
+                        action: 'multReturnChips', 
+                        data: {
+                            amount: this.multReturn.amount,
+                            logins: stringToArray(this.multReturn.userList)
+                        }
+                    }, data => console.log('multReturnChips', data));
+                    this.multReturn = {amount: 0, userList: ''};
+                },
                 updUsers() {
                     api({
                         action: 'updUsers'
@@ -211,13 +265,13 @@
         };
 
 
-api({action: 'actionsStatDb'}, multi);
+        api({action: 'actionsStatDb'}, multi);
 
 
 
-        function multi(res) {
-
-            res.forEach(u => {
+    function multi(res) {
+        return;
+        res.forEach(u => {
                 const {games, bet, raise, fold, call} = u;
                 u.maxGamesWith = getMax(games);
                 u.maxFoldWith = getMax(fold, games, 'fold');
@@ -264,11 +318,25 @@ api({action: 'actionsStatDb'}, multi);
                 return max;
             }
         }
+
+
+        function stringToArray(string) {
+                let userListArray = [];
+                if (string !== '') {
+                    string = string.replace('  ', ' ').replace('  ', ' ');
+                    userListArray = string.split(',');
+                }
+                return userListArray.map(e=>e.trim());
+            }
     </script>
 </body>
 
 
 <style>
+    body{
+        background: slategray;
+        color: snow;
+    }
     #users {
         width: 100%;
         height: 800px;
@@ -332,6 +400,14 @@ api({action: 'actionsStatDb'}, multi);
 
     tr td:last-child {
         border-right: none;
+    }
+
+    .input-line{
+        margin: 5px;
+    }
+    .input-line label{
+        display: inline-block;
+        width: 200px;
     }
 </style>
 

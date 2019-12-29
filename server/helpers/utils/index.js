@@ -4,14 +4,16 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const request = require('request');
 const log = require('../log');
-const Store = require('../../modules/Store');
-
+const _ = require('underscore');
+let Store;
 let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
+
 module.exports = {
     round(n) {
         return Number((n - 0.000001).toFixed(2));
     },
     init(data){
+        Store = require('../../modules/Store');
         players_ = data.players;
     },
     getPlayersByUserId(user_id){
@@ -27,7 +29,7 @@ module.exports = {
         const players = this.getPlayersByUserId(user._id);
         players.forEach(p=> {
             if (p.isTourn){
-                console.log(user.login, 'В турнире!');
+                // console.log(user.login, 'В турнире!');
                 return;
             }
             p.chips = user.deposit;
@@ -54,6 +56,23 @@ module.exports = {
             });
         });
     },
+    
+    async updateUserDeposit(user, amount, isNoNeedSave){
+        try {
+            if (_.isNumber(amount) && amount !== 0){
+                user.deposit = this.round(user.deposit + amount);
+                if (!isNoNeedSave){
+                    await user.save();
+                }
+                return;
+            }
+            log.warn('updateUserDeposit amount isNOtNUMBER: ' + amount);
+        } catch (e){
+            console.log(e);
+            log.error('updateUserDeposit(c): ' + e);
+        }
+    },
+
     async createUser(params){
         const {login, password, address} = params;
         if (!login.length || !password.length || !address.length) {
@@ -186,11 +205,38 @@ module.exports = {
         if (mtt.users.includes(user.login)){
             return 'Этот пользователь уже зарегистрирован!';
         }
-        user.deposit = this.round(user.deposit - buyIn);
+        this.updateUserDeposit(user, -buyIn);
         mtt.users.push(user.login);
-        await user.save();
         await Store.save();
     },
+    /**
+     * Начисляет сумму все юзерам на баланс
+     * @param {Array} logins массив логинов
+     * @param {Number} amount сумма
+     *  
+     */
+    async multSendCoins(logins, amount){
+        console.log(amount);
+        try {
+            if (!amount){
+                log.warn('multSendCoins amoutn = ' + amount);
+                return;
+            }
+            for (const login of logins){
+                const user = await this.getUserFromQ({login});
+                if (!user){
+                    log.error('multSendCoins no find ' + login + ' ' + amount);
+                    continue;
+                }
+                await this.updateUserDeposit(user, amount);
+                log.info('multSendCoins success send ' + login + ' ' + amount);
+            }
+        } catch (e){
+            console.log(e);
+            log.error('multSendCoins ' + e);
+        }
+      
+    }
 };
 
 // MIGRATE
@@ -220,6 +266,7 @@ setTimeout(()=>{
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 2;
     data.buyIn = 30;
+    data.playersCount = 2;
     data.winnersCount = 1;
     module.exports.tmpTourn(data);
 

@@ -1,9 +1,10 @@
 const {storeDb} = require('./DB');
 const Mtt = require('./Mtt');
-
+let $u;
 module.exports = {
     isGamesPaused: false,
     async init() {
+        $u = require('../helpers/utils');
         let system = await storeDb.findOne({});
         if (!system) {
             system = new storeDb({
@@ -30,20 +31,21 @@ module.exports = {
      */
     createMtt(params = {}) {
         this.system.mtt = {
-            date: params.date || '29/12 21.00 МСК',
+            date: params.date || 'Будет обьявлено',
             isRegOppened: true,
-            winnersCount: params.winnersCount || 3,
-            // buyIn: params.buyIn || 1,
-            // timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
-            // tableSeatsCount: params.tableSeatsCount || 6,
-            // chips: params.chips || 1500,
-            // timeOutMult: params.timeOutMult || 5,
             
-            buyIn: params.buyIn || 500,
+            winnersCount: params.winnersCount || 3,
+            buyIn: params.buyIn || 100,
             timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
             tableSeatsCount: params.tableSeatsCount || 6,
-            chips: params.chips || 2000,
-            timeOutMult: params.timeOutMult || 10,
+            chips: params.chips || 1500,
+            timeOutMult: params.timeOutMult || 5,
+            
+            // buyIn: params.buyIn || 500,
+            // timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
+            // tableSeatsCount: params.tableSeatsCount || 6,
+            // chips: params.chips || 2000,
+            // timeOutMult: params.timeOutMult || 10,
 
             users: []
         };
@@ -55,7 +57,11 @@ module.exports = {
         this.rmMtt();
         this.MTT = new Mtt(params, this);
     },
-    rmMtt(){
+    async rmMtt(isReturnChips){
+        const mtt = this.system.mtt;
+        if (isReturnChips && mtt.users){
+            await $u.multSendCoins(mtt.users, mtt.buyIn);
+        }
         this.system.mtt = {};
         this.save();
     }
