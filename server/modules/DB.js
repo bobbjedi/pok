@@ -26,4 +26,9 @@ module.exports = {
         filename: 'db_/restorePswd',
         autoload: true
     }), 600)),
+
+    tourns: modelDb(syncNedb(new Datastore({
+        filename: 'db_/tourns',
+        autoload: true
+    }), 600)),
 };

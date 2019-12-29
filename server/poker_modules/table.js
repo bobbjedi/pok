@@ -184,7 +184,7 @@ Table.prototype.setTimeoutWait = function(){
         };
         let timeOut = (config.timeOutWait + 3) * 1000;
         if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
-            console.log(lastActiveUserLogin + ' timeOut 3s');
+            // console.log(lastActiveUserLogin + ' timeOut 3s');
             timeOut = 3000;
         }
         this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
@@ -731,13 +731,17 @@ Table.prototype.endRound = async function(str) {
     }
 
     // Sitting out the players who don't have chips
+    const leftInGame = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
             this.seats[i].sitOut(true);
             this.playersSittingInCount--;
+        } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
+            leftInGame.push(this.seats[i].public.name);
         }
     }
 
+    this.public.data.isMtt && this.public.data.mtt.callBackPlayersSittingInCountMTT(this.playersSittingInCount, this.public.id, leftInGame); // оповещаем о количестве
     if (this.isTourn && this.tournWinnersCount >= this.playersSittingInCount){ // завершили турнир!
         this.tournStop();
         return;

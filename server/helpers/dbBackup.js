@@ -1,6 +1,12 @@
 const zipdir = require('zip-dir');
 const log = require('./log');
 const $u = require('./utils');
+const fs = require('fs');
+
+
+if (!fs.existsSync('./dbBackups')) {
+    fs.mkdirSync('./dbBackups');
+}
 
 const save = ()=>{
     const name = $u.unix();

@@ -25,7 +25,7 @@ module.exports = Table =>{
         if (!this.isTourn || this.isTournStart){
             return;
         }
-        console.log('Start turn');
+        log.info('Start turn table');
         this.timeOutUpdateTournParams();
         this.public.tournPrize = this.public.minBuyIn * this.tournPlayersCount;
         this.isTournStart = true;

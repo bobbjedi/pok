@@ -86,7 +86,7 @@ Player.prototype.getUserDB = async function () {
 };
 Player.prototype.updateDeposit = async function (amount, user) {
     if (this.isTourn){
-        console.log('updateDeposit isTourn', this.public.name);
+        // console.log('updateDeposit isTourn', this.public.name);
         return;
     }
     user = user || await this.getUserDB();

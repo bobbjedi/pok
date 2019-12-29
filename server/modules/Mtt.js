@@ -1,6 +1,7 @@
 const _ = require('underscore'),
     log = require('../helpers/log'),
     config = require('../helpers/configReader'),
+    {tourns} = require('../modules/DB'),
     sng = require('../helpers/utils/sng');
 
 let $u,
@@ -16,6 +17,7 @@ module.exports = class Mtt{
         this.params = params;
         this.players = [];
         this.tables = [];
+        this.countInTables = {};
         this.offlinePlayersToStart = [];
         this.timeParams = sng();
         this.addedPlayers = [];
@@ -25,6 +27,10 @@ module.exports = class Mtt{
 
     async init(){
         this.updateTournParams(); // запускаем рост анте и ББ
+        this.db = new tourns({
+            timeStart: $u.unix(),
+            params: this.params
+        }, 1);
         // Собираем игроков
         for (const u of this.params.users){ 
             let isAdded = false;
@@ -85,6 +91,7 @@ module.exports = class Mtt{
         this.players = _.shuffle(this.players);
         // Создаем таблицы
         this.tables = []; // сбросили старые
+        this.countInTables = {};
         while (numTbl-- > 0){
             log.info('MTT: Создаем таблицу на ' + arrTables[numTbl]);
             const data = {
@@ -92,7 +99,8 @@ module.exports = class Mtt{
                     isFinalTable: this.isFinal,
                     timeParams: JSON.parse(JSON.stringify(this.timeParams)),
                     playersLeftChips, // оставшиеся монеты у игроков,
-                    callBackStoppedRoundMTT: id =>this.callBackStoppedRoundMTT(id)
+                    callBackStoppedRoundMTT: id =>this.callBackStoppedRoundMTT(id),
+                    callBackPlayersSittingInCountMTT: (a, b, c) => this.callBackPlayersSittingInCountMTT(a, b, c) 
                 },
                 userList: '',
                 isMtt: true,
@@ -107,6 +115,7 @@ module.exports = class Mtt{
             };
 
             const tableId = $u.tmpTourn(data, ' MTT ');
+            this.countInTables[tableId] = arrTables[numTbl];
             this.tables.push(tableId); // создали таблицу
             const table = Store.tables[tableId];
             let numPos = 0; // позиция юзера
@@ -124,6 +133,41 @@ module.exports = class Mtt{
             }
             // this.backUpTables = this.tables.slice();
         }
+        console.log('this.countInTables', this.countInTables);
+    }
+    /**
+     * @description оповещение о том что игрок в ситауте
+     * @param {String} name 
+     */
+    callBackPlayersSittingInCountMTT(count, tableId, leftInGame){
+        log.info('МТТ PlayersSittingInCount ' + count + ' #' + tableId);
+        console.log({leftInGame});
+        if (this.tables.includes(tableId)){
+            this.countInTables[tableId] = count;
+        }
+        const leftPlayers = this.countPlayersInGame();
+        console.log('LEFT IN GAMES:', this.countInTables, leftPlayers);
+        if (!this.isFinal && leftPlayers <= this.params.tableSeatsCount){
+            log.info(`LEFT ${leftPlayers} players! GO FINAL`);
+            this.stoppedGames();
+        } else if (this.predLeftPlayers && this.isFinal && (leftPlayers <= this.params.winnersCount) && this.predLeftPlayers !== leftPlayers){
+            // TODO: сохранить победителей
+            console.log('WINNERS!', leftInGame);
+            this.db['winners' + leftInGame.length] = leftInGame;
+            this.db.save();
+        } else if (!this.isFinal && count < 2){ // если стол опустел
+            log.info(`LEFT TO TABLE ${count} players! GO NEW TABLES`);
+            this.stoppedGames();
+        }
+        this.predLeftPlayers = leftPlayers;
+    }
+    countPlayersInGame(){
+        let countPlayers = 0;
+        for (const id in this.countInTables){
+
+            countPlayers += this.countInTables[id];
+        }
+        return countPlayers;
     }
     /**
      * @description оповещение о том что таблица закончила играть
@@ -174,9 +218,13 @@ module.exports = class Mtt{
         }
         await this.createTables(playersLeftChips);
     }
-
+    /**
+     * @description Команда на остаовку игр для смены столов 
+     */
     stoppedGames (){
-        this.tables.forEach(id => Store.tables[id].public.isStoppedGames = true);
+        if (!this.isFinal){
+            this.tables.forEach(id => Store.tables[id].public.isStoppedGames = true);
+        }
     }
 
     updateTournParams () {

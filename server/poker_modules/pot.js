@@ -68,7 +68,7 @@ Pot.prototype.addTableBets = function(players) {
         let isNeedNewPot = false;
         // log.info('[#' + tableId + ']' + ' allBetsAreEqual');
         for (var i in players) {
-            players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
+            // players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
                 const amount = players[i].public.bet;
                 this.pots[currentPot].amount += amount;
@@ -97,7 +97,7 @@ Pot.prototype.addTableBets = function(players) {
         // amount of the table, add these bets to the pot and then create a new empty pot
         // and recursively add the bets that remained, to the new pot
         for (var i in players) {
-            players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
+            // players[i] && log.info('[#' + tableId + '] s' + i + ' palyer bet: ' + players[i].public.bet);
             if (players[i] && players[i].public.bet) {
                 this.pots[currentPot].amount += smallestBet;
                 players[i].public.bet = players[i].public.bet - smallestBet;
@@ -267,7 +267,7 @@ Pot.prototype.giveToWinner = function(winner) {
     const tableId = this.tableId;
     const table = Store.tables[tableId];
     for (var i = potsCount - 1; i >= 0; i--) {
-        log.info('[#' + tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
+        // log.info('[#' + tableId + '] ' + 's177: ' + winner.public.name + ' #' + winner.seat + ' + ' + this.pots[i].amount);
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
@@ -284,7 +284,7 @@ Pot.prototype.giveToWinner = function(winner) {
    * @param  number   seat
    */
 Pot.prototype.removePlayer = function(seat) {
-    log.info('[#' + this.tableId + '] удаляем из потов #' + seat);
+    // log.info('[#' + this.tableId + '] удаляем из потов #' + seat);
     var potsCount = this.pots.length;
     for (var i = 0; i < potsCount; i++) {
         var placeInArray = this.pots[i].contributors.indexOf(seat);
