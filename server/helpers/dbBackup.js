@@ -3,11 +3,12 @@ const log = require('./log');
 const $u = require('./utils');
 
 const save = ()=>{
-    zipdir('./db_', { saveTo: './dbBackups/' + $u.unix() + '.zip' }, function (err, buffer) {
+    const name = $u.unix();
+    zipdir('./db_', { saveTo: './dbBackups/' + name + '.zip' }, function (err, buffer) {
         if (err){
             return log.error('ZIPPER: ' + err);
         }
-        log.info('dbBackups successfully saved');
+        log.info('dbBackups successfully saved ' + name);
     });
 };
 save();
