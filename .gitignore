@@ -20,5 +20,6 @@ public/dist
 public/dist/build.js
 public/config.xml
 public/avatars/
+dbBackups
 server/.pk.js
 configMain.js

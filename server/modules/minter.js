@@ -47,7 +47,7 @@ module.exports = {
             amount = Math.round(amount);
             if (hash){
                 await $u.updateUserDeposit(user, -amount);
-                depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
+                depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
                 console.log(hash);
                 $u.updateChipsUserPlayers(user);
                 delete withdrawBlocked[user._id];

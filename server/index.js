@@ -37,6 +37,7 @@ function init(){
     app.use(express.static(path.join(dirName, 'public')));
     require('./modules/api')(app);
     require('./modules/adminsplurgeola')(app);
+    require('./helpers/dbBackup');
 }
 init();
 
