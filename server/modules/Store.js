@@ -32,11 +32,19 @@ module.exports = {
         this.system.mtt = {
             date: params.date || 'Инфа в канале',
             isRegOppened: true,
-            buyIn: params.buyIn || 1,
             winnersCount: params.winnersCount || 3,
+            // buyIn: params.buyIn || 1,
+            // timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
+            // tableSeatsCount: params.tableSeatsCount || 6,
+            // chips: params.chips || 1500,
+            // timeOutMult: params.timeOutMult || 5,
+            
+            buyIn: params.buyIn || 500,
             timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
             tableSeatsCount: params.tableSeatsCount || 6,
-            chips: params.chips || 1500,
+            chips: params.chips || 2000,
+            timeOutMult: params.timeOutMult || 10,
+
             users: []
         };
         this.save();

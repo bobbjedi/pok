@@ -13,9 +13,14 @@
     <div id="app">
         <button @click="tab='createTbl'">createTbl</button>
         <button @click="tab='users'">Users</button>
-        <button @click="createMtt">createMtt</button>
-        <button @click="startMtt">startMtt</button>
-        <button @click="rmMtt">rmMtt</button>
+        <button @click="tab='tourn'">Tourn</button>
+        <span v-if="tab === 'tourn'">
+            <button @click="createMtt">createMtt</button>
+            <button @click="startMtt">startMtt</button>
+            <button @click="rmMtt">rmMtt</button>
+            Name
+            <input placeholder="Name" v-model="table.name">
+        </span>
         <span v-if="tab === 'users'">
         <h1>Total deposit {{totDep.toFixed(0)}}</h1>
         <button @click="stopGames">STOP GAMES!</button>
@@ -99,6 +104,15 @@
                 editUserId: 0,
                 userDep: 0,
                 resultTxs: 0,
+                tourn: {
+                    date:'',
+                    buyIn: 100,
+                    winnersCount: 1,
+                    timeOutShufflePlayers: 5,
+                    tableSeatsCount: 6,
+                    chips: 1500,
+                    timeOutMult: 5
+                    },
                 table: {
                     name: 'Sng',
                     sb: 1,
