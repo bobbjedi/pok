@@ -342,10 +342,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         let lastSeatActive = -1;
         // When the table data have changed
+        let predCards = '';
         socket.on('table-data', function(data) {
-            console.log(data.id, tableId);
             if (tableId !== data.id){
                 return;
+            }
+            if (data.board[0].length && data.board.toString() !== predCards){
+                sounds.playCardSound();
+                predCards = data.board.toString();
             }
             $scope.table = data;
             $scope.checkUserSeat();

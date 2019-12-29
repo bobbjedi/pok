@@ -15,6 +15,7 @@ app.factory('sounds', ['$rootScope', function ($rootScope) {
         callSound = document.getElementById("call-sound"),
         betSound = document.getElementById("bet-sound"),
         myStep = document.getElementById("my-step-sound"),
+        card = document.getElementById("card-sound"),
         raiseSound = document.getElementById("raise-sound");
 
     // myStep.volume = 0.1;
@@ -55,6 +56,12 @@ app.factory('sounds', ['$rootScope', function ($rootScope) {
                 return;
             }
             myStep.play();
+        },
+        playCardSound: function () {
+            if (!isSound) {
+                return;
+            }
+            card.play();
         }
     };
 }]);

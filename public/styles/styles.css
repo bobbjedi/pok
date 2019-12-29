@@ -459,6 +459,35 @@ div#board-wrap .card-container {
     /* background-image: url("/images/deck4.png"); */
 }
 
+#board-wrap .card-container{
+    /* opacity: 0; */
+    transition: transform 0.5s, opacity 0.5s, scaleY .5s, scaleX .5s;
+}
+
+#board-wrap .card-container.board-card-1{
+    transform: translateX(-250%) scaleY(2) scaleX(2);
+    /* transition: transform 0.3s; */
+}
+#board-wrap .card-container.board-card-2{
+    transform: translateX(-350%) scaleY(2) scaleX(2);
+    /* transition: transform .5s; */
+}
+#board-wrap .card-container.board-card-3{
+    transform: translateX(-350%) scaleY(2) scaleX(2);
+    /* transition: transform .7s; */
+}
+#board-wrap .card-container.board-card-4{
+    transform: translateX(-450%) scaleY(2) scaleX(2);
+}
+#board-wrap .card-container.board-card-5{
+    transform: translateX(-550%) scaleY(2) scaleX(2);
+}
+ 
+#board-wrap .card-container.card-show{
+    opacity: 1;
+    transform: translateX(0) scaleY(1) scaleX(1);
+}
+
 .card-highlight{
     z-index: 2;
     border: 2px solid #ffa726;
