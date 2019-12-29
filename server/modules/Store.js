@@ -30,7 +30,7 @@ module.exports = {
      */
     createMtt(params = {}) {
         this.system.mtt = {
-            date: params.date || 'Инфа в канале',
+            date: params.date || '29/12 21.00 МСК',
             isRegOppened: true,
             winnersCount: params.winnersCount || 3,
             // buyIn: params.buyIn || 1,
