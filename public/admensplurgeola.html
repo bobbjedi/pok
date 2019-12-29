@@ -19,7 +19,7 @@
             <h2>Турниры</h2>
             <button @click="startMtt" class="bg-green but hovered">СТАРТ</button>
             <button @click="rmMtt" class="bg-red but hovered">Удалить</button>
-            <button @click="rmMtt(true)" class="bg-red but hovered">Reset MTT (откат чипов)</button>
+            <button @click="resetMtt" class="bg-red but hovered">Reset MTT (откат чипов)</button>
             <div class="input-line">
                 <label>date</label>
                 <input v-model="tourn.date">
@@ -189,7 +189,8 @@
             methods: {
                 createMtt:()=>api({action: 'createMtt', data: app.tourn}, data =>console.log('createMtt', data)),
                 startMtt:()=>api({action: 'startMtt'}, data =>console.log('startMtt', data)),
-                rmMtt: isReturn =>api({action: 'rmMtt', data: {isReturn: !!!isReturn}}, data =>console.log('rmMtt', data)),
+                rmMtt: () =>api({action: 'rmMtt'}, data =>console.log('rmMtt', data)),
+                resetMtt : () =>api({action: 'rmMtt', data: {isReturn: true}}, data =>console.log('rmMtt', data)),
                 multReturnChips(){
                     api({
                         action: 'multReturnChips', 
