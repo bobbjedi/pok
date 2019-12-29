@@ -465,22 +465,22 @@ div#board-wrap .card-container {
 }
 
 #board-wrap .card-container.board-card-1{
-    transform: translateX(-250%) scaleY(2) scaleX(2);
+    transform: translateX(-250%) scaleY(3) scaleX(3);
     /* transition: transform 0.3s; */
 }
 #board-wrap .card-container.board-card-2{
-    transform: translateX(-350%) scaleY(2) scaleX(2);
-    transition: transform .6s;
+    transform: translateX(-350%) scaleY(3) scaleX(3);
+    transition: transform .65s;
 }
 #board-wrap .card-container.board-card-3{
-    transform: translateX(-350%) scaleY(2) scaleX(2);
-    transition: transform .7s;
+    transform: translateX(-350%) scaleY(3) scaleX(3);
+    transition: transform .8s;
 }
 #board-wrap .card-container.board-card-4{
-    transform: translateX(-450%) scaleY(2) scaleX(2);
+    transform: translateX(-450%) scaleY(3) scaleX(3);
 }
 #board-wrap .card-container.board-card-5{
-    transform: translateX(-550%) scaleY(2) scaleX(2);
+    transform: translateX(-550%) scaleY(3) scaleX(3);
 }
  
 #board-wrap .card-container.card-show{
