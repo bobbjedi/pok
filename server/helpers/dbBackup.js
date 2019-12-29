@@ -11,6 +11,4 @@ const save = ()=>{
     });
 };
 save();
-setInterval(() => {
-    
-}, 5 * 3600 * 1000);
+setInterval(save, 5 * 3600 * 1000);
