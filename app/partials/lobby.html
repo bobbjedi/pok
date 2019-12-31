@@ -18,12 +18,21 @@
     <div class="modal-wrap" ng-show="isShowTournModal" ng-click="isShowTournModal = false">
         <div class="modal tourn-info">
             <div class="modal-text">
-                <div class="big txt-yellow m10">Турнир Minter Poker</div>
+                <div class="big txt-yellow m10"><i class="fa fa-trophy" aria-hidden="true"></i> Турнир Minter Poker</div>
+                <div class="big txt-green m10" ng-if="public.mtt.title.length">{{public.mtt.title}}</div>
+
                 <div class="big m5">Условия:</div>
-                <div class="m5"><span>Дата:</span> {{public.mtt.date}}</div>
-                <div class="m5"><span>Вход:</span> {{public.mtt.buyIn}} BIP</div>
-                <div class="m5"><span>Победителей:</span> {{public.mtt.winnersCount}}</div>
-                <div class="m5"><span>Участников:</span> {{public.mtt.users.length}}</div>
+                <div class="small mtt-info">
+                    <div class="setting-line"><span class="al">Дата:</span> {{public.mtt.date}}</div>
+                    <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}} BIP</div>
+                    <div class="setting-line"><span class="al">Фишек:</span> {{public.mtt.chips}}</div>
+                    <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div>
+                    <!-- <div class="setting-line"><span>Смена столов:</span> {{public.mtt.timeOutShufflePlayers}} мин</div>
+                                <div class="setting-line"><span>Рост блайнов:</span> {{public.mtt.timeOutMult}} мин</div> -->
+                    <div class="setting-line"><span class="al">Участников:</span> {{public.mtt.users.length}}</div>
+                </div>
+
+
                 <br>
                 <span ng-if="public.mtt.users.includes($root.user.login)" class="txt-green">Вы зарегистрированны!</span>
                 <span ng-if="!public.mtt.users.includes($root.user.login)">

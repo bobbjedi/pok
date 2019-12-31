@@ -21,6 +21,10 @@
             <button @click="rmMtt" class="bg-red but hovered">Удалить</button>
             <button @click="resetMtt" class="bg-red but hovered">Reset MTT (откат чипов)</button>
             <div class="input-line">
+                <label>title</label>
+                <input v-model="tourn.title">
+            </div>
+            <div class="input-line">
                 <label>date</label>
                 <input v-model="tourn.date">
             </div>
@@ -151,6 +155,7 @@
                 },
                 tourn: {
                     date: '',
+                    title: '',
                     buyIn: 100,
                     winnersCount: 1,
                     timeOutShufflePlayers: 5,

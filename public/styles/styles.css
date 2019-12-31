@@ -1088,6 +1088,20 @@ div#board-wrap .card-container {
     opacity: 0
 }
 
+/* 
+.line-title-mtt{
+    text-align: left;
+    width: 200px;
+    display: inline-block;
+}
+
+.line-mtt-info{
+    width: 300px;
+} */
+.mtt-info{
+    width: 320px;
+    margin: 5px auto;
+}
 @media screen and (orientation:portrait) and (max-device-width:500px) {
     #content {
         display: none

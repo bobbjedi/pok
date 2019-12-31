@@ -97,6 +97,15 @@ html, body {
     width: 100px !important;
 }
 
+.ar{    
+    text-align: right;
+    padding-right: 10px;
+}
+
+.al{    
+    text-align: left;
+}
+
 .info-line{
     display: flex;
     justify-content: center;    

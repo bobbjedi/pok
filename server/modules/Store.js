@@ -33,7 +33,7 @@ module.exports = {
         this.system.mtt = {
             date: params.date || 'Будет обьявлено',
             isRegOppened: true,
-            
+            title: params.title,
             winnersCount: params.winnersCount || 3,
             buyIn: params.buyIn || 100,
             timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
