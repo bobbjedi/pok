@@ -62,7 +62,7 @@ setInterval(() => {
                 };
                 if (amount > 0){
                     // amount *= 1 - config.comission;
-                    depositsDb.db.insert({hash, user_id: user._id, type: 'deposit', amount});
+                    depositsDb.db.insert({hash, user_id: user._id, type: 'deposit', amount, unix: $u.unix()});
                     user.deposit += amount;
                     user.save();
                     log.info(`newDeposit:
