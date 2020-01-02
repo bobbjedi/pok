@@ -18,9 +18,12 @@ window.refreshSocket = checkUser =>{
     // }, 500);
 };
 window.listeningRedirect = () =>{
-    console.log('listeningRedirect');
     socket.on('redirectOntable', data =>{
-        noty('info', 'Смена столов МТТ!');
+        if (location.hash === '#!/' + data.link){
+            return;
+        }
+        window.showPreloader();
+        noty('info', data.msg || 'Авто переход на стол!');
         setTimeout(()=>{
             location.href = location.origin + '/#!/' + data.link;
             location.reload();

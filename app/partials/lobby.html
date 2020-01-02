@@ -3,7 +3,7 @@
         <div class="modal withdraw">
             <div class="modal-text">
                 <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposit}}</span>
-                    {{$root.config.coinName}} (комиссия {{$root.config.comission}}%)</div>
+                    {{$root.config.coinName}} (комиссия {{$root.config.withdrawComission}}%)</div>
                 <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow"
                         ng-click="withdrawAmount = $root.user.deposit"> Все </span></div>
             </div>

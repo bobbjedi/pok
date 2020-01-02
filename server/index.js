@@ -116,7 +116,11 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('enterRoom', function(tableId, callback) {
         try {
-            const player = players[socket.id];
+            let player = players[socket.id];
+            // if (tables[tableId].isTournStart){
+            //     log.warn('Заменяем игрока');
+            //     player = $u.findPlayerExist(player.public.name) || player;
+            // }
             if (!player){
                 return;
             }
@@ -215,26 +219,11 @@ io.sockets.on('connection', function(socket) {
                 }
 
                 // ищем отключившегося
-                let playerExists = false;
-                for (let sId in players) {
-                    const p = players[sId];
-                    if (p.public.name === name && p.public.isDisconnect) {
-                        playerExists = p;
-                        continue;
-                    };
-                };
-                if (playerExists) {
-                    console.log('playerExists public.isDisconnect', playerExists.public.name);
-                    const oldSocketId = playerExists.return();
-                    playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
-                    socket.join('table-' + playerExists.room); // зашли новым сокетом
-                    playerExists.socket = socket;
-                    players[socket.id] = playerExists;
-                    playerExists.public.isDisconnect = false;
+                if ($u.findPlayerExist(name, token)){
                     callback({'success': true, playerId: players[socket.id].playerId});
-                    delete players[oldSocketId];
                     return;
-                }
+                };
+              
 
                 // if (playerId) {
                 //     let playerExists = false;
@@ -289,6 +278,30 @@ io.sockets.on('connection', function(socket) {
             log.error('checkUser: ' + e);
         }
     });
+
+    $u.findPlayerExist = name =>{
+        let playerExists = false;
+        for (let sId in players) {
+            const p = players[sId];
+            if (p.public.name === name && p.public.isDisconnect) {
+                playerExists = p;
+                continue;
+            };
+        };
+        if (playerExists) {
+            console.log('playerExists public.isDisconnect', playerExists.public.name);
+            const oldSocketId = playerExists.return();
+            playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
+            socket.join('table-' + playerExists.room); // зашли новым сокетом
+            playerExists.socket = socket;
+            players[socket.id] = playerExists;
+            playerExists.public.isDisconnect = false;
+            delete players[oldSocketId];
+            const table = tables[playerExists.room];
+            table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
+            return playerExists;
+        }
+    };
 
     /**
 	 * When a player requests to sit on a table
@@ -657,8 +670,9 @@ $u.disconnectPlayerInTourn = player=>{
     const table = tables[player.sittingOnTable];
     if (table){
         table.public.tournSeats[player.seat].isOut = true;
-    } else {
-        $u.removePlayer(player.socket);
+    } 
+    else {
+        // $u.removePlayer(player.socket);
     }
     return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
 };

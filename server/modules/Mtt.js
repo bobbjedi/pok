@@ -121,11 +121,11 @@ module.exports = class Mtt{
             let numPos = 0; // позиция юзера
             while (arrTables[numTbl]-- > 0){ // запихиваем в каждую таблицу юзера
                 const player = this.players[--numUsr];
-                await $u.wait(0.4);
+                // await $u.wait(0.4);
                 log.info('Посадили за #' + numTbl + ' > ' + player.public.name + ' место ' + numPos);
-                table.playerSatOnTheTable(player, numPos++, 0);
+                await table.playerSatOnTheTable(player, numPos++, 0);
                 player.room = tableId;
-                player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId});
+                player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId, msg: 'Переход за стол МТТ'});
             }
             if (this.tables.length > 1){ // не последний стол
                 // this.params.timeOutShufflePlayers = 1;
@@ -152,7 +152,6 @@ module.exports = class Mtt{
             this.stoppedGames();
         } else if (this.predLeftPlayers && this.isFinal && (leftPlayers <= this.params.winnersCount) && this.predLeftPlayers !== leftPlayers){
             // TODO: сохранить победителей
-            console.log('WINNERS!', leftInGame);
             this.db['winners' + leftInGame.length] = leftInGame;
             this.db.save();
         } else if (!this.isFinal && count < 2){ // если стол опустел

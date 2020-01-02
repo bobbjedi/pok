@@ -26,20 +26,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         count: "2",
         isPrivate: false,
         maxBuyIn: 100
-    };
-    const preloader = document.getElementById('preloader');
-    preloader.style.opacity = 1;
-    preloader.style.display = 'flex';
-    $scope.hidePreloader = () =>{
-        setTimeout(()=>{
-            preloader.style.opacity = 0;
-            setTimeout(()=>{
-                preloader.style.display = 'none';
-            }, 500);
-        }, 1000);
-    };
-
-  
+    }; 
 
     // window.initSocket(checkUser);
     window.refreshSocket($rootScope.checkUser);
@@ -67,7 +54,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
                         $scope.playersInGame += data[tableId].playersSeatedCount;
                     }
                 }
-                $scope.hidePreloader();
+                window.hidePreloader();
             }
         });
     });
@@ -126,3 +113,24 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         document.getElementById('input-upload-avatar').onchange = () => document.getElementById('uploadAvatarForm').submit();
     }, 2000);
 }]);
+
+
+const preloader = document.getElementById('preloader');
+preloader.style.opacity = 1;
+preloader.style.display = 'flex';
+let timeOutHide = null;
+
+window.hidePreloader = () =>{
+    timeOutHide = setTimeout(()=>{
+        preloader.style.opacity = 0;
+        setTimeout(()=>{
+            preloader.style.display = 'none';
+        }, 500);
+    }, 1000);
+};
+
+window.showPreloader = ()=>{
+    clearTimeout(timeOutHide);
+    setTimeout(()=>preloader.style.display = 'flex', 100);
+    preloader.style.opacity = 1;
+};

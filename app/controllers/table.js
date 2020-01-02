@@ -411,7 +411,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
-        setTimeout(()=> socket.emit('getMyCards'), 3000);
+        setTimeout(()=> socket.emit('getMyCards'), 5000);
 
         //
         // When the game has stopped
