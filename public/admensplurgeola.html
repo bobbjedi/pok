@@ -239,6 +239,7 @@
                             _id: user._id
                         }
                     }, data => {
+                        data.sort((a, b)=> a.unix - b.unix);
                         this.txs = data;
                         this.resultTxs = data.reduce((s, t) => {
                             if (t.type === 'withdraw') {

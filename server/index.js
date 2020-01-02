@@ -78,8 +78,8 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].gamesCount = table.public.gamesCount;
             lobbyTables[tableId].allPots = table.public.allPots;
             lobbyTables[tableId].ante = table.public.ante;
-            lobbyTables[tableId].spin = table.public.spin;
-            lobbyTables[tableId].playersCount = table.public.data.playersCount || table.seatsCount;
+            lobbyTables[tableId].spin = table.public.spin || {};
+            lobbyTables[tableId].playersCount = table.public.data.playersCount || table.public.seatsCount;
         }
     }
     res.send(lobbyTables);

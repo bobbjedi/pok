@@ -176,7 +176,7 @@ module.exports = {
 
     },
     tmpTourn(data, name){
-        return this.createCustomTable({count: data.count, name: name || 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
+        return this.createCustomTable({count: data.count, name: name || data.name || 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
     },
     async createOffLinePlayer(login){
         // var eventEmitter = function(tableId) {
@@ -296,7 +296,8 @@ setTimeout(()=>{
     data.buyIn = 50;
     data.winnersCount = 1;
     data.isSpin = true;
-    module.exports.tmpTourn(data, 'Spin And Go');
+    data.name = 'Spin And Go';
+    module.exports.tmpTourn(data);
 });
 
 
