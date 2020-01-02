@@ -49,7 +49,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingIn = true;
                     $scope.mySeat = seat;
                     if ($scope.table.seats[seat].hasCards){
-                        socket.emit('getMyCards');
+                        setTimeout(()=> socket.emit('getMyCards'), 1000);
                     }
                 }
             }
@@ -410,6 +410,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             $scope.$digest();
         });
+
+        setTimeout(()=> socket.emit('getMyCards'), 3000);
 
         //
         // When the game has stopped
