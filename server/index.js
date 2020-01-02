@@ -63,20 +63,22 @@ app.get('/lobby-data', function(req, res) {
     for (var tableId in tables) {
         // Sending the public data of the public tables to the lobby screen
         if (!tables[tableId].privateTable || token === Store.devToken) {
+            const table = tables[tableId];
             lobbyTables[tableId] = {};
-            lobbyTables[tableId].id = tables[tableId].public.id;
-            lobbyTables[tableId].name = tables[tableId].public.name;
-            lobbyTables[tableId].seatsCount = tables[tableId].public.seatsCount;
-            lobbyTables[tableId].playersSeatedCount = tables[tableId].public.playersSeatedCount;
-            lobbyTables[tableId].bigBlind = tables[tableId].public.bigBlind;
-            lobbyTables[tableId].smallBlind = tables[tableId].public.smallBlind;
-            lobbyTables[tableId].minBuyIn = tables[tableId].public.minBuyIn;
-            lobbyTables[tableId].maxBuyIn = tables[tableId].public.maxBuyIn;
-            lobbyTables[tableId].type = tables[tableId].public.type;
-            lobbyTables[tableId].isTourn = tables[tableId].isTourn;
-            lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
-            lobbyTables[tableId].allPots = tables[tableId].public.allPots;
-            lobbyTables[tableId].ante = tables[tableId].public.ante;
+            lobbyTables[tableId].id = table.public.id;
+            lobbyTables[tableId].name = table.public.name;
+            lobbyTables[tableId].seatsCount = table.public.seatsCount;
+            lobbyTables[tableId].playersSeatedCount = table.public.playersSeatedCount;
+            lobbyTables[tableId].bigBlind = table.public.bigBlind;
+            lobbyTables[tableId].smallBlind = table.public.smallBlind;
+            lobbyTables[tableId].minBuyIn = table.public.minBuyIn;
+            lobbyTables[tableId].maxBuyIn = table.public.maxBuyIn;
+            lobbyTables[tableId].type = table.public.type;
+            lobbyTables[tableId].isTourn = table.isTourn;
+            lobbyTables[tableId].gamesCount = table.public.gamesCount;
+            lobbyTables[tableId].allPots = table.public.allPots;
+            lobbyTables[tableId].ante = table.public.ante;
+            lobbyTables[tableId].playersCount = table.public.data.playersCount || table.seatsCount;
         }
     }
     res.send(lobbyTables);

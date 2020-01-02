@@ -371,12 +371,24 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
 /**
  * Method that starts a new game
  */
-Table.prototype.initializeRound = function(changeDealer) {
+Table.prototype.initializeRound = async function(changeDealer) {
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         console.log('ID:', this.public.id);
         this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
+        return;
+    }
+    const {data} = this.public;
+
+    if (data.isSpin && !data.spin){
+        this.emitEvent('waitSpinRate');
+        data.spin = await $u.getSpinRate();
+        this.public.tournPrize = data.spin.rate * this.public.maxBuyIn;
+
+        setTimeout(()=>console.log('PRIZE!!', this.public.tournPrize), 10000);
+        this.emitEvent('getSpinRate', data.spin); 
+        setTimeout(()=>this.initializeRound(changeDealer), 3000);
         return;
     }
     // this.clearTimeoutPlayerAction('initializeRound');

@@ -236,6 +236,26 @@ module.exports = {
             log.error('multSendCoins ' + e);
         }
       
+    },
+    async getSpinRate(){
+        await this.wait(3);
+        const value = Math.floor(Math.random() * 10);
+        console.log({value});
+        let rate = 0;
+        if (value === 0){
+            rate = 5;
+        } else if (value <= 3){
+            rate = 1;
+        } else if (value <= 7){
+            rate = 2;
+        } else {
+            rate = 3;
+        }
+
+        return {
+            rate,
+            hash: 'MxText123'
+        };
     }
 };
 
@@ -273,9 +293,10 @@ setTimeout(()=>{
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 6;
     data.playersCount = 3;
-    data.buyIn = 100;
+    data.buyIn = 50;
     data.winnersCount = 1;
-    module.exports.tmpTourn(data);
+    data.isSpin = true;
+    module.exports.tmpTourn(data, 'Spin And Go');
 });
 
 

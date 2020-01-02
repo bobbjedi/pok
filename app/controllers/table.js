@@ -469,6 +469,19 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.isSendActionAuto = false;
             $scope.$digest();
         });
+        
+        socket.on('waitSpinRate', function() {
+            sounds.playMyStepSound();
+            $scope.showSpinRateDice();
+            $scope.$digest();
+        });
+
+        socket.on('getSpinRate', function(data) {
+            sounds.playMyStepSound();
+            $scope.showSpinRateValue(data);
+            $scope.$digest();
+        });
+
     }]);
 
 

@@ -63,9 +63,16 @@
 <div id="table">
     <div class="table-name">
         <div ng-if="!table.isTournStart && table.data.userListArray.length" class="small table-reg-list">Участники: {{table.data.userListArray.join(', ')}}</div>
-        <img src="/images/logo.png">
-        <div>{{table.name}}</div>
-        <div>Big blind: {{table.bigBlind}}, {{table.isTourn ? 'Buy in' : 'Max buy in'}}: {{table.maxBuyIn}}<span ng-show="table.ante">, Ante: {{table.ante}}</span></div>
+        <img ng-if="!isWaitSpinRate" src="/images/logo.png">
+        <img ng-if="isWaitSpinRate && !spin.rate" src="/images/dice.gif">
+        <!-- <div ng-if="isWaitSpinRate && spin.rate">
+            <div class="spin-rate">Rate: table.maxBuyIn x {{spin.rate}}</div>
+            <div class="spin-rate-link"><a ng-href="'/' + spin.hash">{{spin.hash}}</a></div>
+        </div> -->
+        <div>{{table.name}} <span ng-show="spin.rate" class="big txt-yellow">x{{spin.rate}}</span> </div>
+        <div>Big blind: {{table.bigBlind}}, {{table.isTourn ? 'Buy in' : 'Max buy in'}}: {{table.maxBuyIn}}
+            <span ng-show="table.ante">, Ante: {{table.ante}}</span>
+        </div>
     </div>
     <div id="felt"></div>
 </div>
