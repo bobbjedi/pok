@@ -125,13 +125,18 @@ io.sockets.on('connection', function(socket) {
                 return;
             }
             players[socket.id].return();
-            if (player.room === null) {
-            // Add the player to the socket room
-                socket.join('table-' + tableId);
-                // Add the room to the player's data
-                players[socket.id].room = tableId;
-                callback && callback();
+            if (player.room !== null && +player.room !== +tableId) {
+                console.log('ВЫСАДИЛИ ИЗ КОМНАТЫ', player.room, ' >> ', tableId);
+                socket.leave('table-' + player.room);
             }
+            // if (player.room === null) {
+            // Add the player to the socket room
+            socket.join('table-' + tableId);
+            // Add the room to the player's data
+            players[socket.id].room = tableId;
+            callback && callback();
+            console.log('>>>>>>>>>>>>', player.public.name, tableId);
+            // }
             if (player.isTourn && player.sittingOnTable === +tableId){
                 log.info('Вернулся в турнир за стол: ' + player.public.name);
                 tables[tableId].public.tournSeats[player.seat].isOut = false;
@@ -220,7 +225,7 @@ io.sockets.on('connection', function(socket) {
 
                 // ищем отключившегося
                 if ($u.findPlayerExist(name, token)){
-                    console.log('findPlayerExist>', players[socket.id].public.name)
+                    console.log('findPlayerExist>', players[socket.id].public.name);
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 };
@@ -299,6 +304,7 @@ io.sockets.on('connection', function(socket) {
             playerExists.public.isDisconnect = false;
             delete players[oldSocketId];
             const table = tables[playerExists.room];
+            playerExists.return();
             table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
             return playerExists;
         }

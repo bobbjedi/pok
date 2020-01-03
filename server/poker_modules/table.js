@@ -178,6 +178,7 @@ Table.prototype.setTimeoutWait = function(){
                             return;
                         }
                     }
+                    console.log(player.public.name + ' isDisc: ' + player.public.isDisconnect);
                 }
             } catch (e){
                 console.log(e);

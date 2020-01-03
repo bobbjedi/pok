@@ -106,9 +106,12 @@ module.exports = Table =>{
         const player = this.seats[seat];
         const chipsInPlay = player ? player.public.chipsInPlay : tournSeats[seat].chipsInPlay;
         tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
-        if (player){
+        if (player && player.public.chipsInPlay > 0){
             player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
             console.log('ANTE:', {name: player.public.name, seat, amount});
+            if (player.public.chipsInPlay < 0){
+                player.public.chipsInPlay = tournSeats[seat].chipsInPlay = 0;
+            }
         }
     };
 };

@@ -1,4 +1,4 @@
-export default $scope =>{
+export default ($scope, $routeParams) =>{
     $scope.isSendActionAuto = false;
     $scope.automoves = {
         isCheckFold: false,
@@ -13,6 +13,9 @@ export default $scope =>{
         // если мы что-то сделали - возвращаем true
         callback(v){
             requestAnimationFrame(()=>{
+                if (!$scope.sittingIn){
+                    return;
+                }
                 const {automoves} = $scope;
                 // Автокнопки - чекбоксы
 

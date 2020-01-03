@@ -126,6 +126,9 @@ Player.prototype.onDisconnect = function (cb) {
 };
 
 Player.prototype.return = function () { // успел вернуться
+    if (this.public.isDisconnect){
+        console.log('Return: ', this.public.name);
+    }
     clearTimeout(this.setTimeOutDisconnect);
     clearTimeout(this.sitOutTimer);
     this.public.isDisconnect = false;
