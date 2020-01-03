@@ -376,7 +376,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
         console.log('ID:', this.public.id);
-        this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
+        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
         return;
     }
     const {data} = this.public;
