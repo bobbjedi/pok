@@ -125,10 +125,14 @@ Player.prototype.onDisconnect = function (cb) {
     console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };
 
-Player.prototype.return = function () { // успел вернуться
-    if (this.public.isDisconnect){
-        console.log('Return: ', this.public.name);
+/**
+ * @description Возвращение игрока
+ */
+Player.prototype.return = function () {
+    if (!this.public.isDisconnect){
+        return;
     }
+    console.log('Return: ', this.public.name);
     clearTimeout(this.setTimeOutDisconnect);
     clearTimeout(this.sitOutTimer);
     this.public.isDisconnect = false;

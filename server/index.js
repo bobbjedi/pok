@@ -291,25 +291,22 @@ io.sockets.on('connection', function(socket) {
         let playerExists = false;
         for (let sId in players) {
             const p = players[sId];
-            if (p.public.name === name && p.public.isDisconnect) {
+            if (p.public.name === name && (p.public.isDisconnect || p.isTourn)) {
                 playerExists = p;
-                continue;
+                console.log('playerExists public.isDisconnect', playerExists.public.name);
+                const oldSocketId = playerExists.return();
+                playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
+                socket.join('table-' + playerExists.room); // зашли новым сокетом
+                playerExists.socket = socket;
+                players[socket.id] = playerExists;
+                playerExists.public.isDisconnect = false;
+                const table = tables[playerExists.room];
+                playerExists.return();
+                table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
+                delete players[oldSocketId];
+                return playerExists;
             };
         };
-        if (playerExists) {
-            console.log('playerExists public.isDisconnect', playerExists.public.name);
-            const oldSocketId = playerExists.return();
-            playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
-            socket.join('table-' + playerExists.room); // зашли новым сокетом
-            playerExists.socket = socket;
-            players[socket.id] = playerExists;
-            playerExists.public.isDisconnect = false;
-            delete players[oldSocketId];
-            const table = tables[playerExists.room];
-            playerExists.return();
-            table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
-            return playerExists;
-        }
     };
 
     /**
