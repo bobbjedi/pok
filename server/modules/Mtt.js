@@ -121,7 +121,7 @@ module.exports = class Mtt{
             let numPos = 0; // позиция юзера
             while (arrTables[numTbl]-- > 0){ // запихиваем в каждую таблицу юзера
                 const player = this.players[--numUsr];
-                // await $u.wait(0.4);
+                await $u.wait(0.1);
                 log.info('Посадили за #' + numTbl + ' > ' + player.public.name + ' место ' + numPos);
                 await table.playerSatOnTheTable(player, numPos++, 0);
                 player.room = tableId;

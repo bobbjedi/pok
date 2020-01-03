@@ -300,6 +300,7 @@ io.sockets.on('connection', function(socket) {
             delete players[oldSocketId];
             const table = tables[playerExists.room];
             table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
+            console.log('EXXX');
             return playerExists;
         }
     };
