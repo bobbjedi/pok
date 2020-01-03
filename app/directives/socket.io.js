@@ -23,11 +23,15 @@ window.listeningRedirect = () =>{
             return;
         }
         window.showPreloader();
-        noty('info', data.msg || 'Авто переход на стол!');
+        noty('success', data.msg || 'Авто переход за активный стол!');
         setTimeout(()=>{
             location.href = location.origin + '/#!/' + data.link;
             location.reload();
         }, 3000);
+    });
+    
+    socket.on('waitAllFinishMTTGames', data =>{
+        noty('info', data.msg || 'Ожидания окончания игр на соседних столах для перехода!');
     });
 };
 

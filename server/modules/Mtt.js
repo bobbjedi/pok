@@ -172,13 +172,14 @@ module.exports = class Mtt{
      * @description оповещение о том что таблица закончила играть
      * @param {Number} id 
      */
-    callBackStoppedRoundMTT(id){
+    callBackStoppedRoundMTT(id, table){
         log.info('MTT callBackStoppedRoundMTT: ' + id);
         console.log(' this.tables >', this.tables);
         if (this.isFinal){
             return this.finish(); 
         }
         // TODO: вывесить плашку о переходе
+        table && table.emitEvent('waitAllFinishMTTGames');
         delete Store.tables[id];
         var placeInArray = this.tables.indexOf(id);
         if (placeInArray >= 0) {
