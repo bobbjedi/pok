@@ -220,6 +220,7 @@ io.sockets.on('connection', function(socket) {
 
                 // ищем отключившегося
                 if ($u.findPlayerExist(name, token)){
+                    console.log('findPlayerExist>', players[socket.id].public.name)
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 };
