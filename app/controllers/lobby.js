@@ -4,6 +4,7 @@ import config from '../../config';
 import tourn from './mixins/tourn';
 
 app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', '$sce', function($scope, $rootScope, $http, $location, $sce) {
+    $rootScope.lastTableId = null;
     $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
     tourn($scope, $rootScope);
     $scope.lobbyTables = [];
@@ -110,7 +111,8 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     setTimeout(() => {
         // работа с аватаром
         $scope.uploadAvatar = () => document.getElementById('input-upload-avatar').click();
-        document.getElementById('input-upload-avatar').onchange = () => document.getElementById('uploadAvatarForm').submit();
+        const el = document.getElementById('input-upload-avatar');
+        el && (el.onchange = () => document.getElementById('uploadAvatarForm').submit());
     }, 2000);
 }]);
 

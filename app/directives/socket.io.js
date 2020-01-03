@@ -22,12 +22,10 @@ window.listeningRedirect = () =>{
         if (location.hash === '#!/' + data.link){
             return;
         }
-        window.showPreloader();
         noty('success', data.msg || 'Авто переход за активный стол!');
         setTimeout(()=>{
-            location.href = location.origin + '/#!/' + data.link;
-            location.reload();
-        }, 3000);
+            location.assign(location.origin + '/#!/' + data.link);
+        }, 1000);
     });
     
     socket.on('waitAllFinishMTTGames', data =>{

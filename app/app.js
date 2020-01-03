@@ -34,6 +34,7 @@ const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $
 });
 
 app.run(function($rootScope, $location) {
+    console.log('init');
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,

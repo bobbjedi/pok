@@ -125,6 +125,7 @@ io.sockets.on('connection', function(socket) {
                 return;
             }
             players[socket.id].return();
+            console.log('<<<<<<>>>>>>>', player.room);
             if (player.room !== null && +player.room !== +tableId) {
                 console.log('ВЫСАДИЛИ ИЗ КОМНАТЫ', player.room, ' >> ', tableId);
                 socket.leave('table-' + player.room);
@@ -155,6 +156,7 @@ io.sockets.on('connection', function(socket) {
             players[socket.id] && players[socket.id].return();
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room !== null && players[socket.id].sittingOnTable === false) {
             // Remove the player from the socket room
+                console.log('leaveRoom>>>>>>>>', players[socket.id].room);
                 socket.leave('table-' + players[socket.id].room);
                 // Remove the room to the player's data
                 players[socket.id].room = null;
@@ -780,12 +782,10 @@ $u.init({players, tables, eventEmitter});
 //     , 13, data.chips % 1 === 0);
 
 
-
-
 setTimeout(async () => {
-    // Store.createMtt({tableSeatsCount: 6});
-    // Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    // Store.system.mtt.chips = 50;
-    // Store.system.mtt.timeOutShufflePlayers = 1;
-    // Store.startMtt();
+    Store.createMtt({tableSeatsCount: 6});
+    Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.system.mtt.chips = 50;
+    Store.system.mtt.timeOutShufflePlayers = 0.2;
+    Store.startMtt();
 }, 10000);

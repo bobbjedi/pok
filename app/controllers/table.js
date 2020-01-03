@@ -10,7 +10,11 @@ import app from '../app';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
-        const tableId = +$routeParams.tableId;
+        console.log('Init table', $routeParams.tableId);
+        // if ($rootScope.lastTableId !== null){ 
+        //     return location.reload();
+        // }
+        $rootScope.lastTableId = $routeParams.tableId;
         automoves($scope);
         var selectedSeat = null;
         $scope.table = {seats: []};
@@ -55,6 +59,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
         };
 
+        // $scope.$on('$routeChangeSuccess', function () {
+        // });
+
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
@@ -86,7 +93,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         updateTableData();
 
         // Joining the socket room
-        socket.emit('leaveRoom');
+        // socket.emit('leaveRoom');
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
@@ -344,7 +351,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         let predCards = '';
         socket.on('table-data', function(data) {
-            if (tableId !== data.id){
+            if (+$routeParams.tableId !== data.id){
                 return;
             }
             if (data.board[0].length && data.board.toString() !== predCards){
