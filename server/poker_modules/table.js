@@ -155,8 +155,10 @@ Table.prototype.setTimeoutWait = function(){
                 const seat = this.public.seats[activeSeat];
                 const currentSeatName = seat && seat.name;
                 console.log('autoMoveCb', currentSeatName, lastActiveUserLogin);
+                
                 if (currentSeatName === lastActiveUserLogin){
                     const player = this.seats[activeSeat];
+                    player.public.isDisconnect = true;
                     console.log('Avtomove', player.public.name, phase);
                     if (this.public.phase === 'smallBlind') {
                         this.playerPostedSmallBlind();

@@ -300,7 +300,6 @@ io.sockets.on('connection', function(socket) {
             delete players[oldSocketId];
             const table = tables[playerExists.room];
             table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
-            console.log('EXXX');
             return playerExists;
         }
     };
@@ -778,9 +777,9 @@ $u.init({players, tables, eventEmitter});
 
 
 setTimeout(async () => {
-    // Store.createMtt({tableSeatsCount: 6});
-    // Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    // Store.system.mtt.chips = 50;
-    // Store.system.mtt.timeOutShufflePlayers = 1;
-    // Store.startMtt();
+    Store.createMtt({tableSeatsCount: 6});
+    Store.system.mtt.users = ['Dev', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.system.mtt.chips = 50;
+    Store.system.mtt.timeOutShufflePlayers = 1;
+    Store.startMtt();
 }, 10000);
