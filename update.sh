@@ -1,3 +1,4 @@
+pm2 stop pok
 git pull
 npm i
 npm run prod
