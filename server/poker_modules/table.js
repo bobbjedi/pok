@@ -387,6 +387,9 @@ Table.prototype.initializeRound = async function(changeDealer) {
         this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
         this.isWaitMttAnotherTables = true;
         this.clearTimeoutPlayerAction();
+        if (!this.isTourn){
+            this.emitEvent('noty', {type: 'error', msg: 'Стоп игры!'});
+        }
         return;
     }
     const {data} = this.public;

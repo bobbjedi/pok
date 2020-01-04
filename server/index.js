@@ -779,9 +779,9 @@ $u.init({players, tables, eventEmitter});
 
 
 setTimeout(async () => {
-    Store.createMtt({tableSeatsCount: 6});
-    Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    Store.system.mtt.chips = 50;
-    Store.system.mtt.timeOutShufflePlayers = 0.2;
-    Store.startMtt();
+    // Store.createMtt({tableSeatsCount: 6});
+    // Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    // Store.system.mtt.chips = 50;
+    // Store.system.mtt.timeOutShufflePlayers = 0.2;
+    // Store.startMtt();
 }, 10000);
