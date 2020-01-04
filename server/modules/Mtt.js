@@ -38,13 +38,16 @@ module.exports = class Mtt{
                 const player = Store.players[i];
                 if (player.public.name === u && !player.public.sittingIn && !this.addedPlayers.includes(u)){ // онлайн и не за столом
                     this.players.push(player);
+                    player.isTourn = true;
                     isAdded = true;
                     log.info('MTT: getOnlinePlayer ' + u);
                     continue;
                 }
             }
             if (!isAdded){ // Если играети или занят - создаем клона
-                this.players.push(await $u.createOffLinePlayer(u));
+                const player = await $u.createOffLinePlayer(u);
+                player.isTourn = true;
+                this.players.push(player);
                 log.warn('MTT: createOffLinePlayer ' + u);
                 this.offlinePlayersToStart.push(u);
             }
@@ -131,6 +134,9 @@ module.exports = class Mtt{
             if (this.tables.length > 1){ // не последний стол
                 setTimeout(()=> this.stoppedGames(), this.params.timeOutShufflePlayers * 60 * 1000);
             }
+            if (this.isFinal){
+                setTimeout(()=>Store.tables[this.tables[0]].emitEvent('noty', {type: 'info', msg: 'Финал!'}), 5000);
+            }
             // this.backUpTables = this.tables.slice();
         }
         console.log('this.countInTables', this.countInTables);
@@ -172,14 +178,18 @@ module.exports = class Mtt{
      * @description оповещение о том что таблица закончила играть
      * @param {Number} id 
      */
-    callBackStoppedRoundMTT(id, table){
+    async callBackStoppedRoundMTT(id, table){
+        if (!Store.tables[id]){
+            return;
+        }
         log.info('MTT callBackStoppedRoundMTT: ' + id);
         console.log(' this.tables >', this.tables);
         if (this.isFinal){
             return this.finish(); 
         }
         // TODO: вывесить плашку о переходе
-        table && table.emitEvent('waitAllFinishMTTGames');
+        Store.tables[id].emitEvent('noty', {});
+        await $u.wait(2); 
         delete Store.tables[id];
         var placeInArray = this.tables.indexOf(id);
         if (placeInArray >= 0) {
@@ -189,7 +199,7 @@ module.exports = class Mtt{
             log.info('MTT все таблицы остановились');
             setTimeout(()=>{
                 this.nextRound();
-            }, 5000);
+            }, 3000);
         }
     }
     async nextRound(isFirst) {
@@ -201,6 +211,7 @@ module.exports = class Mtt{
             for (const i in players){
                 try {
                     const player = players[i];
+                    player.leaveTable();
                     if (player.public.chipsInPlay >= this.nextTimeParams.sb * 2){
                         this.players.push(player);
                         player.sittingOnTable = false;

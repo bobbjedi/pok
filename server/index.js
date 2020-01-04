@@ -125,7 +125,6 @@ io.sockets.on('connection', function(socket) {
                 return;
             }
             players[socket.id].return();
-            console.log('<<<<<<>>>>>>>', player.room);
             if (player.room !== null && +player.room !== +tableId) {
                 console.log('ВЫСАДИЛИ ИЗ КОМНАТЫ', player.room, ' >> ', tableId);
                 socket.leave('table-' + player.room);
@@ -136,7 +135,6 @@ io.sockets.on('connection', function(socket) {
             // Add the room to the player's data
             players[socket.id].room = tableId;
             callback && callback();
-            console.log('>>>>>>>>>>>>', player.public.name, tableId);
             // }
             if (player.isTourn && player.sittingOnTable === +tableId){
                 log.info('Вернулся в турнир за стол: ' + player.public.name);
@@ -291,7 +289,8 @@ io.sockets.on('connection', function(socket) {
         let playerExists = false;
         for (let sId in players) {
             const p = players[sId];
-            if (p.public.name === name && (p.public.isDisconnect || p.isTourn)) {
+            // console.log(p.public.name, name, p.public.isDisconnect, p.public.name === name && p.public.isDisconnect);
+            if (p.public.name === name && p.public.isDisconnect) {
                 playerExists = p;
                 console.log('playerExists public.isDisconnect', playerExists.public.name);
                 const oldSocketId = playerExists.return();
@@ -674,7 +673,7 @@ io.sockets.on('connection', function(socket) {
 $u.disconnectPlayerInTourn = player=>{
     player.public.isDisconnect = true;
     const table = tables[player.sittingOnTable];
-    if (table){
+    if (table && table.public.tournSeats){
         table.public.tournSeats[player.seat].isOut = true;
     } 
     else {
@@ -780,9 +779,9 @@ $u.init({players, tables, eventEmitter});
 
 
 setTimeout(async () => {
-    // Store.createMtt({tableSeatsCount: 6});
-    // Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    // Store.system.mtt.chips = 50;
-    // Store.system.mtt.timeOutShufflePlayers = 0.2;
-    // Store.startMtt();
+    Store.createMtt({tableSeatsCount: 6});
+    Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.system.mtt.chips = 50;
+    Store.system.mtt.timeOutShufflePlayers = 0.2;
+    Store.startMtt();
 }, 10000);

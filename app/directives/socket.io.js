@@ -28,8 +28,8 @@ window.listeningRedirect = () =>{
         }, 1000);
     });
     
-    socket.on('waitAllFinishMTTGames', data =>{
-        noty('info', data.msg || 'Ожидания окончания игр на соседних столах для перехода!');
+    socket.on('noty', data =>{
+        noty(data.type || 'info', data.msg || 'Ожидания окончания игр на соседних столах для перехода!');
     });
 };
 

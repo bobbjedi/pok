@@ -354,6 +354,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if (+$routeParams.tableId !== data.id){
                 return;
             }
+            console.log(data);
             if (data.board[0].length && data.board.toString() !== predCards){
                 sounds.playCardSound();
                 predCards = data.board.toString();

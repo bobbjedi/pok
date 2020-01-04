@@ -141,7 +141,7 @@ Table.prototype.setTimeoutWait = function(){
     try {
         const {activeSeat, phase} = this.public;
         this.clearTimeoutPlayerAction('setTimeoutWait');
-        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase){
+        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase || this.isWaitMttAnotherTables){
             // console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
             return;
         }
@@ -156,8 +156,11 @@ Table.prototype.setTimeoutWait = function(){
                 const currentSeatName = seat && seat.name;
                 console.log('autoMoveCb', currentSeatName, lastActiveUserLogin);
                 
-                if (currentSeatName === lastActiveUserLogin){
+                if (currentSeatName === lastActiveUserLogin || this.isWaitMttAnotherTables){
                     const player = this.seats[activeSeat];
+                    if (!player){
+                        return;
+                    }
                     player.public.isDisconnect = true;
                     console.log('Avtomove', player.public.name, phase);
                     if (this.public.phase === 'smallBlind') {
@@ -378,8 +381,12 @@ Table.prototype.initializeRound = async function(changeDealer) {
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
-        console.log('ID:', this.public.id);
+        console.log('initializeRound Stop ID:', this.public.id);
+        this.public.activeSeat = null;
+        this.emitEvent('table-data', this.public);
         this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
+        this.isWaitMttAnotherTables = true;
+        this.clearTimeoutPlayerAction();
         return;
     }
     const {data} = this.public;
@@ -405,7 +412,8 @@ Table.prototype.initializeRound = async function(changeDealer) {
         this.gameIsOn = true;
         this.public.board = ['', '', '', '', ''];
         this.deck.shuffle();
-        this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
+        // this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
+        this.headsUp = this.playersSittingInCount === 2;
         this.playersInHandCount = 0;
         this.biggestBet = 0;
         this.public.biggestBet = 0;
@@ -768,7 +776,7 @@ Table.prototype.endRound = async function(str) {
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {
         this.stopGame();
-        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id); // оповещаем МТТ об окончании
+        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
     } else {
         this.initializeRound();
     }
