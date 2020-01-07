@@ -48,12 +48,6 @@ var eventEmitter = {};
 var port = process.env.PORT || 3000;
 server.listen(port);
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 // The lobby
 app.get('/', function(req, res) {
     res.sendFile(dirName + '/public/index.html');
@@ -160,7 +154,6 @@ io.sockets.on('connection', function(socket) {
             players[socket.id] && players[socket.id].return();
             if (typeof players[socket.id] !== 'undefined' && players[socket.id].room !== null && players[socket.id].sittingOnTable === false) {
             // Remove the player from the socket room
-                console.log('leaveRoom>>>>>>>>', players[socket.id].room);
                 socket.leave('table-' + players[socket.id].room);
                 // Remove the room to the player's data
                 players[socket.id].room = null;
@@ -224,46 +217,19 @@ io.sockets.on('connection', function(socket) {
             if (token && name) {
                 // If the new screen name is not an empty string
                 if (players[socket.id]){
-                    // console.log('Сокет тотже!', name);
+                    console.log('Сокет тотже!', name);
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 }
 
                 // ищем отключившегося
-                if ($u.findPlayerExist(name, token)){
-                    console.log('findPlayerExist>', players[socket.id].public.name);
-                    callback({'success': true, playerId: players[socket.id].playerId});
+                const playerExist = $u.findPlayerExist(name);
+                if (playerExist){
+                    console.log('findPlayerExist> sockId=', playerExist.socket.id, playerExist.socket.id === socket.id, playerExist.public.name);
+                    callback({'success': true, playerId: playerExist.playerId});
                     return;
                 };
               
-
-                // if (playerId) {
-                //     let playerExists = false;
-                //     for (let sId in players){
-                //         const p = players[sId];
-                //         if (p.playerId === playerId){
-                //             playerExists = p;
-                //         };
-                //     };
-                //     if (playerExists){
-                //         console.log('playerExists id', playerExists.public.name);
-                //         const oldSocketId = playerExists.return();
-                //         playerExists.socket = socket;
-                //         players[socket.id] = playerExists;
-                //         callback({'success': true, playerId: players[socket.id].playerId});
-                //         delete players[oldSocketId];
-                //         return;
-                //     }
-                // }
-                //  else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
-                //     for (let sId in players){
-                //         const p = players[sId];
-                //         if (p.public.name === name && p.public.isDisconnect){
-                //             console.log(p.public.name, 'public.isDisconnected видимо обновление страницы - удаляем');
-                //             $u.removePlayer(p.socket);
-                //         };
-                //     };
-                // }
                 // создаем нового
 
                 const user = await $u.getUserFromQ({token});
@@ -275,15 +241,6 @@ io.sockets.on('connection', function(socket) {
                 console.log('Создали', name, 'online:', Object.keys(players).length);
                 callback({'success': true, playerId: players[socket.id].playerId});
                 return;
-                // }
-                console.log('ЕЩЕ ЖИВ!');
-                // Обновляем данные
-                // players[socket.id] = playerExists;
-                // players[socket.id].socket = socket;
-                // const {sittingOnTable, seat, room} = players[socket.id];
-                // console.log(players[socket.id])
-                // callback({'success': true, position: {sittingOnTable, seat, room}});
-
             }
         } catch (e){
             console.log(e);
@@ -299,16 +256,17 @@ io.sockets.on('connection', function(socket) {
             if (p.public.name === name && p.public.isDisconnect) {
                 playerExists = p;
                 console.log('playerExists public.isDisconnect', playerExists.public.name);
-                const oldSocketId = playerExists.return();
+                if (sId === socket.id){
+                    log.warn('oldSocketId === socket.id');
+                }
                 playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
                 socket.join('table-' + playerExists.room); // зашли новым сокетом
                 playerExists.socket = socket;
+                delete players[sId];
                 players[socket.id] = playerExists;
-                playerExists.public.isDisconnect = false;
                 const table = tables[playerExists.room];
                 playerExists.return();
                 table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
-                delete players[oldSocketId];
                 return playerExists;
             };
         };
@@ -755,6 +713,15 @@ function getSSLFiles(){
 }
 
 $u.init({players, tables, eventEmitter});
+
+
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
+
+
 // require('./tests');
 
 

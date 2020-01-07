@@ -45,7 +45,9 @@ module.exports = class Mtt{
                         continue;
                     }
                 }
-                if (!isAdded){ // Если играети или занят - создаем клона
+                if (!isAdded){ // Если играет или занят - создаем клона
+                    // console.log(u, 'неполучилось забрать');
+                    // return;
                     const player = await $u.createOffLinePlayer(u);
                     player.isTourn = true;
                     this.players.push(player);

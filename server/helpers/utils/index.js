@@ -184,7 +184,7 @@ module.exports = {
         // };
         const Player = require('../../poker_modules/player');
         var socket = {
-            id: new Date().getTime(),
+            id: _.uniqueId('offline_'),
             emit(){},
             leave(){},
         };
