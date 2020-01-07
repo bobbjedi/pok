@@ -127,7 +127,7 @@ app.run(function($rootScope, $location) {
 function api(obj, cb = () => {}, silent, type = 'api') {
     obj.data = obj.data || {};
     obj.data.token = type === 'api' && (obj.token || this.user.token);
-    fetch(window.Domain + '/' + type + '?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
+    fetch(window.Domain + '/' + type + '?action=' + obj.action + '&data=' + JSON.stringify(obj.data), { mode: 'no-cors'})
         .then(res => {
             res.json().then(data => {
                 // console.log('Resp:', obj.action + ' -> ', data);
