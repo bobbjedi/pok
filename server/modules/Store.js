@@ -30,12 +30,13 @@ module.exports = {
      * users {Array} ['Dev', 'Dev1'...]
      */
     createMtt(params = {}) {
+        const buyIn = params.buyIn >= 0 ? params.buyIn : 100;
         this.system.mtt = {
             date: params.date || 'Будет обьявлено',
             isRegOppened: true,
             title: params.title,
             winnersCount: params.winnersCount || 3,
-            buyIn: params.buyIn || 100,
+            buyIn: buyIn,
             timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
             tableSeatsCount: params.tableSeatsCount || 6,
             chips: params.chips || 1500,

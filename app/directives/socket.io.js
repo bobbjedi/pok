@@ -30,9 +30,7 @@ window.listeningRedirect = () =>{
         }, 1000);
     });
     
-    socket.on('noty', data =>{
-        noty(data.type || 'info', data.msg || 'Ожидания окончания игр на соседних столах для перехода!');
-    });
+    socket.on('noty', data => noty(data.type || 'info', data.msg || 'Ждем окончания игр на всех столах!', 5000));
 };
 
 
