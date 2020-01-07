@@ -57,6 +57,7 @@ module.exports = class Mtt{
                 this.addedPlayers.push(u);
             }
             this.isStarted = true;
+
             await this.nextRound(true);
         } catch (e) {
             console.log(e);
@@ -138,6 +139,10 @@ module.exports = class Mtt{
                     await table.playerSatOnTheTable(player, numPos++, 0);
                     player.room = tableId;
                     player.socket.emit('redirectOntable', {link: 'table-' + this.params.tableSeatsCount + '/' + tableId, msg: 'Переход за стол МТТ'});
+                    if (!Store.players[player.socket.id]){
+                        log.warn('MTT Резервное добавление: ' + player.public.name);
+                        Store.players[player.socket.id] = player;
+                    } 
                 }
                 if (this.tables.length > 1){ // не последний стол
                     setTimeout(()=> this.stoppedGames(), this.params.timeOutShufflePlayers * 60 * 1000);
