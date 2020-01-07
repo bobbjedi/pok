@@ -1079,6 +1079,13 @@ div#board-wrap .card-container {
     background-image: url(../images/cheap_red.png)
 }
 
+.dice-gif {
+    background-image: url(../images/dice.gif);
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
 .table-name-img {
     align-items: center;
     display: flex

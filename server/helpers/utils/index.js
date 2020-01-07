@@ -290,13 +290,34 @@ setTimeout(()=>{
     data.winnersCount = 1;
     module.exports.tmpTourn(data);
 
+
+    // SPIN
+
+    data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 6;
+    data.playersCount = 3;
+    data.buyIn = 20;
+    data.winnersCount = 1;
+    data.isSpin = true;
+    data.name = 'SPIN And Go';
+    module.exports.tmpTourn(data);
+
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 6;
     data.playersCount = 3;
     data.buyIn = 50;
     data.winnersCount = 1;
     data.isSpin = true;
-    data.name = 'Spin And Go';
+    data.name = 'SPIN And Go';
+    module.exports.tmpTourn(data);
+
+    data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 6;
+    data.playersCount = 3;
+    data.buyIn = 100;
+    data.winnersCount = 1;
+    data.isSpin = true;
+    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
 });
 

@@ -424,6 +424,9 @@ Table.prototype.initializeRound = async function(changeDealer) {
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
+                if (this.isTournStart){ // анте всем
+                    this.updateTournSeat(i);
+                }
                 if (!this.seats[i].public.chipsInPlay) {
                     this.seats[i].sitOut(true); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
@@ -543,19 +546,19 @@ Table.prototype.initializeNextPhase = function() {
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
 
-    if (this.isTournStart) {
-        try {
-            const {tournSeats} = this.public;
-            for (let i in tournSeats) {
-                if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
-                    this.updateTournSeat(i);
-                }
-            }
-        } catch (e){
-            console.log(e);
-            log.error('updateTournSeat initializeNextPhase' + e);
-        }
-    }
+    // if (this.isTournStart) {
+    //     try {
+    //         const {tournSeats} = this.public;
+    //         for (let i in tournSeats) {
+    //             if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
+    //                 this.updateTournSeat(i);
+    //             }
+    //         }
+    //     } catch (e){
+    //         console.log(e);
+    //         log.error('updateTournSeat initializeNextPhase' + e);
+    //     }
+    // }
     this.emitEvent('table-data', this.public, true);
 
     // If all other players are all in, there should be no actions. Move to the next round.
