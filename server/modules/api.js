@@ -63,6 +63,7 @@ module.exports = (app) => {
                     error('Произошла ошибка, попробуйте еще раз!', res);
                 }
                 break;
+                
             case ('restorePswd'):
                 const {pswd} = GET;
                 if (!pswd || pswd.length < 3){
@@ -72,6 +73,15 @@ module.exports = (app) => {
                 const controlWord = $u.createPswd(newPswd + new Date().getTime()).substr(-8);
                 new restorePswdDb({password: newPswd, controlWord, time: $u.unix()}, 1);
                 success({controlWord}, res);
+                break;
+
+            case ('goInTourn'):
+                const resGoInError = await $u.playerGoInTourn(User);
+                if (!resGoInError){
+                    success({message: 'Заявка принята'}, res);
+                } else {
+                    error(resGoInError, res);
+                }
                 break;
 
             default:

@@ -48,13 +48,44 @@ module.exports = (app) => {
 
             case ('roomCreate'):
                 GET.creator_user_id = User._id;
-                console.log('GET>', GET);
                 const createdRoomId = $u.createCustomTable(GET);
                 if (createdRoomId){
                     success({createdRoomId}, res);
                 } else {
                     error('Произошла ошибка, попробуйте еще раз!', res);
                 }
+                break;
+
+            case ('createMtt'):
+                console.log('createMtt>', GET);
+                let msg = 'Ok';
+                if (!Store.system.mtt.isRegOppened){
+                    Store.createMtt(GET);
+                } else {
+                    msg = 'MTT уже есть';
+                }
+                success({msg}, res);
+                break;
+
+            case ('rmMtt'):
+                console.log('rmMtt>', GET);
+                Store.rmMtt(GET.isReturn);
+                success({}, res);
+                break;
+
+            case ('startMtt'):
+                console.log('startMtt>', GET);
+                if (Store.system.mtt.isRegOppened){
+                    Store.startMtt();
+                    return success({}, res);
+                } 
+                return error('МТТ не создан', res);
+                break;
+
+            case ('multReturnChips'):
+                console.log('multReturnChips>', GET);
+                $u.multSendCoins(GET.logins, GET.amount);
+                return success({}, res);
                 break;
                 
             default:
@@ -87,19 +118,6 @@ async function success(data, res) {
         });
     } catch (e) {
         console.log(e);
-    }
-}
-
-async function assignUser (user){
-    try {
-        const token = sha256(new Date().toString());
-        user.token = token;
-        await user.save();
-        delete user._id;
-        delete user.password;
-        return user;
-    } catch (e){
-        console.log('assignUser: ' + e);
     }
 }
 

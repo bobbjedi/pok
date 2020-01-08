@@ -46,10 +46,9 @@ module.exports = {
             const hash = await sendTx(user.address, amountSend);
             amount = Math.round(amount);
             if (hash){
-                user.deposit = Math.round(user.deposit - amount);
-                await user.save();
-                depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount});
-                console.log(hash);
+                await $u.updateUserDeposit(user, -amount);
+                depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
+                log.info('Withdraw: ' + user.login + ' amount: ' + amount + ' hash: ' + hash);
                 $u.updateChipsUserPlayers(user);
                 delete withdrawBlocked[user._id];
                 return true;

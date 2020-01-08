@@ -37,6 +37,7 @@ function init(){
     app.use(express.static(path.join(dirName, 'public')));
     require('./modules/api')(app);
     require('./modules/adminsplurgeola')(app);
+    require('./helpers/dbBackup');
 }
 init();
 
@@ -62,20 +63,23 @@ app.get('/lobby-data', function(req, res) {
     for (var tableId in tables) {
         // Sending the public data of the public tables to the lobby screen
         if (!tables[tableId].privateTable || token === Store.devToken) {
+            const table = tables[tableId];
             lobbyTables[tableId] = {};
-            lobbyTables[tableId].id = tables[tableId].public.id;
-            lobbyTables[tableId].name = tables[tableId].public.name;
-            lobbyTables[tableId].seatsCount = tables[tableId].public.seatsCount;
-            lobbyTables[tableId].playersSeatedCount = tables[tableId].public.playersSeatedCount;
-            lobbyTables[tableId].bigBlind = tables[tableId].public.bigBlind;
-            lobbyTables[tableId].smallBlind = tables[tableId].public.smallBlind;
-            lobbyTables[tableId].minBuyIn = tables[tableId].public.minBuyIn;
-            lobbyTables[tableId].maxBuyIn = tables[tableId].public.maxBuyIn;
-            lobbyTables[tableId].type = tables[tableId].public.type;
-            lobbyTables[tableId].isTourn = tables[tableId].isTourn;
-            lobbyTables[tableId].gamesCount = tables[tableId].public.gamesCount;
-            lobbyTables[tableId].allPots = tables[tableId].public.allPots;
-            lobbyTables[tableId].ante = tables[tableId].public.ante;
+            lobbyTables[tableId].id = table.public.id;
+            lobbyTables[tableId].name = table.public.name;
+            lobbyTables[tableId].seatsCount = table.public.seatsCount;
+            lobbyTables[tableId].playersSeatedCount = table.public.playersSeatedCount;
+            lobbyTables[tableId].bigBlind = table.public.bigBlind;
+            lobbyTables[tableId].smallBlind = table.public.smallBlind;
+            lobbyTables[tableId].minBuyIn = table.public.minBuyIn;
+            lobbyTables[tableId].maxBuyIn = table.public.maxBuyIn;
+            lobbyTables[tableId].type = table.public.type;
+            lobbyTables[tableId].isTourn = table.isTourn;
+            lobbyTables[tableId].gamesCount = table.public.gamesCount;
+            lobbyTables[tableId].allPots = table.public.allPots;
+            lobbyTables[tableId].ante = table.public.ante;
+            lobbyTables[tableId].spin = table.public.spin || {};
+            lobbyTables[tableId].playersCount = table.public.data.playersCount || table.public.seatsCount;
         }
     }
     res.send(lobbyTables);
@@ -112,13 +116,29 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('enterRoom', function(tableId, callback) {
         try {
-            players[socket.id] && players[socket.id].return();
-            if (typeof players[socket.id] !== 'undefined' && players[socket.id].room === null) {
+            let player = players[socket.id];
+            // if (tables[tableId].isTournStart){
+            //     log.warn('Заменяем игрока');
+            //     player = $u.findPlayerExist(player.public.name) || player;
+            // }
+            if (!player){
+                return;
+            }
+            players[socket.id].return();
+            if (player.room !== null && +player.room !== +tableId) {
+                console.log('ВЫСАДИЛИ ИЗ КОМНАТЫ', player.room, ' >> ', tableId);
+                socket.leave('table-' + player.room);
+            }
+            // if (player.room === null) {
             // Add the player to the socket room
-                socket.join('table-' + tableId);
-                // Add the room to the player's data
-                players[socket.id].room = tableId;
-                callback && callback();
+            socket.join('table-' + tableId);
+            // Add the room to the player's data
+            players[socket.id].room = tableId;
+            callback && callback();
+            // }
+            if (player.isTourn && player.sittingOnTable === +tableId){
+                log.info('Вернулся в турнир за стол: ' + player.public.name);
+                tables[tableId].public.tournSeats[player.seat].isOut = false;
             }
         } catch (e){
             console.log(e);
@@ -169,20 +189,7 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-    /**
-	 * When a player disconnects
-	 */
-    socket.on('forceDisconnect', function(cb) {
-        try {
-            players[socket.id] && players[socket.id].return();
-            console.log('forceDisconnect', players[socket.id] && players[socket.id].public.name);
-            $u.removePlayer(socket);
-            cb();
-        } catch (e){
-            console.log(e);
-            log.error('forceDisconnect: ' + e);
-        }
-    });
+
     socket.on('getMyCards', function(callback) {
         try {
             const player = players[socket.id];
@@ -197,29 +204,6 @@ io.sockets.on('connection', function(socket) {
     });
 
 
-    socket.on('disconnect', function() {
-        try {
-            // return $u.removePlayer(socket);
-            const player = players[socket.id];
-            if (!player){
-                return;
-            }
-            if (player.isTourn){
-                log.warn('Player is tourn remove ' + player.public.name);
-                return $u.removePlayer(socket);
-            }
-            console.log('Disconnect', player && player.public.name);
-            if (!player.public.inHand){ // если не в игре - удаляем
-                log.info(player.public.name + ' not hand -> remove');
-                return $u.removePlayer(socket);
-            }
-            log.info(player.public.name + ' public.isDisconnect');
-            player.public.isDisconnect = true;
-        } catch (e){
-            console.log(e);
-            log.error('disconnect: ' + e);
-        }
-    });
     /**
 	 * When a new player enters the application
 	 * @param string token
@@ -233,60 +217,19 @@ io.sockets.on('connection', function(socket) {
             if (token && name) {
                 // If the new screen name is not an empty string
                 if (players[socket.id]){
-                    // console.log('Сокет тотже!', name);
+                    console.log('Сокет тотже!', name);
                     callback({'success': true, playerId: players[socket.id].playerId});
                     return;
                 }
 
                 // ищем отключившегося
-                let playerExists = false;
-                for (let sId in players) {
-                    const p = players[sId];
-                    if (p.public.name === name && p.public.isDisconnect) {
-                        playerExists = p;
-                        continue;
-                    };
-                };
-                if (playerExists) {
-                    console.log('playerExists public.isDisconnect', playerExists.public.name);
-                    const oldSocketId = playerExists.return();
-                    playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
-                    socket.join('table-' + playerExists.room); // зашли новым сокетом
-                    playerExists.socket = socket;
-                    players[socket.id] = playerExists;
-                    playerExists.public.isDisconnect = false;
-                    callback({'success': true, playerId: players[socket.id].playerId});
-                    delete players[oldSocketId];
+                const playerExist = $u.findPlayerExist(name);
+                if (playerExist){
+                    console.log('findPlayerExist> sockId=', playerExist.socket.id, playerExist.socket.id === socket.id, playerExist.public.name);
+                    callback({'success': true, playerId: playerExist.playerId});
                     return;
-                }
+                };
 
-                // if (playerId) {
-                //     let playerExists = false;
-                //     for (let sId in players){
-                //         const p = players[sId];
-                //         if (p.playerId === playerId){
-                //             playerExists = p;
-                //         };
-                //     };
-                //     if (playerExists){
-                //         console.log('playerExists id', playerExists.public.name);
-                //         const oldSocketId = playerExists.return();
-                //         playerExists.socket = socket;
-                //         players[socket.id] = playerExists;
-                //         callback({'success': true, playerId: players[socket.id].playerId});
-                //         delete players[oldSocketId];
-                //         return;
-                //     }
-                // }
-                //  else { // если  нет playerId - первая загрузка страницы, вероятно нужно удалить все сокеты в реконнекте
-                //     for (let sId in players){
-                //         const p = players[sId];
-                //         if (p.public.name === name && p.public.isDisconnect){
-                //             console.log(p.public.name, 'public.isDisconnected видимо обновление страницы - удаляем');
-                //             $u.removePlayer(p.socket);
-                //         };
-                //     };
-                // }
                 // создаем нового
 
                 const user = await $u.getUserFromQ({token});
@@ -298,21 +241,36 @@ io.sockets.on('connection', function(socket) {
                 console.log('Создали', name, 'online:', Object.keys(players).length);
                 callback({'success': true, playerId: players[socket.id].playerId});
                 return;
-                // }
-                console.log('ЕЩЕ ЖИВ!');
-                // Обновляем данные
-                // players[socket.id] = playerExists;
-                // players[socket.id].socket = socket;
-                // const {sittingOnTable, seat, room} = players[socket.id];
-                // console.log(players[socket.id])
-                // callback({'success': true, position: {sittingOnTable, seat, room}});
-
             }
         } catch (e){
             console.log(e);
             log.error('checkUser: ' + e);
         }
     });
+
+    $u.findPlayerExist = name =>{
+        let playerExists = false;
+        for (let sId in players) {
+            const p = players[sId];
+            // console.log(p.public.name, name, p.public.isDisconnect, p.public.name === name && p.public.isDisconnect);
+            if (p.public.name === name && p.public.isDisconnect) {
+                playerExists = p;
+                console.log('playerExists public.isDisconnect', playerExists.public.name);
+                if (sId === socket.id){
+                    log.warn('oldSocketId === socket.id');
+                }
+                playerExists.socket.leave('table-' + playerExists.room);// вышли из комнаты
+                socket.join('table-' + playerExists.room); // зашли новым сокетом
+                playerExists.socket = socket;
+                delete players[sId];
+                players[socket.id] = playerExists;
+                const table = tables[playerExists.room];
+                playerExists.return();
+                table && socket.emit('redirectOntable', {link: 'table-' + table.public.seatsCount + '/' + playerExists.room});
+                return playerExists;
+            };
+        };
+    };
 
     /**
 	 * When a player requests to sit on a table
@@ -627,15 +585,70 @@ io.sockets.on('connection', function(socket) {
             log.error('sendMessage' + e);
         }
     });
+    /**
+	 * When a player disconnects
+	 */
+    socket.on('forceDisconnect', function(cb) {
+        try {
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+            console.log('forceDisconnect', players[socket.id].public.name);
+            player.return();
+
+            if (player.isTourn) {
+                cb();
+                return $u.disconnectPlayerInTourn(player);
+            }
+
+            $u.removePlayer(socket);
+            cb();
+        } catch (e){
+            console.log(e);
+            log.error('forceDisconnect: ' + e);
+        }
+    });
+
+    socket.on('disconnect', function() {
+        try {
+            // return $u.removePlayer(socket);
+            const player = players[socket.id];
+            if (!player){
+                return;
+            }
+
+            log.info('Disconnect: ' + player.public.name + ' public.isDisconnect');
+            player.public.isDisconnect = true;
+            if (player.isTourn) {
+                return $u.disconnectPlayerInTourn(player);
+            }
+            if (!player.public.inHand && !player.isTourn){ // если не в игре - удаляем
+                log.info(player.public.name + ' not hand -> remove');
+                return $u.removePlayer(socket);
+            }
+        } catch (e){
+            console.log(e);
+            log.error('disconnect: ' + e);
+        }
+    });
 });
+
+$u.disconnectPlayerInTourn = player=>{
+    player.public.isDisconnect = true;
+    const table = tables[player.sittingOnTable];
+    if (table && table.public.tournSeats){
+        table.public.tournSeats[player.seat].isOut = true;
+    }
+    else {
+        // $u.removePlayer(player.socket);
+    }
+    return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
+};
 
 $u.removePlayer = socket =>{
     const player = players[socket.id];
     if (typeof player !== 'undefined') {
-        // if (player.isTourn){ // если ьурнир
-        //     player.public.isDisconnect = true;
-        //     return console.log('BLOCK removePlayer in Tourn: ', player.public.name);
-        // }
         console.log('removePlayer>', player.public.name, player.sittingOnTable, player.seat);
         // return;
         // If the player was sitting on a table
@@ -645,10 +658,6 @@ $u.removePlayer = socket =>{
             var seat = player.seat;
             // The table on which the player was sitting
             var tableId = player.sittingOnTable;
-            const table = tables[tableId];
-            if (table.isTournStart){
-                table.public.tournSeats[seat].isOut = true;
-            };
             // Remove the player from the seat
             tables[tableId].playerLeft(seat);
         }
@@ -678,8 +687,9 @@ function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-$u.createTables(tables, eventEmitter, Table);
+$u.createTables(tables, eventEmitter, Table, players);
 Store.tables = tables;
+Store.players = players;
 
 function getSSLFiles(){
     const fs = require('fs');
@@ -703,6 +713,15 @@ function getSSLFiles(){
 }
 
 $u.init({players, tables, eventEmitter});
+
+
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
+
+
 // require('./tests');
 
 
@@ -730,3 +749,4 @@ $u.init({players, tables, eventEmitter});
 //     , 12, isFinite(data.chips)
 //     // The chips number is an integer
 //     , 13, data.chips % 1 === 0);
+

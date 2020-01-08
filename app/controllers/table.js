@@ -10,6 +10,11 @@ import app from '../app';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
+        console.log('Init table', $routeParams.tableId);
+        // if ($rootScope.lastTableId !== null){ 
+        //     return location.reload();
+        // }
+        $rootScope.lastTableId = $routeParams.tableId;
         automoves($scope);
         var selectedSeat = null;
         $scope.table = {seats: []};
@@ -48,16 +53,20 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingIn = true;
                     $scope.mySeat = seat;
                     if ($scope.table.seats[seat].hasCards){
-                        socket.emit('getMyCards');
+                        setTimeout(()=> socket.emit('getMyCards'), 1000);
                     }
                 }
             }
         };
 
+        // $scope.$on('$routeChangeSuccess', function () {
+        // });
+
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         // $scope.$watch('table.seats', $scope.checkUserSeat);
         // Existing listeners should be removed
         socket.removeAllListeners();
+        window.listeningRedirect();
         socket.on('disconnect', ()=>{
             noty('error', '<i class="fa fa-wifi big" aria-hidden="true"></i> Разрыв соеденинения!');
             $rootScope.makeReload = ()=>false;
@@ -84,10 +93,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         updateTableData();
 
         // Joining the socket room
-        socket.emit('leaveRoom');
+        // socket.emit('leaveRoom');
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
-        
 
         $rootScope.$watch('timeOutCurrent', v=> {
             $scope.automoves.callback(v);
@@ -341,7 +349,15 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         let lastSeatActive = -1;
         // When the table data have changed
+        let predCards = '';
         socket.on('table-data', function(data) {
+            if (+$routeParams.tableId !== data.id){
+                return;
+            }
+            if (data.board[0].length && data.board.toString() !== predCards){
+                sounds.playCardSound();
+                predCards = data.board.toString();
+            }
             $scope.table = data;
             $scope.checkUserSeat();
             if (data.activeSeat !== null && lastSeatActive !== data.activeSeat){
@@ -402,6 +418,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
+        setTimeout(()=> socket.emit('getMyCards'), 5000);
+
         //
         // When the game has stopped
         socket.on('gameStopped', function(data) {
@@ -460,6 +478,19 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.isSendActionAuto = false;
             $scope.$digest();
         });
+        
+        socket.on('waitSpinRate', function() {
+            sounds.playMyStepSound();
+            $scope.showSpinRateDice();
+            $scope.$digest();
+        });
+
+        socket.on('getSpinRate', function(data) {
+            sounds.playMyStepSound();
+            $scope.showSpinRateValue(data);
+            $scope.$digest();
+        });
+
     }]);
 
 

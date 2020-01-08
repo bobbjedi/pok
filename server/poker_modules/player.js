@@ -86,11 +86,11 @@ Player.prototype.getUserDB = async function () {
 };
 Player.prototype.updateDeposit = async function (amount, user) {
     if (this.isTourn){
-        console.log('updateDeposit isTourn', this.public.name);
+        // console.log('updateDeposit isTourn', this.public.name);
         return;
     }
     user = user || await this.getUserDB();
-    user.deposit = $u.round(user.deposit + amount);
+    await $u.updateUserDeposit(user, amount, true);
     $u.updateChipsUserPlayers(user);
     await user.save();
     if (amount > 0){
@@ -100,7 +100,7 @@ Player.prototype.updateDeposit = async function (amount, user) {
 
 Player.prototype.updateDepInPlay = async function (user) {
     if (this.isTourn){
-        console.log('updateDepInPlay isTourn', this.public.name);
+        // console.log('updateDepInPlay isTourn', this.public.name);
         return;
     }
     user = user || await this.getUserDB();
@@ -125,7 +125,14 @@ Player.prototype.onDisconnect = function (cb) {
     console.log('onDisconnect', this.playerId, this.setTimeOutDisconnect._idleStart);
 };
 
-Player.prototype.return = function () { // успел вернуться
+/**
+ * @description Возвращение игрока
+ */
+Player.prototype.return = function () {
+    if (!this.public.isDisconnect){
+        return;
+    }
+    console.log('Return: ', this.public.name);
     clearTimeout(this.setTimeOutDisconnect);
     clearTimeout(this.sitOutTimer);
     this.public.isDisconnect = false;

@@ -1,8 +1,12 @@
 import app from '../app';
 import _ from 'underscore';
 import config from '../../config';
+import tourn from './mixins/tourn';
 
-app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', function($scope, $rootScope, $http, $location) {
+app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', '$sce', function($scope, $rootScope, $http, $location, $sce) {
+    $rootScope.lastTableId = null;
+    $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
+    tourn($scope, $rootScope);
     $scope.lobbyTables = [];
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
@@ -23,20 +27,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         count: "2",
         isPrivate: false,
         maxBuyIn: 100
-    };
-    const preloader = document.getElementById('preloader');
-    preloader.style.opacity = 1;
-    preloader.style.display = 'flex';
-    $scope.hidePreloader = () =>{
-        setTimeout(()=>{
-            preloader.style.opacity = 0;
-            setTimeout(()=>{
-                preloader.style.display = 'none';
-            }, 500);
-        }, 1000);
-    };
-
-  
+    }; 
 
     // window.initSocket(checkUser);
     window.refreshSocket($rootScope.checkUser);
@@ -64,11 +55,12 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
                         $scope.playersInGame += data[tableId].playersSeatedCount;
                     }
                 }
-                $scope.hidePreloader();
+                window.hidePreloader();
             }
         });
     });
     updatePublic();
+    $scope.updatePublic = updatePublic;
     setInterval(updatePublic, 30 * 1000);
 
     $scope.logreg = function() {
@@ -115,10 +107,32 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $location.path(path);
         });
     };
-
+    window.listeningRedirect();
     setTimeout(() => {
         // работа с аватаром
         $scope.uploadAvatar = () => document.getElementById('input-upload-avatar').click();
-        document.getElementById('input-upload-avatar').onchange = () => document.getElementById('uploadAvatarForm').submit();
+        const el = document.getElementById('input-upload-avatar');
+        el && (el.onchange = () => document.getElementById('uploadAvatarForm').submit());
     }, 2000);
 }]);
+
+
+const preloader = document.getElementById('preloader');
+preloader.style.opacity = 1;
+preloader.style.display = 'flex';
+let timeOutHide = null;
+
+window.hidePreloader = () =>{
+    timeOutHide = setTimeout(()=>{
+        preloader.style.opacity = 0;
+        setTimeout(()=>{
+            preloader.style.display = 'none';
+        }, 500);
+    }, 1000);
+};
+
+window.showPreloader = ()=>{
+    clearTimeout(timeOutHide);
+    setTimeout(()=>preloader.style.display = 'flex', 100);
+    preloader.style.opacity = 1;
+};

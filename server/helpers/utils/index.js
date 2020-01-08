@@ -4,13 +4,16 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const request = require('request');
 const log = require('../log');
-
+const _ = require('underscore');
+let Store;
 let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
+
 module.exports = {
     round(n) {
         return Number((n - 0.000001).toFixed(2));
     },
     init(data){
+        Store = require('../../modules/Store');
         players_ = data.players;
     },
     getPlayersByUserId(user_id){
@@ -26,7 +29,7 @@ module.exports = {
         const players = this.getPlayersByUserId(user._id);
         players.forEach(p=> {
             if (p.isTourn){
-                console.log(user.login, 'В турнире!');
+                // console.log(user.login, 'В турнире!');
                 return;
             }
             p.chips = user.deposit;
@@ -53,6 +56,23 @@ module.exports = {
             });
         });
     },
+    
+    async updateUserDeposit(user, amount, isNoNeedSave){
+        try {
+            if (_.isNumber(amount) && amount !== 0){
+                user.deposit = this.round(user.deposit + amount);
+                if (!isNoNeedSave){
+                    await user.save();
+                }
+                return;
+            }
+            log.warn('updateUserDeposit amount isNOtNUMBER: ' + amount);
+        } catch (e){
+            console.log(e);
+            log.error('updateUserDeposit(c): ' + e);
+        }
+    },
+
     async createUser(params){
         const {login, password, address} = params;
         if (!login.length || !password.length || !address.length) {
@@ -142,9 +162,9 @@ module.exports = {
         tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
         return i;
     },
+
     rmCustomTable(tableId){ // TODO: удалять комнату eventEmmiter!
         try {
-            console.log({tableId});
             const table = tables_[tableId];
             table.allPlayersLeft();
             log.info('RM custom table ' + tableId);
@@ -155,11 +175,89 @@ module.exports = {
         }
 
     },
-    tmpTourn(data){
-        this.createCustomTable({count: data.count, name: 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
+    tmpTourn(data, name){
+        return this.createCustomTable({count: data.count, name: name || data.name || 'Sit-And-GO', sb: 10, type: 'SNG'}, data);
+    },
+    async createOffLinePlayer(login){
+        // var eventEmitter = function(tableId) {
+        //     return function (eventName, eventData) {};
+        // };
+        const Player = require('../../poker_modules/player');
+        var socket = {
+            id: _.uniqueId('offline_'),
+            emit(){},
+            leave(){},
+        };
+        players_[socket.id] = new Player(socket, await this.getUserFromQ({login}));
+        players_[socket.id].public.isDisconnect = true;
+        return players_[socket.id];
+    },
+    async playerGoInTourn(user){
+        const {mtt} = Store.system;
+        const {buyIn} = mtt;
+        if (!mtt.isRegOppened){
+            return 'Нет запланированных МТТ турниров!';
+        }
+
+        if (user.deposit < buyIn){
+            return 'Не достаточно средств (необходимо ' + buyIn + ')!';
+        }
+        if (mtt.users.includes(user.login)){
+            return 'Этот пользователь уже зарегистрирован!';
+        }
+        this.updateUserDeposit(user, -buyIn);
+        mtt.users.push(user.login);
+        await Store.save();
+    },
+    /**
+     * Начисляет сумму все юзерам на баланс
+     * @param {Array} logins массив логинов
+     * @param {Number} amount сумма
+     *  
+     */
+    async multSendCoins(logins, amount){
+        console.log(amount);
+        try {
+            if (!amount){
+                log.warn('multSendCoins amoutn = ' + amount);
+                return;
+            }
+            for (const login of logins){
+                const user = await this.getUserFromQ({login});
+                if (!user){
+                    log.error('multSendCoins no find ' + login + ' ' + amount);
+                    continue;
+                }
+                await this.updateUserDeposit(user, amount);
+                log.info('multSendCoins success send ' + login + ' ' + amount);
+            }
+        } catch (e){
+            console.log(e);
+            log.error('multSendCoins ' + e);
+        }
+      
+    },
+    async getSpinRate(){
+        await this.wait(3);
+        const value = Math.floor(Math.random() * 10);
+        console.log({value});
+        let rate = 0;
+        if (value === 0){
+            rate = 5;
+        } else if (value <= 3){
+            rate = 1;
+        } else if (value <= 7){
+            rate = 2;
+        } else {
+            rate = 3;
+        }
+
+        return {
+            rate,
+            hash: 'MxText123'
+        };
     }
 };
-
 
 // MIGRATE
 
@@ -188,13 +286,39 @@ setTimeout(()=>{
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 2;
     data.buyIn = 30;
+    data.playersCount = 2;
     data.winnersCount = 1;
+    module.exports.tmpTourn(data);
+
+
+    // SPIN
+
+    data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 6;
+    data.playersCount = 3;
+    data.buyIn = 20;
+    data.winnersCount = 1;
+    data.isSpin = true;
+    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
 
     data = JSON.parse(JSON.stringify(config.sng));
     data.count = 6;
     data.playersCount = 3;
-    data.buyIn = 30;
+    data.buyIn = 50;
     data.winnersCount = 1;
+    data.isSpin = true;
+    data.name = 'SPIN And Go';
+    module.exports.tmpTourn(data);
+
+    data = JSON.parse(JSON.stringify(config.sng));
+    data.count = 6;
+    data.playersCount = 3;
+    data.buyIn = 100;
+    data.winnersCount = 1;
+    data.isSpin = true;
+    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
 });
+
+

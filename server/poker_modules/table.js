@@ -61,7 +61,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // фишек на старте турнира
     this.tournChips = data.chips;
 
-    this.timeParams = data.isTourn && sng();
+    this.timeParams = data.isTourn && (data.isMtt && data.mtt.timeParams || sng());
 
     // История последних раздач
     this.lastGames = [];
@@ -109,6 +109,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         // Места в турнире
         tournSeats: {},
         isTourn: data.isTourn,
+        isStoppedGames: false,
         data,
         log: {
             message: '',
@@ -140,25 +141,27 @@ Table.prototype.setTimeoutWait = function(){
     try {
         const {activeSeat, phase} = this.public;
         this.clearTimeoutPlayerAction('setTimeoutWait');
-        console.log('setTimeoutWait:', activeSeat, this.public.seats[activeSeat] && this.public.seats[activeSeat].name, phase);
-        // if (!activeSeat || !phase || phase === this.lastWaitPhase && this.lastActiveSet === activeSeat){
-        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase){
-            console.log('setTimeoutWait Return ');
+        if (activeSeat === null || !this.public.seats[activeSeat] || !this.public.seats[activeSeat].name || !phase || this.isWaitMttAnotherTables){
+            // console.log('setTimeoutWait Return ', activeSeat === null, !phase, this.isTourn);
             return;
         }
 
         this.lastWaitPhase = phase;
         this.lastActiveSet = activeSeat;
-        const lastActiveUserLogin = activeSeat && this.public.seats[activeSeat].name;
+        const lastActiveUserLogin = activeSeat !== null && this.public.seats[activeSeat].name;
 
         const autoMoveCb = ()=>{
             try {
                 const seat = this.public.seats[activeSeat];
                 const currentSeatName = seat && seat.name;
-                if (currentSeatName === lastActiveUserLogin){
+                console.log('autoMoveCb', currentSeatName, lastActiveUserLogin);
+
+                if (currentSeatName === lastActiveUserLogin || this.isWaitMttAnotherTables){
                     const player = this.seats[activeSeat];
-                    // забираем анте
-                    // this.updateTournSeat(activeSeat);
+                    if (!player){
+                        return;
+                    }
+                    player.public.isDisconnect = true;
                     console.log('Avtomove', player.public.name, phase);
                     if (this.public.phase === 'smallBlind') {
                         this.playerPostedSmallBlind();
@@ -178,6 +181,7 @@ Table.prototype.setTimeoutWait = function(){
                             return;
                         }
                     }
+                    console.log(player.public.name + ' isDisc: ' + player.public.isDisconnect);
                 }
             } catch (e){
                 console.log(e);
@@ -185,8 +189,9 @@ Table.prototype.setTimeoutWait = function(){
             }
         };
         let timeOut = (config.timeOutWait + 3) * 1000;
-        if (this.seats[activeSeat].public.isDisconnect){
-            timeOut = 5000;
+        if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
+            // console.log(lastActiveUserLogin + ' timeOut 3s');
+            timeOut = 3000;
         }
         this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
     } catch (e){
@@ -196,7 +201,7 @@ Table.prototype.setTimeoutWait = function(){
 };
 Table.prototype.clearTimeoutPlayerAction = function(src){
     if (this.timeOutWaitUserAction){
-        console.log('clearTimeoutPlayerAction', src);
+        // console.log('clearTimeoutPlayerAction', src);
         clearTimeout(this.timeOutWaitUserAction);
     }
     this.timeOutWaitUserAction = null;
@@ -372,9 +377,31 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
 /**
  * Method that starts a new game
  */
-Table.prototype.initializeRound = function(changeDealer) {
+Table.prototype.initializeRound = async function(changeDealer) {
     if (Store.isGamesPaused
+        || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
+        console.log('initializeRound Stop ID:', this.public.id);
+        this.public.activeSeat = null;
+        this.emitEvent('table-data', this.public);
+        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
+        this.isWaitMttAnotherTables = true;
+        this.clearTimeoutPlayerAction();
+        if (!this.isTourn){
+            this.emitEvent('noty', {type: 'error', msg: 'Стоп игры!'});
+        }
+        return;
+    }
+    const {data} = this.public;
+
+    if (data.isSpin && !data.spin){
+        this.emitEvent('waitSpinRate');
+        data.spin = await $u.getSpinRate();
+        this.public.tournPrize = data.spin.rate * this.public.maxBuyIn;
+
+        setTimeout(()=>console.log('PRIZE!!', this.public.tournPrize), 10000);
+        this.emitEvent('getSpinRate', data.spin);
+        setTimeout(()=>this.initializeRound(changeDealer), 3000);
         return;
     }
     // this.clearTimeoutPlayerAction('initializeRound');
@@ -388,7 +415,8 @@ Table.prototype.initializeRound = function(changeDealer) {
         this.gameIsOn = true;
         this.public.board = ['', '', '', '', ''];
         this.deck.shuffle();
-        this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
+        // this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
+        this.headsUp = this.playersSittingInCount === 2;
         this.playersInHandCount = 0;
         this.biggestBet = 0;
         this.public.biggestBet = 0;
@@ -396,6 +424,9 @@ Table.prototype.initializeRound = function(changeDealer) {
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
+                if (this.isTournStart){ // анте всем
+                    this.updateTournSeat(i);
+                }
                 if (!this.seats[i].public.chipsInPlay) {
                     this.seats[i].sitOut(true); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
@@ -515,21 +546,19 @@ Table.prototype.initializeNextPhase = function() {
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
 
-    if (this.isTournStart) {
-        try {
-            const {tournSeats} = this.public;
-            console.log(tournSeats);
-            for (let i in tournSeats) {
-                console.log(i, '!this.seats[i] || tournSeats[i].isOut', tournSeats[i].isOut || !this.seats[i] || this.seats[i].public && this.seats[i].public.isDisconnect);
-                if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
-                    this.updateTournSeat(i);
-                }
-            }
-        } catch (e){
-            console.log(e);
-            log.error('updateTournSeat initializeNextPhase' + e);
-        }
-    }
+    // if (this.isTournStart) {
+    //     try {
+    //         const {tournSeats} = this.public;
+    //         for (let i in tournSeats) {
+    //             if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
+    //                 this.updateTournSeat(i);
+    //             }
+    //         }
+    //     } catch (e){
+    //         console.log(e);
+    //         log.error('updateTournSeat initializeNextPhase' + e);
+    //     }
+    // }
     this.emitEvent('table-data', this.public, true);
 
     // If all other players are all in, there should be no actions. Move to the next round.
@@ -731,13 +760,17 @@ Table.prototype.endRound = async function(str) {
     }
 
     // Sitting out the players who don't have chips
+    const leftInGame = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
             this.seats[i].sitOut(true);
             this.playersSittingInCount--;
+        } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
+            leftInGame.push(this.seats[i].public.name);
         }
     }
 
+    this.public.data.isMtt && this.public.data.mtt.callBackPlayersSittingInCountMTT(this.playersSittingInCount, this.public.id, leftInGame); // оповещаем о количестве
     if (this.isTourn && this.tournWinnersCount >= this.playersSittingInCount){ // завершили турнир!
         this.tournStop();
         return;
@@ -749,6 +782,7 @@ Table.prototype.endRound = async function(str) {
     // If there are not enough players to continue the game, stop it
     if (this.playersSittingInCount < 2) {
         this.stopGame();
+        this.public.data.isMtt && this.public.data.mtt.callBackStoppedRoundMTT(this.public.id, this); // оповещаем МТТ об окончании
     } else {
         this.initializeRound();
     }

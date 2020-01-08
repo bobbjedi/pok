@@ -3,12 +3,13 @@ const config = require('../helpers/configReader');
 const {usersDb} = require('./DB');
 const minter = require('./minter');
 const log = require('../helpers/log');
-const Store = require('./Store');
+let Store;
 
 let isAlarm = false;
 
 module.exports = {
     async init(){
+        Store = require('./Store');
         log.info('Mainer started');
         setTimeout(async()=>{
             if (Store.system.failCoins.includes(configMain.coin)){

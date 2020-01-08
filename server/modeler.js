@@ -2,6 +2,7 @@ const Player = require('./poker_modules/player');
 const Pot = require('./poker_modules/pot');
 const Table = require('./poker_modules/table');
 const $u = require('./helpers/utils');
+const Store = require('./modules/Store');
 
 (async ()=>{
 
@@ -17,6 +18,15 @@ const $u = require('./helpers/utils');
             return;
         }
     };
+    
+
+
+
+
+
+
+
+    return;
 
     table = new Table(10, 'Sample 10-handed Table', eventEmitter(0), 10, 2, 1, 200, 40, false);
 
@@ -62,7 +72,7 @@ const $u = require('./helpers/utils');
     players[2].public.chipsInPlay = 0;
     table.pot.addTableBets(players);
     console.log(table.pot.pots);
-    return;
+
     table.deck.cards[0] = 'Ah';
     table.deck.cards[1] = 'Kh';
 

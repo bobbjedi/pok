@@ -3,7 +3,7 @@ const log = require('../helpers/log');
 
 module.exports = Table =>{
     Table.prototype.updateTournParams = function () {
-        if (!this.timeParams.length) {
+        if (!this.timeParams.length || this.public.data.isMtt && this.public.ante) { // Если МТТ - то будет общий рост анте, локально не нужно
             return;
         }
         const next = this.timeParams.shift();
@@ -25,7 +25,7 @@ module.exports = Table =>{
         if (!this.isTourn || this.isTournStart){
             return;
         }
-        console.log('Start turn');
+        log.info('Start turn table');
         this.timeOutUpdateTournParams();
         this.public.tournPrize = this.public.minBuyIn * this.tournPlayersCount;
         this.isTournStart = true;
@@ -39,7 +39,14 @@ module.exports = Table =>{
             this.public.tournSeats[i] = {name: s.public.name, chipsInPlay: 0};
             s.public.chipsInPlay = 0;
             await s.updateDepInPlay();
-            s.public.chipsInPlay = this.tournChips;
+
+            if (this.public.data.isMtt && this.public.data.mtt.playersLeftChips){ // остатки фишек
+                s.public.chipsInPlay = this.public.data.mtt.playersLeftChips[s.public.name];
+                console.log('Left cheaps:', s.public.name, '>', s.public.chipsInPlay);
+            } else {
+                s.public.chipsInPlay = this.tournChips;
+            }
+
             s.chips = 0;
             s.isTourn = true; // определяем что в турнире
             log.info('in Tourn: ' + s.public.name);
@@ -56,15 +63,14 @@ module.exports = Table =>{
             clearTimeout(this.timeOutUpdateTourn);
             this.stopGame();
             const winners = Array.from(this.seats).filter(player => player && player.public.sittingIn && player.public.chipsInPlay);
-            const prizePath = $u.round(this.public.tournPrize / winners.length);
+            const prizePath = this.public.data.isMtt ? 0.00001 : $u.round(this.public.tournPrize / winners.length);
             if (!(prizePath > 0)){
                 return log.error('prizePath isNaN:' + prizePath);
             }
             for (let w in winners){
                 const user = await winners[w].getUserDB();
-                user.deposit = $u.round(user.deposit + prizePath);
+                await $u.updateUserDeposit(user, prizePath);
                 log.info('Tourn prize: ' + user.login + ' ' + prizePath);
-                await user.save();
                 $u.updateChipsUserPlayers(user);
             }
 
@@ -84,6 +90,10 @@ module.exports = Table =>{
                 $u.tmpTourn(this.public.data);
             }
             $u.rmCustomTable(this.public.id);
+            if (this.public.data.mtt && this.public.data.mtt.isFinalTable){
+                log.info('MTT FINAL in sng!');
+                this.public.data.mtt.callBackStoppedRoundMTT && this.public.data.mtt.callBackStoppedRoundMTT(); // оповещаем МТТ об окончании
+            }
         } catch (e){
             console.log(e);
             log.error('tournStop' + e);
@@ -96,12 +106,12 @@ module.exports = Table =>{
         const player = this.seats[seat];
         const chipsInPlay = player ? player.public.chipsInPlay : tournSeats[seat].chipsInPlay;
         tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
-        if (player){
+        if (player && player.public.chipsInPlay > 0){
             player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
-            console.log('PLAYER!!', chipsInPlay);
-        } else {
-            console.log('NOOOPLAYER!!', chipsInPlay);
+            console.log('ANTE:', {name: player.public.name, seat, amount});
+            if (player.public.chipsInPlay < 0){
+                player.public.chipsInPlay = tournSeats[seat].chipsInPlay = 0;
+            }
         }
-        console.log({seat, amount});
     };
 };
