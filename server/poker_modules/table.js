@@ -22,6 +22,7 @@ var Deck = require('./deck'),
  * @param bool 		privateTable (flag that shows whether the table will be shown in the lobby)
  */
 var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator, data = {}) {
+   data.spin = false;
     // console.log({privateTable, id})
     // The table is not displayed in the lobby
     this.privateTable = privateTable;
