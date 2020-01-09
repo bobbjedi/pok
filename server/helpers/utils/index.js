@@ -4,16 +4,15 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const request = require('request');
 const log = require('../log');
-const minter = require('../../modules/minter');
 const _ = require('underscore');
-let Store;
-let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
+let Store, minter, players_, tables_, eventEmitter_, Table_, lastTableId = 0;
 
 module.exports = {
     round(n) {
         return Number((n - 0.000001).toFixed(2));
     },
     init(data){
+        minter = require('../../modules/minter');
         Store = require('../../modules/Store');
         players_ = data.players;
     },
