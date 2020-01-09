@@ -3,7 +3,7 @@
         <span id="pot" ng-show="table.pot[0].amount">Pot: {{potAmount()}}</span>
     </div>
     <div class="winner-msg txt-yellow" ng-show="winnerMsgArr.length">
-        <div ng-repeat="msg in winnerMsgArr">{{msg}}</div>
+        <div ng-repeat="msg in winnerMsgArr" ng:bind-html="renderHtml(msg)"></div>
     </div>
     <div id="board-wrap">
         <div class="card-container board-card-1" ng-class="{'card-show': table.board[0].length}">

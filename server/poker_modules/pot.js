@@ -198,6 +198,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             winner.public.chipsInPlay += pot.amount;
             var htmlHand_ = '[' + winner.evaluatedHand.cards.join(', ') + ']';
             var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
+            htmlHand_ = htmlHand;
             if (!isReturn){
                 winnersHands.push(winner.evaluatedHand.cards);
             }
@@ -230,7 +231,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
                 log.info(tIdstr + ' s154: ' + jPlayer.public.name + ' #' + winners[j] + ' + ' + playersWinnings);
                 var htmlHand_ = '[' + jPlayer.evaluatedHand.cards.join(', ') + ']';
                 var htmlHand = htmlHand_.replace(/s/g, '&#9824;').replace(/c/g, '&#9827;').replace(/h/g, '&#9829;').replace(/d/g, '&#9830;');
-                
+                htmlHand_ = htmlHand;
                 const strWin = jPlayer.public.name + strGetPrize + '(' + playersWinnings + ') with ' + jPlayer.evaluatedHand.name + ' ';
                 messages.push(strWin + htmlHand);
                 messages_.push(strWin + htmlHand_);

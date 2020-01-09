@@ -8,12 +8,9 @@ import automoves from './mixins/automoves';
 import socket from '../directives/socket.io';
 import app from '../app';
 
-app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location',
-    function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location) {
-        console.log('Init table', $routeParams.tableId);
-        // if ($rootScope.lastTableId !== null){ 
-        //     return location.reload();
-        // }
+app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
+    function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
+        $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
         $rootScope.lastTableId = $routeParams.tableId;
         automoves($scope);
         var selectedSeat = null;
@@ -68,7 +65,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.removeAllListeners();
         window.listeningRedirect();
         socket.on('disconnect', ()=>{
-            noty('error', '<i class="fa fa-wifi big" aria-hidden="true"></i> Разрыв соеденинения!');
+            noty('error', '<i class="fa fa-wifi big" aria-hidden="true"></i> Разрыв соединения!');
             $rootScope.makeReload = ()=>false;
             setTimeout(()=>{
                 location.reload();
