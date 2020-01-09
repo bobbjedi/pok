@@ -68,7 +68,11 @@ module.exports = Table =>{
                 seat: '',
                 notification: ''
             });
-            this.endRound(68);
+            this.isShowDown = true;
+            setTimeout(()=>{
+                this.isShowDown = false;
+                this.endRound(68);
+            }, 5 * 1000);
         } else {
             if (this.lastPlayerToAct === this.public.activeSeat) {
                 this.endPhase();

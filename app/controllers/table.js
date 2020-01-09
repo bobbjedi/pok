@@ -395,7 +395,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     const {winnersHands} = msgJson;
                     $u.upCards(winnersHands);
                     $rootScope.winnersData = data;
-                    $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards})`);
+                    $rootScope.winnerMsgArr = Object.keys(data).map(u=> `${u} выиграл ${data[u].amount} (${data[u].cards || ''})`.replace('()', ''));
                     $scope.automoves.reset();
                     return $scope.$digest();
                 }

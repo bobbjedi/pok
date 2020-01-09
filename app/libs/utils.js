@@ -30,6 +30,9 @@ const throttle = (func, ms) => {
 };
 
 const upCards = hands =>{
+    if (!hands){
+        return;
+    }
     const interval = config.timeOutBeforeNewGame / hands.length * 1000;
     const allCardsEl = document.querySelectorAll('.card:not(.ng-hide)');
     let currentShows = hands.length;

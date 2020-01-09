@@ -768,15 +768,16 @@ div#board-wrap .card-container {
 }
 
 .dealer-button {
+    display: flex;
     position: absolute;
     border: 2px solid #afaabe;
     border-radius: 20px;
-    width: 12%;
-    height: 20%;
+    width: 18px;
+    height: 18px;
     text-align: center;
-    background-color: rgba(64, 61, 68, 0.9);
-    line-height: 1.25;
-    box-shadow: 0 3px 0 0 #604FAD
+    background-color: rgba(41, 40, 43, 0.9);
+    box-shadow: 0 3px 0 0 rgb(7, 3, 24);
+    justify-content: center;
 }
 
 #bets-0 {

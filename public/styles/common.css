@@ -612,6 +612,11 @@ div.row {
     div.row {
         height: calc((100% - 85px) / 3) !important;
     }
+
+    .dealer-button {
+        width: 15px;
+        height: 15px;
+    }
 }
 
 
@@ -759,6 +764,7 @@ div.row {
     div#board-wrap .card-container {
         width: 16%;
     }
+    
 }
 /* FULLSCREEN */
 @media screen and (max-width: 768px) {
@@ -837,6 +843,11 @@ div.row {
         margin: 10px;
         justify-content: space-around;
         align-items: center;
+    }
+
+    .dealer-button {
+        width: 11px;
+        height: 11px;
     }
 }
 
