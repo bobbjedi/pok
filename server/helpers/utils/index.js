@@ -250,12 +250,12 @@ module.exports = {
         let rate = 0;
         if (value === 0){
             rate = 5;
-        } else if (value <= 3){
-            rate = 1;
-        } else if (value <= 7){
+        } else if (value <= 5){
             rate = 2;
-        } else {
+        } else if (value <= 7){
             rate = 3;
+        } else {
+            rate = 4;
         }
         console.log({isBCH, value, hash, rate});
         return {
