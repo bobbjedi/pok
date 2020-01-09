@@ -1147,8 +1147,12 @@ div#board-wrap .card-container {
 ::-webkit-scrollbar-corner {
     background-color: #999;
 }
-}
 
 ::-webkit-resizer {
     background-color: black;
+}
+
+#global-wrap{
+    display: none;
+    position: fixed;
 }

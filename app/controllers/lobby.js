@@ -2,6 +2,8 @@ import app from '../app';
 import _ from 'underscore';
 import config from '../../config';
 import tourn from './mixins/tourn';
+import spinInfoTemplate from '../partials/info/spinInfo.html';
+import modalHtml from '../services/modalHtml';
 
 app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', '$sce', function($scope, $rootScope, $http, $location, $sce) {
     $rootScope.lastTableId = null;
@@ -29,10 +31,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         maxBuyIn: 100
     }; 
 
-    // window.initSocket(checkUser);
     window.refreshSocket($rootScope.checkUser);
-    
-    // $rootScope.$watch('user.isLogged', ()=> setTimeout(checkUser, 500));
 
     const updatePublic = ()=> $http({
         url: window.Domain + '/public',
@@ -107,6 +106,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $location.path(path);
         });
     };
+
+    // Окно информации про спин го
+    $scope.showSpinInfo = ()=> modalHtml(spinInfoTemplate);
+
     window.listeningRedirect();
     setTimeout(() => {
         // работа с аватаром

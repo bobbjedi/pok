@@ -42,8 +42,6 @@ module.exports = {
             return log.error('Mainer ALARM');
         }
         try {
-
-            // const baseBalance = 70;// FIXME:
             const baseBalance = await minter.getCoinBalance();
             console.log({baseBalance});
             if (!(baseBalance > 0)){
