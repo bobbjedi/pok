@@ -1,3 +1,5 @@
+import sounds from '../../services/sounds';
+
 export default ($scope, $rootScope) => {
    
     $scope.isShowTournModal = false;
@@ -13,12 +15,13 @@ export default ($scope, $rootScope) => {
     };
 
     $scope.showSpinRateDice = ()=>{
+        sounds.playDicesSound();
         $scope.isWaitSpinRate = true;
     };
     $scope.showSpinRateValue = (data)=>{
         $scope.spin = data;
-        // setTimeout(()=> $scope.isWaitSpinRate = false, 3000);
-        $scope.isWaitSpinRate = false;
+        setTimeout(()=> $scope.isWaitSpinRate = false, 0);
+        // $scope.isWaitSpinRate = false;
     };
 
 };

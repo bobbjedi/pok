@@ -4,7 +4,7 @@ import app from '../app';
  * Returns functions that play the sounds of the application
  * @return object
  */
-
+let sounds = {};
 app.factory('sounds', ['$rootScope', function ($rootScope) {
     let isSound;
     $rootScope.$watch('settings.sound', v=> {
@@ -16,11 +16,12 @@ app.factory('sounds', ['$rootScope', function ($rootScope) {
         betSound = document.getElementById("bet-sound"),
         myStep = document.getElementById("my-step-sound"),
         card = document.getElementById("card-sound"),
+        dices = document.getElementById("dices-sound"),
         raiseSound = document.getElementById("raise-sound");
 
     // myStep.volume = 0.1;
 
-    return {
+    Object.assign(sounds, {
         playFoldSound: function () {
             if (!isSound) {
                 return;
@@ -62,6 +63,16 @@ app.factory('sounds', ['$rootScope', function ($rootScope) {
                 return;
             }
             card.play();
+        },
+        playDicesSound: function () {
+            console.log('dices!', dices);
+            if (!isSound) {
+                return;
+            }
+            dices.play();
         }
-    };
+    });
+    return sounds;
 }]);
+
+export default sounds;
