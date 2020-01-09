@@ -197,6 +197,11 @@ io.sockets.on('connection', function(socket) {
                 return;
             }
             player.socket.emit('dealingCards', player.cards);
+            const table = tables[player.sittingOnTable];
+            if (player.seat >= 0 && player.seat === table.public.activeSeat){
+                console.log('table.lastActiveSetWaitMove>', table.lastActiveSetWaitMove);
+                player.socket.emit(table.lastActiveSetWaitMove.move);
+            }
         } catch (e){
             console.log(e);
             log.error('getMyCards: ' + e);

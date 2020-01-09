@@ -276,16 +276,8 @@ Pot.prototype.giveToWinner = function(winner) {
     this.reset();
     const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
     table.sendChatMsg(JSON.stringify({_: '{DATA}', winnersData: {[winner.public.name]: {amount: totalAmount}}}));
-    // table.log({
-    //     message: JSON.stringify({_: '{DATA}', winnersData: {[winner.public.name]: {amount: totalAmount}}}),
-    //     action: '',
-    //     seat: 100,
-    //     notification: ''
-    // });
-    // table.emitEvent('table-data', table.public);
     log.info('[#' + tableId + '] ' + msg);
     table.currentGameLog += msg + '<br>';
-    return msg;
 };
 
 /**

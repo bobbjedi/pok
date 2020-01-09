@@ -61,13 +61,7 @@ module.exports = Table =>{
         if (this.playersInHandCount <= 1) {
             this.pot.addTableBets(this.seats);
             var winnersSeat = this.findNextPlayer();
-            const message = this.pot.giveToWinner(this.seats[winnersSeat]);
-            this.log({
-                message,
-                action: '',
-                seat: '',
-                notification: ''
-            });
+            this.pot.giveToWinner(this.seats[winnersSeat]);
             this.isShowDown = true;
             setTimeout(()=>{
                 this.isShowDown = false;

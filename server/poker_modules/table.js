@@ -67,6 +67,9 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // История последних раздач
     this.lastGames = [];
 
+    // запоминаем последнюю заявку на действие игрока
+    this.lastActiveSetWaitMove = {seat: null, move: null}; 
+    
     // All the public table data
     this.public = {
         type,
@@ -379,6 +382,7 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = async function(changeDealer) {
+    this.lastActiveSetWaitMove = {seat: null, move: null}; 
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
@@ -661,8 +665,10 @@ Table.prototype.actionToNextPlayer = function() {
     case 'preflop':
         if (this.otherPlayersAreAllIn()) {
             this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
+            this.lastActiveSetWaitMove = {seat: this.public.activeSeat, move: 'actOthersAllIn'}; 
         } else {
             this.seats[this.public.activeSeat].socket.emit('actBettedPot');
+            this.lastActiveSetWaitMove = {seat: this.public.activeSeat, move: 'actBettedPot'}; 
         }
         break;
     case 'flop':
@@ -672,11 +678,14 @@ Table.prototype.actionToNextPlayer = function() {
         if (this.public.biggestBet) {
             if (this.otherPlayersAreAllIn()) {
                 this.seats[this.public.activeSeat].socket.emit('actOthersAllIn');
+                this.lastActiveSetWaitMove = {seat: this.public.activeSeat, move: 'actOthersAllIn'}; 
             } else {
                 this.seats[this.public.activeSeat].socket.emit('actBettedPot');
+                this.lastActiveSetWaitMove = {seat: this.public.activeSeat, move: 'actBettedPot'}; 
             }
         } else {
             this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
+            this.lastActiveSetWaitMove = {seat: this.public.activeSeat, move: 'actNotBettedPot'};
         }
         break;
     }
