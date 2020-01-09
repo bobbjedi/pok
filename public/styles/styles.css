@@ -770,7 +770,7 @@ div#board-wrap .card-container {
 .dealer-button {
     display: flex;
     position: absolute;
-    border: 2px solid #afaabe;
+    border: 1px solid #afaabe;
     border-radius: 20px;
     width: 18px;
     height: 18px;
