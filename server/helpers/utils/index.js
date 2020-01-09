@@ -159,7 +159,7 @@ module.exports = {
         const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
         const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
 
-        tables_[i] = new Table_(i, params.count + '-hands ' + params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
+        tables_[i] = new Table_(i, params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
         return i;
     },
 

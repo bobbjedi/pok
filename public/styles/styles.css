@@ -133,6 +133,10 @@ table {
     border-collapse: collapse;
     margin: 10px auto
 }
+.table_dark a{
+    display: inline-block;
+}
+
 
 .table_dark tr {
     border-bottom: 1px solid #afaabe;

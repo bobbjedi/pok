@@ -187,16 +187,17 @@
         </tr>
         <tr ng-repeat="table in lobbyTables">
             <td>#{{table.id + 1}}</td>
-            <td>
-                <a>
-                    <span class="table-name-img" ng-click="table.name.includes('SPIN') && showSpinInfo()">
-                       {{table.name}}&nbsp;<span ng-if="table.type !== 'SNG'"
+            <td><a href="#!/table-{{table.seatsCount}}/{{table.id}}">
+                    <span class="table-name-img">
+                        {{table.name}}&nbsp;<span
+                            ng-show="table.type !== 'SNG'"
                             ng-class="{'txt-green': table.type === 'light', 'txt-yellow': table.type === 'hard', 'txt-red': table.type === 'unlim', 'txt-blue': table.type === 'middle'}">
                             {{table.type}}</span>
                             &nbsp;<span class="red-cheap" ng-class="{img_animate: table.playersSeatedCount}"></span>
                             <!-- &nbsp;<span class="dice-gif" ng-show="true || table.name.includes('SPIN')"></span> -->
                     </span>
                 </a>
+                <i ng-show="table.name.includes('SPIN')" ng-click="showSpinInfo()" class="fa fa-info-circle txt-green" aria-hidden="true"></i>
             </td>
             <td class="centered-text">{{table.smallBlind}}/{{table.bigBlind}}</td>
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.playersCount}}</td>
