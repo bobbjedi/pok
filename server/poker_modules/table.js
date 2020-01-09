@@ -397,9 +397,11 @@ Table.prototype.initializeRound = async function(changeDealer) {
 
     if (data.isSpin && !data.spin){
         this.emitEvent('waitSpinRate');
-        data.spin = await $u.getSpinRate();
+        data.spin = await $u.getSpinRate(this.public.seats);
         this.public.tournPrize = data.spin.rate * this.public.maxBuyIn;
-
+        if (data.spin.isBCH) {
+            this.sendChatMsg(`<a  target="blank_" href="https://explorer.minter.network/transactions/${data.spin.hash}">TX hash: ${data.spin.hash.slice(0, 10)}... Mult: x${data.spin.rate}</a>`);
+        }
         setTimeout(()=>console.log('PRIZE!!', this.public.tournPrize), 10000);
         this.emitEvent('getSpinRate', data.spin);
         setTimeout(()=>this.initializeRound(changeDealer), 3000);
@@ -601,22 +603,9 @@ Table.prototype.showdown = function() {
 
     var messagesCount = messages.length;
     for (var i = 0; i < messagesCount; i++) {
-        this.log({
-            message: messages[i],
-            action: '',
-            seat: '',
-            notification: ''
-        });
-        this.emitEvent('table-data', this.public);
+        this.sendChatMsg(messages[i]);
     }
-
-    this.log({
-        message: msgStr,
-        action: '',
-        seat: 100,
-        notification: ''
-    });
-    this.emitEvent('table-data', this.public);
+    this.sendChatMsg(msgStr);
 
     this.updateDepsInPlay();
     // ставим таймаут на удаление
@@ -626,6 +615,15 @@ Table.prototype.showdown = function() {
     }, config.timeOutBeforeNewGame * 1000);
 };
 
+Table.prototype.sendChatMsg = function(message){
+    this.log({
+        message,
+        action: '',
+        seat: '',
+        notification: ''
+    });
+    this.emitEvent('table-data', this.public);
+}
 /**
  * Ends the current phase of the round
  */

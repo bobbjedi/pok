@@ -1,25 +1,32 @@
-<div class="double-cell">
-    <div id="pot-wrap">
-        <span id="pot" ng-show="table.pot[0].amount">Pot: {{potAmount()}}</span>
+<!-- <a target="blank_" ng-href="{{table.data.spin.rate ? ('https://explorer.minter.network/transactions/' + table.data.spin.hash) : ''}}"> -->
+    <div class="double-cell">
+        <div id="pot-wrap">
+            <span id="pot" ng-show="table.pot[0].amount">Pot: {{potAmount()}}</span>
+        </div>
+        <div class="winner-msg txt-yellow" ng-show="winnerMsgArr.length">
+            <div ng-repeat="msg in winnerMsgArr" ng:bind-html="renderHtml(msg)"></div>
+        </div>
+        <div id="board-wrap">
+            <div class="card-container board-card-1" ng-class="{'card-show': table.board[0].length}">
+                <div ng-class="$root.settings.cardColors" class="card card-{{table.board[0]}}" ng-show="table.board[0]">
+                </div>
+            </div>
+            <div class="card-container board-card-2" ng-class="{'card-show': table.board[1].length}">
+                <div ng-class="$root.settings.cardColors" class="card card-{{table.board[1]}}" ng-show="table.board[1]">
+                </div>
+            </div>
+            <div class="card-container board-card-3" ng-class="{'card-show': table.board[2].length}">
+                <div ng-class="$root.settings.cardColors" class="card card-{{table.board[2]}}" ng-show="table.board[2]">
+                </div>
+            </div>
+            <div class="card-container board-card-4" ng-class="{'card-show': table.board[3].length}">
+                <div ng-class="$root.settings.cardColors" class="card card-{{table.board[3]}}" ng-show="table.board[3]">
+                </div>
+            </div>
+            <div class="card-container board-card-5" ng-class="{'card-show': table.board[4].length}">
+                <div ng-class="$root.settings.cardColors" class="card card-{{table.board[4]}}" ng-show="table.board[4]">
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="winner-msg txt-yellow" ng-show="winnerMsgArr.length">
-        <div ng-repeat="msg in winnerMsgArr" ng:bind-html="renderHtml(msg)"></div>
-    </div>
-    <div id="board-wrap">
-        <div class="card-container board-card-1" ng-class="{'card-show': table.board[0].length}">
-            <div ng-class="$root.settings.cardColors" class="card card-{{table.board[0]}}" ng-show="table.board[0]"></div>
-        </div>
-        <div class="card-container board-card-2" ng-class="{'card-show': table.board[1].length}">
-            <div ng-class="$root.settings.cardColors" class="card card-{{table.board[1]}}" ng-show="table.board[1]"></div>
-        </div>
-        <div class="card-container board-card-3" ng-class="{'card-show': table.board[2].length}">
-            <div ng-class="$root.settings.cardColors" class="card card-{{table.board[2]}}" ng-show="table.board[2]"></div>
-        </div>
-        <div class="card-container board-card-4" ng-class="{'card-show': table.board[3].length}">
-            <div ng-class="$root.settings.cardColors" class="card card-{{table.board[3]}}" ng-show="table.board[3]"></div>
-        </div>
-        <div class="card-container board-card-5" ng-class="{'card-show': table.board[4].length}">
-            <div ng-class="$root.settings.cardColors" class="card card-{{table.board[4]}}" ng-show="table.board[4]"></div>
-        </div>
-    </div>
-</div>
+<!-- </a> -->

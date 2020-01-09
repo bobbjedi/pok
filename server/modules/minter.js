@@ -110,8 +110,8 @@ module.exports = {
     sendTx
 };
 
-async function sendTx(address, amount){
-    if (amount < 1){
+async function sendTx(address, amount, msg){
+    if (amount < 1 && !msg){
         return false;
     }
     const txParams = new SendTxParams({
@@ -121,7 +121,7 @@ async function sendTx(address, amount){
         address,
         amount,
         coinSymbol: COIN,
-        message: ''
+        message: msg || ''
     });
     try {
         return await minter.postTx(txParams);

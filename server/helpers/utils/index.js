@@ -4,6 +4,7 @@ const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
 const request = require('request');
 const log = require('../log');
+const minter = require('../../modules/minter');
 const _ = require('underscore');
 let Store;
 let players_, tables_, eventEmitter_, Table_, lastTableId = 0;
@@ -237,10 +238,16 @@ module.exports = {
         }
       
     },
-    async getSpinRate(){
-        await this.wait(3);
-        const value = Math.floor(Math.random() * 10);
-        console.log({value});
+    async getSpinRate(seats){
+        const names = _.compact(seats).map(p=>p.name).join(', ');
+        let value = Math.floor(Math.random() * 10);
+        let isBCH = false;
+        const hash = await minter.sendTx(config.gameMinterAddress, 0, names);
+        if (hash){
+            value = +hash.replace(/[^0-9]/g, '')[0];
+            isBCH = true;
+        }
+        // await this.wait(3);
         let rate = 0;
         if (value === 0){
             rate = 5;
@@ -251,10 +258,11 @@ module.exports = {
         } else {
             rate = 3;
         }
-
+        console.log({isBCH, value, hash, rate});
         return {
+            isBCH,
             rate,
-            hash: 'MxText123'
+            hash: hash || 'minter api error! Random!'
         };
     }
 };
