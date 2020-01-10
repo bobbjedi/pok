@@ -4,7 +4,7 @@
  * depending on the replies from the server.
  */
 import app from '../app';
-import socket from '../directives/socket.io';
+import socket from '../services/socket.io';
 
 app.controller('ChatController', ['$scope', '$sce', function($scope, $sce) {
     /**

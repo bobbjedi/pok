@@ -760,13 +760,7 @@ Table.prototype.endRound = async function(str) {
 
     if (!this.pot.isEmpty()) {
         var winnersSeat = this.findNextPlayer(0);
-        const message = this.pot.giveToWinner(this.seats[winnersSeat]);
-        this.log({
-            message,
-            action: '',
-            seat: '',
-            notification: ''
-        });
+        this.pot.giveToWinner(this.seats[winnersSeat], 763);
     }
 
     // Sitting out the players who don't have chips

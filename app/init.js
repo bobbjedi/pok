@@ -4,7 +4,7 @@ import './libs/fonts';
 import 'angular';
 import 'angular-route';
 
-import './directives/socket.io';
+import './services/socket.io';
 import './app';
 import './controllers/lobby';
 import './controllers/chat';

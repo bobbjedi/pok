@@ -262,7 +262,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
    * (e.g. everyone has folded)
    * @param object  winner
    */
-Pot.prototype.giveToWinner = function(winner) {
+Pot.prototype.giveToWinner = function(winner, s) {
     var potsCount = this.pots.length;
     var totalAmount = 0;
     const tableId = this.tableId;
@@ -276,7 +276,7 @@ Pot.prototype.giveToWinner = function(winner) {
     this.reset();
     const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
     table.sendChatMsg(JSON.stringify({_: '{DATA}', winnersData: {[winner.public.name]: {amount: totalAmount}}}));
-    log.info('[#' + tableId + '] ' + msg);
+    log.info('[#' + tableId + '] ' + msg + ' ' + s);
     table.currentGameLog += msg + '<br>';
 };
 

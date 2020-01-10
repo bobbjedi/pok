@@ -4,7 +4,7 @@ import config from '../config';
 import angular from 'angular';
 import _ from 'underscore';
 import $u from './libs/utils';
-import socket from './directives/socket.io';
+import socket from './services/socket.io';
 
 const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {

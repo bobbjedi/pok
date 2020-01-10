@@ -5,7 +5,7 @@
  */
 import $u from '../libs/utils';
 import automoves from './mixins/automoves';
-import socket from '../directives/socket.io';
+import socket from '../services/socket.io';
 import app from '../app';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
