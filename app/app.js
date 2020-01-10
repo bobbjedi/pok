@@ -79,7 +79,7 @@ app.run(function($rootScope, $location) {
         });
     };
     $rootScope.checkUser = checkUser;
-    window.initSocket(checkUser);
+    // window.initSocket(checkUser);
 
     $rootScope.withdraw = _.throttle(function(amount){
         noty('info', 'Заявка сформирована!');

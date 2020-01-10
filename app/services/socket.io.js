@@ -19,7 +19,7 @@ window.listeningRedirect = () =>{
             return;
         }
 
-        // window.showPreloader();
+        window.showPreloader();
         noty('success', data.msg || 'Авто переход за активный стол!');
         location.assign(location.origin + '/#!/' + data.link);
         setTimeout(window.hidePreloader, 1500);
