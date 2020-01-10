@@ -485,6 +485,7 @@ div.row {
 }
 
 .but_pol {
+    min-width: 65px;
     border-radius: 13px;
     display: block;
     text-align: center;

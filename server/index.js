@@ -15,8 +15,9 @@ const express = require('express'),
 
 function createServer(app){
     const ssl = getSSLFiles();
-    console.log({ssl});
+    console.log({ssl: !!ssl});
     if (!ssl){
+        app.listen(port, () => log.info('Server listening on port ' + port + ' http://localhost:' + port));
         return require('http').createServer(app);
     }
     log.info('HTTPS Poker server listening on port ' + port);
