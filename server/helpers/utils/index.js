@@ -300,32 +300,31 @@ setTimeout(()=>{
 
     // SPIN
 
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 6;
-    data.playersCount = 3;
+    const dataSpin = JSON.parse(JSON.stringify(config.sng));
+    dataSpin.count = 6;
+    dataSpin.playersCount = 3;
+    dataSpin.winnersCount = 1;
+    dataSpin.chips = 800,
+    dataSpin.timeOutMult = 3; // минут
+    dataSpin.isSpin = true;
+    dataSpin.name = 'SPIN And Go';
+
+    data = JSON.parse(JSON.stringify(dataSpin));
     data.buyIn = 20;
-    data.winnersCount = 1;
-    data.isSpin = true;
-    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
 
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 6;
-    data.playersCount = 3;
+    data = JSON.parse(JSON.stringify(dataSpin));
     data.buyIn = 50;
-    data.winnersCount = 1;
-    data.isSpin = true;
-    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
 
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 6;
-    data.playersCount = 3;
+    data = JSON.parse(JSON.stringify(dataSpin));
     data.buyIn = 100;
-    data.winnersCount = 1;
-    data.isSpin = true;
-    data.name = 'SPIN And Go';
     module.exports.tmpTourn(data);
+
+    data = JSON.parse(JSON.stringify(dataSpin));
+    data.buyIn = 250;
+    module.exports.tmpTourn(data);
+
 });
 
 
