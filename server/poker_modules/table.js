@@ -382,7 +382,6 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = async function(changeDealer) {
-    return;
     this.lastActiveSetWaitMove = {seat: null, move: null}; 
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
