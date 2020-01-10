@@ -30,7 +30,7 @@ app.directive('seat', [function() {
                     return scope.myCards[card];
                 }
                 else if (typeof scope.player !== 'undefined' && scope.player && scope.player.cards && scope.player.cards[card]) {
-                    return 'card-' + scope.player.cards[card];
+                    return 'card-' + (scope.player.cards[card] === 'Ad' ? 'Ar' : scope.player.cards[card]);
                 }
                 else {
                     return 'card-back';

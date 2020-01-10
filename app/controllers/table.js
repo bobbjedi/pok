@@ -83,6 +83,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.table = data.table;
                     $scope.buyInAmount = Math.min(data.table.maxBuyIn, $rootScope.user.deposit);
                     $scope.betAmount = data.table.bigBlind;
+                    $scope.table.board = $scope.table.board.map(c=> c === 'Ad' ? 'Ar' : c);
                     $scope.checkUserSeat();
                 }
             });
@@ -354,6 +355,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if (data.board[0].length && data.board.toString() !== predCards){
                 sounds.playCardSound();
                 predCards = data.board.toString();
+                data.board = data.board.map(c=>c === 'Ad' ? 'Ar' : c);
             }
             $scope.table = data;
             $scope.checkUserSeat();

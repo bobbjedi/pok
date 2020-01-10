@@ -46,6 +46,9 @@ const upCards = hands =>{
                 const {classList} = el;
                
                 hand.forEach(c=>{
+                    if (c === 'Ad'){
+                        c = 'Ar';
+                    }
                     if (classList.contains('card-' + c)){
                         classList.add('card-highlight');
                     }
