@@ -198,7 +198,7 @@ io.sockets.on('connection', function(socket) {
             }
             player.socket.emit('dealingCards', player.cards);
             const table = tables[player.sittingOnTable];
-            if (player.seat >= 0 && player.seat === table.public.activeSeat){
+            if (table && player.seat >= 0 && player.seat === table.public.activeSeat){
                 console.log('table.lastActiveSetWaitMove>', player.seat, table.lastActiveSetWaitMove);
                 player.socket.emit(table.lastActiveSetWaitMove.move);
             }
