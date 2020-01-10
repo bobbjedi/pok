@@ -382,10 +382,12 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
  * Method that starts a new game
  */
 Table.prototype.initializeRound = async function(changeDealer) {
+    return;
     this.lastActiveSetWaitMove = {seat: null, move: null}; 
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
+        
         console.log('initializeRound Stop ID:', this.public.id);
         this.public.activeSeat = null;
         this.emitEvent('table-data', this.public);
@@ -395,6 +397,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
         if (!this.isTourn){
             this.emitEvent('noty', {type: 'error', msg: 'Стоп игры!'});
         }
+        
         return;
     }
     const {data} = this.public;
