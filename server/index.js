@@ -1,4 +1,6 @@
 const express = require('express'),
+    log = require('./helpers/log'),
+    port = 3000,
     bodyParser = require('body-parser'),
     fileUpload = require('express-fileupload'),
     app = express(),
@@ -8,14 +10,13 @@ const express = require('express'),
     Table = require('./poker_modules/table'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
-    log = require('./helpers/log'),
     Store = require('./modules/Store');
 
 
 function createServer(app){
     const ssl = getSSLFiles();
+    console.log({ssl});
     if (!ssl){
-        app.listen(port, () => log.info('Server listening on port ' + port + ' http://localhost:' + port));
         return require('http').createServer(app);
     }
     log.info('HTTPS Poker server listening on port ' + port);
@@ -45,8 +46,7 @@ var players = {};
 var tables = {};
 var eventEmitter = {};
 
-var port = process.env.PORT || 3000;
-server.listen(port);
+// server.listen(port);
 
 // The lobby
 app.get('/', function(req, res) {
@@ -698,17 +698,18 @@ Store.players = players;
 
 function getSSLFiles(){
     const fs = require('fs');
-    if (!fs.existsSync('./.ssl')){
+    const dir = './server/ssl/';
+    if (!fs.existsSync(dir)){
         return false;
     }
-    log.info('Is SSL');
+    console.info('Is SSL');
     let key = null;
     let cert = null;
-    fs.readdirSync('./.ssl').forEach(f=>{
+    fs.readdirSync(dir).forEach(f=>{
         if (f.includes('.key')){
-            key = fs.readFileSync('./ssl/' + f);
+            key = fs.readFileSync(dir + f);
         } else if (f.includes('.crt')){
-            cert = fs.readFileSync('./ssl/' + f);
+            cert = fs.readFileSync(dir + f);
         }
     });
     if (key && cert){
