@@ -105,6 +105,7 @@ module.exports = Table =>{
         const {tournSeats} = this.public;
         const player = this.seats[seat];
         const chipsInPlay = player ? player.public.chipsInPlay : tournSeats[seat].chipsInPlay;
+        let toPot = Math.min(player.public.chipsInPlay, amount);
         tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
         if (player && player.public.chipsInPlay > 0){
             player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
@@ -113,5 +114,6 @@ module.exports = Table =>{
                 player.public.chipsInPlay = tournSeats[seat].chipsInPlay = 0;
             }
         }
+        return toPot;
     };
 };

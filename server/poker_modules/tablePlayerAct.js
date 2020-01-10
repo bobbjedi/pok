@@ -58,6 +58,11 @@ module.exports = Table =>{
 
         this.playersInHandCount--;
         this.pot.removePlayer(this.public.activeSeat);
+       
+        if (this.isShowDown) {
+            return;
+        };
+       
         if (this.playersInHandCount <= 1) {
             this.pot.addTableBets(this.seats);
             var winnersSeat = this.findNextPlayer();
@@ -256,7 +261,7 @@ module.exports = Table =>{
                 // если турнир - обновляем данные по фишкам в остатке при удалении игрока
                 const {tournSeats} = this.public;
                 if (this.isTournStart && tournSeats[seat]){
-                    this.updateTournSeat(seat);
+                    // this.updateTournSeat(seat);
                     tournSeats[seat].isOut = true;
                 }
 

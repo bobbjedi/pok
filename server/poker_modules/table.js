@@ -434,7 +434,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
                 if (this.isTournStart){ // анте всем
-                    this.updateTournSeat(i);
+                    this.pot.pots[0].amount += this.updateTournSeat(i);
                 }
                 if (!this.seats[i].public.chipsInPlay) {
                     this.seats[i].sitOut(true); // this.seats[seat].sitOut();
