@@ -402,6 +402,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
     const {data} = this.public;
 
     if (data.isSpin && !data.spin){
+        let timeOutStart = $u.unix();
         this.emitEvent('waitSpinRate');
         data.spin = await $u.getSpinRate(this.public.seats);
         this.public.tournPrize = data.spin.rate * this.public.maxBuyIn;
@@ -409,9 +410,9 @@ Table.prototype.initializeRound = async function(changeDealer) {
             this.sendChatMsg(`<a  target="blank_" href="https://explorer.minter.network/transactions/${data.spin.hash}">TX hash: ${data.spin.hash.slice(0, 10)}... Mult: x${data.spin.rate}</a>`);
         }
         setTimeout(()=>{
-            this.emitEvent('getSpinRate', data.spin);
             this.initializeRound(changeDealer);
-        }, 2000);
+            this.emitEvent('getSpinRate', data.spin);
+        }, 3000 - ($u.unix() - timeOutStart));
         return;
     }
     // this.clearTimeoutPlayerAction('initializeRound');

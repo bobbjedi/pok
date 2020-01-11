@@ -1,7 +1,7 @@
 import sounds from '../../services/sounds';
 
 export default ($scope, $rootScope) => {
-   
+
     $scope.isShowTournModal = false;
     $scope.isWaitSpinRate = false;
     $scope.spin = {rate: 0, hash: ''};
@@ -23,5 +23,4 @@ export default ($scope, $rootScope) => {
         setTimeout(()=> $scope.isWaitSpinRate = false, 0);
         // $scope.isWaitSpinRate = false;
     };
-
 };
