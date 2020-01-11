@@ -30,7 +30,7 @@
             </div>
             <div class="input-line">
                 <label>buyIn</label>
-                <input v-model.number="tourn.buyIn" type="number"> 
+                <input v-model.number="tourn.buyIn" type="number">
             </div>
             <div class="input-line">
                 <label>winnersCount</label>
@@ -55,8 +55,8 @@
             <div class="input-line">
                 <label>timeOutMult</label>
                 <input v-model.number="tourn.timeOutMult" type="number">
-            </div>         
-            
+            </div>
+
             <div @click="createMtt" class="but hovered bg-green">Открыть регу</div>
         </div>
         <span v-if="tab === 'users'">
@@ -84,20 +84,20 @@
                     <td @click="editUserId = u._id" v-if="editUserId !== u._id">Edit</td>
                     <td @click="editUser(u);" v-if="editUserId === u._id">Save</td>
                     <td @click="getTx(u)">Tx</td>
-                    
+
                     <td v-show="editUserId !== u._id">{{u.login}}</td>
                     <td v-show="editUserId !== u._id">{{u.timestamp}}</td>
                     <td v-show="editUserId !== u._id">{{u.address}}</td>
                     <td v-show="editUserId !== u._id">{{u.deposit}}</td>
                     <td v-show="editUserId !== u._id">{{u.depositInGame}}</td>
-                        
-                        
+
+
                     <td v-show="editUserId == u._id"><input v-model="u.login" /></td>
                     <td v-show="editUserId == u._id"><input v-model="u.timestamp" /></td>
                     <td v-show="editUserId == u._id"><input v-model="u.address" /></td>
                     <td v-show="editUserId == u._id"><input v-model.number="u.deposit" /></td>
                     <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame" /> !!</td>
-                   
+
                 </tr>
             </table>
         </div>
@@ -198,7 +198,7 @@
                 resetMtt : () =>api({action: 'rmMtt', data: {isReturn: true}}, data =>console.log('rmMtt', data)),
                 multReturnChips(){
                     api({
-                        action: 'multReturnChips', 
+                        action: 'multReturnChips',
                         data: {
                             amount: this.multReturn.amount,
                             logins: stringToArray(this.multReturn.userList)
@@ -277,7 +277,7 @@
 
 
     function multi(res) {
-        return;
+        // return;
         res.forEach(u => {
                 const {games, bet, raise, fold, call} = u;
                 u.maxGamesWith = getMax(games);
