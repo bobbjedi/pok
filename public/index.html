@@ -13,8 +13,6 @@
     <link href="./styles/styles.css" rel="stylesheet" type="text/css" />
     <link href="./styles/noty.css" rel="stylesheet" type="text/css" />
     <link href="./styles/common.css" rel="stylesheet" type="text/css" />
-    <link rel="preload" href="./images/deck.png" as="image" />
-    <link rel="preload" href="./images/deck4.png" as="image" />
     <meta property="og:image" content="https://poker.cr-games.club/images/logo.png" />
     <meta property="og:title" content="Minter.Poker" />
     <meta property="og:description"
@@ -31,6 +29,11 @@
     <div id="preloader"><img class="rotate" src="./images/preloader.png"></div>
     <div id="content" ng-view="ng-view" ng-controller="LobbyController"></div>
     <script src="./dist/build.js"></script>
+    <div style="display: none;">
+        <img src="./images/deck.png" />
+        <img src="./images/deck4.png" />
+        <img src="./images/dice.gif" />
+    </div>
 </body>
 
 </html>

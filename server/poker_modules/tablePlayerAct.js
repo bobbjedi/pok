@@ -58,16 +58,22 @@ module.exports = Table =>{
 
         this.playersInHandCount--;
         this.pot.removePlayer(this.public.activeSeat);
-       
+
         if (this.isShowDown) {
             return;
         };
-       
-        if (this.playersInHandCount <= 1) {
+
+        if (this.playersInHandCount <= 1) { // завершаем раунд
+
+            this.isShowDown = true;
+            this.public.activeSeat = null;
+            this.lastActiveSetWaitMove = {seat: null, move: null};
+            this.clearTimeoutPlayerAction();
+
             this.pot.addTableBets(this.seats);
             var winnersSeat = this.findNextPlayer();
             this.pot.giveToWinner(this.seats[winnersSeat], 64);
-            this.isShowDown = true;
+
             setTimeout(()=>{
                 this.isShowDown = false;
                 this.endRound(68);
@@ -79,7 +85,6 @@ module.exports = Table =>{
                 this.actionToNextPlayer();
             }
         }
-        // this.clearTimeoutPlayerAction('playerFolded');
     };
 
 
@@ -332,7 +337,7 @@ module.exports = Table =>{
         // If the player had betted, add the bets to the pot
         if (this.seats[seat].public.bet) {
             this.pot.addPlayersBets(this.seats[seat]);
-        }     
+        }
         console.log({seat, isShowDown: this.isShowDown}, this.public.activeSeat);
         this.pot.removePlayer(seat);
 

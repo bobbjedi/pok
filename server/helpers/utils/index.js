@@ -56,7 +56,7 @@ module.exports = {
             });
         });
     },
-    
+
     async updateUserDeposit(user, amount, isNoNeedSave){
         try {
             if (_.isNumber(amount) && amount !== 0){
@@ -150,7 +150,7 @@ module.exports = {
         } else {
             i = ++lastTableId;
         }
-        
+
         data.userListArray = [];
         if (data.userList && data.userList !== ''){
             data.userList = data.userList.replace('  ', ' ').replace('  ', ' ');
@@ -213,10 +213,9 @@ module.exports = {
      * Начисляет сумму все юзерам на баланс
      * @param {Array} logins массив логинов
      * @param {Number} amount сумма
-     *  
+     *
      */
     async multSendCoins(logins, amount){
-        console.log(amount);
         try {
             if (!amount){
                 log.warn('multSendCoins amoutn = ' + amount);
@@ -235,7 +234,7 @@ module.exports = {
             console.log(e);
             log.error('multSendCoins ' + e);
         }
-      
+
     },
     async getSpinRate(seats){
         const names = _.compact(seats).map(p=>p.name).join(', ');

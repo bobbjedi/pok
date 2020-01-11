@@ -263,6 +263,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
    * @param object  winner
    */
 Pot.prototype.giveToWinner = function(winner, s) {
+    console.log('giveToWinner', s);
     var potsCount = this.pots.length;
     var totalAmount = 0;
     const tableId = this.tableId;
