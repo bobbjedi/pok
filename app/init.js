@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Noty from './libs/noty';
 import './libs/fonts';
 
@@ -104,3 +105,5 @@ window.copyAddress = () => {
         window.launchFullScreen();
     };
 })();
+
+window.generateRndAvatar = ()=> '/avatars_default/default_' + _.random(1, 27) + '.jpg';
