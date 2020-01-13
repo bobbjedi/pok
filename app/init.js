@@ -106,4 +106,10 @@ window.copyAddress = () => {
     };
 })();
 
-window.generateRndAvatar = ()=> '/avatars_default/default_' + _.random(1, 27) + '.jpg';
+window.generateRndAvatar = img => {
+    const liter = img.src.match(/avatars(.*?)\.jpg/)[1][1];
+    if (!liter){
+        return;
+    }
+    img.src = '/avatars_default/default_' + (liter.charCodeAt(0) - 96) + '.jpg';
+};
