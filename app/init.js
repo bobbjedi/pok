@@ -108,9 +108,7 @@ window.copyAddress = () => {
 
 window.generateRndAvatar = img => {
     const liter = img.src.match(/avatars(.*?)\.jpg/)[1][1];
-    if (!liter){
-        return;
+    if (liter){
+        img.src = '/avatars_default/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.jpg';
     }
-    console.log(liter);
-    img.src = '/avatars_default/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.jpg';
 };
