@@ -111,5 +111,6 @@ window.generateRndAvatar = img => {
     if (!liter){
         return;
     }
+    console.log(liter);
     img.src = '/avatars_default/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.jpg';
 };
