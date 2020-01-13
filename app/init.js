@@ -109,6 +109,14 @@ window.copyAddress = () => {
 window.generateRndAvatar = img => {
     const liter = img.src.match(/avatars(.*?)\.jpg/)[1][1];
     if (liter){
-        img.src = '/avatars_png/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.png';
+        const num = liter.toLowerCase().charCodeAt(0) - 96;
+        let src = '';
+        if (num < 1 || num > 27){
+            src = '/avatars/default.jpg';
+        } else {
+            // src = '/avatars_png/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.png';
+            src = '/avatars_default/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.jpg';
+        }
+        img.src = src;
     }
 };
