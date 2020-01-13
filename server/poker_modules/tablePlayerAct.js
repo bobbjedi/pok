@@ -256,8 +256,6 @@ module.exports = Table =>{
 
             // If someone is really sitting on that seat
             if (this.seats[seat].public.name) {
-                var nextAction = '';
-
                 // If the player is sitting in, make them sit out first
                 if (this.seats[seat].public.sittingIn) {
                     this.playerSatOut(seat, true);

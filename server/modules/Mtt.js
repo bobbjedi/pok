@@ -34,10 +34,14 @@ module.exports = class Mtt{
             }, 1);
             // Собираем игроков
             for (const u of this.params.users){
+                if (this.addedPlayers.includes(u)){
+                    return log.error('Уже добавлен в МТТ: ' + u);
+                }
+                this.addedPlayers.push(u);
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
-                    if (player.public.name === u && !player.public.sittingIn && !this.addedPlayers.includes(u)){ // онлайн и не за столом
+                    if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
                         this.players.push(player);
                         player.isTourn = true;
                         isAdded = true;
@@ -46,15 +50,12 @@ module.exports = class Mtt{
                     }
                 }
                 if (!isAdded){ // Если играет или занят - создаем клона
-                    // console.log(u, 'неполучилось забрать');
-                    // return;
                     const player = await $u.createOffLinePlayer(u);
                     player.isTourn = true;
                     this.players.push(player);
                     log.warn('MTT: createOffLinePlayer ' + u);
                     this.offlinePlayersToStart.push(u);
                 }
-                this.addedPlayers.push(u);
             }
             this.isStarted = true;
 
@@ -164,7 +165,7 @@ module.exports = class Mtt{
     updateGlobalPlayers(){
         try {
             this.players.forEach(player=>{
-                console.log(player.socket.id);
+                console.log('updateGlobalPlayers:', player.public.name, player.socket.id);
                 if (!Store.players[player.socket.id]){
                     log.warn('MTT Резервное добавление: ' + player.public.name);
                     Store.players[player.socket.id] = player;
@@ -323,7 +324,7 @@ module.exports = class Mtt{
 };
 
 setTimeout(async () => {
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
