@@ -138,7 +138,7 @@ io.sockets.on('connection', function(socket) {
             // }
             if (player.isTourn && player.sittingOnTable === +tableId){
                 log.info('Вернулся в турнир за стол: ' + player.public.name);
-                tables[tableId].public.tournSeats[player.seat].isOut = false;
+                // tables[tableId].public.tournSeats[player.seat].isOut = false;
             }
         } catch (e){
             console.log(e);
@@ -289,22 +289,22 @@ io.sockets.on('connection', function(socket) {
             if (!table){
                 callback({ 'success': false, 'error': 'Стола не существует' });
             }
-            if (table.isTournStart && !player.sittingOnTable){ // если турнир
-                const {tournSeats} = table.public;
-                for (let s in tournSeats){
-                    if (tournSeats[s] && tournSeats[s].name === player.public.name){
-                        player.public.chipsInPlay = 0;
-                        await player.updateDepInPlay();
-                        player.public.chipsInPlay = tournSeats[s].chipsInPlay;
-                        tournSeats[s].isOut = false;
-                        player.chips = 0;
-                        player.isTourn = true; // определяем что в турнире
-                        player.sittingOnTable = true;
-                        tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
-                        callback({ 'success': true, seat: s});
-                        return log.info('Return in Tourn: ' + player.public.name);
-                    }
-                }
+            if (table.isTournStart){ // если турнир
+                // const {tournSeats} = table.public;
+                // for (let s in tournSeats){
+                //     if (tournSeats[s] && tournSeats[s].name === player.public.name){
+                //         player.public.chipsInPlay = 0;
+                //         await player.updateDepInPlay();
+                //         player.public.chipsInPlay = tournSeats[s].chipsInPlay;
+                //         tournSeats[s].isOut = false;
+                //         player.chips = 0;
+                //         player.isTourn = true; // определяем что в турнире
+                //         player.sittingOnTable = true;
+                //         tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
+                //         callback({ 'success': true, seat: s});
+                //         return log.info('Return in Tourn: ' + player.public.name);
+                //     }
+                // }
                 return callback({ 'success': false, error: 'Вы не участвуете в турнире.'});
             } else if (table.isTourn && table.public.data.userListArray.length && !table.public.data.userListArray.includes(player.public.name)){
                 return callback({ 'success': false, error: 'Вы не заявлены на этот стол.'});
@@ -641,13 +641,13 @@ io.sockets.on('connection', function(socket) {
 
 $u.disconnectPlayerInTourn = player=>{
     player.public.isDisconnect = true;
-    const table = tables[player.sittingOnTable];
-    if (table && table.public.tournSeats){
-        table.public.tournSeats[player.seat].isOut = true;
-    }
-    else {
-        // $u.removePlayer(player.socket);
-    }
+    // const table = tables[player.sittingOnTable];
+    // if (table && table.public.tournSeats){
+    // table.public.tournSeats[player.seat].isOut = true;
+    // }
+    // else {
+    // $u.removePlayer(player.socket);
+    // }
     return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
 };
 

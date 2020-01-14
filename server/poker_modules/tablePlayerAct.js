@@ -262,11 +262,11 @@ module.exports = Table =>{
                 }
 
                 // если турнир - обновляем данные по фишкам в остатке при удалении игрока
-                const {tournSeats} = this.public;
-                if (this.isTournStart && tournSeats[seat]){
-                    // this.updateTournSeat(seat);
-                    tournSeats[seat].isOut = true;
-                }
+                // const {tournSeats} = this.public;
+                // if (this.isTournStart && tournSeats[seat]){
+                // this.updateTournSeat(seat);
+                // tournSeats[seat].isOut = true;
+                // }
 
                 this.seats[seat].leaveTable();
 

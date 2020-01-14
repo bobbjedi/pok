@@ -77,7 +77,9 @@ module.exports = Table =>{
             // удаляем трупов
             const {tournSeats} = this.public;
             for (let i in this.seats) {
-                if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
+                if (tournSeats[i] && (
+                    // tournSeats[i].isOut ||
+                    !this.seats[i] || this.seats[i].public.isDisconnect)) {
                     const player = this.seats[i];
                     if (player){
                         $u.removePlayer(player.socket);
@@ -85,7 +87,7 @@ module.exports = Table =>{
                     }
                 }
             }
-            
+
             if (!this.public.data.isOnce) {
                 $u.tmpTourn(this.public.data);
             }
@@ -101,19 +103,30 @@ module.exports = Table =>{
     };
 
     Table.prototype.updateTournSeat = function(seat, amount){
-        amount = amount || this.public.ante;
-        const {tournSeats} = this.public;
         const player = this.seats[seat];
-        const chipsInPlay = player ? player.public.chipsInPlay : tournSeats[seat].chipsInPlay;
-        let toPot = Math.min(player.public.chipsInPlay, amount);
-        tournSeats[seat].chipsInPlay = $u.round(chipsInPlay - amount);
-        if (player && player.public.chipsInPlay > 0){
-            player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
-            console.log('ANTE:', {name: player.public.name, seat, amount});
-            if (player.public.chipsInPlay < 0){
-                player.public.chipsInPlay = tournSeats[seat].chipsInPlay = 0;
-            }
+        if (!player){
+            log.error('updateTournSeat is not player: ', seat);
+            return;
         }
+        amount = amount || this.public.ante;
+        const playerChipsInPlay = player.public.chipsInPlay;
+        const toPot = Math.min(player.public.chipsInPlay, amount);
+        const chipsInPlay = $u.round(playerChipsInPlay - amount);
+        if (chipsInPlay > 0){
+            player.public.chipsInPlay = chipsInPlay;
+        } else {
+            player.public.chipsInPlay = 0;
+        }
+        console.log('ANTE:', {name: player.public.name, seat, amount});
+        // if (player.public.chipsInPlay > 0){
+        //     player.public.chipsInPlay = tournSeats[seat].chipsInPlay;
+        //     console.log('ANTE:', {name: player.public.name, seat, amount});
+        //     if (player.public.chipsInPlay < 0){
+        //         player.public.chipsInPlay = tournSeats[seat].chipsInPlay = 0;
+        //     }
+        // }
+
+
         return toPot;
     };
 };

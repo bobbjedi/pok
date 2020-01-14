@@ -193,7 +193,8 @@ Table.prototype.setTimeoutWait = function(){
             }
         };
         let timeOut = (config.timeOutWait + 3) * 1000;
-        if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
+        // if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
+        if (this.seats[activeSeat].public.isDisconnect){
             // console.log(lastActiveUserLogin + ' timeOut 3s');
             timeOut = 3000;
         }
