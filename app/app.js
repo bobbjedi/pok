@@ -46,13 +46,15 @@ app.run(function($rootScope, $location) {
         };
     };
     $rootScope.timeOutCurrent = 0;
-    setInterval(requestAnimationFrame(()=>{
-        if ($rootScope.timeOutCurrent > 0){
-            $rootScope.$digest();
-        }
-        $rootScope.timeOutCurrent--;
-        $rootScope.secondTimeOutMtt && $rootScope.secondTimeOutMtt();
-    }), 1000);
+    setInterval(() => {
+        requestAnimationFrame(() => {
+            if ($rootScope.timeOutCurrent > 0) {
+                $rootScope.$digest();
+            }
+            $rootScope.timeOutCurrent--;
+            $rootScope.secondTimeOutMtt && $rootScope.secondTimeOutMtt();
+        });
+    }, 1000);
     $rootScope.updateTimeOut = function(){
         $rootScope.timeOutCurrent = config.timeOutWait;
     };

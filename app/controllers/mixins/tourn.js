@@ -29,14 +29,14 @@ export default ($scope, $rootScope) => {
                 $scope.publicMtt = data;
                 concatPlayers();
             });
-            $rootScope.secondTimeOutMtt = ()=>{
-                $scope.publicMtt.timerShufflePlayers--;
-                $scope.publicMtt.multBlinds--;
-            };
+            // $rootScope.secondTimeOutMtt = ()=>{
+            //     $scope.publicMtt.timerShufflePlayers--;
+            //     $scope.publicMtt.multBlinds--;
+            // };
         } else {
             $rootScope.secondTimeOutMtt = null;
             $scope.publicMtt = null;
-            socket.removeListener('public-mtt');
+            // socket.removeListener('public-mtt');
         }
     });
 
