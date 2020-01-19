@@ -29,7 +29,12 @@ export default ($scope, $rootScope) => {
                 $scope.publicMtt = data;
                 concatPlayers();
             });
+            $rootScope.secondTimeOutMtt = ()=>{
+                $scope.publicMtt.timerShufflePlayers--;
+                $scope.publicMtt.multBlinds--;
+            };
         } else {
+            $rootScope.secondTimeOutMtt = null;
             $scope.publicMtt = null;
             socket.removeListener('public-mtt');
         }
@@ -45,10 +50,9 @@ export default ($scope, $rootScope) => {
         publicMtt.countOnline = 0;
         publicMtt.timerShufflePlayers = (publicMtt.timers.randomPlayers - publicMtt.unix) / 1000;
         publicMtt.timerMultBlinds = (publicMtt.timers.multBlinds - publicMtt.unix) / 1000;
-        console.log(publicMtt);
         for (let tId in publicMtt.tables) {
             publicMtt.tables[tId].seats.forEach(p => {
-                if (p.name) {
+                if (p.name && p.chipsInPlay > 0) {
                     publicMtt.playersList.push(p);
                     p.isDisconnect ? publicMtt.countOffline++ : publicMtt.countOnline++;
                 }

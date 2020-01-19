@@ -24,7 +24,7 @@
             <h3>Сводка МТТ</h3>
             <div class="txt-white">
                 <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
-                <span>До роста Blinds: {{$root.normaliseSeconds(publicMtt.timerMultBlinds)}}</span>
+                <span>До роста Blinds: {{publicMtt.timerMultBlinds > 0 ? $root.normaliseSeconds(publicMtt.timerMultBlinds) : 'Рост!'}}</span>
             </div>
             <div class="txt-white">
                 <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>

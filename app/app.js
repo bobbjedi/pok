@@ -34,7 +34,6 @@ const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $
 });
 
 app.run(function($rootScope, $location) {
-    console.log('init');
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,
@@ -47,12 +46,13 @@ app.run(function($rootScope, $location) {
         };
     };
     $rootScope.timeOutCurrent = 0;
-    setInterval(()=>{
+    setInterval(requestAnimationFrame(()=>{
         if ($rootScope.timeOutCurrent > 0){
             $rootScope.$digest();
         }
         $rootScope.timeOutCurrent--;
-    }, 1000);
+        $rootScope.secondTimeOutMtt && $rootScope.secondTimeOutMtt();
+    }), 1000);
     $rootScope.updateTimeOut = function(){
         $rootScope.timeOutCurrent = config.timeOutWait;
     };
