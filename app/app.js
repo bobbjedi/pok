@@ -52,7 +52,7 @@ app.run(function($rootScope, $location) {
                 $rootScope.$digest();
             }
             $rootScope.timeOutCurrent--;
-            $rootScope.secondTimeOutMtt && $rootScope.secondTimeOutMtt();
+            // $rootScope.secondTimeOutMtt && $rootScope.secondTimeOutMtt();
         });
     }, 1000);
     $rootScope.updateTimeOut = function(){
