@@ -762,3 +762,17 @@ div.row {
     font-size: 10%;
     color: rgb(56, 55, 55); */
 }
+
+
+.mttPlayersList{
+   
+}
+.mttPlayersList tr{
+    padding: 1px;
+    border-bottom: 1px solid #aaafb0;
+}
+.mttPlayersListContainer{
+    background: #000000;
+    overflow-y: auto;
+    max-height: 40vh;
+}

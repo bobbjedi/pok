@@ -9,7 +9,6 @@ let $u,
 
 module.exports = class Mtt{
     constructor(params){
-        // return;
         Store = require('../modules/Store');
         $u = require('../helpers/utils');
         this.isStarted = false;
@@ -21,8 +20,19 @@ module.exports = class Mtt{
         this.offlinePlayersToStart = [];
         this.timeParams = sng();
         this.addedPlayers = [];
+        this.id = $u.unix(),
+        this.public = {
+            tables: {},
+            timers: {
+                randomPlayers: 0, 
+                multBlinds: 0
+            },
+            get unix(){
+                return $u.unix();
+            }
+        };
         this.init();
-        console.log({params});
+        Store.publicMtt = this.public;
     }
 
     async init(){
@@ -61,6 +71,7 @@ module.exports = class Mtt{
             }
             this.isStarted = true;
             await this.nextRound(true);
+            this.updateDisconnected();
         } catch (e) {
             console.log(e);
             log.error('Catch MTT.init: ' + e);
@@ -99,6 +110,7 @@ module.exports = class Mtt{
     */
     async createTables(playersLeftChips = null) {
         try {
+            this.public.tables = {};
             const arrTables = this.mathTables();
             let numTbl = arrTables.length;
             let numUsr = this.players.length;
@@ -144,8 +156,11 @@ module.exports = class Mtt{
                     player.link = link;
                     player.socket.emit('redirectOntable', {link, msg: 'Переход за стол МТТ'});
                 }
+                this.updatePublcParams({tableId: tableId, status: 'inGame', playersLeftChips});
                 if (this.tables.length > 1){ // не последний стол
-                    setTimeout(()=> this.stoppedGames(), this.params.timeOutShufflePlayers * 60 * 1000);
+                    const timeOut = this.params.timeOutShufflePlayers * 60 * 1000;
+                    this.updatePublcParams({timeOutShufflePlayers: timeOut});
+                    setTimeout(()=> this.stoppedGames(), timeOut);
                 }
                 if (this.isFinal){
                     setTimeout(()=>Store.tables[this.tables[0]].emitEvent('noty', {type: 'info', msg: 'Финал!'}), 5000);
@@ -186,6 +201,7 @@ module.exports = class Mtt{
         try {
             log.info('МТТ PlayersSittingInCount ' + count + ' #' + tableId);
             console.log({leftInGame});
+            this.updatePublcParams({tableId});
             if (this.tables.includes(tableId)){
                 this.countInTables[tableId] = count;
             }
@@ -225,6 +241,7 @@ module.exports = class Mtt{
             if (!Store.tables[id]){
                 return;
             }
+            this.updatePublcParams({tableId: id, status: 'finished'});
             log.info('MTT callBackStoppedRoundMTT: ' + id);
             console.log(' this.tables >', this.tables);
             if (this.isFinal){
@@ -304,9 +321,11 @@ module.exports = class Mtt{
             });
             this.nextTimeParams = next;
             log.info('MTT updateTournParams: ' + JSON.stringify(next));
+            const timeOut = this.params.timeOutMult * 60 * 1000;
             this.timeOutUpdateTourn = setTimeout(()=>{
                 this.updateTournParams();
-            }, 300 * 1000);
+            }, timeOut);
+            this.updatePublcParams({updateTournParams: timeOut});
         } catch (e){
             console.log(e);
             log.error('Catch MTT.updateTournParams: ' + e);
@@ -314,23 +333,91 @@ module.exports = class Mtt{
 
     }
 
-    finish(){
+    updatePublcParams(params) {
+        try {
+            console.log(params);
+            const publicMtt = this.public;
+            const {tableId, status, playersLeftChips, timeOutShufflePlayers, updateTournParams} = params;
+            if (tableId) { // обновляем игроков
+                let chipsData = false;
+                let startChips = false;
+                if (status === 'inGame' && !playersLeftChips){
+                    startChips = this.params.chips;
+                } else if (status === 'inGame' && playersLeftChips){
+                    chipsData = playersLeftChips;
+                }
+                const table = Store.tables[tableId];
+                publicMtt.tables[tableId] = publicMtt.tables[tableId] || {};
+                const punblicTable = publicMtt.tables[tableId];
+                punblicTable.seats = [];
+                table.public.seats.forEach(s => {
+                    punblicTable.seats.push({
+                        name: s.name,
+                        chipsInPlay: startChips || chipsData && chipsData[s.name] || s.chipsInPlay,
+                        isDisconnect: s.isDisconnect
+                    });
+                });
+                if (status){
+                    punblicTable.status = status;
+                }
+            };
+            // таймауты
+            if (timeOutShufflePlayers){
+                const {timers} = this.public;
+                timers.randomPlayers = timeOutShufflePlayers + $u.unix();
+            }
+            if (updateTournParams){
+                const {timers} = this.public;
+                timers.multBlinds = updateTournParams + $u.unix();
+            }
+            this.sendPublicPlayers();
+        } catch (e){
+            console.log(e);
+            log.error('Catch MTT.updatePublcParams: ' + e);
+        }
+    }
+    sendPublicPlayers(){
+        Store.io.emit('public-mtt', this.public);
+    }
+    // Обновляем состояние онлайнов для сводки
+    updateDisconnected() {
+        this.timeOutUpdateDisconnected = setTimeout(() => {
+            try {
+                this.tables.forEach(tId => {
+                    this.public.tables[tId].seats.forEach(s=>{
+                        const player = this.players.find(p => p.public.name === s.name);
+                        if (player){
+                            s.isDisconnect = player.public.isDisconnect;
+                        }
+                    });
+                });
+                this.sendPublicPlayers();
+                this.updateDisconnected();
+            } catch (e) {
+                console.log(e);
+                log.error('Catch MTT.updateDisconnected: ' + e);
+            }
+        }, 5000);
+    }
+
+    finish() {
         log.info('FINISH MTT!');
-        this.players.forEach(p=>{
+        this.players.forEach(p => {
             delete Store.players[p.socket.id];
         });
         delete Store.tables[this.tables[0]];
         clearTimeout(this.timeOutUpdateTourn);
+        clearTimeout(this.timeOutUpdateDisconnected);
     }
 };
 
 setTimeout(async () => {
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
     Store.system.mtt.chips = 50;
-    Store.system.mtt.timeOutShufflePlayers = 0.2;
+    Store.system.mtt.timeOutShufflePlayers = 1.5;
     Store.startMtt();
-}, 10000);
+}, 2000);
 // setInterval(()=>console.log('1'), 1000)

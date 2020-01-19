@@ -7,14 +7,15 @@ import $u from '../libs/utils';
 import automoves from './mixins/automoves';
 import socket from '../services/socket.io';
 import app from '../app';
+import tourn from './mixins/tourn';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
         $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
         $rootScope.lastTableId = $routeParams.tableId;
-        automoves($scope);
+
         var selectedSeat = null;
-        $scope.table = {seats: []};
+        $scope.table = {seats: [], data: {}, publicMtt: {}};
         $scope.notifications = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         $scope.showingChipsModal = false;
         $scope.actionState = '';
@@ -31,6 +32,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.sittingOnTable = null;
         $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
+        automoves($scope);
+        tourn($scope, $rootScope);
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
                 $scope.lastEventTime = new Date().getTime();
@@ -228,13 +231,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $scope.mySeat = response.seat || selectedSeat; // если response.seats - турнир
                     $scope.actionState = 'waiting';
                     $rootScope.updateUser();
-                    $scope.$digest();
+                    // $scope.$digest();
                 } else {
                     if (response.error) {
                         $scope.buyInError = response.error;
-                        $scope.$digest();
+                        // $scope.$digest();
                     }
                 }
+                $scope.$digest();
             });
         };
 
