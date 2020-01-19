@@ -34,6 +34,8 @@ module.exports = class Mtt{
             }, 1);
             // Собираем игроков
             for (const u of this.params.users){
+                await $u.wait(0.1);
+                console.log(u, this.addedPlayers.toString(), this.addedPlayers.includes(u));
                 if (this.addedPlayers.includes(u)){
                     return log.error('Уже добавлен в МТТ: ' + u);
                 }
@@ -58,7 +60,6 @@ module.exports = class Mtt{
                 }
             }
             this.isStarted = true;
-
             await this.nextRound(true);
         } catch (e) {
             console.log(e);
