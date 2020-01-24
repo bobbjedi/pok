@@ -12,7 +12,7 @@ const express = require('express'),
     $u = require('./helpers/utils'),
     Store = require('./modules/Store');
 
-
+Store.io = io;
 function createServer(app){
     const ssl = getSSLFiles();
     if (!ssl){
@@ -113,6 +113,8 @@ io.sockets.on('connection', function(socket) {
 	 * When a player enters a room
 	 * @param object table-data
 	 */
+    
+    socket.on('get-public-mtt', callback => callback(Store.publicMtt));
 
     socket.on('sitOutMe', callback => {
         const player = players[socket.id];

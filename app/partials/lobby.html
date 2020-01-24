@@ -164,9 +164,9 @@
     </div>
 
     <div id="buttons-lobby">
-        <div class="but hovered create-room big" ng-click="isCreateRoom = true"><i class="fa fa-users"
+        <div class="but hovered create-room big bold" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Создать комнату</div>
-        <div class="but hovered create-room bg-red big" ng-show="public.mtt.isRegOppened"  ng-click="isShowTournModal = true"><i class="fa fa-trophy"
+        <div class="but hovered create-room bg-black big bold txt-yellow" ng-show="public.mtt.isRegOppened"  ng-click="isShowTournModal = true"><i class="fa fa-trophy"
                 aria-hidden="true"></i> &nbsp; Турнир MTT</div>
         <div class="lobby-stat txt-green">
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>

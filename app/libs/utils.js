@@ -79,6 +79,14 @@ export default {
             return 0.00; 
         }
         return Number(n.toFixed(2));
+    },
+    normaliseSeconds(s){
+        const min = Math.floor(s / 60);
+        let sec = Math.floor(s - min * 60);
+        if (sec < 10){
+            sec = '0' + sec;
+        } 
+        return min + 'м. ' + sec + 'сек.'; 
     }
 };
 

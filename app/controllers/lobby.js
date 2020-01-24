@@ -1,14 +1,14 @@
 import app from '../app';
 import _ from 'underscore';
 import config from '../../config';
-import tourn from './mixins/tourn';
+// import tourn from './mixins/tourn';
 import spinInfoTemplate from '../partials/info/spinInfo.html';
 import modalHtml from '../services/modalHtml';
 
 app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location', '$sce', function($scope, $rootScope, $http, $location, $sce) {
     $rootScope.lastTableId = null;
     $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
-    tourn($scope, $rootScope);
+    // tourn($scope, $rootScope);
     $scope.lobbyTables = [];
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
@@ -61,7 +61,13 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     updatePublic();
     $scope.updatePublic = updatePublic;
     setInterval(updatePublic, 30 * 1000);
-
+    $scope.goInTourn = ()=>{
+        $rootScope.api({action: 'goInTourn'}, ()=>{
+            noty('success', 'Ваша заявка принята!');
+            $scope.updatePublic();
+            $rootScope.updateUser();
+        });
+    };
     $scope.logreg = function() {
         const user = $rootScope.user;
         user.password = $scope.password;

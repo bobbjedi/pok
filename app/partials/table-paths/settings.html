@@ -2,15 +2,65 @@
     <div class="modal">
         <div id="settings big">
             <h4>Настройки</h4>
-            <div class="setting-line" ng-click="$root.settings.cardColors = ($root.settings.cardColors === 'card2' ? 'card4' : 'card2')">
-                <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.cardColors === 'card4' ? 'on' : 'off')" aria-hidden="true"></i>
+            <div class="setting-line"
+                ng-click="$root.settings.cardColors = ($root.settings.cardColors === 'card2' ? 'card4' : 'card2')">
+                <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.cardColors === 'card4' ? 'on' : 'off')"
+                    aria-hidden="true"></i>
                 <div class="settings-label">4х цветная колода</div>
             </div>
             <div class="setting-line" ng-click="$root.settings.sound = !$root.settings.sound">
-                    <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.sound ? 'on' : 'off')" aria-hidden="true"></i>
-                    <div class="settings-label">Звук в игре</div>
-                </div>
+                <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.sound ? 'on' : 'off')"
+                    aria-hidden="true"></i>
+                <div class="settings-label">Звук в игре</div>
+            </div>
             <div class="but bg-blue" ng-click="isOpenSettings = false">Ок</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-wrap" ng-show="isOpenMTTinfo" ng-class="{opacity5: isOpacity}">
+    <div class="modal">
+        <div class="big">
+            <h3>Сводка МТТ</h3>
+            <div class="setting-line small" ng-click="isOpacity = !isOpacity">
+            <i class="fa hovered" ng-class="'fa-toggle-' + (isOpacity ? 'on' : 'off')" aria-hidden="true"></i>
+            <div class="settings-label">Прозрачно</div>
+        </div>
+            <div class="txt-white">
+                <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
+                <span>До роста Blinds: {{publicMtt.timerMultBlinds > 0 ? $root.normaliseSeconds(publicMtt.timerMultBlinds) : 'Рост!'}}</span>
+            </div>
+            <div class="txt-white">
+                <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
+                <span ng-show="publicMtt.timerShufflePlayers > 0">До пересадки:
+                    {{$root.normaliseSeconds(publicMtt.timerShufflePlayers)}}</span>
+                <span ng-show="publicMtt.timerShufflePlayers <= 0">Ожидание...</span>
+            </div>
+            <br>
+            <h4>Игроков за столами {{publicMtt.playersList.length}}
+                <span class="small txt-green">{{publicMtt.countOnline}}</span> /
+                <span class="small txt-red">{{publicMtt.countOffline}}</span>
+            </h4>
+            <div class="mttPlayersListContainer">
+                <table class="center mttPlayersList">
+                    <tr>
+                        <th>#</th>
+                        <th>Имя</th>
+                        <th>Фишек</th>
+                        <th>Статус</th>
+                    </tr>
+                    <tr ng-repeat="(i, p) in publicMtt.playersList">
+                        <td>{{i+1}}</td>
+                        <td>{{p.name}}</td>
+                        <td>{{$root.tsp(p.chipsInPlay)}}</td>
+                        <td>
+                            <i ng-if="p.isDisconnect" class="fa fa-user-times txt-red" aria-hidden="true"></i>
+                            <i ng-if="!p.isDisconnect" class="fa fa-user txt-green" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="but bg-blue" ng-click="isOpenMTTinfo = false">Скрыть</div>
         </div>
     </div>
 </div>
