@@ -327,9 +327,10 @@ setTimeout(async () => {
     return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
-    Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    Store.system.mtt.chips = 50;
-    Store.system.mtt.timeOutShufflePlayers = 0.2;
+    // Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.system.mtt.users = ['DevI', 'DevL', 'DevA'];
+    Store.system.mtt.chips = 500;
+    Store.system.mtt.timeOutShufflePlayers = 20;
     Store.startMtt();
-}, 10000);
+}, 5000);
 // setInterval(()=>console.log('1'), 1000)

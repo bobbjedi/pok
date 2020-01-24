@@ -69,9 +69,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $rootScope.makeReload = ()=>false;
             setTimeout(()=>{
                 location.reload();
-            }, 5000); 
+            }, 5000);
         });
-      
+
         // Getting the table data
         const updateTableData = () => {
             $http({
@@ -81,7 +81,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 if (res.status === 200) {
                     const data = res.data;
                     $scope.table = data.table;
-                    $scope.buyInAmount = Math.min(data.table.maxBuyIn, $rootScope.user.deposit);
+                    $scope.buyInAmount = Math.round(Math.min(data.table.maxBuyIn, $rootScope.user.deposit));
                     $scope.betAmount = data.table.bigBlind;
                     $scope.table.board = $scope.table.board.map(c=> c === 'Ad' ? 'Ar' : c);
                     $scope.checkUserSeat();
@@ -184,6 +184,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             return ($scope.actionState === "actNotBettedPot" || $scope.actionState === "actBettedPot") && $scope.table.seats[$scope.mySeat].chipsInPlay && $scope.table.biggestBet < $scope.table.seats[$scope.mySeat].chipsInPlay;
         };
 
+        $scope.showButtonBuyInGame = function () {
+            const mySeat = $scope.table.seats[$scope.mySeat];
+            return mySeat && !mySeat.inHand && mySeat.isSitOutMe && !$scope.table.isTourn;
+        };
+
         $scope.showBuyInModal = function(seat) {
             $scope.buyInModalVisible = true;
             selectedSeat = seat;
@@ -215,6 +220,18 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // A request to sit on a specific seat on the table
         $scope.sitOnTheTable = function() {
+            if ($scope.mySeat !== null && $scope.table.seats[$scope.mySeat]){
+                socket.emit('rebay', {'chips': $scope.buyInAmount}, response=>{
+                    if (response.success){
+                        $scope.table.seats[$scope.mySeat].chipsInPlay += $scope.buyInAmount;
+                    }
+                    if (response.error) {
+                        $scope.buyInError = response.error;
+                    }
+                    $scope.$digest();
+                });
+                return;
+            }
             if ($rootScope.sittingOnTable){
                 noty('error', 'Вы уже сидите за этим столом.');
                 return;
@@ -418,6 +435,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         setTimeout(()=> socket.emit('getMyCards'), 5000);
+        $scope.sitOutMe = () => {
+            socket.emit('sitOutMe', result => {
+                $scope.table.seats[$scope.mySeat].isSitOutMe = result;
+            });
+        };
 
         //
         // When the game has stopped
@@ -477,7 +499,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.isSendActionAuto = false;
             $scope.$digest();
         });
-        
+
         socket.on('waitSpinRate', function() {
             sounds.playMyStepSound();
             $scope.showSpinRateDice();
@@ -502,6 +524,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 //     });
 //     socket.on('disconnect', ()=>{
 //         console.log('Disconnect: ', tableId);
-//     }); 
+//     });
 // }, 5000);
 // };

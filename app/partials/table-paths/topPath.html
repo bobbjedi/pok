@@ -3,7 +3,7 @@
     <div class="modal">
         <form ng-submit="sitOnTheTable()">
             <h1>{{table.name}}</h1>
-            <span ng-show="!table.isTourn">
+            <span ng-show="!table.isTourn || mySeat !== null">
                 <div class="table-requirements">
                     <span class="table-modal-line">Min Buy-in:</span><span class="big txt-green">{{table.minBuyIn}}</span>
                 </div>
@@ -11,8 +11,8 @@
                     <span class="table-modal-line">Max Buy-in:</span><span class="big txt-green">{{table.maxBuyIn}}</span>
                 </div>
             </span>
-            
-            <span ng-show="table.isTourn">
+
+            <span ng-show="table.isTourn && mySeat === null">
                 <div class="big txt-blue"><i class="fa fa-trophy" aria-hidden="true"></i> Турнирный стол</div>
                 <br>
                     <div class="table-requirements">
@@ -37,11 +37,12 @@
                 <span class="big txt-yellow">{{$root.totalChips}} фишек</span>
             </div>
             <br>
-            <input ng-show="!table.isTourn" class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
+            <div class="bigbig m5"> Докупить:</div>
+            <input ng-show="!table.isTourn || mySeat !== null" class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
             <br>
             <span class="table-requirements txt-red small" ng-show="buyInError">{{buyInError}}</span>
             <br>
-            <input class="hovered bg-green big" type="submit" value="Сесть">
+            <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'">
         </form>
     </div>
     <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>

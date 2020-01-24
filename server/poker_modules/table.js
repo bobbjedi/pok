@@ -63,7 +63,6 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     this.tournChips = data.chips;
 
     this.timeParams = data.isTourn && (data.isMtt && data.mtt.timeParams || sng());
-
     // История последних раздач
     this.lastGames = [];
 
@@ -432,14 +431,16 @@ Table.prototype.initializeRound = async function(changeDealer) {
         this.playersInHandCount = 0;
         this.biggestBet = 0;
         this.public.biggestBet = 0;
+        // this.playersSittingInCount = 0;
 
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
+                // this.playersSittingInCount++;
                 if (this.isTournStart){ // анте всем
                     this.pot.pots[0].amount += this.updateTournSeat(i);
                 }
-                if (!this.seats[i].public.chipsInPlay) {
+                if (!this.seats[i].public.chipsInPlay || this.seats[i].public.isSitOutMe) {
                     this.seats[i].sitOut(true); // this.seats[seat].sitOut();
                     this.playersSittingInCount--;
                 } else {
@@ -450,6 +451,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
                 }
             }
         }
+        console.log('this.playersSittingInCount:', this.playersSittingInCount);
         this.currentGameLog += '<br>';
 
         // стата!
@@ -770,8 +772,8 @@ Table.prototype.endRound = async function(str) {
     const leftInGame = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
-            this.seats[i].sitOut(true);
             this.playersSittingInCount--;
+            this.seats[i].sitOut(true, this.playersSittingInCount);
         } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
             leftInGame.push(this.seats[i].public.name);
         }

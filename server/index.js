@@ -114,6 +114,42 @@ io.sockets.on('connection', function(socket) {
 	 * @param object table-data
 	 */
 
+    socket.on('sitOutMe', callback => {
+        const player = players[socket.id];
+        const table = tables[player.room];
+        if (player && table){
+            if (player.isTourn){
+                return callback(false);
+            }
+            player.public.isSitOutMe = !player.public.isSitOutMe;
+            if (!player.public.isSitOutMe && player.public.chipsInPlay > 0){ // вернулся
+                player.public.sittingIn = true;
+                clearTimeout(player.sitOutTimer);
+                player.sitOutTimer = null;
+                // table.playersSittingInCount++;
+            }
+            console.log('player.public.isSitOutMe', player.public.isSitOutMe);
+            callback(player.public.isSitOutMe);
+        }
+    });
+    socket.on('rebay', async (data, callback) => {
+        const player = players[socket.id];
+        const table = tables[player.room];
+        if (player && table){
+            if (player.isTourn){
+                return callback(false);
+            }
+            const {maxBuyIn} = table.public;
+            console.log(data.chips, player.chips);
+            if (data.chips > player.chips){
+                callback({ 'success': false, 'error': 'У вас недостаточно фишек.' });
+            }
+            else if (data.chips + player.public.chipsInPlay > maxBuyIn){
+                callback({ 'success': false, 'error': 'Количество фишек не может превышать Max buy in.' });
+            }
+
+        }
+    });
     socket.on('enterRoom', function(tableId, callback) {
         try {
             let player = players[socket.id];
@@ -641,13 +677,6 @@ io.sockets.on('connection', function(socket) {
 
 $u.disconnectPlayerInTourn = player=>{
     player.public.isDisconnect = true;
-    // const table = tables[player.sittingOnTable];
-    // if (table && table.public.tournSeats){
-    // table.public.tournSeats[player.seat].isOut = true;
-    // }
-    // else {
-    // $u.removePlayer(player.socket);
-    // }
     return log.info('disconnectPlayerInTourn Player in tourn not remove: ' + player.public.name);
 };
 

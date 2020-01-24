@@ -27,9 +27,13 @@ var Player = function (socket, user) {
         // The amount the player has betted in the current round
         bet: 0,
         // Last move
-        lastAct: null
+        lastAct: null,
+        // sit out
+        isSitOutMe: false
 
     };
+    // таймер на ситаут ручной
+    this.timerMySitOut = null;
     // Автодействия сервера за юзера подряд(если инет отвалился)
     this.autoFoldTimes = 0;
     // восстанавливается одключение
@@ -175,13 +179,19 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
 /**
  * Updates the player data when they sit out
  */
-Player.prototype.sitOut = function (isRemoved) {
+Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
+    console.log('SITOUT<<<<<<<<<');
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
-        if (isRemoved){
+        if (isRemoved && !this.sitOutTimer){
+            console.log('SITOUT ++++++++', this.public.name);
+            this.public.isSitOutMe = true;
             const tableId = this.sittingOnTable;
-            console.log('Sit out', {tableId});
+            console.log('Sit out', this.public.name, {tableId});
+            if (playersSittingInCount < 2){
+                return Store.tables[tableId].playerLeft(this.seat);
+            }
             this.sitOutTimer = setTimeout(() => { // высаживаем из-за стола
                 try {
                     if (this.sittingOnTable === tableId){
@@ -248,7 +258,7 @@ Player.prototype.prepareForNewRound = function () {
     this.public.lastAct = null;
     this.public.inHand = true;
     this.evaluatedHand = {};
-    
+
 };
 
 /**
