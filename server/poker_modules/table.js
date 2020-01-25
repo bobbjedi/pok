@@ -436,12 +436,11 @@ Table.prototype.initializeRound = async function(changeDealer) {
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
             if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
-                // this.playersSittingInCount++;
                 if (this.isTournStart){ // анте всем
                     this.pot.pots[0].amount += this.updateTournSeat(i);
                 }
                 if (!this.seats[i].public.chipsInPlay || this.seats[i].public.isSitOutMe) {
-                    this.seats[i].sitOut(true); // this.seats[seat].sitOut();
+                    this.seats[i].sitOut(true);
                     this.playersSittingInCount--;
                 } else {
                     this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;
@@ -451,7 +450,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
                 }
             }
         }
-        console.log('this.playersSittingInCount:', this.playersSittingInCount);
+        console.log('453 this.playersSittingInCount:', this.playersSittingInCount);
         this.currentGameLog += '<br>';
 
         // стата!
@@ -771,9 +770,9 @@ Table.prototype.endRound = async function(str) {
     // Sitting out the players who don't have chips
     const leftInGame = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
-        if (this.seats[i] !== null && this.seats[i].public.chipsInPlay <= 0 && this.seats[i].public.sittingIn) {
+        if (this.seats[i] !== null && this.seats[i].public.sittingIn && (this.seats[i].public.chipsInPlay <= 0 || this.seats[i].public.isSitOutMe)) {
             this.playersSittingInCount--;
-            this.seats[i].sitOut(true, this.playersSittingInCount);
+            this.seats[i].sitOut(true);
         } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
             leftInGame.push(this.seats[i].public.name);
         }

@@ -125,16 +125,19 @@ io.sockets.on('connection', function(socket) {
             }
             player.public.isSitOutMe = !player.public.isSitOutMe;
             if (!player.public.isSitOutMe && player.public.chipsInPlay > 0){ // вернулся
-                player.public.sittingIn = true;
+                if (!player.public.sittingIn){ // если его оформило уже, то возвращаем
+                    console.log('Успело оформить! table.playersSittingInCount:', table.playersSittingInCount);
+                    player.public.sittingIn = true;
+                    table.playersSittingInCount++;
+                }
                 clearTimeout(player.sitOutTimer);
                 player.sitOutTimer = null;
-                // table.playersSittingInCount++;
             }
             console.log('player.public.isSitOutMe', player.public.isSitOutMe);
             callback(player.public.isSitOutMe);
         }
     });
-    socket.on('rebay', async (data, callback) => {
+    socket.on('rebuy', async (data, callback) => {
         const player = players[socket.id];
         const table = tables[player.room];
         if (player && table){
@@ -142,13 +145,21 @@ io.sockets.on('connection', function(socket) {
                 return callback(false);
             }
             const {maxBuyIn} = table.public;
-            console.log(data.chips, player.chips);
-            if (data.chips > player.chips){
-                callback({ 'success': false, 'error': 'У вас недостаточно фишек.' });
+             
+            console.log('Rebuy:', data.chips, player.chips);
+            if (data.chips > player.chips || data.chips <= 0 || player.public.chipsInPlay >= maxBuyIn){
+                return callback({'success': false, 'error': 'Ошибка пополнения стейка!'});
             }
-            else if (data.chips + player.public.chipsInPlay > maxBuyIn){
-                callback({ 'success': false, 'error': 'Количество фишек не может превышать Max buy in.' });
-            }
+            let addedChips = data.chips;
+            if ((data.chips + player.public.chipsInPlay) > maxBuyIn){
+                addedChips = $u.round(maxBuyIn - player.public.chipsInPlay);
+            };
+            player.public.chipsInPlay = $u.round(player.public.chipsInPlay + addedChips);
+            const user = await player.getUserDB();
+            await player.updateDeposit(-addedChips, user); // списываем с баланса добавленные за стол
+            await player.updateDepInPlay(user);
+            console.log({addedChips, chipsInPlay: player.public.chipsInPlay});
+            callback({'success': true, chipsInPlay: player.public.chipsInPlay});
 
         }
     });

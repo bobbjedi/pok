@@ -25,16 +25,6 @@ module.exports = {
         };
         return players;
     },
-    updateChipsUserPlayers(user){
-        const players = this.getPlayersByUserId(user._id);
-        players.forEach(p=> {
-            if (p.isTourn){
-                // console.log(user.login, 'В турнире!');
-                return;
-            }
-            p.chips = user.deposit;
-        });
-    },
     unix(){
         return new Date().getTime();
     },
@@ -56,7 +46,22 @@ module.exports = {
             });
         });
     },
-
+    /**
+     * @description  всем вкладкам обновляем доступный депозит
+     */
+    updateChipsUserPlayers(user){
+        const players = this.getPlayersByUserId(user._id);
+        players.forEach(p=> {
+            if (p.isTourn){
+                // console.log(user.login, 'В турнире!');
+                return;
+            }
+            p.chips = user.deposit;
+        });
+    },
+    /**
+     * @description  изменяем депозит в ДБ
+     */
     async updateUserDeposit(user, amount, isNoNeedSave){
         try {
             if (_.isNumber(amount) && amount !== 0){

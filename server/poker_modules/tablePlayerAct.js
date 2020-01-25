@@ -338,8 +338,7 @@ module.exports = Table =>{
         }
         console.log({seat, isShowDown: this.isShowDown}, this.public.activeSeat);
         this.pot.removePlayer(seat);
-
-        var nextAction = '';
+        
         this.playersSittingInCount--;
 
         if (this.seats[seat].public.inHand && !this.isShowDown) { // вылетел во время игры

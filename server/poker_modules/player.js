@@ -88,6 +88,9 @@ Player.prototype.getUserDB = async function () {
         _id: this._id
     });
 };
+/**
+ * @description обновляем депозит в ДБ для юзера
+ */
 Player.prototype.updateDeposit = async function (amount, user) {
     if (this.isTourn){
         // console.log('updateDeposit isTourn', this.public.name);
@@ -102,9 +105,11 @@ Player.prototype.updateDeposit = async function (amount, user) {
     }
 };
 
+/**
+ * @description обновляем состояние depInPlay во всех вкладках актуализируем значение в заморозке за всеми столами
+ */
 Player.prototype.updateDepInPlay = async function (user) {
     if (this.isTourn){
-        // console.log('updateDepInPlay isTourn', this.public.name);
         return;
     }
     user = user || await this.getUserDB();
@@ -185,13 +190,10 @@ Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
         this.public.sittingIn = false;
         this.public.inHand = false;
         if (isRemoved && !this.sitOutTimer){
-            console.log('SITOUT ++++++++', this.public.name);
+            console.log('SITOUT ++++++++', playersSittingInCount, this.public.name);
             this.public.isSitOutMe = true;
             const tableId = this.sittingOnTable;
             console.log('Sit out', this.public.name, {tableId});
-            if (playersSittingInCount < 2){
-                return Store.tables[tableId].playerLeft(this.seat);
-            }
             this.sitOutTimer = setTimeout(() => { // высаживаем из-за стола
                 try {
                     if (this.sittingOnTable === tableId){

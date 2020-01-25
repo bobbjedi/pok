@@ -36,6 +36,10 @@
                 <span class="table-modal-line">Ваш депозит:</span>
                 <span class="big txt-yellow">{{$root.totalChips}} фишек</span>
             </div>
+            <div class="table-requirements">
+                <span class="table-modal-line">Ваш стейк:</span>
+                <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay}} фишек</span>
+            </div>
             <br>
             <div class="bigbig m5"> Докупить:</div>
             <input ng-show="!table.isTourn || mySeat !== null" class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
