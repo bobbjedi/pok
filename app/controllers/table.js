@@ -278,6 +278,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.leaveTable = function() {
             socket.emit('leaveTable', function(response) {
                 if (response.success) {
+                    $scope.mySeat = null;
                     $scope.leaveTableStates();
                     $rootScope.$digest();
                     $scope.$digest();

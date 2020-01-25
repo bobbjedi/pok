@@ -195,6 +195,31 @@ table {
 }
 
 #table {
+    border-radius: 200px;
+    left: 10%;
+    position: absolute;
+    top: 17%;
+    width: 80%;
+    z-index: 0;
+    /* box-shadow: 0 0 25px 0 #2a272c */
+}
+
+#table #felt {
+    background-image: url("/images/table.png");
+    border-radius: 175px;
+    background-size: cover;
+    width: 108%;
+    height: 108%;
+    position: relative;
+    top: 0%;
+    left: -4%;
+    /* box-shadow: 0 0 20px 0 #070707 inset; */
+}
+
+
+
+/* 
+#table {
     background-color: #605f6e;
     border-radius: 200px;
     left: 10%;
@@ -214,7 +239,8 @@ table {
     top: 7%;
     left: 4%;
     box-shadow: 0 0 20px 0 #070707 inset;
-}
+} */
+
 
 div.row {
     width: 100%;
