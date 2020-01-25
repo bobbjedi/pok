@@ -726,9 +726,9 @@ div.row {
     background: black;
     overflow: hidden;
     border: 2px solid rgb(80, 80, 80);
-    width: 72px;
-    height: 72;
-    border-radius: 30px;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
     position: absolute;
     margin-left: -55%;
     z-index: 10;
