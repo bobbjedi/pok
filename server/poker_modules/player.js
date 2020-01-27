@@ -214,6 +214,8 @@ Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
                     } else {
                         console.log('Sit out не сидит за столом');
                     }
+        
+                    this.sitOutTimer = null;
                 } catch (e) {
                     console.log(e);
                     log.error('sitOut timeOut:' + e);
