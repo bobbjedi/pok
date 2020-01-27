@@ -133,7 +133,7 @@ io.sockets.on('connection', function(socket) {
                 clearTimeout(player.sitOutTimer);
                 player.sitOutTimer = null;
             }
-            console.log('player.public.isSitOutMe', player.public.isSitOutMe);
+            console.log(player.public.name, 'isSitOutMe', player.public.isSitOutMe);
             callback(player.public.isSitOutMe);
         }
     });
@@ -339,21 +339,6 @@ io.sockets.on('connection', function(socket) {
                 callback({ 'success': false, 'error': 'Стола не существует' });
             }
             if (table.isTournStart){ // если турнир
-                // const {tournSeats} = table.public;
-                // for (let s in tournSeats){
-                //     if (tournSeats[s] && tournSeats[s].name === player.public.name){
-                //         player.public.chipsInPlay = 0;
-                //         await player.updateDepInPlay();
-                //         player.public.chipsInPlay = tournSeats[s].chipsInPlay;
-                //         tournSeats[s].isOut = false;
-                //         player.chips = 0;
-                //         player.isTourn = true; // определяем что в турнире
-                //         player.sittingOnTable = true;
-                //         tables[data.tableId].playerSatOnTheTable(players[socket.id], s, tournSeats[s].chipsInPlay);
-                //         callback({ 'success': true, seat: s});
-                //         return log.info('Return in Tourn: ' + player.public.name);
-                //     }
-                // }
                 return callback({ 'success': false, error: 'Вы не участвуете в турнире.'});
             } else if (table.isTourn && table.public.data.userListArray.length && !table.public.data.userListArray.includes(player.public.name)){
                 return callback({ 'success': false, error: 'Вы не заявлены на этот стол.'});

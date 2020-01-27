@@ -97,11 +97,12 @@ Player.prototype.updateDeposit = async function (amount, user) {
         return;
     }
     user = user || await this.getUserDB();
+    log.info(user.login + ' before: ' + user.deposit);
     await $u.updateUserDeposit(user, amount, true);
     $u.updateChipsUserPlayers(user);
     await user.save();
     if (amount > 0){
-        log.info('User return chipsInPlay: ' + amount);
+        log.info(`${user.login} return chipsInPlay  ${amount}, deposit: ${user.deposit}`);
     }
 };
 
@@ -150,6 +151,7 @@ Player.prototype.return = function () {
 };
 
 Player.prototype.leaveTable = async function () {
+    console.log('leaveTable>', this.public.name, this.sittingOnTable, this.public.chipsInPlay);
     if (this.sittingOnTable !== false) {
         this.sitOut();
         await this.updateDeposit(this.public.chipsInPlay);
@@ -184,11 +186,19 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
 /**
  * Updates the player data when they sit out
  */
+
+// Player.prototype.sitOut = function() {
+// 	if( this.sittingOnTable !== false ) {
+// 		this.public.sittingIn = false;
+// 		this.public.inHand = false;
+// 	}
+// }
 Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
-    console.log('SITOUT<<<<<<<<<');
+    console.log('SITOUT<<<<<<<<<', this.public.name);
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
+
         if (isRemoved && !this.sitOutTimer){
             console.log('SITOUT ++++++++', playersSittingInCount, this.public.name);
             this.public.isSitOutMe = true;
