@@ -146,7 +146,7 @@ io.sockets.on('connection', function(socket) {
             }
             const {maxBuyIn} = table.public;
              
-            console.log('Rebuy:', data.chips, player.chips);
+            console.log(player.name, 'Rebuy:', data.chips, player.chips);
             if (data.chips > player.chips || data.chips <= 0 || player.public.chipsInPlay >= maxBuyIn){
                 return callback({'success': false, 'error': 'Ошибка пополнения стейка!'});
             }

@@ -401,6 +401,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
     }
     const {data} = this.public;
 
+    // SPIN
     if (data.isSpin && !data.spin){
         let timeOutStart = $u.unix();
         this.emitEvent('waitSpinRate');
@@ -415,6 +416,8 @@ Table.prototype.initializeRound = async function(changeDealer) {
         }, 3000 - ($u.unix() - timeOutStart));
         return;
     }
+
+    
     // this.clearTimeoutPlayerAction('initializeRound');
     this.clearTimeoutRmCustomTbl();
     this.currentGameLog = '<br></br><b>**** ' + log.fullTime() + ' ****</b><br>';

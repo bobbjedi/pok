@@ -181,6 +181,8 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
     this.public.hasCards = false;
     await this.updateDeposit(-chips, user);
     await this.updateDepInPlay(user);
+    clearTimeout(this.sitOutTimer);
+    this.sitOutTimer = null;
 };
 
 /**
