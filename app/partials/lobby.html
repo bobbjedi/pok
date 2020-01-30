@@ -61,7 +61,7 @@
         <div class="login-path" ng-show="isLogged()">
             <div class="avatar" ng-click="uploadAvatar()">
                 <img class="avatar-img" ng-src="{{'./avatars/' + $root.user.login + '.jpg'}}"
-                    onerror="this.src='./avatars/default.jpg';">
+                onerror="generateRndAvatar(this)">
             </div>
             <div class="user-info">
                 <b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
