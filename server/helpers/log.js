@@ -77,6 +77,7 @@ setInterval(() => {
 }, 60 * 1000);
 
 function setTableLog(str) {
+    return;
     try {
         const id = str.match(/\[.*?\]/)[0].replace('[#', ''). replace(']', '');
         const logName = (+id + 1) + '_' + lastDate;
