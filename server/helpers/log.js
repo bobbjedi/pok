@@ -30,9 +30,9 @@ module.exports = {
 
         infoStr.write(`
 ` + 'info|' + fullTime() + '|' + str);
-        if (str.includes('[#')){
-            setTableLog(str);
-        };
+        // if (str.includes('[#')){
+        //     setTableLog(str);
+        // };
     },
     warn (str) {
         console.log('\x1b[33m', 'warn|' + fullTime(), "\x1b[0m", str);
