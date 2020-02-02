@@ -223,18 +223,18 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // A request to sit on a specific seat on the table
         $scope.sitOnTheTable = function() {
-            if ($scope.mySeat !== null && $scope.table.seats[$scope.mySeat]){ // Ребай
-                socket.emit('rebuy', {'chips': $scope.buyInAmount}, response=>{
-                    if (response.success){
-                        $scope.table.seats[$scope.mySeat].chipsInPlay = response.chipsInPlay;
-                    }
-                    if (response.error) {
-                        $scope.buyInError = response.error;
-                    }
-                    $scope.$digest();
-                });
-                return;
-            }
+            // if ($scope.mySeat !== null && $scope.table.seats[$scope.mySeat]){ // Ребай
+            //     socket.emit('rebuy', {'chips': $scope.buyInAmount}, response=>{
+            //         if (response.success){
+            //             $scope.table.seats[$scope.mySeat].chipsInPlay = response.chipsInPlay;
+            //         }
+            //         if (response.error) {
+            //             $scope.buyInError = response.error;
+            //         }
+            //         $scope.$digest();
+            //     });
+            //     return;
+            // }
             if ($rootScope.sittingOnTable){
                 noty('error', 'Вы уже сидите за этим столом.');
                 return;

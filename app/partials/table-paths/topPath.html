@@ -41,12 +41,14 @@
                 <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay}} фишек</span>
             </div>
             <br>
-            <div class="bigbig m5"> Докупить:</div>
+            <!-- <div class="bigbig m5"> Докупить:</div> -->
             <input ng-show="!table.isTourn || mySeat !== null" class="input-left" type="number" ng-model="buyInAmount" ng-trim="true" required>
             <br>
             <span class="table-requirements txt-red small" ng-show="buyInError">{{buyInError}}</span>
             <br>
-            <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'">
+            <!-- <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'"> -->
+            <!-- <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'"> -->
+            <input class="hovered bg-green big" type="submit" value="Сесть">
         </form>
     </div>
     <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
