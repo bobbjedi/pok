@@ -134,9 +134,7 @@ Table.prototype.prepPublicLog = function(){
     this.lastGames.unshift(this.currentGameLog);
     this.lastGames = this.lastGames.splice(0, 50);
     const html = this.lastGames.join('<b>---------------------------------------------------</b><br>');
-    fs.writeFile('./public/logs/' + (1 + this.public.id) + '.html', '<body style="background:#1d1b1b;color:burlywood;padding:10;margin:0;">' + html + '</body>', (a, b)=>{
-        console.log({a, b});
-    });
+    fs.writeFile('./public/logs/' + (1 + this.public.id) + '.html', '<body style="background:#1d1b1b;color:burlywood;padding:10;margin:0;">' + html + '</body>', ()=>{});
 };
 
 /**
