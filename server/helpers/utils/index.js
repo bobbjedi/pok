@@ -299,25 +299,25 @@ module.exports = {
 
 // MIGRATE
 
-setTimeout(async ()=>{
-    const users = await usersDb.find({});
-    for (let i in users){
-        const u = users[i];
-        let bip = u.depositInGame;
-        u.depositInGame = {};
-        u.depositInRoom = {};
-        for (let coin of config.coins){
-            u.deposits = u.deposits || {};
-            u.deposits[coin] = u.deposits[coin] || 0;
-            u.depositInGame[coin] = 0;
-            u.depositInRoom[coin] = {};
-        }
-        u.deposits.BIP = u.deposit + bip;
-        u.deposits.DEMO = 1000;
-        u.deposit = undefined;
-        await u.save();
-    }
-}, 500);
+// setTimeout(async ()=>{
+// const users = await usersDb.find({});
+// for (let i in users){
+//     const u = users[i];
+//     let bip = u.depositInGame;
+//     u.depositInGame = {};
+//     u.depositInRoom = {};
+//     for (let coin of config.coins){
+//         u.deposits = u.deposits || {};
+//         u.deposits[coin] = u.deposits[coin] || 0;
+//         u.depositInGame[coin] = 0;
+//         u.depositInRoom[coin] = {};
+//     }
+//     u.deposits.BIP = u.deposit + bip;
+//     u.deposits.DEMO = 1000;
+//     u.deposit = undefined;
+//     await u.save();
+// }
+// }, 500);
 
 for (let coin of config.coins){
     // module.exports.returnChipsInplay(coin);
@@ -325,7 +325,7 @@ for (let coin of config.coins){
 
 setTimeout(()=>{
     config.coins.forEach(coinName=>{
-        console.log({coinName})
+        console.log({coinName});
         let data = JSON.parse(JSON.stringify(config.sng));
         data.count = 10;
         data.buyIn = 100;
