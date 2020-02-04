@@ -59,11 +59,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
         };
 
-        // $scope.$on('$routeChangeSuccess', function () {
-        // });
-
         $rootScope.$watch('user.login', $scope.checkUserSeat);
-        // $scope.$watch('table.seats', $scope.checkUserSeat);
+        $scope.$watch('table.coinName', coinName=> $rootScope.changeCoinName(coinName));
         // Existing listeners should be removed
         socket.removeAllListeners();
         window.listeningRedirect();
@@ -84,7 +81,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 if (res.status === 200) {
                     const data = res.data;
                     $scope.table = data.table;
-                    $scope.buyInAmount = Math.round(Math.min(data.table.maxBuyIn, $rootScope.user.deposit));
+                    $scope.buyInAmount = Math.round(Math.min(data.table.maxBuyIn, $rootScope.user.deposits[$rootScope.settings.coinName]));
                     $scope.betAmount = data.table.bigBlind;
                     $scope.table.board = $scope.table.board.map(c=> c === 'Ad' ? 'Ar' : c);
                     $scope.checkUserSeat();

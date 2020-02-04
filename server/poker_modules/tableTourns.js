@@ -69,9 +69,9 @@ module.exports = Table =>{
             }
             for (let w in winners){
                 const user = await winners[w].getUserDB();
-                await $u.updateUserDeposit(user, prizePath);
+                await $u.updateUserDeposit(user, prizePath, winners[w].coinName);
                 log.info('Tourn prize: ' + user.login + ' ' + prizePath);
-                $u.updateChipsUserPlayers(user);
+                // $u.updateChipsUserPlayers(user, winners[w].coinName);
             }
 
             // удаляем трупов

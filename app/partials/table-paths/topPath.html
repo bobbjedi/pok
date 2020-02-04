@@ -34,11 +34,11 @@
 
             <div class="table-requirements">
                 <span class="table-modal-line">Ваш депозит:</span>
-                <span class="big txt-yellow">{{$root.totalChips}} фишек</span>
+                <span class="big txt-yellow">{{$root.user.deposits[$root.settings.coinName]}} {{$root.settings.coinName}}</span>
             </div>
             <div class="table-requirements">
                 <span class="table-modal-line">Ваш стейк:</span>
-                <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay}} фишек</span>
+                <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay || 0}} {{$root.settings.coinName}}</span>
             </div>
             <br>
             <!-- <div class="bigbig m5"> Докупить:</div> -->
@@ -77,7 +77,7 @@
             <div class="spin-rate">Rate: table.maxBuyIn x {{spin.rate}}</div>
             <div class="spin-rate-link"><a ng-href="'/' + spin.hash">{{spin.hash}}</a></div>
         </div> -->
-        <div>{{table.name}} <span ng-show="spin.rate || table.data.spin" class="big txt-yellow">x{{spin.rate || table.data.spin.rate}}</span> </div>
+        <div>{{table.name}} <span class="txt-yellow">{{table.coinName}}</span><span ng-show="spin.rate || table.data.spin" class="big txt-yellow">x{{spin.rate || table.data.spin.rate}}</span> </div>
         <div>Big blind: {{table.bigBlind}}, {{table.isTourn ? 'Buy in' : 'Max buy in'}}: {{table.maxBuyIn}}
             <span ng-show="table.ante">, Ante: {{table.ante}}</span>
         </div>

@@ -2,10 +2,10 @@
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
-                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposit}}</span>
-                    {{$root.config.coinName}} (комиссия {{$root.config.withdrawComission}}%)</div>
+                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposits[$root.settings.coinName]}}</span>
+                    {{$root.settings.coinName}} (комиссия {{$root.config.withdrawComission}}%)</div>
                 <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow"
-                        ng-click="withdrawAmount = $root.user.deposit"> Все </span></div>
+                        ng-click="withdrawAmount = $root.user.deposits[$root.settings.coinName]"> Все </span></div>
             </div>
             <div class="buts" ng-click="isShowWithdraw = false">
                 <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount);">Да</div>
@@ -24,7 +24,7 @@
                 <div class="big m5">Условия:</div>
                 
                 <div class="small mtt-info">
-                    <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}} BIP</div>
+                    <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}} {{$root.settings.coinName}}</div>
                     <div class="setting-line"><span class="al">Фишек:</span> {{public.mtt.chips}}</div>
                     <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div>
                     <!-- <div class="setting-line"><span>Смена столов:</span> {{public.mtt.timeOutShufflePlayers}} мин</div>
@@ -66,13 +66,20 @@
             <div class="user-info">
                 <b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
                 <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
+                <br>Coin: 
+                <select ng-model="$root.settings.coinName" class="select-coin txt-green">
+                    <option ng-repeat="coinName in $root.config.coins">{{coinName}}</option>
+                </select>
                 <br><span class="user-name small">{{addressShort()}}</span>
                 <br>Баланс:
-                <span class="deposit">{{$root.user.deposit}}</span>
+                <span class="deposit">{{$root.user.deposits[$root.settings.coinName]}}</span>
                 <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
-                <br>Вывести:
-                <span class="withdraw">{{$root.user.deposit}}</span>
-                <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered" aria-hidden="true"></i>
+                <br>
+                <span ng-show="$root.settings.coinName !== 'DEMO'">
+                    Вывести:
+                    <span class="withdraw">{{$root.user.deposits[$root.settings.coinName]}}</span>
+                    <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered" aria-hidden="true"></i>
+                </span ng-show="">
             </div>
         </div>
     </div>
@@ -166,8 +173,9 @@
     <div id="buttons-lobby">
         <div class="but hovered create-room big bold" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Создать стол</div>
-        <div class="but hovered create-room bg-black big bold txt-yellow" ng-show="public.mtt.isRegOppened"  ng-click="isShowTournModal = true"><i class="fa fa-trophy"
-                aria-hidden="true"></i> &nbsp; Турнир MTT</div>
+        <div class="but hovered create-room bg-black big bold txt-yellow" 
+            ng-show="public.mtt.isRegOppened && public.mtt.coinName === $root.settings.coinName"
+            ng-click="isShowTournModal = true"><i class="fa fa-trophy" aria-hidden="true"></i> &nbsp; Турнир MTT</div>
         <div class="lobby-stat txt-green">
             <span>Обьем: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
             <span> | Игр: <span class="big txt-yellow">{{$root.tsp(public.totalGamesCount)}}</span></span>
@@ -177,7 +185,7 @@
     </div>
     <table id="table-list" class="table_dark">
         <tr>
-            <th class="dark-border">#</th>
+            <!-- <th class="dark-border">#</th> -->
             <th class="dark-border">Комната</th>
             <th class="dark-border">SB/BB</th>
             <th>Игроков</th>
@@ -185,8 +193,9 @@
             <th>Логи</th>
             <th>Играть</th>
         </tr>
-        <tr ng-repeat="table in lobbyTables">
-            <td>#{{table.id + 1}}</td>
+        <tr ng-repeat="table in lobbyTables" ng-if="table.coinName === $root.settings.coinName">
+            <!-- <td>#{{table.id + 1}}</td> -->
+            <!-- <td>{{table.coinName}}</td> -->
             <td><a href="#!/table-{{table.seatsCount}}/{{table.id}}">
                     <span class="table-name-img">
                         {{table.name}}&nbsp;<span

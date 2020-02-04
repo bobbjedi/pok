@@ -41,13 +41,7 @@ module.exports = {
             tableSeatsCount: params.tableSeatsCount || 6,
             chips: params.chips || 1500,
             timeOutMult: params.timeOutMult || 5,
-            
-            // buyIn: params.buyIn || 500,
-            // timeOutShufflePlayers: params.timeOutShufflePlayers || 5,
-            // tableSeatsCount: params.tableSeatsCount || 6,
-            // chips: params.chips || 2000,
-            // timeOutMult: params.timeOutMult || 10,
-
+            coinName: params.coinName || 'BIP',
             users: []
         };
         this.save();

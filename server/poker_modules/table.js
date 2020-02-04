@@ -21,7 +21,7 @@ var Deck = require('./deck'),
  * @param int 		minBuyIn (the minimum amount of chips that one can bring to the table)
  * @param bool 		privateTable (flag that shows whether the table will be shown in the lobby)
  */
-var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator, data = {}) {
+var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, maxBuyIn, minBuyIn, type, privateTable, idCreator, data = {}, coinName) {
     data.spin = false;
     // console.log({privateTable, id})
     // The table is not displayed in the lobby
@@ -114,6 +114,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
         isTourn: data.isTourn,
         isStoppedGames: false,
         data,
+        coinName,
         log: {
             message: '',
             seat: '',

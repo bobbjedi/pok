@@ -80,6 +80,7 @@ app.get('/lobby-data', function(req, res) {
             lobbyTables[tableId].ante = table.public.ante;
             lobbyTables[tableId].spin = table.public.spin || {};
             lobbyTables[tableId].playersCount = table.public.data.playersCount || table.public.seatsCount;
+            lobbyTables[tableId].coinName = table.public.coinName;
         }
     }
     res.send(lobbyTables);
@@ -116,6 +117,11 @@ io.sockets.on('connection', function(socket) {
     
     socket.on('get-public-mtt', callback => callback(Store.publicMtt));
 
+    socket.on('changeCoinName', async coinName => {
+        const player = players[socket.id];
+        player && player.changeCoinName(coinName);
+    });
+
     socket.on('sitOutMe', callback => {
         const player = players[socket.id];
         const table = tables[player.room];
@@ -137,6 +143,7 @@ io.sockets.on('connection', function(socket) {
             callback(player.public.isSitOutMe);
         }
     });
+
     socket.on('rebuy', async (data, callback) => {
         const player = players[socket.id];
         const table = tables[player.room];
@@ -163,13 +170,10 @@ io.sockets.on('connection', function(socket) {
 
         }
     });
+
     socket.on('enterRoom', function(tableId, callback) {
         try {
             let player = players[socket.id];
-            // if (tables[tableId].isTournStart){
-            //     log.warn('Заменяем игрока');
-            //     player = $u.findPlayerExist(player.public.name) || player;
-            // }
             if (!player){
                 return;
             }
@@ -178,16 +182,13 @@ io.sockets.on('connection', function(socket) {
                 console.log('ВЫСАДИЛИ ИЗ КОМНАТЫ', player.room, ' >> ', tableId);
                 socket.leave('table-' + player.room);
             }
-            // if (player.room === null) {
             // Add the player to the socket room
             socket.join('table-' + tableId);
             // Add the room to the player's data
             players[socket.id].room = tableId;
             callback && callback();
-            // }
             if (player.isTourn && player.sittingOnTable === +tableId){
                 log.info('Вернулся в турнир за стол: ' + player.public.name);
-                // tables[tableId].public.tournSeats[player.seat].isOut = false;
             }
         } catch (e){
             console.log(e);
@@ -264,7 +265,7 @@ io.sockets.on('connection', function(socket) {
 	 * @param function callback
 	 */
     socket.on('checkUser', async (data, callback) => {
-        const {name, token, playerId} = data;
+        const {name, token, coinName, playerId} = data;
         // If a new screen name is posted
         try {
             players[socket.id] && players[socket.id].return();
@@ -290,7 +291,7 @@ io.sockets.on('connection', function(socket) {
                 if (!user){
                     return;
                 }
-                players[socket.id] = new Player(socket, user);
+                players[socket.id] = new Player(socket, user, coinName);
                 Store.system.online = Object.keys(players).length;
                 console.log('Создали', name, 'online:', Object.keys(players).length);
                 callback({'success': true, playerId: players[socket.id].playerId});

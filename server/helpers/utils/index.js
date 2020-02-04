@@ -49,33 +49,42 @@ module.exports = {
     /**
      * @description  всем вкладкам обновляем доступный депозит
      */
-    updateChipsUserPlayers(user){
+    updateChipsUserPlayers(user, coinName){
+        if (!coinName){
+            return log.error('updateChipsUserPlayers NO_coinName: ' + user.login + ': ' + coinName);
+        }
         const players = this.getPlayersByUserId(user._id);
         players.forEach(p=> {
-            if (p.isTourn){
+            if (p.isTourn || p.public.coinName !== coinName){
                 // console.log(user.login, 'В турнире!');
                 return;
             }
-            p.chips = user.deposit;
+            p.chips = user.deposits[coinName];
         });
     },
     /**
      * @description  изменяем депозит в ДБ
      */
-    async updateUserDeposit(user, amount, isNoNeedSave){
+    async updateUserDeposit(user, amount, coinName, isNoNeedSave){
+        console.log('updateUserDeposit>', user, amount, coinName, isNoNeedSave);
+        if (!coinName){
+            return log.error('updateUserDeposit NO_coinName: ' + user.login + ': ' + coinName);
+        }
         try {
             if (_.isNumber(amount) && amount !== 0){
-                user.deposit = this.round(user.deposit + amount);
+                user.deposits[coinName] = this.round(user.deposits[coinName] + amount);
+                this.updateChipsUserPlayers(user, coinName); // обновим
                 if (!isNoNeedSave){
                     await user.save();
                 }
                 return;
             }
-            log.warn('updateUserDeposit amount isNOtNUMBER: ' + amount);
+            log.warn('updateUserDeposit amount isNOtNUMBER: ' + coinName + ' ' + amount);
         } catch (e){
             console.log(e);
             log.error('updateUserDeposit(c): ' + e);
         }
+        console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
     },
 
     async createUser(params){
@@ -102,10 +111,17 @@ module.exports = {
             timestamp: this.unix(),
             loginLowCase: params.login.toLowerCase(),
             password: this.createPswd(password),
-            deposit: config.regDrop || 0,
-            depositInGame: 0,
-            depositInRoom: {},
+            deposits: {},
+            depositInGame: {},
+            depositInRoom: {}, // сколько в какой комнате заюзано 
         });
+        config.coins.forEach(c => {
+            user.deposits[c] = 0;
+            user.depositInGame[c] = 0;
+            user.depositInRoom[c] = {};
+        });
+        user.deposits.DEMO = 1000;
+
         await user.save();
         if (config.regDrop > 0){
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
@@ -116,26 +132,33 @@ module.exports = {
         return sha256(password.toString());
     },
     // воозвращаем после падения сервера
-    async returnChepsInplay(){
-        const users = await usersDb.find({depositInGame: {$gt: 0}});
+    async returnChipsInplay(coinName){
+        const users = await usersDb.find({
+            $where: function () {
+                return this.depositInGame[coinName] > 0;
+            }
+        });
+
         for (let u in users){
             const user = users[u];
-            log.info('[returnChepsInplay] ' + user.login + ': ' + user.depositInGame);
-            await user.update({
-                deposit: user.deposit + user.depositInGame,
-                depositInGame: 0,
-                depositInRoom: {}
-            }, 1);
-            this.updateChipsUserPlayers(users);
+            log.info('[returnChipsInplay] ' + user.login + ': ' + user.depositInGame[coinName] + ' ' + coinName);
+            this.updateUserDeposit(user, user.depositInGame[coinName], coinName, true);
+            user.depositInGame[coinName] = 0;
+            user.depositInRoom[coinName] = {};
+            await user.save();
         }
     },
     createTables(tables = tables_, eventEmitter = eventEmitter_, Table = Table_){
         tables_ = tables;
         eventEmitter_ = eventEmitter;
         Table_ = Table;
-        tablesData.forEach((t, i)=>{
-            tables[i] = new Table(i, t.count + ' местный стол', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false);
-            lastTableId = i;
+        let i = 1;
+        config.coins.forEach(coinName =>{
+            tablesData.forEach(t=>{
+                tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, coinName);
+                lastTableId = i;
+                i++;
+            });
         });
         // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, 'hard', false);
     },
@@ -144,7 +167,7 @@ module.exports = {
      */
 
     createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
-        log.info('Custom room:' + JSON.stringify(params));
+        log.info('Custom room:' + JSON.stringify({params, data}));
         data = data || params.data || {};
         if (!eventEmitter_){
             return log.info('Custom room: is not eventEmitter!!');
@@ -164,7 +187,7 @@ module.exports = {
         const maxBuyIn = data.buyIn || params.maxBuyIn || params.sb * 2 * 100;
         const minBuyIn = data.buyIn || params.minBuyIn || params.sb * 2 * 40;
 
-        tables_[i] = new Table_(i, params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data);
+        tables_[i] = new Table_(i, params.name || '', eventEmitter_(i), params.count, params.sb * 2, params.sb, maxBuyIn, minBuyIn, params.type || 'custom', params.isPrivate, params.creator_user_id, data, params.coinName || data.coinName || 'BIP');
         return i;
     },
 
@@ -199,7 +222,7 @@ module.exports = {
     },
     async playerGoInTourn(user){
         const {mtt} = Store.system;
-        const {buyIn} = mtt;
+        const {buyIn, coinName} = mtt;
         if (!mtt.isRegOppened){
             return 'Нет запланированных МТТ турниров!';
         }
@@ -210,7 +233,7 @@ module.exports = {
         if (mtt.users.includes(user.login)){
             return 'Этот пользователь уже зарегистрирован!';
         }
-        this.updateUserDeposit(user, -buyIn);
+        this.updateUserDeposit(user, -buyIn, coinName);
         mtt.users.push(user.login);
         await Store.save();
     },
@@ -220,7 +243,11 @@ module.exports = {
      * @param {Number} amount сумма
      *
      */
-    async multSendCoins(logins, amount){
+    async multSendCoins(logins, amount, coinName){
+        console.log(logins, amount, coinName);
+        if (!coinName){
+            return log.error('multSendCoins NO_coinName: ' + coinName);
+        }
         try {
             if (!amount){
                 log.warn('multSendCoins amoutn = ' + amount);
@@ -232,8 +259,8 @@ module.exports = {
                     log.error('multSendCoins no find ' + login + ' ' + amount);
                     continue;
                 }
-                await this.updateUserDeposit(user, amount);
-                log.info('multSendCoins success send ' + login + ' ' + amount);
+                await this.updateUserDeposit(user, amount, coinName);
+                log.info('multSendCoins success send ' + login + ' ' + coinName + ' ' + amount);
             }
         } catch (e){
             console.log(e);
@@ -272,63 +299,84 @@ module.exports = {
 
 // MIGRATE
 
-// setTimeout(async ()=>{
-//     const users = await usersDb.find({});
-//     for (let i in users){
-//         const u = users[i];
-//         u.depositInRoom = {};
-//         await u.save();
-//     }
-// }, 2000);
-module.exports.returnChepsInplay();
+setTimeout(async ()=>{
+    const users = await usersDb.find({});
+    for (let i in users){
+        const u = users[i];
+        u.depositInGame = {};
+        u.depositInRoom = {};
+        for (let coin of config.coins){
+            u.deposits = u.deposits || {};
+            u.deposits[coin] = u.deposits[coin] || 0;
+            u.depositInGame[coin] = 0;
+            u.depositInRoom[coin] = {};
+        }
+        u.deposits.BIP = u.deposit || u.deposits.BIP;
+        u.deposits.DEMO = u.deposits.DEMO === undefined ? 1000 : u.deposits.DEMO;
+        u.deposit = undefined;
+        await u.save();
+    }
+}, 500);
+
+for (let coin of config.coins){
+    module.exports.returnChipsInplay(coin);
+}
+
 setTimeout(()=>{
-    let data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 10;
-    data.buyIn = 100;
-    data.winnersCount = 1;
-    module.exports.tmpTourn(data);
+    config.coins.forEach(coinName=>{
+        console.log({coinName})
+        let data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 10;
+        data.buyIn = 100;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
+    
+        data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 6;
+        data.buyIn = 100;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
+    
+        data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 2;
+        data.buyIn = 30;
+        data.playersCount = 2;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
+    
+    
+        // SPIN
+    
+        const dataSpin = JSON.parse(JSON.stringify(config.sng));
+        dataSpin.count = 6;
+        dataSpin.playersCount = 3;
+        dataSpin.winnersCount = 1;
+        dataSpin.chips = 800,
+        dataSpin.timeOutMult = 3; // минут
+        dataSpin.isSpin = true;
+        dataSpin.name = 'SPIN And Go';
+        dataSpin.coinName = coinName;
 
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 6;
-    data.buyIn = 100;
-    data.winnersCount = 1;
-    module.exports.tmpTourn(data);
-
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 2;
-    data.buyIn = 30;
-    data.playersCount = 2;
-    data.winnersCount = 1;
-    module.exports.tmpTourn(data);
-
-
-    // SPIN
-
-    const dataSpin = JSON.parse(JSON.stringify(config.sng));
-    dataSpin.count = 6;
-    dataSpin.playersCount = 3;
-    dataSpin.winnersCount = 1;
-    dataSpin.chips = 800,
-    dataSpin.timeOutMult = 3; // минут
-    dataSpin.isSpin = true;
-    dataSpin.name = 'SPIN And Go';
-
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 20;
-    module.exports.tmpTourn(data);
-
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 50;
-    module.exports.tmpTourn(data);
-
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 100;
-    module.exports.tmpTourn(data);
-
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 250;
-    module.exports.tmpTourn(data);
-
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 20;
+        module.exports.tmpTourn(data);
+    
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 50;
+        module.exports.tmpTourn(data);
+    
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 100;
+        module.exports.tmpTourn(data);
+    
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 250;
+        module.exports.tmpTourn(data);
+    
+    });
 });
 
 

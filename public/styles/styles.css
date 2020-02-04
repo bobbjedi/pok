@@ -193,6 +193,19 @@ table {
     color: wheat;
     font-size: 1.2em
 }
+
+.select-coin{
+    background: transparent;
+    border: 0px solid transparent;
+    font-size: 1.05em;
+}
+.select-coin:focus,
+.select-coin:active
+{
+    border: 0px solid transparent;
+    background: transparent;
+    background-color: transparent;
+}
 /* 
 #table {
     border-radius: 200px;

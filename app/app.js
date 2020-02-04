@@ -62,14 +62,14 @@ app.run(function($rootScope, $location) {
     $rootScope.updateUser = _.throttle(function(needCheck){
         $rootScope.api({action: 'getUser'}, data => {
             Object.assign($rootScope.user, data);
-            $rootScope.totalChips = data.deposit;
+            $rootScope.totalChips = data.deposits[$rootScope.settings.coinName];
             needCheck && checkUser();
             $rootScope.$digest();
         }, true);
     }, 2000);
 
     const checkUser = () => {
-        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login, playerId: $rootScope.playerId}, response => {
+        socket.emit ('checkUser', {token: $rootScope.user.token, name: $rootScope.user.login, playerId: $rootScope.playerId, coinName: $rootScope.settings.coinName}, response => {
             if (response.success){
                 $rootScope.playerId = response.playerId;
                 console.log($rootScope.playerId);
@@ -104,9 +104,20 @@ app.run(function($rootScope, $location) {
     $rootScope.round = $u.round;
     $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
         cardColors: 'card2',
-        sound: true
+        sound: true,
+        coinName: 'DEMO'
+    };
+    if (!$rootScope.settings.coinName){
+        $rootScope.settings.coinName = 'DEMO';
+    }
+
+    $rootScope.changeCoinName = coinName=>{
+        $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
+        $rootScope.settings.coinName = coinName;
+        $rootScope.$digest();
     };
 
+    $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
     $rootScope.updateUser(true);
 
     window.onbeforeunload = ()=> {

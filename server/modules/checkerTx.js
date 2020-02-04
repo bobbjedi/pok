@@ -4,7 +4,7 @@ const {depositsDb, restorePswdDb} = require('./DB');
 const $u = require('../helpers/utils');
 const log = require('../helpers/log');
 const {getEqual, sendTx} = require('../modules/minter');
-
+const coinName = 'BIP';
 const txsCash = {};
 // ,https://explorer-api.minter.network/api/v1/addresses/Mxfdfc236848d445e754b6660bec98a046ac59b5cd/transactions?page=1
 setInterval(() => {
@@ -53,24 +53,25 @@ setInterval(() => {
                     return;
                 }
                 let amount;
-                if (tx.data.coin !== config.coinName){
+                if (tx.data.coin !== coinName){
                     const convert = await getEqual(tx.data.coin, amountTx);
                     amount = convert.will_get * 0.95;
-                    log.info(`Convert ${amountTx} ${tx.data.coin} to ${amount} ${config.coinName}`);
+                    log.info(`Convert ${amountTx} ${tx.data.coin} to ${amount} ${coinName}`);
                 } else {
                     amount = amountTx;
                 };
                 if (amount > 0){
                     // amount *= 1 - config.comission;
                     depositsDb.db.insert({hash, user_id: user._id, type: 'deposit', amount, unix: $u.unix()});
-                    user.deposit += amount;
+                    // user.deposit += amount;
+                    $u.updateUserDeposit(user, amount, coinName, true);
                     user.save();
                     log.info(`newDeposit:
                     hash: ${hash}
                     user: ${user.login}
                     amount: ${amount}`);
                 }
-                $u.updateChipsUserPlayers(user);
+                // $u.updateChipsUserPlayers(user, coinName);
             });
 
         } catch (e) {

@@ -4,7 +4,7 @@ const {usersDb} = require('./DB');
 const minter = require('./minter');
 const log = require('../helpers/log');
 let Store;
-
+const coinName = 'BIP';
 let isAlarm = false;
 
 module.exports = {
@@ -69,7 +69,7 @@ module.exports = {
             const returnedCount = needRecievedToUser || Math.round(configMain.upFromMaxDep - baseBalance);
             log.warn(`Отзываем из майна bip:${returnedCount} baseBalance: ${baseBalance} needRecievedToUser: ${needRecievedToUser}`);
             // return;
-            const res = await minter.buy({coinFrom: configMain.coin, coinTo: config.coinName, buyAmount: returnedCount});
+            const res = await minter.buy({coinFrom: configMain.coin, coinTo: coinName, buyAmount: returnedCount});
             if (res){
                 this.updatePriceCoinToDb();
             }
@@ -82,13 +82,13 @@ module.exports = {
     async sendToMain (baseBalance){
         try {
             const sendedCount = baseBalance - configMain.upFromMaxDep;
-            log.warn(`Отправляем в майн ${sendedCount} ${config.coinName} [baseBalance: ${baseBalance}]`);
+            log.warn(`Отправляем в майн ${sendedCount} ${coinName} [baseBalance: ${baseBalance}]`);
             const isClean = await this.checkRat();
             if (!isClean){
                 return log.error('isClear FAIL!');
             }
             // return;
-            const res = await minter.sell({coinFrom: config.coinName, coinTo: configMain.coin, sellAmount: sendedCount});
+            const res = await minter.sell({coinFrom: coinName, coinTo: configMain.coin, sellAmount: sendedCount});
             if (res){
                 this.updatePriceCoinToDb();
             }

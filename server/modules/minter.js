@@ -3,7 +3,7 @@ const config = require('../helpers/configReader');
 const pk = require('../.pk');
 const {Minter, SendTxParams, BuyTxParams, SellTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
-const COIN = config.coinName;
+const COIN = 'BIP';
 const minter = new Minter({chainId: 1, apiType: 'gate', baseURL: 'https://gate-api.minter.network/api/v1/'});
 const log = require('../helpers/log');
 const {depositsDb} = require('./DB');
@@ -46,10 +46,10 @@ module.exports = {
             const hash = await sendTx(user.address, amountSend);
             amount = Math.round(amount);
             if (hash){
-                await $u.updateUserDeposit(user, -amount);
+                await $u.updateUserDeposit(user, -amount, COIN);
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
                 log.info('Withdraw: ' + user.login + ' amount: ' + amount + ' hash: ' + hash);
-                $u.updateChipsUserPlayers(user);
+                // $u.updateChipsUserPlayers(user, COIN);
                 delete withdrawBlocked[user._id];
                 return true;
             }
@@ -64,7 +64,7 @@ module.exports = {
     async getAddressData(address = config.gameMinterAddress){
         return await $u.asyncReq('https://explorer-api.minter.network/api/v1/addresses/' + address);
     },
-    async getCoinBalance(coinName = config.coinName){
+    async getCoinBalance(coinName = COIN){
         const {balances} = (await this.getAddressData()).data;
         return Math.round(+balances.find(c=>c.coin === coinName).amount);
     },
