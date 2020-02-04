@@ -303,6 +303,7 @@ setTimeout(async ()=>{
     const users = await usersDb.find({});
     for (let i in users){
         const u = users[i];
+        let bip = u.depositInGame;
         u.depositInGame = {};
         u.depositInRoom = {};
         for (let coin of config.coins){
@@ -311,7 +312,7 @@ setTimeout(async ()=>{
             u.depositInGame[coin] = 0;
             u.depositInRoom[coin] = {};
         }
-        u.deposits.BIP = u.deposit;
+        u.deposits.BIP = u.deposit + bip;
         u.deposits.DEMO = 1000;
         u.deposit = undefined;
         await u.save();
