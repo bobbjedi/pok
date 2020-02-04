@@ -20,6 +20,7 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
+        return;
         console.log({withdrawBlocked});
         if (withdrawBlocked[user._id]){
             log.error('withdraw withdrawBlocked:' + user.login);
