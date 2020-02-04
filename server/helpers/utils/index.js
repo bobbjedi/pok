@@ -311,15 +311,15 @@ setTimeout(async ()=>{
             u.depositInGame[coin] = 0;
             u.depositInRoom[coin] = {};
         }
-        u.deposits.BIP = u.deposit || u.deposits.BIP;
-        u.deposits.DEMO = u.deposits.DEMO === undefined ? 1000 : u.deposits.DEMO;
+        u.deposits.BIP = u.deposit;
+        u.deposits.DEMO = 1000;
         u.deposit = undefined;
         await u.save();
     }
 }, 500);
 
 for (let coin of config.coins){
-    module.exports.returnChipsInplay(coin);
+    // module.exports.returnChipsInplay(coin);
 }
 
 setTimeout(()=>{
