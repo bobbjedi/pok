@@ -320,7 +320,7 @@ module.exports = {
 // }, 500);
 
 for (let coin of config.coins){
-    // module.exports.returnChipsInplay(coin);
+    module.exports.returnChipsInplay(coin);
 }
 
 setTimeout(()=>{
