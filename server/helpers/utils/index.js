@@ -376,59 +376,60 @@ setTimeout(module.exports.updateDemoChips, 10000);
 
 
 config.coins.forEach(coinName=>{
-    console.log({coinName});
-    let data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 10;
-    data.buyIn = 100;
-    data.winnersCount = 1;
-    data.coinName = coinName;
-    module.exports.tmpTourn(data);
+    setTimeout(()=>{
+        console.log({coinName});
+        let data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 10;
+        data.buyIn = 100;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
     
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 6;
-    data.buyIn = 100;
-    data.winnersCount = 1;
-    data.coinName = coinName;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 6;
+        data.buyIn = 100;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
     
-    data = JSON.parse(JSON.stringify(config.sng));
-    data.count = 2;
-    data.buyIn = 30;
-    data.playersCount = 2;
-    data.winnersCount = 1;
-    data.coinName = coinName;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(config.sng));
+        data.count = 2;
+        data.buyIn = 30;
+        data.playersCount = 2;
+        data.winnersCount = 1;
+        data.coinName = coinName;
+        module.exports.tmpTourn(data);
     
     
-    // SPIN
+        // SPIN
     
-    const dataSpin = JSON.parse(JSON.stringify(config.sng));
-    dataSpin.count = 6;
-    dataSpin.playersCount = 3;
-    dataSpin.winnersCount = 1;
-    dataSpin.chips = 800,
-    dataSpin.timeOutMult = 3; // минут
-    dataSpin.isSpin = true;
-    dataSpin.name = 'SPIN And Go';
-    dataSpin.coinName = coinName;
+        const dataSpin = JSON.parse(JSON.stringify(config.sng));
+        dataSpin.count = 6;
+        dataSpin.playersCount = 3;
+        dataSpin.winnersCount = 1;
+        dataSpin.chips = 800,
+        dataSpin.timeOutMult = 3; // минут
+        dataSpin.isSpin = true;
+        dataSpin.name = 'SPIN And Go';
+        dataSpin.coinName = coinName;
 
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 20;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 20;
+        module.exports.tmpTourn(data);
     
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 50;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 50;
+        module.exports.tmpTourn(data);
     
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 100;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 100;
+        module.exports.tmpTourn(data);
     
-    data = JSON.parse(JSON.stringify(dataSpin));
-    data.buyIn = 250;
-    module.exports.tmpTourn(data);
+        data = JSON.parse(JSON.stringify(dataSpin));
+        data.buyIn = 250;
+        module.exports.tmpTourn(data);
     
-    // });
+    }, 5000);
 });
 
 
