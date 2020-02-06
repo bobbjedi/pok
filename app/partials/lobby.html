@@ -77,19 +77,19 @@
                     onerror="generateRndAvatar(this)">
             </div>
             <div class="user-info">
-                <b>{{isShowAddWallet}} Привет!</b> <span class="user-name">{{$root.user.login}}</span>
+                <b>Hello!</b> <span class="user-name">{{$root.user.login}}</span>
                 <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
                 <br>Coin:
                 <select ng-model="$root.settings.coinName" class="select-coin txt-green">
                     <option ng-repeat="coinName in $root.config.coins">{{coinName}}</option>
                 </select>
                 <span class="user-name small" ng-if="addressShort()"> <br>{{addressShort()}}</span>
-                <br>Баланс:
+                <br>Balance:
                 <span class="deposit">{{$root.user.deposits[$root.settings.coinName]}}</span>
                 <i ng-show="$root.settings.coinName !== 'DEMO'" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
                 <span ng-show="$root.settings.coinName !== 'DEMO' && addressShort()">
                     <br>
-                    Вывести:
+                    Withdraw:
                     <span class="withdraw">{{$root.user.deposits[$root.settings.coinName]}}</span>
                     <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered"
                         aria-hidden="true"></i>
@@ -103,7 +103,7 @@
         <div class="modal">
             <form ng-submit="logreg()">
                 <span ng-show="!isShowFogotPswd">
-                    <label for="screen-login-input">Ваш логин</label>
+                    <label for="screen-login-input">Login</label>
                     <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true"
                         required>
                     <!-- 
@@ -111,7 +111,7 @@
                     <input id="screen-address-input" class="input-left" type="text" ng-model="address"
                         ng-show="!isLoginned" ng-trim="true"> -->
 
-                    <label for="screen-password-input">Пароль</label>
+                    <label for="screen-password-input">Password</label>
                     <input id="screen-password-input" class="input-left" type="password" ng-model="password"
                         ng-trim="true" required>
                     <br>
@@ -123,11 +123,11 @@
                             азартных играх.</label>
                     </div>
                     <br>
-                    <input class="but bg-blue" type="submit" value="Отправить">
+                    <input class="but bg-blue" type="submit" value="Send">
                     <br>
                     <br>
                     <a class="txt-blue hovered"
-                        ng-click="isLoginned = !isLoginned">{{isLoginned ? 'Зарегистрироваться?' : 'Есть аккаунт?'}}</a>
+                        ng-click="isLoginned = !isLoginned">{{isLoginned ? 'Registration?' : 'Login?'}}</a>
                     |
                 </span>
 
@@ -152,7 +152,7 @@
                     <br>
                 </span>
                 <a class="txt-blue hovered"
-                    ng-click="isShowFogotPswd = !isShowFogotPswd">{{!isShowFogotPswd ? 'Забыл пароль?' : 'Войти?'}}</a>
+                    ng-click="isShowFogotPswd = !isShowFogotPswd">{{!isShowFogotPswd ? 'Forgot password?' : 'Enter?'}}</a>
             </form>
         </div>
         <div id="curtain" ng-show="!isLogged()"></div>
