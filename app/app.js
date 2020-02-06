@@ -112,6 +112,9 @@ app.run(function($rootScope, $location) {
     }
 
     $rootScope.changeCoinName = coinName=>{
+        if (!coinName){
+            return;
+        }
         // $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
         $rootScope.settings.coinName = coinName;
         $rootScope.$digest();
