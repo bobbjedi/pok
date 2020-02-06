@@ -1,5 +1,8 @@
+import config from '../../../config';
+
 export default ($scope, $routeParams) =>{
     $scope.isSendActionAuto = false;
+    $scope.countAutoMoves = 0;
     $scope.automoves = {
         isCheckFold: false,
         isCall: false,
@@ -74,9 +77,17 @@ export default ($scope, $routeParams) =>{
                 if (v !== 1 || $scope.table.activeSeat !== $scope.mySeat){
                     return;
                 }
+                $scope.countAutoMoves++;
+                console.log('countAutoMoves', $scope.countAutoMoves);
+                if (!$scope.table.seats[$scope.mySeat].isSitOutMe && $scope.countAutoMoves >= (config.maxClientCountAutoMoves || 3)){
+                    $scope.sitOutMe();
+                    noty('error', 'AUTO SIT OUT 10 min');
+                }
                 if ($scope.showCheckButton()){
+                    noty('info', 'AUTO CHECK timeout');
                     return $scope.check();
                 } else if ($scope.showFoldButton()){
+                    noty('info', 'AUTO FOLD timeout');
                     return $scope.fold();
                 } else if ($scope.showSitOutButton()){
                     return $scope.postBlind(false);

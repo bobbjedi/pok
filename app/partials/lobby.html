@@ -2,29 +2,42 @@
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
-                <div>Максимальная сумма для вывода <span class="big txt-green">{{$root.user.deposits[$root.settings.coinName]}}</span>
-                    {{$root.settings.coinName}} (комиссия {{$root.config.withdrawComission}}%)</div>
-                <div>Вывести: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow"
-                        ng-click="withdrawAmount = $root.user.deposits[$root.settings.coinName]"> Все </span></div>
+                <div>Maximal withdraw amount <span
+                        class="big txt-green">{{$root.user.deposits[$root.settings.coinName]}}</span>
+                    {{$root.settings.coinName}} (comission {{$root.config.withdrawComission}}%)</div>
+                <div>Withdraw: <input ng-model="withdrawAmount" type="number"> <span class="big txt-yellow"
+                        ng-click="withdrawAmount = $root.user.deposits[$root.settings.coinName]"> All </span></div>
             </div>
             <div class="buts" ng-click="isShowWithdraw = false">
-                <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount);">Да</div>
-                <div class="but bg-red">Нет</div>
+                <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount);">Ok</div>
+                <div class="but bg-red">Cancel</div>
             </div>
         </div>
         <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
     </div>
 
+    <div class="modal-wrap" ng-show="isShowAddWallet">
+        <div class="modal center">
+          <h3>Add address <span class="txt-green big">{{$root.settings.coinName}}</span></h3>
+            <input class="dark-form w350 big" ng-model="addedAddress" placeholder="Mx...">
+            <div class="buts mt25" ng-click="isShowWithdraw = false">
+                <div class="but bg-green" ng-click="addAddress()">Ok</div>
+                <div class="but bg-red" ng-click="isShowAddWallet = false;">Cancel</div>
+            </div>
+        </div>
+    </div>
     <div class="modal-wrap" ng-show="isShowTournModal" ng-click="isShowTournModal = false">
         <div class="modal tourn-info">
             <div class="modal-text">
-                <div class="big txt-yellow m10"><i class="fa fa-trophy" aria-hidden="true"></i> Турнир Minter Poker</div>
+                <div class="big txt-yellow m10"><i class="fa fa-trophy" aria-hidden="true"></i> Турнир Minter Poker
+                </div>
                 <div class="big txt-green m10" ng-if="public.mtt.title.length">{{public.mtt.title}}</div>
                 <div class="big txt-blue m10">Начало: {{public.mtt.date}}</div>
                 <div class="big m5">Условия:</div>
-                
+
                 <div class="small mtt-info">
-                    <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}} {{$root.settings.coinName}}</div>
+                    <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}}
+                        {{$root.settings.coinName}}</div>
                     <div class="setting-line"><span class="al">Фишек:</span> {{public.mtt.chips}}</div>
                     <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div>
                     <!-- <div class="setting-line"><span>Смена столов:</span> {{public.mtt.timeOutShufflePlayers}} мин</div>
@@ -36,11 +49,11 @@
                 <br>
                 <span ng-if="public.mtt.users.includes($root.user.login)" class="txt-green">Вы зарегистрированы!</span>
                 <span ng-if="!public.mtt.users.includes($root.user.login)">
-                <b class="m10">Принять участие?</b>
-                <div class="buts m10">
-                    <div class="but bg-green" ng-click="goInTourn();">GO!</div>
-                    <div class="but bg-red">Нет</div>
-                </div>
+                    <b class="m10">Принять участие?</b>
+                    <div class="buts m10">
+                        <div class="but bg-green" ng-click="goInTourn();">GO!</div>
+                        <div class="but bg-red">Нет</div>
+                    </div>
                 </span>
             </div>
         </div>
@@ -61,25 +74,28 @@
         <div class="login-path" ng-show="isLogged()">
             <div class="avatar" ng-click="uploadAvatar()">
                 <img class="avatar-img" ng-src="{{'./avatars/' + $root.user.login + '.jpg'}}"
-                onerror="generateRndAvatar(this)">
+                    onerror="generateRndAvatar(this)">
             </div>
             <div class="user-info">
-                <b>Привет!</b> <span class="user-name">{{$root.user.login}}</span>
+                <b>{{isShowAddWallet}} Привет!</b> <span class="user-name">{{$root.user.login}}</span>
                 <i class="fa fa-sign-out txt-red hovered" aria-hidden="true" ng-click="$root.logOut()"></i>
-                <br>Coin: 
+                <br>Coin:
                 <select ng-model="$root.settings.coinName" class="select-coin txt-green">
                     <option ng-repeat="coinName in $root.config.coins">{{coinName}}</option>
                 </select>
-                <br><span class="user-name small">{{addressShort()}}</span>
+                <span class="user-name small" ng-if="addressShort()"> <br>{{addressShort()}}</span>
                 <br>Баланс:
                 <span class="deposit">{{$root.user.deposits[$root.settings.coinName]}}</span>
-                <i onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
-                <br>
-                <span ng-show="$root.settings.coinName !== 'DEMO'">
+                <i ng-show="$root.settings.coinName !== 'DEMO'" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
+                <span ng-show="$root.settings.coinName !== 'DEMO' && addressShort()">
+                    <br>
                     Вывести:
                     <span class="withdraw">{{$root.user.deposits[$root.settings.coinName]}}</span>
-                    <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered" aria-hidden="true"></i>
-                </span ng-show="">
+                    <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered"
+                        aria-hidden="true"></i>
+                </span>
+                <span class="user-name small" ng-show="!addressShort() && $root.settings.coinName !== 'DEMO'" ng-click="isShowAddWallet = true; addedAddress = ''"><br>Add wallet <i
+                        class="fa fa-plus-square-o txt-green" aria-hidden="true"></i></span>
             </div>
         </div>
     </div>
@@ -90,10 +106,10 @@
                     <label for="screen-login-input">Ваш логин</label>
                     <input id="screen-login-input" class="input-left" type="text" ng-model="login" ng-trim="true"
                         required>
-
+                    <!-- 
                     <label for="screen-address-input" ng-show="!isLoginned">Минтер адрес</label>
                     <input id="screen-address-input" class="input-left" type="text" ng-model="address"
-                        ng-show="!isLoginned" ng-trim="true">
+                        ng-show="!isLoginned" ng-trim="true"> -->
 
                     <label for="screen-password-input">Пароль</label>
                     <input id="screen-password-input" class="input-left" type="password" ng-model="password"
@@ -123,11 +139,11 @@
                         <label for="screen-new-password-input">Введите новый пароль:</label>
                         <input id="screen-new-password-input" class="input-left" type="password" ng-model="newPassword"
                             ng-trim="true">
-                            <br>
-                            <div class="but hovered create-room m10" ng-click="restorePswd()">Восстановить</div>
+                        <br>
+                        <div class="but hovered create-room m10" ng-click="restorePswd()">Восстановить</div>
                     </span>
                     <span ng-show="checkStrNewPswd">
-                        <div class="">Отправьте пустую транзакцию c <u>Вашего</u> кошелька на системный адрес: 
+                        <div class="">Отправьте пустую транзакцию c <u>Вашего</u> кошелька на системный адрес:
                             <div class="txt-green big">{{$root.config.gameMinterAddress}}</div>
                             с комментарием:
                             <div class="txt-green big">{{checkStrNewPswd}}</div>
@@ -155,7 +171,8 @@
                         <option value="10">10</option>
                     </select>
                 </div>
-                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" /></div>
+                <div class="setting-line"><span>Малый блаинд:</span> <input type="number" ng-model="createdTable.sb" />
+                </div>
                 <div class="setting-line"><span>Макс BuyIn:</span> <input type="number"
                         ng-model="createdTable.maxBuyIn" /></div>
                 <div class="setting-line" ng-click="createdTable.isPrivate = !createdTable.isPrivate">
@@ -173,7 +190,7 @@
     <div id="buttons-lobby">
         <div class="but hovered create-room big bold" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Создать стол</div>
-        <div class="but hovered create-room bg-black big bold txt-yellow" 
+        <div class="but hovered create-room bg-black big bold txt-yellow"
             ng-show="public.mtt.isRegOppened && public.mtt.coinName === $root.settings.coinName"
             ng-click="isShowTournModal = true"><i class="fa fa-trophy" aria-hidden="true"></i> &nbsp; Турнир MTT</div>
         <div class="lobby-stat txt-green">
@@ -198,15 +215,15 @@
             <!-- <td>{{table.coinName}}</td> -->
             <td><a href="#!/table-{{table.seatsCount}}/{{table.id}}">
                     <span class="table-name-img">
-                        {{table.name}}&nbsp;<span
-                            ng-show="table.type !== 'SNG'"
+                        {{table.name}}&nbsp;<span ng-show="table.type !== 'SNG'"
                             ng-class="{'txt-green': table.type === 'light', 'txt-yellow': table.type === 'hard', 'txt-red': table.type === 'unlim', 'txt-blue': table.type === 'middle'}">
                             {{table.type}}</span>
-                            &nbsp;<span class="red-cheap" ng-class="{img_animate: table.playersSeatedCount}"></span>
-                            <!-- &nbsp;<span class="dice-gif" ng-show="true || table.name.includes('SPIN')"></span> -->
+                        &nbsp;<span class="red-cheap" ng-class="{img_animate: table.playersSeatedCount}"></span>
+                        <!-- &nbsp;<span class="dice-gif" ng-show="true || table.name.includes('SPIN')"></span> -->
                     </span>
                 </a>
-                <i ng-show="table.name.includes('SPIN')" ng-click="showSpinInfo()" class="fa fa-info-circle txt-green" aria-hidden="true"></i>
+                <i ng-show="table.name.includes('SPIN')" ng-click="showSpinInfo()" class="fa fa-info-circle txt-green"
+                    aria-hidden="true"></i>
             </td>
             <td class="centered-text">{{table.smallBlind}}/{{table.bigBlind}}</td>
             <td class="centered-text"> {{table.playersSeatedCount}}/{{table.playersCount}}</td>

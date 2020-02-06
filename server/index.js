@@ -123,24 +123,29 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('sitOutMe', callback => {
-        const player = players[socket.id];
-        const table = tables[player.room];
-        if (player && table){
-            if (player.isTourn){
-                return callback(false);
-            }
-            player.public.isSitOutMe = !player.public.isSitOutMe;
-            if (!player.public.isSitOutMe && player.public.chipsInPlay > 0){ // вернулся
-                if (!player.public.sittingIn){ // если его оформило уже, то возвращаем
-                    console.log('Успело оформить! table.playersSittingInCount:', table.playersSittingInCount);
-                    player.public.sittingIn = true;
-                    table.playersSittingInCount++;
+        try {
+            const player = players[socket.id];
+            const table = player && tables[player.room];
+            if (player && table){
+                if (player.isTourn){
+                    return callback(false);
                 }
-                clearTimeout(player.sitOutTimer);
-                player.sitOutTimer = null;
+                player.public.isSitOutMe = !player.public.isSitOutMe;
+                if (!player.public.isSitOutMe && player.public.chipsInPlay > 0){ // вернулся
+                    if (!player.public.sittingIn){ // если его оформило уже, то возвращаем
+                        console.log('Успело оформить! table.playersSittingInCount:', table.playersSittingInCount);
+                        player.public.sittingIn = true;
+                        table.playersSittingInCount++;
+                    }
+                    clearTimeout(player.sitOutTimer);
+                    player.sitOutTimer = null;
+                }
+                console.log(player.public.name, 'isSitOutMe', player.public.isSitOutMe);
+                callback(player.public.isSitOutMe);
             }
-            console.log(player.public.name, 'isSitOutMe', player.public.isSitOutMe);
-            callback(player.public.isSitOutMe);
+        } catch (e){
+            console.log(e);
+            log.error('sitOutMe: ' + e);
         }
     });
 

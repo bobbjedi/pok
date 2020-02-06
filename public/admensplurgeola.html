@@ -87,16 +87,16 @@
 
                     <td v-show="editUserId !== u._id">{{u.login}}</td>
                     <td v-show="editUserId !== u._id">{{u.timestamp}}</td>
-                    <td v-show="editUserId !== u._id">{{u.address}}</td>
-                    <td v-show="editUserId !== u._id">{{u.deposit}}</td>
-                    <td v-show="editUserId !== u._id">{{u.depositInGame}}</td>
+                    <td v-show="editUserId !== u._id">{{u.addresses.BIP}}</td>
+                    <td v-show="editUserId !== u._id">{{u.deposits.BIP}}</td>
+                    <td v-show="editUserId !== u._id">{{u.depositInGame.BIP}}</td>
 
 
                     <td v-show="editUserId == u._id"><input v-model="u.login" /></td>
                     <td v-show="editUserId == u._id"><input v-model="u.timestamp" /></td>
-                    <td v-show="editUserId == u._id"><input v-model="u.address" /></td>
-                    <td v-show="editUserId == u._id"><input v-model.number="u.deposit" /></td>
-                    <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame" /> !!</td>
+                    <td v-show="editUserId == u._id"><input v-model="u.addresses.BIP" /></td>
+                    <td v-show="editUserId == u._id"><input v-model.number="u.deposits.BIP" /></td>
+                    <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame.BIP" /> !!</td>
 
                 </tr>
             </table>
@@ -184,7 +184,7 @@
             computed: {
                 totDep() {
                     return this.users.reduce((s, d) => {
-                        return s + d.deposit + d.depositInGame;
+                        return s + d.deposits.BIP + d.depositInGame.BIP;
                     }, 0);
                 }
             },
@@ -200,6 +200,7 @@
                     api({
                         action: 'multReturnChips',
                         data: {
+                            coinName: 'BIP',
                             amount: this.multReturn.amount,
                             logins: stringToArray(this.multReturn.userList)
                         }
@@ -277,7 +278,7 @@
 
 
     function multi(res) {
-        // return;
+        return;
         res.forEach(u => {
                 const {games, bet, raise, fold, call} = u;
                 u.maxGamesWith = getMax(games);

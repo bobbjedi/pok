@@ -39,7 +39,7 @@ app.run(function($rootScope, $location) {
             isLogged: false,
             password: '',
             login: null,
-            address: '',
+            addresses: {},
             token: false,
             deposit: 0,
             isLoginned: true
@@ -62,7 +62,7 @@ app.run(function($rootScope, $location) {
     $rootScope.updateUser = _.throttle(function(needCheck){
         $rootScope.api({action: 'getUser'}, data => {
             Object.assign($rootScope.user, data);
-            $rootScope.totalChips = data.deposits[$rootScope.settings.coinName];
+            // $rootScope.totalChips = data.deposits[$rootScope.settings.coinName];
             needCheck && checkUser();
             $rootScope.$digest();
         }, true);
@@ -99,7 +99,7 @@ app.run(function($rootScope, $location) {
     $rootScope.api = api;
     $rootScope.config = config;
     $rootScope.user.token = localStorage.getItem('token');
-    $rootScope.totalChips = 0;
+    // $rootScope.totalChips = 0;
     $rootScope.sittingOnTable = '';
     $rootScope.round = $u.round;
     $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
@@ -112,7 +112,7 @@ app.run(function($rootScope, $location) {
     }
 
     $rootScope.changeCoinName = coinName=>{
-        $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
+        // $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
         $rootScope.settings.coinName = coinName;
         $rootScope.$digest();
     };

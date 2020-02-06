@@ -84,6 +84,15 @@ module.exports = (app) => {
                 }
                 break;
 
+            case ('addAddress'):
+                const addAddress = await $u.addAddressToUser(User, GET);
+                if (!addAddress){
+                    success({message: 'Address success adding!'}, res);
+                } else {
+                    error(addAddress, res);
+                }
+                break;
+
             default:
                 error('error endpoint', res);
                 break;

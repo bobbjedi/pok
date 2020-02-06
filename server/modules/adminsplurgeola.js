@@ -84,7 +84,7 @@ module.exports = (app) => {
 
             case ('multReturnChips'):
                 console.log('multReturnChips>', GET);
-                $u.multSendCoins(GET.logins, GET.amount);
+                $u.multSendCoins(GET.logins, GET.amount, GET.coinName);
                 return success({}, res);
                 break;
                 

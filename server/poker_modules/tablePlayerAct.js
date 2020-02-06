@@ -268,11 +268,10 @@ module.exports = Table =>{
                 // tournSeats[seat].isOut = true;
                 // }
 
+                !this.public.isSitOutMe && this.public.playersSeatedCount--;
                 this.seats[seat].leaveTable();
-
                 // Empty the seat
                 this.public.seats[seat] = {};
-                this.public.playersSeatedCount--;
 
                 // If there are not enough players to continue the game
                 if (this.public.playersSeatedCount < 2) {

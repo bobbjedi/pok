@@ -20,7 +20,6 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
-        return;
         console.log({withdrawBlocked});
         if (withdrawBlocked[user._id]){
             log.error('withdraw withdrawBlocked:' + user.login);
@@ -44,7 +43,7 @@ module.exports = {
                 }
                 await $u.wait(6);
             }
-            const hash = await sendTx(user.address, amountSend);
+            const hash = await sendTx(user.addresses.BIP, amountSend);
             amount = Math.round(amount);
             if (hash){
                 await $u.updateUserDeposit(user, -amount, COIN);

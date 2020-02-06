@@ -31,7 +31,10 @@ var Player = function (socket, user, createdCoinName = 'BIP') {
         lastAct: null,
         // sit out
         isSitOutMe: false,
-
+        // отключился
+        isDisconnect: false,
+        // заюзал время на реконект
+        isUseTimeToRecconect: false,
         get coinName(){
             if (self.sittingOnTable){
                 return Store.tables[self.sittingOnTable].public.coinName;
@@ -46,7 +49,6 @@ var Player = function (socket, user, createdCoinName = 'BIP') {
     // Автодействия сервера за юзера подряд(если инет отвалился)
     this.autoFoldTimes = 0;
     // восстанавливается одключение
-    this.public.isDisconnect = false;
     // The socket object of the user
     this.socket = socket;
     // The chips that are available in the user's account
@@ -104,6 +106,10 @@ Player.prototype.getUserDB = async function () {
  * @description обновляем коин для игрока
  */
 Player.prototype.changeCoinName = async function(coinName){
+    if (this.isTourn){
+        console.log('changeCoinName isTourn', this.public.name);
+        return;
+    }
     if (!config.coins.includes(coinName)){
         return log.error('changeCoinName ' + coinName);
     }
@@ -179,6 +185,7 @@ Player.prototype.return = function () {
     clearTimeout(this.sitOutTimer);
     this.public.isDisconnect = false;
     this.autoFoldTimes = 0;
+    this.public.isUseTimeToRecconect = false;
     return this.socket.id;
 };
 
@@ -193,6 +200,7 @@ Player.prototype.leaveTable = async function () {
         // Remove the player from the table
         this.sittingOnTable = false;
         this.seat = null;
+        this.public.isSitOutMe = false;
     }
 };
 
@@ -216,7 +224,7 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
     await this.updateDepInPlay(user);
     clearTimeout(this.sitOutTimer);
     this.sitOutTimer = null;
-    
+    this.public.isSitOutMe = false;
 };
 
 /**

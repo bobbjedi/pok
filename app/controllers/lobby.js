@@ -10,6 +10,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
     // tourn($scope, $rootScope);
     $scope.lobbyTables = [];
+    $scope.isShowAddWallet = false;
     // $scope.newScreenName = '';
     $scope.isLoginned = true, // хочет логиниться / регаться
     $scope.status = 'login';
@@ -20,7 +21,10 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.withdrawAmount = 0;
     $scope.playersInGame = 0;
     $scope.addressShort = ()=>{
-        const address = $rootScope.user.address;
+        const address = $rootScope.user.addresses[$rootScope.settings.coinName];
+        if (!address){
+            return false;
+        }
         return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
     };
     $scope.createdTable = {
@@ -68,22 +72,29 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $rootScope.updateUser();
         });
     };
+    $scope.addWallet = ()=> {
+        // if (user.address && (user.address.length < 40 || !user.address.startsWith('Mx'))) {
+        //     // console.log('U minter adress must be Mx345536dsv34344...!');
+        //     noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
+        //     return;
+        // }
+
+    };
     $scope.logreg = function() {
         const user = $rootScope.user;
         user.password = $scope.password;
         user.login = $scope.login;
-        user.address = $scope.address;
-        // console.log(!user.login, !user.password, !$scope.isLoginned, !user.address)
-        if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
+        // if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
+        if (!user.login || !user.password) {
             // console.log('Fill in all the fields!');
             noty('error', 'Заполните все поля!');
             return;
         }
-        if (user.address && (user.address.length < 40 || !user.address.startsWith('Mx'))){
-            // console.log('U minter adress must be Mx345536dsv34344...!');
-            noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
-            return;
-        }
+        // if (user.address && (user.address.length < 40 || !user.address.startsWith('Mx'))){
+        //     // console.log('U minter adress must be Mx345536dsv34344...!');
+        //     noty('error', 'Ваш минтер адрес должен быть <br> <i> Mx345536dsv34344...</i>!');
+        //     return;
+        // }
 
         if (!$scope.isLoginned && !$scope.years18){
             noty('error', 'Подтвердите Ваше совершеннолетие!');
@@ -110,6 +121,22 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             const link = location.origin + '/#!' + path;
             window.copy(link, 'Комната успешно создана. Cсылка на нее скопирована в Ваш буфер обмена, делитесь ей со своими друзьями! Комната будет удалена по истечении ' + config.tableTimeOutLive + ' минут неактивности. Хорошей игры!');
             $location.path(path);
+        });
+    };
+
+    $scope.addAddress = function(){
+        const address = $scope.addedAddress;
+        if (!address.startsWith('Mx') || address.length < 30){
+            return noty('error', 'No valid address!');
+        }
+        $scope.isShowAddWallet = false;
+
+        $rootScope.api({action: 'addAddress', data: {
+            coinName: $rootScope.settings.coinName,
+            address
+        }}, ()=>{
+            noty('success', $rootScope.settings.coinName + 'address was successfully added!');
+            $rootScope.updateUser();
         });
     };
 

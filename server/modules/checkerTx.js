@@ -26,15 +26,17 @@ setInterval(() => {
                 }
                 const address = tx.from;
                 const payload = tx.payload;
-                const user = await $u.getUserFromQ({address});
+                const user = await $u.getUserFromQ({
+                    $where: function () {
+                        return this.addresses[coinName] === address;
+                    }
+                });
                 if (!user){
                     log.warn('Cant find user! ' + tx.from);
                     const amount = Math.round(+tx.data.value) * 0.99;
                     if (amount < 2){
                         return;
                     }
-                    // const hashBack = await sendTx(address, amount);
-                    // depositsDb.db.insert({hash, hashBack, user_id: 'none', from: address, type: 'back', amount});
                     return;
                 }
 

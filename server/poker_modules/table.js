@@ -192,12 +192,21 @@ Table.prototype.setTimeoutWait = function(){
                 log.error('Auto moves: ' + e);
             }
         };
+        const playerPublic = this.seats[activeSeat].public;
         let timeOut = (config.timeOutWait + 3) * 1000;
         // if (this.seats[activeSeat].public.isDisconnect || this.public.tournSeats[activeSeat] && this.public.tournSeats[activeSeat].isOut){
-        if (this.seats[activeSeat].public.isDisconnect){
-            // console.log(lastActiveUserLogin + ' timeOut 3s');
-            timeOut = 3000;
+        if (playerPublic.isDisconnect){
+            if (playerPublic.isUseTimeToRecconect){ // заюзан реконект
+                console.log(lastActiveUserLogin + ' timeOut 3s');
+                timeOut = 3000;
+            } else {
+                timeOut *= 1.5;
+                playerPublic.isUseTimeToRecconect = true;
+                console.log(lastActiveUserLogin + ' recconnect.... ' + timeOut);
+            }
         }
+
+
         this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
     } catch (e){
         console.log(e);
