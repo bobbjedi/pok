@@ -55,6 +55,7 @@ setInterval(() => {
                     return;
                 }
                 let amount;
+                console.log('tx.data.coin ', tx.data.coin);
                 if (tx.data.coin !== coinName){
                     const convert = await getEqual(tx.data.coin, amountTx);
                     amount = convert.will_get * 0.95;

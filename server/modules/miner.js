@@ -1,5 +1,4 @@
 const configMain = require('../../configMain');
-const config = require('../helpers/configReader');
 const {usersDb} = require('./DB');
 const minter = require('./minter');
 const log = require('../helpers/log');
@@ -12,24 +11,24 @@ module.exports = {
         Store = require('./Store');
         log.info('Mainer started');
         setTimeout(async()=>{
+            // ГРЯЗНО!!
+            minter.returnAmountFromMine = async amount => await this.retunFromMain(null, amount);
+
             if (Store.system.failCoins.includes(configMain.coin)){
+                isAlarm = true;
                 return log.error('Коин для майнинга зафачен!!!:' + configMain.coin);
             }
-            // console.log('Buy>', await minter.buy({coinTo: 'BIP', coinFrom: 'ESCAPE', buyAmount: 1}));
-            // console.log('Sell>', await minter.sell({coinTo: 'BIP', coinFrom: 'ESCAPE', sellAmount: 1}));
+
             this.checkMain();
             setInterval(()=>{
                 this.checkMain();
             }, 300 * 1000);
-
-            // ГРЯЗНО!!
-            minter.returnAmountFromMine = async amount => await this.retunFromMain(null, amount);
         }, 2000);
     },
     async getMaxDeposit(){
         try {
-            const richestUser = (await usersDb.db.syncFind()).sort((b, a) => (a.deposit + b.depositInGame) - (b.deposit + b.depositInGame))[0];
-            return Math.round(richestUser.deposit + richestUser.depositInGame);
+            const richestUser = (await usersDb.db.syncFind()).sort((b, a) => (a.deposits.BIP + b.depositInGame) - (b.deposits.BIP + b.depositInGame))[0];
+            return Math.round(richestUser.deposits.BIP + richestUser.depositInGame);
         } catch (e){
             console.log(e);
             log.error('getMaxDeposit: ' + e);
@@ -48,15 +47,16 @@ module.exports = {
                 return log.error('baseBalance > 0 fail');
             }
 
+            const koef = configMain.koef || 0.3;
             // если баланс меньше чем максимальный депозит + половина от апа
             // то нужно отзывать
-            if (baseBalance < configMain.upFromMaxDep * 0.5){
-                this.retunFromMain(baseBalance);
+            if (baseBalance < configMain.upFromMaxDep * koef){
+                // this.retunFromMain(baseBalance); // FIXME: блочим автовывод с майна
             }
 
             // если баланс больше чем нужен резерв
             // то нужно отсылать в майн
-            if (baseBalance > configMain.upFromMaxDep * 1.5){
+            if (baseBalance > configMain.upFromMaxDep * (1 + koef)){
                 this.sendToMain(baseBalance);
             }
         } catch (e){

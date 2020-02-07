@@ -68,7 +68,7 @@ module.exports = {
      * @description  изменяем депозит в ДБ
      */
     async updateUserDeposit(user, amount, coinName, isNoNeedSave){
-        console.log('updateUserDeposit>', user, amount, coinName, isNoNeedSave);
+        // console.log('updateUserDeposit>', user, amount, coinName, isNoNeedSave);
         if (!coinName){
             return log.error('updateUserDeposit NO_coinName: ' + user.login + ': ' + coinName);
         }
@@ -86,7 +86,7 @@ module.exports = {
             console.log(e);
             log.error('updateUserDeposit(c): ' + e);
         }
-        console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
+        // console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
     },
 
     async createUser(params){
@@ -115,7 +115,7 @@ module.exports = {
             password: this.createPswd(password),
             deposits: {},
             depositInGame: {},
-            depositInRoom: {}, // сколько в какой комнате заюзано 
+            depositInRoom: {}, // сколько в какой комнате заюзано
         });
         config.coins.forEach(c => {
             user.deposits[c] = 0;
@@ -230,7 +230,7 @@ module.exports = {
             return 'Нет запланированных МТТ турниров!';
         }
 
-        if (user.deposit < buyIn){
+        if (user.deposits[coinName] < buyIn){
             return 'Не достаточно средств (необходимо ' + buyIn + ')!';
         }
         if (mtt.users.includes(user.login)){
@@ -349,7 +349,7 @@ setTimeout(async ()=>{
             addresses: {
                 BIP: u.address
             }
-        }, 1); 
+        }, 1);
         // let bip = u.depositInGame;
         // u.depositInGame = {};
         // u.depositInRoom = {};
@@ -384,14 +384,14 @@ config.coins.forEach(coinName=>{
         data.winnersCount = 1;
         data.coinName = coinName;
         module.exports.tmpTourn(data);
-    
+
         data = JSON.parse(JSON.stringify(config.sng));
         data.count = 6;
         data.buyIn = 100;
         data.winnersCount = 1;
         data.coinName = coinName;
         module.exports.tmpTourn(data);
-    
+
         data = JSON.parse(JSON.stringify(config.sng));
         data.count = 2;
         data.buyIn = 30;
@@ -399,10 +399,10 @@ config.coins.forEach(coinName=>{
         data.winnersCount = 1;
         data.coinName = coinName;
         module.exports.tmpTourn(data);
-    
-    
+
+
         // SPIN
-    
+
         const dataSpin = JSON.parse(JSON.stringify(config.sng));
         dataSpin.count = 6;
         dataSpin.playersCount = 3;
@@ -416,19 +416,19 @@ config.coins.forEach(coinName=>{
         data = JSON.parse(JSON.stringify(dataSpin));
         data.buyIn = 20;
         module.exports.tmpTourn(data);
-    
+
         data = JSON.parse(JSON.stringify(dataSpin));
         data.buyIn = 50;
         module.exports.tmpTourn(data);
-    
+
         data = JSON.parse(JSON.stringify(dataSpin));
         data.buyIn = 100;
         module.exports.tmpTourn(data);
-    
+
         data = JSON.parse(JSON.stringify(dataSpin));
         data.buyIn = 250;
         module.exports.tmpTourn(data);
-    
+
     }, 5000);
 });
 

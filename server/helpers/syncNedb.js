@@ -68,7 +68,11 @@ module.exports = {
             static find (a) { // return Array
                 return new Promise(resolve => {
                     db.find(a, (err, data) => {
-                        resolve(data.map(d => new this(d)));
+                        try {
+                            resolve(data.map(d => new this(d)));
+                        } catch (e){
+                            console.error('db FIND: ' + a + ' ' + e);
+                        }
                     });
                 });
             }

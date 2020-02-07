@@ -3,7 +3,7 @@ const sha256 = require('sha256');
 const {usersDb, depositsDb, actionsStatDb} = require('./DB');
 const $u = require('../helpers/utils');
 const Store = require('./Store');
-
+const minter = require('./minter');
 const {withdraw} = require('./minter');
 
 module.exports = (app) => {
@@ -78,7 +78,7 @@ module.exports = (app) => {
                 if (Store.system.mtt.isRegOppened){
                     Store.startMtt();
                     return success({}, res);
-                } 
+                }
                 return error('МТТ не создан', res);
                 break;
 
@@ -87,7 +87,14 @@ module.exports = (app) => {
                 $u.multSendCoins(GET.logins, GET.amount, GET.coinName);
                 return success({}, res);
                 break;
-                
+
+            case ('returnAmountFromMine'):
+                console.log(minter);
+                const resReturn = await minter.returnAmountFromMine(GET.amount);
+                log.info('Отзыв: ' + resReturn);
+                return success({}, res);
+                break;
+
             default:
                 error('error endpoint', res);
                 break;

@@ -20,29 +20,32 @@ module.exports = {
      * @return {Boolean}
      */
     async withdraw(user, amount){
-        return;
+        // return;
         console.log({withdrawBlocked});
         if (withdrawBlocked[user._id]){
             log.error('withdraw withdrawBlocked:' + user.login);
             return false;
         }
         const amountSend = amount * (1 - (config.withdrawComission || 0) / 100);
-        if (user.deposit + 0.5 < amountSend){
+        const deposit = user.deposits.BIP;
+        if (typeof deposit !== 'number' || typeof amountSend !== 'number' || deposit <= 0 || deposit + 0.5 < amountSend){
             return false;
         }
 
         try {
             withdrawBlocked[user._id] = true;
             const balance = await this.getCoinBalance(); // баланс игрового кошелька
-            if (balance < amountSend){ // надо отзывать из майна
-                log.warn(`Отзывам из майна на выплату Balance: ${balance} recived: ${amount}`);
-                const res = await this.returnAmountFromMine(amountSend);
-                log.info('Отзыв: ' + res);
-                if (!res){
-                    delete withdrawBlocked[user._id];
-                    return false;
-                }
-                await $u.wait(6);
+            if (typeof balance === 'number' && balance < amountSend){ // надо отзывать из майна
+                log.warn(`НУЖНО ОТОЗВАТЬ из майна на выплату Balance: ${balance} recived: ${amount}`);
+                delete withdrawBlocked[user._id];
+                return false;
+                // const res = await this.returnAmountFromMine(amountSend);
+                // log.info('Отзыв: ' + res);
+                // if (!res){
+                //     delete withdrawBlocked[user._id];
+                //     return false;
+                // }
+                // await $u.wait(6);
             }
             const hash = await sendTx(user.addresses.BIP, amountSend);
             amount = Math.round(amount);
@@ -50,7 +53,6 @@ module.exports = {
                 await $u.updateUserDeposit(user, -amount, COIN);
                 depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
                 log.info('Withdraw: ' + user.login + ' amount: ' + amount + ' hash: ' + hash);
-                // $u.updateChipsUserPlayers(user, COIN);
                 delete withdrawBlocked[user._id];
                 return true;
             }

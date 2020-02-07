@@ -15,6 +15,12 @@
         <button @click="tab='createTbl'">createTbl</button>
         <button @click="tab='users'">Users</button>
         <button @click="tab='tourn'">Tourn</button>
+        <button @click="tab='mainer'">Вывод с майна</button>
+        <div v-if="tab === 'mainer'">
+            <h5>Вывод с майна!</h5>
+            <input v-model="returnAmountFromMineAmount">
+            <div @click="returnAmountFromMine" class="but hovered bg-green">Вывести {{returnAmountFromMineAmount}}</div>
+        </div>
         <div v-if="tab === 'tourn'">
             <h2>Турниры</h2>
             <button @click="startMtt" class="bg-green but hovered">СТАРТ</button>
@@ -65,9 +71,9 @@
         <div id="users">
             <h2>Массовый откат</h2>
             <div class="m10">
-                <input v-model.number="multReturn.amount" type="number">
-                <br>
                 <textarea v-model.number="multReturn.userList" placeholder="dev, dev1"></textarea>
+                <br>
+                <input v-model.number="multReturn.amount" type="number">
                 <div class="but hovered bg-yellow" @click="multReturnChips">Откат</div>
             </div>
             <table v-if="users.length">
@@ -149,6 +155,7 @@
                 editUserId: 0,
                 userDep: 0,
                 resultTxs: 0,
+                returnAmountFromMineAmount: 0,
                 multReturn: {
                     amount: 0,
                     userList: ''
@@ -196,6 +203,14 @@
                 startMtt:()=>api({action: 'startMtt'}, data =>console.log('startMtt', data)),
                 rmMtt: () =>api({action: 'rmMtt'}, data =>console.log('rmMtt', data)),
                 resetMtt : () =>api({action: 'rmMtt', data: {isReturn: true}}, data =>console.log('rmMtt', data)),
+                returnAmountFromMine(){
+                    api({
+                        action: 'returnAmountFromMine',
+                        data: {
+                            amount: this.returnAmountFromMineAmount
+                        }
+                    }, data => console.log('returnAmountFromMine', data));
+                },
                 multReturnChips(){
                     api({
                         action: 'multReturnChips',
@@ -271,11 +286,7 @@
                     console.warn(obj.action, err);
                 });
         };
-
-
         api({action: 'actionsStatDb'}, multi);
-
-
 
     function multi(res) {
         return;

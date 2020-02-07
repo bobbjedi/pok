@@ -132,7 +132,7 @@ Player.prototype.updateDeposit = async function (amount, user) {
         return;
     }
     user = user || await this.getUserDB();
-    log.info(user.login + ' before: ' + user.deposit);
+    log.info(user.login + ' before: ' + user.deposits.BIP);
     const coinName = this.public.coinName;
     await $u.updateUserDeposit(user, amount, coinName, true);
     // $u.updateChipsUserPlayers(user, coinName);
@@ -256,7 +256,7 @@ Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
                     } else {
                         console.log('Sit out не сидит за столом');
                     }
-        
+
                     this.sitOutTimer = null;
                 } catch (e) {
                     console.log(e);
