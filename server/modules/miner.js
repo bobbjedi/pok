@@ -56,6 +56,7 @@ module.exports = {
 
             // если баланс больше чем нужен резерв
             // то нужно отсылать в майн
+            console.log('baseBalance > configMain.upFromMaxDep * (1 + koef)', baseBalance, configMain.upFromMaxDep * (1 + koef));
             if (baseBalance > configMain.upFromMaxDep * (1 + koef)){
                 this.sendToMain(baseBalance);
             }
