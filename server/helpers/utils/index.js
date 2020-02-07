@@ -68,12 +68,13 @@ module.exports = {
      * @description  изменяем депозит в ДБ
      */
     async updateUserDeposit(user, amount, coinName, isNoNeedSave){
-        // console.log('updateUserDeposit>', user, amount, coinName, isNoNeedSave);
+        console.log('updateUserDeposit>', amount, coinName, isNoNeedSave);
         if (!coinName){
             return log.error('updateUserDeposit NO_coinName: ' + user.login + ': ' + coinName);
         }
         try {
             if (_.isNumber(amount) && amount !== 0){
+                console.log( user.deposits[coinName], amount);
                 user.deposits[coinName] = this.round(user.deposits[coinName] + amount);
                 this.updateChipsUserPlayers(user, coinName); // обновим
                 if (!isNoNeedSave){
