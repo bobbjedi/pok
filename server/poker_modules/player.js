@@ -134,9 +134,9 @@ Player.prototype.updateDeposit = async function (amount, user) {
     user = user || await this.getUserDB();
     log.info(user.login + ' before: ' + user.deposits.BIP);
     const coinName = this.public.coinName;
-    await $u.updateUserDeposit(user, amount, coinName, true);
+    await $u.updateUserDeposit(user, amount, coinName);
     // $u.updateChipsUserPlayers(user, coinName);
-    await user.save();
+    // await user.save();
     if (amount > 0){
         log.info(`${user.login} return chipsInPlay  ${amount}, deposit: ${user.deposits[coinName]}`);
     }

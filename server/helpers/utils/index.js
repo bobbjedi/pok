@@ -86,7 +86,7 @@ module.exports = {
             console.log(e);
             log.error('updateUserDeposit(c): ' + e);
         }
-        // console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
+        console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
     },
 
     async createUser(params){
