@@ -145,12 +145,10 @@ module.exports = {
         for (let u in users){
             const user = users[u];
             log.info('[returnChipsInplay] ' + user.login + ': ' + user.depositInGame[coinName] + ' ' + coinName);
-            console.log(user.deposits, user.depositInGame);
             this.updateUserDeposit(user, user.depositInGame[coinName], coinName, true);
             user.depositInGame[coinName] = 0;
             user.depositInRoom[coinName] = {};
             await user.save();
-            console.log(user.deposits, user.depositInGame);
         }
     },
     createTables(tables = tables_, eventEmitter = eventEmitter_, Table = Table_){
@@ -368,13 +366,15 @@ setTimeout(async ()=>{
     }
 }, 500);
 
-for (let coin of config.coins){
-    module.exports.returnChipsInplay(coin);
-}
 
 
 cron('1d', module.exports.updateDemoChips);
 setTimeout(module.exports.updateDemoChips, 10000);
+setTimeout(()=>{
+    for (let coin of config.coins){
+        module.exports.returnChipsInplay(coin);
+    }
+}, 7500);
 
 
 config.coins.forEach(coinName=>{
