@@ -79,6 +79,7 @@ module.exports = {
                 if (!isNoNeedSave){
                     await user.save();
                 }
+                console.log(user.deposits);
                 return;
             }
             log.warn('updateUserDeposit amount isNOtNUMBER: ' + coinName + ' ' + amount);
