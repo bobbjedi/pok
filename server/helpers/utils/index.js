@@ -74,13 +74,13 @@ module.exports = {
         }
         try {
             if (_.isNumber(amount) && amount !== 0){
-                console.log( user.deposits[coinName], amount);
+                console.log(user.deposits, user.depositInGame);
                 user.deposits[coinName] = this.round(user.deposits[coinName] + amount);
                 this.updateChipsUserPlayers(user, coinName); // обновим
                 if (!isNoNeedSave){
                     await user.save();
                 }
-                console.log(user.deposits);
+                console.log(user.deposits, user.depositInGame);
                 return;
             }
             log.warn('updateUserDeposit amount isNOtNUMBER: ' + coinName + ' ' + amount);
