@@ -104,6 +104,7 @@ module.exports = {
             }
             save () {
                 return new Promise(resolve => {
+                    console.log(this._id);
                     if (!this._id){
                         db.insert(this._data(), (err, doc)=>{
                             this._id = doc._id;
