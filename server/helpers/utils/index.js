@@ -68,19 +68,17 @@ module.exports = {
      * @description  изменяем депозит в ДБ
      */
     async updateUserDeposit(user, amount, coinName, isNoNeedSave){
-        console.log('updateUserDeposit>', amount, coinName, isNoNeedSave);
+        // console.log('updateUserDeposit>', amount, coinName, isNoNeedSave);
         if (!coinName){
             return log.error('updateUserDeposit NO_coinName: ' + user.login + ': ' + coinName);
         }
         try {
             if (_.isNumber(amount) && amount !== 0){
-                console.log(user.deposits, user.depositInGame);
                 user.deposits[coinName] = this.round(user.deposits[coinName] + amount);
                 this.updateChipsUserPlayers(user, coinName); // обновим
                 if (!isNoNeedSave){
                     await user.save();
                 }
-                console.log(user.deposits, user.depositInGame);
                 return;
             }
             log.warn('updateUserDeposit amount isNOtNUMBER: ' + coinName + ' ' + amount);
@@ -147,10 +145,12 @@ module.exports = {
         for (let u in users){
             const user = users[u];
             log.info('[returnChipsInplay] ' + user.login + ': ' + user.depositInGame[coinName] + ' ' + coinName);
+            console.log(user.deposits, user.depositInGame);
             this.updateUserDeposit(user, user.depositInGame[coinName], coinName, true);
             user.depositInGame[coinName] = 0;
             user.depositInRoom[coinName] = {};
             await user.save();
+            console.log(user.deposits, user.depositInGame);
         }
     },
     createTables(tables = tables_, eventEmitter = eventEmitter_, Table = Table_){
