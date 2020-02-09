@@ -45,7 +45,6 @@ module.exports = class Mtt{
             // Собираем игроков
             for (const u of this.params.users){
                 console.log('Check player MTT: ' + u);
-                await $u.wait(0.1);
                 console.log(u, this.addedPlayers.toString(), this.addedPlayers.includes(u));
                 if (this.addedPlayers.includes(u)){
                     return log.error('Уже добавлен в МТТ: ' + u);
