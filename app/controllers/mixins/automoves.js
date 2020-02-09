@@ -89,8 +89,8 @@ export default ($scope, $routeParams) =>{
                 } else if ($scope.showFoldButton()){
                     noty('info', 'AUTO FOLD timeout');
                     return $scope.fold();
-                } else if ($scope.showSitOutButton()){
-                    return $scope.postBlind(false);
+                // } else if ($scope.showSitOutButton()){
+                //     return $scope.postBlind(false);
                 } else if ($scope.showLeaveTableButton()){
                     return $scope.leaveTable();
                 }

@@ -171,7 +171,6 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             system.totalBankAmount += pot.amount;
             table.public.allPots += pot.amount;
         }
-        pot.amount *= 1 - (config.rake || 0) / 100;
         var winners = [];
         var bestRating = 0;
         for (var j = 0; j < playersCount; j++) {
@@ -206,7 +205,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             messages.push(strWin + htmlHand);
             messages_.push(strWin + htmlHand_);
 
-            winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_};
+            winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_, sId: winner.socket.id};  
             winnersData[winner.public.name].amount += pot.amount;
             winnersData[winner.public.name].amount = $u.round(winnersData[winner.public.name].amount);
             winner.roundCheapsInPlay();
@@ -236,7 +235,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
                 messages.push(strWin + htmlHand);
                 messages_.push(strWin + htmlHand_);
 
-                winnersData[jPlayer.public.name] = winnersData[jPlayer.public.name] || {amount: 0, cards: jPlayer.evaluatedHand.name + ' ' + htmlHand_};
+                winnersData[jPlayer.public.name] = winnersData[jPlayer.public.name] || {amount: 0, cards: jPlayer.evaluatedHand.name + ' ' + htmlHand_, sId: jPlayer.socket.id};
                 winnersData[jPlayer.public.name].amount += playersWinnings;
 
                 winnersData[jPlayer.public.name].amount = $u.round(winnersData[jPlayer.public.name].amount);
@@ -248,9 +247,15 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
 
     this.reset();
     Object.keys(winnersData).forEach(u=>{
-        system.winners[u] = (system.winners[u] || 0) + winnersData[u].amount;
-        log.info('[#' + this.tableId + '] ' + `${u} выиграл ${winnersData[u].amount} (${winnersData[u].cards})`);
-        table.currentGameLog += `${u} получил ${winnersData[u].amount} (${winnersData[u].cards}) <br>`;
+        const data = winnersData[u];
+        const player = Store.players[data.sId];
+        const {totalBet} = player.public;
+        const profit = $u.round(data.amount - totalBet);
+        mathRake(player, profit);
+        system.winners[u] = (system.winners[u] || 0) + data.amount;
+        log.info('[#' + this.tableId + '] ' + `${u} выиграл ${data.amount} (${data.cards})`);
+        table.currentGameLog += `${u} получил ${data.amount} (${data.cards}) <br>`;
+        console.log(u, {win: data.amount, totalBet, profit});
     });
     system.save();
     const msgStr = JSON.stringify({_: '{DATA}', winnersData, winnersHands});
@@ -273,12 +278,16 @@ Pot.prototype.giveToWinner = function(winner, s) {
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
-
+    const {totalBet} = winner.public;
+    const profit = $u.round(totalAmount - totalBet);
+    console.log({profit, totalBet, totalAmount});
+    mathRake(winner, profit);
     this.reset();
     const msg = winner.public.name + ' wins the pot (' + totalAmount + ')';
     table.sendChatMsg(JSON.stringify({_: '{DATA}', winnersData: {[winner.public.name]: {amount: totalAmount}}}));
     log.info('[#' + tableId + '] ' + msg + ' ' + s);
     table.currentGameLog += msg + '<br>';
+    Store.system.save();
 };
 
 /**
@@ -301,5 +310,26 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
+function mathRake(player, profit) {
+    try {
+        const {coinName} = player.public;
+        const {percent, minProfit} = config.rakes[coinName] || {
+            percent: 0,
+            minProfit: Infinity
+        };
+        if (profit < minProfit) {
+            console.log('return', {profit, minProfit});
+            return;
+        }
+        const rake = profit / 100 * percent;
+        Store.system.rakes[coinName] = $u.round(Store.system.rakes[coinName] + rake);
+        console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
+        // player.public.chipsInPlay -= rake;
+        // player.roundCheapsInPlay();
+    } catch (e) {
+        console.log(e);
+        log.error('mathRake ' + e);
+    }
+}
 
 module.exports = Pot;

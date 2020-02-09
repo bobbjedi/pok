@@ -1,3 +1,4 @@
+const config = require('../helpers/configReader');
 const {storeDb} = require('./DB');
 const Mtt = require('./Mtt');
 let $u;
@@ -18,6 +19,8 @@ module.exports = {
         }
         system.failCoins = system.failCoins || [];
         system.mtt = system.mtt || {};
+        system.rakes = system.rakes || {};
+        config.coins.forEach(c=> system.rakes[c] = system.rakes[c] || 0);
         system.save();
         this.system = system;
     },

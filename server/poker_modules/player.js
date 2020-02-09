@@ -27,6 +27,8 @@ var Player = function (socket, user, createdCoinName = 'BIP') {
         cards: [],
         // The amount the player has betted in the current round
         bet: 0,
+        // The amount the player has betted in the all rounds
+        totalBet: 0,
         // Last move
         lastAct: null,
         // sit out
@@ -95,6 +97,7 @@ Player.prototype.initState = function(user){
 Player.prototype.roundCheapsInPlay = function () {
     this.public.chipsInPlay = $u.round(this.public.chipsInPlay);
     this.public.bet = $u.round(this.public.bet);
+    this.public.totalBet = $u.round(this.public.totalBet);
 };
 Player.prototype.getUserDB = async function () {
     return await $u.getUserFromQ({
@@ -159,7 +162,6 @@ Player.prototype.updateDepInPlay = async function (user) {
             delete user.depositInRoom[coinName][room];
         }
     }
-    console.log({totalInGame});
     user.depositInGame[coinName] = totalInGame;
     await user.save();
 };
@@ -288,6 +290,7 @@ Player.prototype.bet = function (amount) {
     }
     this.public.chipsInPlay -= amount;
     this.public.bet += +amount;
+    this.public.totalBet += +amount;
     this.roundCheapsInPlay();
 };
 
@@ -302,6 +305,7 @@ Player.prototype.raise = function (amount) {
     }
     this.public.chipsInPlay -= amount;
     this.public.bet += +amount;
+    this.public.totalBet += +amount;
     this.roundCheapsInPlay();
 };
 
@@ -313,6 +317,7 @@ Player.prototype.prepareForNewRound = function () {
     this.public.cards = [];
     this.public.hasCards = false;
     this.public.bet = 0;
+    this.public.totalBet = 0;
     this.public.lastAct = null;
     this.public.inHand = true;
     this.evaluatedHand = {};
