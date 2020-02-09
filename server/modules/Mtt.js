@@ -44,12 +44,19 @@ module.exports = class Mtt{
             }, 1);
             // Собираем игроков
             for (const u of this.params.users){
+                console.log('Check player MTT: ' + u);
                 await $u.wait(0.1);
                 console.log(u, this.addedPlayers.toString(), this.addedPlayers.includes(u));
                 if (this.addedPlayers.includes(u)){
                     return log.error('Уже добавлен в МТТ: ' + u);
                 }
+                
                 this.addedPlayers.push(u);
+                
+                if (this.players.find(p=>p.public.name === u)){
+                    return log.error('FIND Уже добавлен в МТТ: ' + u);
+                };
+                
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
