@@ -61,6 +61,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         $scope.$watch('table.coinName', coinName=> $rootScope.changeCoinName(coinName));
+                
         // Existing listeners should be removed
         socket.removeAllListeners();
         window.listeningRedirect();
@@ -194,22 +195,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             selectedSeat = seat;
         };
 
-        $scope.potText = function() {
-            if (typeof $scope.table.pot !== 'undefined' && $scope.table.pot[0].amount) {
-                // return $scope.potAmount();
-                // var potText = ' Pot: ' + $u.round($scope.table.pot[0].amount);
-
-                // var potCount = $scope.table.pot.length;
-                // if (potCount > 1) {
-                //     for (var i = 1; i < potCount; i++) {
-                //         potText += ' - Sidepot: ' + $u.round($scope.table.pot[i].amount);
-                //     }
-                // potText = 'Total: ' + $scope.potAmount() + potText;
-                // }
-                // return potText;
-            }
-        };
-
         // Leaving the socket room
         $scope.leaveRoom = function() {
             // $scope.leaveTable();
@@ -220,18 +205,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // A request to sit on a specific seat on the table
         $scope.sitOnTheTable = function() {
-            // if ($scope.mySeat !== null && $scope.table.seats[$scope.mySeat]){ // Ребай
-            //     socket.emit('rebuy', {'chips': $scope.buyInAmount}, response=>{
-            //         if (response.success){
-            //             $scope.table.seats[$scope.mySeat].chipsInPlay = response.chipsInPlay;
-            //         }
-            //         if (response.error) {
-            //             $scope.buyInError = response.error;
-            //         }
-            //         $scope.$digest();
-            //     });
-            //     return;
-            // }
             if ($rootScope.sittingOnTable){
                 noty('error', 'Вы уже сидите за этим столом.');
                 return;
@@ -374,7 +347,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if (data.board[0].length && data.board.toString() !== predCards){
                 sounds.playCardSound();
                 predCards = data.board.toString();
-                data.board = data.board.map(c=>c === 'Ad' ? 'Ar' : c);
             }
             $scope.table = data;
             $scope.checkUserSeat();
@@ -514,18 +486,18 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
+        // Фикс Ad
+        $scope.$watch('myCards', () => fixAd($scope.myCards), true);
+        $scope.$watch('table.board', () => fixAd($scope.table.board), true);
+        for (let i = 0; i <= 9; i++) {
+            $scope.$watch('table.seats[' + i + '].cards', () => {
+                $scope.table.seats[i] && fixAd($scope.table.seats[i].cards);
+            }, true);
+        }
     }]);
 
 
-
-// function addLisstennerRecconect(tableId, restUpdatePublic){
-// setTimeout(()=>{
-//     socket.on('connect', ()=>{
-//         console.log('Recconect', tableId);
-//         socket.emit('enterRoom', tableId, restUpdatePublic);
-//     });
-//     socket.on('disconnect', ()=>{
-//         console.log('Disconnect: ', tableId);
-//     });
-// }, 5000);
-// };
+/**
+ * @param {Array} cards 
+ */
+const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 'Ar'));
