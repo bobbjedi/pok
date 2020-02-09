@@ -32,7 +32,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.sittingOnTable = null;
         $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
-        automoves($scope);
+        automoves($scope, $rootScope);
         tourn($scope, $rootScope);
         $scope.checkEmitAction = (action) =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
@@ -96,9 +96,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
-        $rootScope.$watch('timeOutCurrent', v=> {
-            $scope.automoves.callback(v);
-        });
+        setInterval($scope.automoves.callback, 1000);
         $rootScope.makeReload = ()=>$scope.mySeat !== null && $scope.table.dealerSeat !== null;
         $scope.toLobby = ()=>{
             if ($rootScope.makeReload()){
