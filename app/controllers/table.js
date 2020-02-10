@@ -61,7 +61,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $rootScope.$watch('user.login', $scope.checkUserSeat);
         $scope.$watch('table.coinName', coinName=> $rootScope.changeCoinName(coinName));
-                
+
         // Existing listeners should be removed
         socket.removeAllListeners();
         window.listeningRedirect();
@@ -96,7 +96,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         setTimeout(()=> socket.emit('enterRoom', $routeParams.tableId), 1500); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
         setTimeout(updateTableData, 1000); //TODO: ПЕРЕПИТАТЬ РЕККОНЕКТЫ!
 
-        setInterval($scope.automoves.callback, 1000);
+        setInterval(()=>$scope.automoves.callback(), 1000);
         $rootScope.makeReload = ()=>$scope.mySeat !== null && $scope.table.dealerSeat !== null;
         $scope.toLobby = ()=>{
             if ($rootScope.makeReload()){
@@ -496,6 +496,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
 
 /**
- * @param {Array} cards 
+ * @param {Array} cards
  */
 const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 'Ar'));

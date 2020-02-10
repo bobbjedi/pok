@@ -26,7 +26,7 @@ export default ($scope, $rootScope) =>{
                 $scope.isSendActionAuto = true;
                 console.log('Автоколл чекбокс');
                 noty('info', 'Авто call ' + $scope.callAmount());
-                this.reset();
+                automoves.reset();
                 return $scope.call();
             } else if ($scope.showCallButton() && $scope.callAmount() >= $scope.table.bigBlind * 3){
                 automoves.isCall = false;
@@ -36,7 +36,7 @@ export default ($scope, $rootScope) =>{
                 $scope.isSendActionAuto = true;
                 console.log('Авточек чекбокс');
                 noty('info', 'Авто check ');
-                this.reset();
+                automoves.reset();
                 return $scope.check();
             }
 
@@ -45,23 +45,23 @@ export default ($scope, $rootScope) =>{
                     console.log('Авточек чекбокс');
                     $scope.isSendActionAuto = true;
                     noty('info', 'Авто check');
-                    this.reset();
+                    automoves.reset();
                     return $scope.check();
                 }
                 if ($scope.showFoldButton()){
                     console.log('Автофолд чекбокс');
                     $scope.isSendActionAuto = true;
                     noty('info', 'Авто fold');
-                    this.reset();
+                    automoves.reset();
                     return $scope.fold();
                 }
             }
-    
+
             // Автокнопки каждую секунду
             if ($scope.showBigBlindButton() || $scope.showSmallBlindButton()){
                 return $scope.postBlind(true);
             }
-    
+
             if ($scope.showCallButton() && $scope.callAmount() === 0){ // сходил в алл ин и ждет автокалит 0
                 console.log('Автоколл после аллин');
                 return $scope.call();
@@ -70,9 +70,9 @@ export default ($scope, $rootScope) =>{
                 console.log('Авточек после аллин');
                 return $scope.check();
             }
-    
-    
-    
+
+
+
             // Конец времени
             if (timeOutCurrent !== 1 || $scope.table.activeSeat !== $scope.mySeat){
                 return;
