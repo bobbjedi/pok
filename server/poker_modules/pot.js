@@ -322,7 +322,10 @@ function mathRake(player, profit) {
             return;
         }
         const rake = profit / 100 * percent;
-        Store.system.rakes[coinName] = $u.round(Store.system.rakes[coinName] + rake);
+        const date = log.date();
+        console.log({date});
+        Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
+        // Store.system.rakes[coinName] = $u.round(Store.system.rakes[coinName] + rake);
         console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
         // player.public.chipsInPlay -= rake;
         // player.roundCheapsInPlay();

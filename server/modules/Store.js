@@ -20,7 +20,12 @@ module.exports = {
         system.failCoins = system.failCoins || [];
         system.mtt = system.mtt || {};
         system.rakes = system.rakes || {};
-        config.coins.forEach(c=> system.rakes[c] = system.rakes[c] || 0);
+        config.coins.forEach(c=> {
+            system.rakes[c] = system.rakes[c] || {};
+            if (typeof system.rakes[c] === 'number'){
+                system.rakes[c] = {};
+            }
+        });
         system.save();
         this.system = system;
     },
