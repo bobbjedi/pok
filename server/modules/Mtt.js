@@ -64,7 +64,7 @@ module.exports = class Mtt{
                         player.isTourn = true;
                         isAdded = true;
                         log.info('MTT: getOnlinePlayer ' + u);
-                        continue;
+                        break;
                     }
                 }
                 if (!isAdded){ // Если играет или занят - создаем клона
