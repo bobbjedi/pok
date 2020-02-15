@@ -47,24 +47,26 @@ module.exports = class Mtt{
                 console.log('Check player MTT: ' + u);
                 console.log(u, this.addedPlayers.toString(), this.addedPlayers.includes(u));
                 if (this.addedPlayers.includes(u)){
-                    return log.error('Уже добавлен в МТТ: ' + u);
+                    log.error('Уже добавлен в МТТ: ' + u);
+                    continue;
                 }
                 
                 this.addedPlayers.push(u);
                 
                 if (this.players.find(p=>p.public.name === u)){
-                    return log.error('FIND Уже добавлен в МТТ: ' + u);
+                    log.error('FIND Уже добавлен в МТТ: ' + u);
+                    continue;
                 };
                 
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
-                    if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
+                    if (!isAdded && player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
                         this.players.push(player);
                         player.isTourn = true;
                         isAdded = true;
                         log.info('MTT: getOnlinePlayer ' + u);
-                        break;
+                      //  break;
                     }
                 }
                 if (!isAdded){ // Если играет или занят - создаем клона
@@ -75,6 +77,9 @@ module.exports = class Mtt{
                     this.offlinePlayersToStart.push(u);
                 }
             }
+            await $u.wait(.5);
+            this.updateGlobalPlayers();
+            await $u.wait(.5);
             this.isStarted = true;
             await this.nextRound(true);
             this.updateDisconnected();
