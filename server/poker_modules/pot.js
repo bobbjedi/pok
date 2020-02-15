@@ -312,6 +312,9 @@ Pot.prototype.isEmpty = function() {
 
 function mathRake(player, profit) {
     try {
+        if(player.isTourn){
+        return;
+        }
         const {coinName} = player.public;
         const {percent, minProfit} = config.rakes[coinName] || {
             percent: 0,
