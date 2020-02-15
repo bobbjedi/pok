@@ -22,7 +22,7 @@ export default ($scope, $rootScope) => {
     $scope.$watch('table.data.isMtt', isMtt => {
         if (isMtt) {
             socket.on('public-mtt', data => {
-                if (data.playersList.length){
+                if (data.playersList && data.playersList.length){
                     $scope.publicMtt = data;
                     concatPlayers();
                 }
