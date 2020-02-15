@@ -22,11 +22,8 @@ export default ($scope, $rootScope) => {
     $scope.$watch('table.data.isMtt', isMtt => {
         if (isMtt) {
             socket.on('public-mtt', data => {
-                console.log(data, data.playersList)
-                if (data.playersList && data.playersList.length){
-                    $scope.publicMtt = data;
-                    concatPlayers();
-                }
+                $scope.publicMtt = data;
+                concatPlayers();
             });
             socket.emit('get-public-mtt', data => {
                 $scope.publicMtt = data;
@@ -48,7 +45,7 @@ export default ($scope, $rootScope) => {
         if (!publicMtt) {
             return;
         }
-        publicMtt.playersList = [];
+        const playersList = [];
         publicMtt.countOffline = 0;
         publicMtt.countOnline = 0;
         publicMtt.timerShufflePlayers = (publicMtt.timers.randomPlayers - publicMtt.unix) / 1000;
@@ -56,11 +53,12 @@ export default ($scope, $rootScope) => {
         for (let tId in publicMtt.tables) {
             publicMtt.tables[tId].seats.forEach(p => {
                 if (p.name && p.chipsInPlay > 0) {
-                    publicMtt.playersList.push(p);
+                    playersList.push(p);
                     p.isDisconnect ? publicMtt.countOffline++ : publicMtt.countOnline++;
                 }
             });
-            publicMtt.playersList.sort((a, b) => b.chipsInPlay - a.chipsInPlay);
         }
+        playersList.sort((a, b) => b.chipsInPlay - a.chipsInPlay);
+        publicMtt.playersList = playersList;
     };
 };

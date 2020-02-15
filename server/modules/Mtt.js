@@ -50,14 +50,14 @@ module.exports = class Mtt{
                     log.error('Уже добавлен в МТТ: ' + u);
                     continue;
                 }
-                
+
                 this.addedPlayers.push(u);
-                
+
                 if (this.players.find(p=>p.public.name === u)){
                     log.error('FIND Уже добавлен в МТТ: ' + u);
                     continue;
                 };
-                
+
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
@@ -66,7 +66,7 @@ module.exports = class Mtt{
                         player.isTourn = true;
                         isAdded = true;
                         log.info('MTT: getOnlinePlayer ' + u);
-                      //  break;
+                        //  break;
                     }
                 }
                 if (!isAdded){ // Если играет или занят - создаем клона
@@ -419,14 +419,17 @@ module.exports = class Mtt{
         delete Store.tables[this.tables[0]];
         clearTimeout(this.timeOutUpdateTourn);
         clearTimeout(this.timeOutUpdateDisconnected);
+        this.players = [];
+        this.tables = [];
     }
 };
 
 setTimeout(async () => {
     return;
     Store = require('../modules/Store');
-    Store.createMtt({tableSeatsCount: 6});
-    Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.createMtt({tableSeatsCount: 2});
+    // Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
+    Store.system.mtt.users = ['Dev', 'Devi', 'DevL', 'DevX'];
     Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = 1.5;
     Store.startMtt();

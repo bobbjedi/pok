@@ -427,7 +427,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
         return;
     }
 
-    
+
     // this.clearTimeoutPlayerAction('initializeRound');
     this.clearTimeoutRmCustomTbl();
     this.currentGameLog = '<br></br><b>**** ' + log.fullTime() + ' ****</b><br>';
@@ -439,12 +439,10 @@ Table.prototype.initializeRound = async function(changeDealer) {
         this.gameIsOn = true;
         this.public.board = ['', '', '', '', ''];
         this.deck.shuffle();
-        // this.headsUp = this.isTourn ? this.playersSittingInCount === this.tournPlayersCount : this.playersSittingInCount === 2;
         this.headsUp = this.playersSittingInCount === 2;
         this.playersInHandCount = 0;
         this.biggestBet = 0;
         this.public.biggestBet = 0;
-        // this.playersSittingInCount = 0;
 
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
@@ -782,10 +780,11 @@ Table.prototype.endRound = async function(str) {
 
     // Sitting out the players who don't have chips
     const leftInGame = []; // для МТТ собираем количество оставшихся в игре
+    const sitOut = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.sittingIn && (this.seats[i].public.chipsInPlay <= 0 || this.seats[i].public.isSitOutMe)) {
             this.playersSittingInCount--;
-            this.seats[i].sitOut(true);
+            this.seats[i].sitOut(true, this.isTourn);
         } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
             leftInGame.push(this.seats[i].public.name);
         }

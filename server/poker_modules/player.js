@@ -239,14 +239,13 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
 // 		this.public.inHand = false;
 // 	}
 // }
-Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
+Player.prototype.sitOut = function (isRemoved, isNoWait) {
     console.log('SITOUT<<<<<<<<<', this.public.name);
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
 
         if (isRemoved && !this.sitOutTimer){
-            console.log('SITOUT ++++++++', playersSittingInCount, this.public.name);
             this.public.isSitOutMe = true;
             const tableId = this.sittingOnTable;
             console.log('Sit out', this.public.name, {tableId});
@@ -264,7 +263,7 @@ Player.prototype.sitOut = function (isRemoved, playersSittingInCount) {
                     console.log(e);
                     log.error('sitOut timeOut:' + e);
                 }
-            }, 1000 * config.sitOutTimeOut);
+            }, isNoWait ? 0 : (1000 * config.sitOutTimeOut));
         }
     }
 };
