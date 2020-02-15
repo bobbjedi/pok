@@ -22,9 +22,10 @@ export default ($scope, $rootScope) => {
     $scope.$watch('table.data.isMtt', isMtt => {
         if (isMtt) {
             socket.on('public-mtt', data => {
-                console.log(data);
-                $scope.publicMtt = data;
-                concatPlayers();
+                if (data.playersList.length){
+                    $scope.publicMtt = data;
+                    concatPlayers();
+                }
             });
             socket.emit('get-public-mtt', data => {
                 $scope.publicMtt = data;
