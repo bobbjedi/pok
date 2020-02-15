@@ -90,7 +90,7 @@ module.exports = {
     },
 
     async createUser(params){
-        const {login, password} = params;
+        const {login, password, refererId} = params;
         if (!login.length || !password.length) {
             return {error: 'Неполные данные.'};
         }
@@ -109,13 +109,14 @@ module.exports = {
         }
         const user = new usersDb({
             addresses: {},
-            login: params.login,
+            login: login,
             timestamp: this.unix(),
-            loginLowCase: params.login.toLowerCase(),
+            loginLowCase: login.toLowerCase(),
             password: this.createPswd(password),
             deposits: {},
             depositInGame: {},
             depositInRoom: {}, // сколько в какой комнате заюзано
+            refererId: refererId
         });
         config.coins.forEach(c => {
             user.deposits[c] = 0;
@@ -126,6 +127,9 @@ module.exports = {
         user.deposits.DEMO = 1000;
 
         await user.save();
+        await user.update({
+            referalLink: user._id.replace('_', '')
+        }, 1);
         if (config.regDrop > 0){
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
         }
@@ -344,12 +348,17 @@ setTimeout(async ()=>{
     const users = await usersDb.find({});
     for (let i in users){
         const u = users[i];
-        u.address && await u.update({
-            address: undefined,
-            addresses: {
-                BIP: u.address
-            }
-        }, 1);
+        if (!u.referalLink) {
+            await u.update({
+                referalLink: u._id.replace('_', '')
+            }, 1);
+        }
+        // u.address && await u.update({
+        //     address: undefined,
+        //     addresses: {
+        //         BIP: u.address
+        //     }
+        // }, 1);
         // let bip = u.depositInGame;
         // u.depositInGame = {};
         // u.depositInRoom = {};

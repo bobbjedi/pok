@@ -33,7 +33,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         count: "2",
         isPrivate: false,
         maxBuyIn: 100
-    }; 
+    };
 
     window.refreshSocket($rootScope.checkUser);
 
@@ -84,6 +84,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         const user = $rootScope.user;
         user.password = $scope.password;
         user.login = $scope.login;
+        user.refererId = $rootScope.settings.refererId;
         // if (!user.login || !user.password || !$scope.isLoginned && !user.address) {
         if (!user.login || !user.password) {
             // console.log('Fill in all the fields!');
@@ -139,6 +140,16 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
             $rootScope.updateUser();
         });
     };
+
+
+    $scope.copyRefLink = ()=>{
+        window.copy(location.href + '?ref=' + $rootScope.user.referalLink, 'Ваша реферальная ссылка скопирована в буфер обмена. Вам будет начисляться 25% рейка каждого приведенного Вами игрока!');
+    };
+    const refererId = location.href.split('?ref=')[1];
+    if (refererId){
+        $rootScope.settings.refererId = refererId;
+        location.assign(location.origin + '/#!/');
+    }
 
     // Окно информации про спин го
     $scope.showSpinInfo = ()=> modalHtml(spinInfoTemplate);

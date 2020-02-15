@@ -114,7 +114,7 @@ io.sockets.on('connection', function(socket) {
 	 * When a player enters a room
 	 * @param object table-data
 	 */
-    
+
     socket.on('get-public-mtt', callback => callback(Store.publicMtt));
 
     socket.on('changeCoinName', async coinName => {
@@ -157,7 +157,7 @@ io.sockets.on('connection', function(socket) {
                 return callback(false);
             }
             const {maxBuyIn} = table.public;
-             
+
             console.log(player.public.name, 'Rebuy:', data.chips, player.chips);
             if (data.chips > player.chips || data.chips <= 0 || player.public.chipsInPlay >= maxBuyIn){
                 return callback({'success': false, 'error': 'Ошибка пополнения стейка!'});

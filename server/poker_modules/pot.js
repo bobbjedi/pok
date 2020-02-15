@@ -170,6 +170,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
         if (!table.isTourn){
             system.totalBankAmount += pot.amount;
             table.public.allPots += pot.amount;
+            this.updateStatistic(pot.amount);
         }
         var winners = [];
         var bestRating = 0;
@@ -205,7 +206,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
             messages.push(strWin + htmlHand);
             messages_.push(strWin + htmlHand_);
 
-            winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_, sId: winner.socket.id};  
+            winnersData[winner.public.name] = winnersData[winner.public.name] || {amount: 0, cards: winner.evaluatedHand.name + ' ' + htmlHand_, sId: winner.socket.id};
             winnersData[winner.public.name].amount += pot.amount;
             winnersData[winner.public.name].amount = $u.round(winnersData[winner.public.name].amount);
             winner.roundCheapsInPlay();
@@ -278,6 +279,7 @@ Pot.prototype.giveToWinner = function(winner, s) {
         winner.public.chipsInPlay += this.pots[i].amount;
         totalAmount += this.pots[i].amount;
     }
+    this.updateStatistic(totalAmount);
     const {totalBet} = winner.public;
     const profit = $u.round(totalAmount - totalBet);
     console.log({profit, totalBet, totalAmount});
@@ -306,14 +308,30 @@ Pot.prototype.removePlayer = function(seat) {
     }
 };
 
+
+Pot.prototype.updateStatistic = function(amount) {
+    try {
+        const table = Store.tables && Store.tables[this.tableId] || {public: {}};
+        if (!table.isTourn){
+            const {system} = Store;
+            const {coinName} = table.public;
+            const date = log.date();
+            system.gamesCount[coinName][date] = (system.gamesCount[coinName][date] || 0) + 1;
+            system.gamesValue[coinName][date] = (system.gamesValue[coinName][date] || 0) + amount;
+        }
+    } catch (e){
+        console.log(e);
+        log.error('updateStatistic: ' + e);
+    }
+};
 Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
 function mathRake(player, profit) {
     try {
-        if(player.isTourn){
-        return;
+        if (player.isTourn){
+            return;
         }
         const {coinName} = player.public;
         const {percent, minProfit} = config.rakes[coinName] || {

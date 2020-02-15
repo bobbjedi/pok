@@ -20,8 +20,12 @@ module.exports = {
         system.failCoins = system.failCoins || [];
         system.mtt = system.mtt || {};
         system.rakes = system.rakes || {};
+        system.gamesCount = system.gamesCount || {};
+        system.gamesValue = system.gamesValue || {};
         config.coins.forEach(c=> {
             system.rakes[c] = system.rakes[c] || {};
+            system.gamesCount[c] = system.gamesCount[c] || 0;
+            system.gamesValue[c] = system.gamesValue[c] || {};
             if (typeof system.rakes[c] === 'number'){
                 system.rakes[c] = {};
             }
@@ -33,8 +37,8 @@ module.exports = {
         await this.system.save();
     },
     /**
-     * 
-     * @param {Object} params  
+     *
+     * @param {Object} params
      * users {Array} ['Dev', 'Dev1'...]
      */
     createMtt(params = {}) {
