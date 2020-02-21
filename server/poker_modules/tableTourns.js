@@ -49,7 +49,7 @@ module.exports = Table =>{
 
             s.chips = 0;
             s.isTourn = true; // определяем что в турнире
-            log.info('in Tourn: ' + s.public.name);
+            // log.info('in Tourn: ' + s.public.name);
         };
     };
 

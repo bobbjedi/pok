@@ -27,6 +27,7 @@ module.exports = class Mtt{
             buyIn: params.buyIn,
             winnersCount: this.params.winnersCount,
             tables: {},
+            playersUsedRebuy: [], // заюзавшие ребай
             timers: {
                 randomPlayers: 0,
                 multBlinds: 0
@@ -451,6 +452,7 @@ module.exports = class Mtt{
         }
         // Сажаем игрока
         await table.playerSatOnTheTable(player, place, buyIn);
+        player.isTourn = true;
         player.room = tableIdMinPlayers;
         setTimeout(()=>{
             player.public.chipsInPlay = this.params.chips;
@@ -504,13 +506,13 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    return;
+    // return;
     Store = require('../modules/Store');
-    Store.createMtt({tableSeatsCount: 2});
+    Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
-    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
-    Store.system.mtt.chips = 50;
-    Store.system.mtt.timeOutShufflePlayers = 1.5;
+    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
+    Store.system.mtt.chips = 5000;
+    Store.system.mtt.timeOutShufflePlayers = .2;
     Store.startMtt();
-}, 5000);
+}, 2000);
 // setInterval(()=>console.log('1'), 1000)

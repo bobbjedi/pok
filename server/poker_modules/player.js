@@ -118,7 +118,7 @@ Player.prototype.changeCoinName = async function(coinName){
     }
     if (this.sittingOnTable || coinName === this.public.coinName){
         // this.sittingOnTable && log.info(this.public.name + ' пытался cменить коин ' + this.handleCoinName + '->' + coinName + ' this.sittingOnTable:' + this.sittingOnTable);
-        log.error(this.public.name + ' пытался cменить коин ' + this.handleCoinName + '->' + coinName + ' this.sittingOnTable:' + this.sittingOnTable);
+        // log.error(this.public.name + ' пытался cменить коин ' + this.handleCoinName + '->' + coinName + ' this.sittingOnTable:' + this.sittingOnTable);
         return false;
     }
     log.info(this.public.name + ' cменил коин ' + this.handleCoinName + '->' + coinName);
@@ -135,7 +135,7 @@ Player.prototype.updateDeposit = async function (amount, user) {
         return;
     }
     user = user || await this.getUserDB();
-    log.info(user.login + ' before: ' + user.deposits.BIP);
+    log.info(user.login + ' before: ' + user.deposits.BIP + ' set:' + amount);
     const coinName = this.public.coinName;
     await $u.updateUserDeposit(user, amount, coinName);
     // $u.updateChipsUserPlayers(user, coinName);
@@ -154,6 +154,7 @@ Player.prototype.updateDepInPlay = async function (user) {
     }
     user = user || await this.getUserDB();
     const {coinName} = this.public;
+    console.log(user.login, 'updateDepInPlay', coinName);
     user.depositInRoom[coinName][this.sittingOnTable] = this.public.chipsInPlay;
     let totalInGame = 0;
     for (let room in user.depositInRoom[coinName]){
@@ -164,6 +165,7 @@ Player.prototype.updateDepInPlay = async function (user) {
     }
     user.depositInGame[coinName] = totalInGame;
     await user.save();
+    console.log(user.depositInGame, user.depositInRoom);
 };
 
 /**
