@@ -176,6 +176,26 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
+
+    socket.on('mtt-rebuy', function (tableId, callback) {
+        try {
+            console.log('mtt-rebuy');
+            let player = players[socket.id];
+            if (!player) {
+                return;
+            }
+            players[socket.id].return();
+            console.log(Store.currentMtt.params.coinName, player.public.coinName);
+            if (!Store.currentMtt || player.sittingOnTable !== false || Store.currentMtt.isFinal || Store.currentMtt.params.coinName !== player.public.coinName){
+                return player.socket('noty', {type: 'error', msg: 'Ошибка! Вы сидите за столом!'}); 
+            }
+            Store.currentMtt.rebuyPlayer(player);
+        } catch (e) {
+            console.log(e);
+            log.error('mtt-rebuy: ' + e);
+        }
+    });
+
     socket.on('enterRoom', function(tableId, callback) {
         try {
             let player = players[socket.id];

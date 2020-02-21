@@ -780,7 +780,6 @@ Table.prototype.endRound = async function(str) {
 
     // Sitting out the players who don't have chips
     const leftInGame = []; // для МТТ собираем количество оставшихся в игре
-    const sitOut = []; // для МТТ собираем количество оставшихся в игре
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.sittingIn && (this.seats[i].public.chipsInPlay <= 0 || this.seats[i].public.isSitOutMe)) {
             this.playersSittingInCount--;

@@ -51,6 +51,16 @@ html, body {
     margin: 1px;
 }
 
+.m25 {
+    margin: 25px !important;
+}
+.m20 {
+    margin: 20px !important;
+}
+.m15 {
+    margin: 15px !important;
+}
+
 .m10 {
     margin: 10px !important;
 }
@@ -65,6 +75,9 @@ html, body {
 }
 
 .mt3 {
+    margin-top: 3px !important;
+}
+.mt5 {
     margin-top: 3px !important;
 }
 

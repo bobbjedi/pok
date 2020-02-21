@@ -240,7 +240,6 @@ Player.prototype.sitOnTable = async function (tableId, seat, chips) {
 // 	}
 // }
 Player.prototype.sitOut = function (isRemoved, isNoWait) {
-    console.log('SITOUT<<<<<<<<<', this.public.name);
     if (this.sittingOnTable !== false) {
         this.public.sittingIn = false;
         this.public.inHand = false;
@@ -248,16 +247,15 @@ Player.prototype.sitOut = function (isRemoved, isNoWait) {
         if (isRemoved && !this.sitOutTimer){
             this.public.isSitOutMe = true;
             const tableId = this.sittingOnTable;
-            console.log('Sit out', this.public.name, {tableId});
             this.sitOutTimer = setTimeout(() => { // высаживаем из-за стола
                 try {
                     if (this.sittingOnTable === tableId){
+                        this.isTourn = false; // освобождаем от метки турнира
                         Store.tables[tableId].playerLeft(this.seat);
                         log.info(`Sit out timer: ${this.public.name} out table.`);
                     } else {
                         console.log('Sit out не сидит за столом');
                     }
-
                     this.sitOutTimer = null;
                 } catch (e) {
                     console.log(e);

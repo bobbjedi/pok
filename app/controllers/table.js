@@ -253,6 +253,16 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
+        $scope.rebuy = function() {
+            socket.emit('mtt-rebuy', function(response) {
+                if (response.success) {
+                    // $scope.mySeat = null;
+                    // $scope.leaveTableStates();
+                    // $rootScope.$digest();
+                    // $scope.$digest();
+                }
+            });
+        };
 
         // Post a blind (or not)
         $scope.postBlind = function(posted) {

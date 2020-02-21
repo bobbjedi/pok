@@ -67,7 +67,7 @@ module.exports = {
         const mtt = this.system.mtt;
         console.log('mtt.users:', mtt.users);
         if (isReturnChips && mtt.users){
-            await $u.multSendCoins(mtt.users, mtt.buyIn);
+            await $u.multSendCoins(mtt.users, mtt.buyIn, mtt.coinName);
         }
         this.system.mtt = {};
         this.save();
