@@ -38,7 +38,10 @@ module.exports = class Mtt{
                 return self.isFinal;
             },
             get totalBank(){
-                return self.db.params.totalBank
+                return self.db.params.totalBank;
+            },
+            get prizes(){
+                return self.db.prizes;
             }
         };
         this.init();
@@ -90,6 +93,7 @@ module.exports = class Mtt{
             this.isStarted = true;
             await this.nextRound(true);
             this.updateDisconnected();
+            this.calcPrizes();
         } catch (e) {
             console.log(e);
             log.error('Catch MTT.init: ' + e);
@@ -399,8 +403,19 @@ module.exports = class Mtt{
     }
 
     // считаем количество каждому призеру
-    calcPrises(){
-        
+    calcPrizes(){
+        const prizes = [];
+        const {totalBank, winnersCount} = this.public;
+        while (winnersCount > 1){
+            let currentPrise = Math.round(totalBank * 0.6);
+            prizes.push(currentPrise);
+            totalBank -= currentPrise;
+            winnersCount--;
+        } 
+        prizes.push(Math.round(totalBank));
+        this.db.prizes = prizes;
+        this.db.save();
+        console.log('PRR', this.db);
     }
 
     // добавление игрока
@@ -447,6 +462,7 @@ module.exports = class Mtt{
             Store.io.emit('noty', {type: 'info', msg: `К турниру присоединился ${player.public.name}. Банк составляет ${this.db.params.totalBank.toFixed(0)} ${this.params.coinName}!` });
             this.db.save();
             this.players.push(player);
+            this.calcPrizes();
         }, 300);
     }
     // Обновляем состояние онлайнов для сводки
@@ -485,7 +501,7 @@ module.exports = class Mtt{
 };
 
 setTimeout(async () => {
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 2});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
@@ -493,5 +509,5 @@ setTimeout(async () => {
     Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = 1.5;
     Store.startMtt();
-}, 2000);
+}, 5000);
 // setInterval(()=>console.log('1'), 1000)
