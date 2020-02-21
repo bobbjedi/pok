@@ -501,7 +501,10 @@ module.exports = class Mtt{
 };
 
 setTimeout(async () => {
-    // return;
+    if (!config.isDev){
+        return;
+    }
+    return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 2});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
