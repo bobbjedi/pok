@@ -62,6 +62,14 @@
                 <label>timeOutMult</label>
                 <input v-model.number="tourn.timeOutMult" type="number">
             </div>
+            <!-- <div class="input-line">
+                <label>totalBank</label>
+                <input v-model.number="tourn.totalBank" type="number">
+            </div> -->
+            <div class="input-line">
+                <label>startBank</label>
+                <input v-model.number="tourn.startBank" type="number">
+            </div>
 
             <div @click="createMtt" class="but hovered bg-green">Открыть регу</div>
         </div>
@@ -168,7 +176,9 @@
                     timeOutShufflePlayers: 5,
                     tableSeatsCount: 6,
                     chips: 1500,
-                    timeOutMult: 5
+                    timeOutMult: 5,
+                    // totalBank: 0,
+                    startBank: 0
                 },
                 table: {
                     name: 'Sng',

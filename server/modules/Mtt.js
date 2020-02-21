@@ -21,7 +21,10 @@ module.exports = class Mtt{
         this.timeParams = sng();
         this.addedPlayers = [];
         this.id = $u.unix(),
+        params.winnersCount = Math.floor(params.users.length / 5);
         this.public = {
+            winnersCount: this.params.winnersCount,
+            totlaBank: params.totlaBank,
             tables: {},
             timers: {
                 randomPlayers: 0,
@@ -33,6 +36,7 @@ module.exports = class Mtt{
         };
         this.init();
         Store.publicMtt = this.public;
+        console.log(this.public);
     }
 
     async init(){
@@ -42,31 +46,30 @@ module.exports = class Mtt{
                 timeStart: $u.unix(),
                 params: this.params
             }, 1);
+
             // Собираем игроков
             for (const u of this.params.users){
                 console.log('Check player MTT: ' + u);
                 console.log(u, this.addedPlayers.toString(), this.addedPlayers.includes(u));
                 if (this.addedPlayers.includes(u)){
-                    log.error('Уже добавлен в МТТ: ' + u);
-                    continue;
+                    return log.error('Уже добавлен в МТТ: ' + u);
                 }
-
+                
                 this.addedPlayers.push(u);
-
+                
                 if (this.players.find(p=>p.public.name === u)){
-                    log.error('FIND Уже добавлен в МТТ: ' + u);
-                    continue;
+                    return log.error('FIND Уже добавлен в МТТ: ' + u);
                 };
-
+                
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
-                    if (!isAdded && player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
+                    if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
                         this.players.push(player);
                         player.isTourn = true;
                         isAdded = true;
                         log.info('MTT: getOnlinePlayer ' + u);
-                        //  break;
+                        break;
                     }
                 }
                 if (!isAdded){ // Если играет или занят - создаем клона
@@ -77,9 +80,6 @@ module.exports = class Mtt{
                     this.offlinePlayersToStart.push(u);
                 }
             }
-            await $u.wait(.5);
-            this.updateGlobalPlayers();
-            await $u.wait(.5);
             this.isStarted = true;
             await this.nextRound(true);
             this.updateDisconnected();
@@ -419,17 +419,14 @@ module.exports = class Mtt{
         delete Store.tables[this.tables[0]];
         clearTimeout(this.timeOutUpdateTourn);
         clearTimeout(this.timeOutUpdateDisconnected);
-        this.players = [];
-        this.tables = [];
     }
 };
 
 setTimeout(async () => {
     return;
     Store = require('../modules/Store');
-    Store.createMtt({tableSeatsCount: 2});
-    // Store.system.mtt.users = ['Dev', 'Dev2', 'Devid', 'DevZ', 'DevX', 'DevI', 'DevL', 'DevA', 'Dev1', 'DevY'];
-    Store.system.mtt.users = ['Dev', 'Devi', 'DevL', 'DevX'];
+    Store.createMtt({tableSeatsCount: 6});
+    Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
     Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = 1.5;
     Store.startMtt();

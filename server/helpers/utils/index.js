@@ -90,7 +90,7 @@ module.exports = {
     },
 
     async createUser(params){
-        const {login, password, refererId} = params;
+        const {login, password} = params;
         if (!login.length || !password.length) {
             return {error: 'Неполные данные.'};
         }
@@ -109,14 +109,13 @@ module.exports = {
         }
         const user = new usersDb({
             addresses: {},
-            login: login,
+            login: params.login,
             timestamp: this.unix(),
-            loginLowCase: login.toLowerCase(),
+            loginLowCase: params.login.toLowerCase(),
             password: this.createPswd(password),
             deposits: {},
             depositInGame: {},
             depositInRoom: {}, // сколько в какой комнате заюзано
-            refererId: refererId
         });
         config.coins.forEach(c => {
             user.deposits[c] = 0;
@@ -127,9 +126,6 @@ module.exports = {
         user.deposits.DEMO = 1000;
 
         await user.save();
-        await user.update({
-            referalLink: user._id.replace('_', '')
-        }, 1);
         if (config.regDrop > 0){
             depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
         }
@@ -242,6 +238,7 @@ module.exports = {
         }
         this.updateUserDeposit(user, -buyIn, coinName);
         mtt.users.push(user.login);
+        mtt.totalBank += buyIn;
         await Store.save();
     },
     /**
@@ -345,34 +342,29 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
-    const users = await usersDb.find({});
-    for (let i in users){
-        const u = users[i];
-        if (!u.referalLink) {
-            await u.update({
-                referalLink: u._id.replace('_', '')
-            }, 1);
-        }
-        // u.address && await u.update({
-        //     address: undefined,
-        //     addresses: {
-        //         BIP: u.address
-        //     }
-        // }, 1);
-        // let bip = u.depositInGame;
-        // u.depositInGame = {};
-        // u.depositInRoom = {};
-        // for (let coin of config.coins){
-        //     u.deposits = u.deposits || {};
-        //     u.deposits[coin] = u.deposits[coin] || 0;
-        //     u.depositInGame[coin] = 0;
-        //     u.depositInRoom[coin] = {};
-        // }
-        // u.deposits.BIP = u.deposit + bip;
-        // u.deposits.DEMO = 1000;
-        // u.deposit = undefined;
-        await u.save();
-    }
+    // const users = await usersDb.find({});
+    // for (let i in users){
+    //     const u = users[i];
+    //     u.address && await u.update({
+    //         address: undefined,
+    //         addresses: {
+    //             BIP: u.address
+    //         }
+    //     }, 1);
+    // let bip = u.depositInGame;
+    // u.depositInGame = {};
+    // u.depositInRoom = {};
+    // for (let coin of config.coins){
+    //     u.deposits = u.deposits || {};
+    //     u.deposits[coin] = u.deposits[coin] || 0;
+    //     u.depositInGame[coin] = 0;
+    //     u.depositInRoom[coin] = {};
+    // }
+    // u.deposits.BIP = u.deposit + bip;
+    // u.deposits.DEMO = 1000;
+    // u.deposit = undefined;
+    //     await u.save();
+    // }
 }, 500);
 
 

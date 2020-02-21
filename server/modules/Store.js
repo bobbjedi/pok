@@ -20,12 +20,8 @@ module.exports = {
         system.failCoins = system.failCoins || [];
         system.mtt = system.mtt || {};
         system.rakes = system.rakes || {};
-        system.gamesCount = system.gamesCount || {};
-        system.gamesValue = system.gamesValue || {};
         config.coins.forEach(c=> {
             system.rakes[c] = system.rakes[c] || {};
-            system.gamesCount[c] = system.gamesCount[c] || 0;
-            system.gamesValue[c] = system.gamesValue[c] || {};
             if (typeof system.rakes[c] === 'number'){
                 system.rakes[c] = {};
             }
@@ -37,11 +33,12 @@ module.exports = {
         await this.system.save();
     },
     /**
-     *
-     * @param {Object} params
+     * 
+     * @param {Object} params  
      * users {Array} ['Dev', 'Dev1'...]
      */
     createMtt(params = {}) {
+        console.log('createMtt Params>', params);
         const buyIn = params.buyIn >= 0 ? params.buyIn : 100;
         this.system.mtt = {
             date: params.date || 'Будет обьявлено',
@@ -54,6 +51,8 @@ module.exports = {
             chips: params.chips || 1500,
             timeOutMult: params.timeOutMult || 5,
             coinName: params.coinName || 'BIP',
+            totalBank: params.startBank || 0,
+            startBank: params.startBank || 0,
             users: []
         };
         this.save();

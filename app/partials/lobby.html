@@ -31,15 +31,18 @@
             <div class="modal-text">
                 <div class="big txt-yellow m10"><i class="fa fa-trophy" aria-hidden="true"></i> Турнир Minter Poker
                 </div>
-                <div class="big txt-green m10" ng-if="public.mtt.title.length">{{public.mtt.title}}</div>
-                <div class="big txt-blue m10">Начало: {{public.mtt.date}}</div>
+                <div class="big txt-green m5" ng-if="public.mtt.title.length">{{public.mtt.title}}</div>
+                <div class="big txt-blue m5">Начало: {{public.mtt.date}}</div>
+                <div class="big txt-green m5" ng-show="public.mtt.startBank">Бонус: {{public.mtt.startBank}}</div>
+                <div class="bigbig txt-yellow m5">Банк: {{public.mtt.totalBank}}</div>
                 <div class="big m5">Условия:</div>
 
                 <div class="small mtt-info">
                     <div class="setting-line"><span class="al">Вход:</span> {{public.mtt.buyIn}}
                         {{$root.settings.coinName}}</div>
                     <div class="setting-line"><span class="al">Фишек:</span> {{public.mtt.chips}}</div>
-                    <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div>
+                    <!-- <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div> -->
+                    <div class="setting-line"><span class="al">Победителей:</span> каждый 5й</div>
                     <!-- <div class="setting-line"><span>Смена столов:</span> {{public.mtt.timeOutShufflePlayers}} мин</div>
                                 <div class="setting-line"><span>Рост блайнов:</span> {{public.mtt.timeOutMult}} мин</div> -->
                     <div class="setting-line"><span class="al">Участников:</span> {{public.mtt.users.length}}</div>
