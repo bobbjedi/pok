@@ -203,10 +203,10 @@ table {
 .select-coin:active
 {
     border: 0px solid transparent;
-    background: transparent;
-    background-color: transparent;
+    background: #2a272c;
+    background-color: #2c2c2c;
 }
-/* 
+/*
 #table {
     border-radius: 200px;
     left: 10%;
@@ -258,7 +258,7 @@ table {
     top: 7%;
     left: 4%;
     box-shadow: 0 0 20px 0 #070707 inset;
-} 
+}
 
 
 div.row {
@@ -531,7 +531,7 @@ div#board-wrap .card-container {
 #board-wrap .card-container.board-card-5{
     transform: translateY(-250%) translateX(-650%) scaleY(3) scaleX(3);
 }
- 
+
 #board-wrap .card-container.card-show{
     opacity: 1;
     transform: translateY(0) translateX(0) scaleY(1) scaleX(1);
@@ -1149,7 +1149,7 @@ div#board-wrap .card-container {
     opacity: 0
 }
 
-/* 
+/*
 .line-title-mtt{
     text-align: left;
     width: 200px;

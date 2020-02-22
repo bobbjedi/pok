@@ -125,18 +125,18 @@ html, body {
 .opacity5{
     opacity: 0.5;
 }
-.ar{    
+.ar{
     text-align: right;
     padding-right: 10px;
 }
 
-.al{    
+.al{
     text-align: left;
 }
 
 .info-line{
     display: flex;
-    justify-content: center;    
+    justify-content: center;
 }
 
 .hovered {
@@ -203,7 +203,7 @@ html, body {
 }
 
 .txt-white{
-    color: #e5e6e7;   
+    color: #e5e6e7;
 }
 
 
@@ -219,3 +219,105 @@ html, body {
     border-radius: 3px;
     color: rgb(189, 185, 185);
 }
+
+
+.d_form:focus {
+	outline-color: transparent;
+	outline-style: none;
+	}
+
+	.d_form {
+	padding: 0;
+	margin: 3px;
+	font: inherit;
+	color: inherit;
+	background: transparent;
+	border: none;
+	}
+
+	.d_form {
+	vertical-align: top;
+	outline: none;
+	}
+
+	.d_form {
+	cursor: default;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	}
+
+	.d_form {
+	box-sizing: border-box;
+	background-clip: padding-box;
+	}
+
+	.d_form {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	}
+
+	.d_form:disabled {
+	opacity: .3;
+	cursor: default;
+	pointer-events: none;
+	}
+
+	.d_form {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	}
+
+	.d_form::-ms-expand {
+	display: none;
+	}
+
+
+
+	.d_form {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: pointer;
+	text-indent: 1px;
+	text-overflow: '';
+	padding: .25rem .2rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.313rem;
+	letter-spacing: 0;
+	color: hsla(180, 2%, 78%, 1);
+	text-shadow: 0 -1px hsla(0, 0%, 0%, .69);
+	vertical-align: top;
+	border-radius: 2px;
+	/* background-color: hsla(180, 1%, 35%, 1); */
+	box-shadow: inset 0 1px hsla(0, 0%, 45%, 1);
+	border: 1px solid hsla(180, 1%, 20%, 1);
+	background-repeat: no-repeat;
+	background-position: center right;
+	min-width: 3.4rem;
+	}
+
+	select.d_form {
+	padding-right: 20px;
+	/* background-image: url('assets/img/dropdown.svg'); */
+	}
+
+	.d_form:hover {
+	/* background-color: hsla(200, 2%, 39%, 1); */
+	}
+
+	.d_form:active {
+	background-color: #323141;
+	box-shadow: inset 0 1px hsla(0, 0%, 0%, .05);
+	}
+
+	.d_form:focus {
+	border: 1px solid #3eadbe;
+	box-shadow: 0 0 0 1px #3eadbe;
+	outline: 0;
+	}
