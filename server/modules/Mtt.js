@@ -25,7 +25,6 @@ module.exports = class Mtt{
         params.winnersCount = Math.floor(params.users.length / 5);
         this.public = {
             buyIn: params.buyIn,
-            winnersCount: this.params.winnersCount,
             tables: {},
             playersUsedRebuy: [], // заюзавшие ребай
             timers: {
@@ -43,6 +42,13 @@ module.exports = class Mtt{
             },
             get prizes(){
                 return self.db.prizes;
+            },
+            get winnersCount(){
+                params.winnersCount = Math.floor(this.countParticipants / 5);
+                return params.winnersCount;
+            },
+            get countParticipants(){
+                return self.addedPlayers.length;
             }
         };
         this.init();
@@ -65,13 +71,13 @@ module.exports = class Mtt{
                 if (this.addedPlayers.includes(u)){
                     return log.error('Уже добавлен в МТТ: ' + u);
                 }
-                
+
                 this.addedPlayers.push(u);
-                
+
                 if (this.players.find(p=>p.public.name === u)){
                     return log.error('FIND Уже добавлен в МТТ: ' + u);
                 };
-                
+
                 let isAdded = false;
                 for (let i in Store.players){
                     const player = Store.players[i];
@@ -405,27 +411,33 @@ module.exports = class Mtt{
 
     // считаем количество каждому призеру
     calcPrizes(){
-        const prizes = [];
-        const {totalBank, winnersCount} = this.public;
-        while (winnersCount > 1){
-            let currentPrise = Math.round(totalBank * 0.6);
-            prizes.push(currentPrise);
-            totalBank -= currentPrise;
-            winnersCount--;
-        } 
-        prizes.push(Math.round(totalBank));
-        this.db.prizes = prizes;
-        this.db.save();
-        console.log('PRR', this.db);
+        try {
+            const prizes = [];
+            let {totalBank, winnersCount} = this.public;
+            console.log('calcPrizes', {totalBank, winnersCount});
+            while (winnersCount > 1){
+                let currentPrise = Math.round(totalBank * 0.6);
+                prizes.push(currentPrise);
+                totalBank -= currentPrise;
+                winnersCount--;
+            }
+            prizes.push(Math.round(totalBank));
+            this.db.prizes = prizes;
+            this.db.save();
+            console.log('PRR', this.db);
+        } catch (e){
+            console.log(e);
+            log.error('calcPrizes: ' + e);
+        }
     }
 
     // добавление игрока
     async rebuyPlayer(player){
         const {publicMtt} = Store;
         const {buyIn} = publicMtt;
-        
+
         if (buyIn > player.chips){
-            return player.socket.emit('noty', {type: 'error', msg: 'Недостаточно средств! Нужно ' + buyIn + '!'}); 
+            return player.socket.emit('noty', {type: 'error', msg: 'Недостаточно средств! Нужно ' + buyIn + '!'});
         }
         // ищем минимальное количесво за столами
         let minCountPlayers = 11;
@@ -434,12 +446,13 @@ module.exports = class Mtt{
             const count = this.countInTables[id];
             if (minCountPlayers > count){
                 minCountPlayers = count;
-                tableIdMinPlayers = id;   
+                tableIdMinPlayers = id;
             }
         }
-        console.log('REBUY', player.public.name, {tableIdMinPlayers, minCountPlayers});
+        const {name} = player.public;
+        console.log('REBUY', name, {tableIdMinPlayers, minCountPlayers});
         if (minCountPlayers === this.params.tableSeatsCount){
-            return player.socket.emit('noty', {type: 'error', msg: 'Нет свободных мест за столами! Попробуйте позже!'}); 
+            return player.socket.emit('noty', {type: 'error', msg: 'Нет свободных мест за столами! Попробуйте позже!'});
         }
         // Ищем свободное место
         const table = Store.tables[tableIdMinPlayers];
@@ -460,10 +473,14 @@ module.exports = class Mtt{
             player.link = link;
             player.socket.emit('redirectOntable', {link, msg: 'Переход за стол МТТ'});
             this.db.params.totalBank += buyIn;
-            log.info('REBUY SUCCESS: ' + player.public.name);
-            Store.io.emit('noty', {type: 'info', msg: `К турниру присоединился ${player.public.name}. Банк составляет ${this.db.params.totalBank.toFixed(0)} ${this.params.coinName}!` });
+            log.info('REBUY SUCCESS: ' + name);
+            Store.io.emit('noty', {type: 'info', msg: `К турниру присоединился ${name}. Банк составляет ${this.db.params.totalBank.toFixed(0)} ${this.params.coinName}!` });
             this.db.save();
             this.players.push(player);
+            if (!this.addedPlayers.includes(name)){
+                console.log('MTT Новый участник: ' + name);
+                this.addedPlayers.push(name);
+            };
             this.calcPrizes();
         }, 300);
     }

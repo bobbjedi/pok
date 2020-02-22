@@ -30,11 +30,11 @@
         </div>
             <div class="txt-yellow mt15">
                 <i class="fa fa-gift" aria-hidden="true"></i>
-                <span>Банк: {{publicMtt.totalBank}} {{table.coinName}} ({{publicMtt.prizes.toString()}})</span>
+                <span>Банк: {{publicMtt.totalBank}} {{table.coinName}} ({{publicMtt.prizes.join('/')}})</span>
             </div>
             <div class="txt-green mt5">
                 <i class="fa fa-trophy" aria-hidden="true"></i>
-                <span>Победителей: {{publicMtt.winnersCount}}</span>
+                <span>Победителей: {{publicMtt.winnersCount}} из {{publicMtt.countParticipants}}</span>
             </div>
             <div class="txt-white mt10">
                 <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
@@ -46,7 +46,7 @@
                     {{$root.normaliseSeconds(publicMtt.timerShufflePlayers)}}</span>
                 <span ng-show="publicMtt.timerShufflePlayers <= 0">Ожидание...</span>
             </div>
-            <div class="mt15">Игроков за столами {{publicMtt.playersList.length}}
+            <div class="mt15">Игроков за столами: <span class="big txt-white">{{publicMtt.playersList.length}}</span>
                 <span class="small txt-green">{{publicMtt.countOnline}}</span> /
                 <span class="small txt-red">{{publicMtt.countOffline}}</span>
             </div>
