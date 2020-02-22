@@ -406,6 +406,7 @@ module.exports = class Mtt{
         }
     }
     sendPublicPlayers(){
+        this.db.save();
         Store.io.emit('public-mtt', this.public);
     }
 
@@ -464,7 +465,8 @@ module.exports = class Mtt{
             }
         }
         // Сажаем игрока
-        await table.playerSatOnTheTable(player, place, buyIn);
+        await table.playerSatOnTheTable(player, place, 0);
+        await player.updateDeposit(-buyIn);
         player.isTourn = true;
         player.room = tableIdMinPlayers;
         setTimeout(()=>{
