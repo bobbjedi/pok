@@ -182,12 +182,13 @@ io.sockets.on('connection', function(socket) {
             console.log('mtt-rebuy');
             let player = players[socket.id];
             if (!player) {
+                console.log('mtt-rebuy !player');
                 return;
             }
             players[socket.id].return();
             console.log(Store.currentMtt.params.coinName, player.public.coinName);
             if (!Store.currentMtt || player.sittingOnTable !== false || Store.currentMtt.isFinal || Store.currentMtt.params.coinName !== player.public.coinName){
-                return player.socket.emit('noty', {type: 'error', msg: 'Ошибка! Вы сидите за столом!'}); 
+                return player.socket.emit('noty', {type: 'error', msg: 'Ошибка! Вы сидите за столом!'});
             }
             Store.currentMtt.rebuyPlayer(player);
         } catch (e) {

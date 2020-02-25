@@ -129,20 +129,21 @@ Player.prototype.changeCoinName = async function(coinName){
 /**
  * @description обновляем депозит в ДБ для юзера
  */
-Player.prototype.updateDeposit = async function (amount, user) {
-    if (this.isTourn){
-        // console.log('updateDeposit isTourn', this.public.name);
+Player.prototype.updateDeposit = async function (amount, user, isForce) {
+    if (this.isTourn && !isForce){
+        console.log('NO updateDeposit isTourn', this.public.name);
         return;
     }
+
     user = user || await this.getUserDB();
     log.info(user.login + ' before: ' + user.deposits.BIP + ' set:' + amount);
     const coinName = this.public.coinName;
     await $u.updateUserDeposit(user, amount, coinName);
-    // $u.updateChipsUserPlayers(user, coinName);
-    // await user.save();
+
     if (amount > 0){
         log.info(`${user.login} return chipsInPlay  ${amount}, deposit: ${user.deposits[coinName]}`);
     }
+    log.info(user.login + ' after: ' + user.deposits.BIP);
 };
 
 /**

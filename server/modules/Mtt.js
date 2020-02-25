@@ -335,7 +335,13 @@ module.exports = class Mtt{
             this.tables.forEach(id => Store.tables[id].public.isStoppedGames = true);
         }
     }
-
+    /**
+     * @description Проверяем есть ли игрок с таким ником в турнире во избежание задвоения при реентри
+     * @param {String} name - ник проверяемого игрока
+     */
+    checkPlayerInTourn(name) {
+        return this.players.find(p=> p.public.name === name);
+    }
     updateTournParams () {
         if (!this.timeParams.length) {
             return;
@@ -364,7 +370,7 @@ module.exports = class Mtt{
 
     updatePublcParams(params) {
         try {
-            console.log(params);
+            console.log('updatePublcParams', params);
             const publicMtt = this.public;
             const {tableId, status, playersLeftChips, timeOutShufflePlayers, updateTournParams} = params;
             if (tableId) { // обновляем игроков
@@ -436,11 +442,18 @@ module.exports = class Mtt{
     async rebuyPlayer(player){
         const {publicMtt} = Store;
         const {buyIn} = publicMtt;
-
-        if (buyIn > player.chips){
+        const {name} = player.public;
+        const deposit = (await player.getUserDB()).deposits[this.params.coinName];
+        console.log('rebuyPlayer>', {deposit, buyIn});
+        if (buyIn > deposit){
             return player.socket.emit('noty', {type: 'error', msg: 'Недостаточно средств! Нужно ' + buyIn + '!'});
         }
-        // ищем минимальное количесво за столами
+        if (this.checkPlayerInTourn(name)){
+            log.error('Reentry ' + name + ' Невозможно зайти повторно в текущем круге!');
+            return player.socket.emit('noty', {type: 'error', msg: 'Невозможно зайти повторно в текущем круге!'});
+        }
+
+        // ищем минимальное количесnво за столами
         let minCountPlayers = 11;
         let tableIdMinPlayers = -1;
         for (const id in this.countInTables){
@@ -450,9 +463,9 @@ module.exports = class Mtt{
                 tableIdMinPlayers = id;
             }
         }
-        const {name} = player.public;
         console.log('REBUY', name, {tableIdMinPlayers, minCountPlayers});
         if (minCountPlayers === this.params.tableSeatsCount){
+            log.error('Reentry ' + name + ' Нет свободных мест за столами! Попробуйте позже!');
             return player.socket.emit('noty', {type: 'error', msg: 'Нет свободных мест за столами! Попробуйте позже!'});
         }
         // Ищем свободное место
@@ -465,10 +478,12 @@ module.exports = class Mtt{
             }
         }
         // Сажаем игрока
-        await table.playerSatOnTheTable(player, place, 0);
-        await player.updateDeposit(-buyIn);
+        await player.updateDeposit(-buyIn, null, true);
         player.isTourn = true;
+        await table.playerSatOnTheTable(player, place, 0);
         player.room = tableIdMinPlayers;
+        player.chips = 0;
+
         setTimeout(()=>{
             player.public.chipsInPlay = this.params.chips;
             const link = 'table-' + this.params.tableSeatsCount + '/' + tableIdMinPlayers;
@@ -531,7 +546,7 @@ setTimeout(async () => {
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
     Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
     Store.system.mtt.chips = 5000;
-    Store.system.mtt.timeOutShufflePlayers = .2;
+    Store.system.mtt.timeOutShufflePlayers = 2;
     Store.startMtt();
-}, 2000);
+}, 5000);
 // setInterval(()=>console.log('1'), 1000)
