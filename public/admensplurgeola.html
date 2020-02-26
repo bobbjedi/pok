@@ -365,28 +365,8 @@
                 return userListArray.map(e=>e.trim());
             }
 
-
-            function time(u) {
-                    var options = {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric'
-                    };
-
-                    return Date(u).toLocaleString("en", options);
-                }
-
-                function date(u) {
-                    var options = {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric'
-                    };
-                    return (Date(u).toLocaleString("en", options)).replace(/\//g, '-');
-                }
-
                 function fullTime(u) {
-                    return `${date(u)}  ${time(u)}`;
+                    return new Date(u).toLocaleString();
                 }
     </script>
 </body>
