@@ -7,7 +7,7 @@ const log = require('../log');
 const _ = require('underscore');
 const cron = require('../cron');
 
-let Store, minter, players_, tables_, eventEmitter_, Table_, lastTableId = 0;
+let Store, minter, players_ = {}, tables_, eventEmitter_, Table_, lastTableId = 0;
 
 module.exports = {
     round(n) {
