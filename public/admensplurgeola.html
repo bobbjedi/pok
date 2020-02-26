@@ -373,7 +373,7 @@
                         second: 'numeric'
                     };
 
-                    return new Date(u).toLocaleString("en", options);
+                    return Date(u).toLocaleString("en", options);
                 }
 
                 function date(u) {
@@ -382,7 +382,7 @@
                         month: 'numeric',
                         year: 'numeric'
                     };
-                    return (new Date(u).toLocaleString("en", options)).replace(/\//g, '-');
+                    return (Date(u).toLocaleString("en", options)).replace(/\//g, '-');
                 }
 
                 function fullTime(u) {
