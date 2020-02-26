@@ -27,6 +27,7 @@ module.exports = class Mtt{
             buyIn: params.buyIn,
             tables: {},
             playersUsedRebuy: [], // заюзавшие ребай
+            isGamesStopped: true, // игры не стартанули или ждут окончания на столах
             timers: {
                 randomPlayers: 0,
                 multBlinds: 0
@@ -49,6 +50,9 @@ module.exports = class Mtt{
             },
             get countParticipants(){
                 return self.addedPlayers.length;
+            },
+            get reEntries(){
+                self.db.reEntries;
             }
         };
         this.init();
@@ -61,7 +65,8 @@ module.exports = class Mtt{
             this.updateTournParams(); // запускаем рост анте и ББ
             this.db = new tourns({
                 timeStart: $u.unix(),
-                params: this.params
+                params: this.params,
+                reEntries: {}
             }, 1);
 
             // Собираем игроков
@@ -96,6 +101,7 @@ module.exports = class Mtt{
                     log.warn('MTT: createOffLinePlayer ' + u);
                     this.offlinePlayersToStart.push(u);
                 }
+                this.db.reEntries[u] = 1;
             }
             this.isStarted = true;
             await this.nextRound(true);
@@ -197,7 +203,10 @@ module.exports = class Mtt{
             // this.backUpTables = this.tables.slice();
             }
             // дозакидываем игроков в глобальный список
-            setTimeout(()=>this.updateGlobalPlayers(), 15 * 1000);
+            setTimeout(()=>{
+                this.public.isGamesStopped = false;
+                this.updateGlobalPlayers();
+            }, 5 * 1000);
             console.log('this.countInTables', this.countInTables);
         } catch (e) {
             console.log(e);
@@ -333,6 +342,7 @@ module.exports = class Mtt{
     stoppedGames (){
         if (!this.isFinal){
             this.tables.forEach(id => Store.tables[id].public.isStoppedGames = true);
+            this.public.isGamesStopped = true;
         }
     }
     /**
@@ -463,11 +473,12 @@ module.exports = class Mtt{
                 tableIdMinPlayers = id;
             }
         }
-        console.log('REBUY', name, {tableIdMinPlayers, minCountPlayers});
-        if (minCountPlayers === this.params.tableSeatsCount){
+        console.log('REBUY', name, {tableIdMinPlayers, minCountPlayers, isGamesStopped: this.public.isGamesStopped});
+        if (minCountPlayers === this.params.tableSeatsCount || this.public.isGamesStopped){
             log.error('Reentry ' + name + ' Нет свободных мест за столами! Попробуйте позже!');
             return player.socket.emit('noty', {type: 'error', msg: 'Нет свободных мест за столами! Попробуйте позже!'});
         }
+        this.players.push(player);
         // Ищем свободное место
         const table = Store.tables[tableIdMinPlayers];
         let place = -1;
@@ -483,7 +494,8 @@ module.exports = class Mtt{
         await table.playerSatOnTheTable(player, place, 0);
         player.room = tableIdMinPlayers;
         player.chips = 0;
-
+        this.db.reEntries[name] = this.db.reEntries[name] || 0;
+        this.db.reEntries[name]++;
         setTimeout(()=>{
             player.public.chipsInPlay = this.params.chips;
             const link = 'table-' + this.params.tableSeatsCount + '/' + tableIdMinPlayers;
@@ -493,7 +505,6 @@ module.exports = class Mtt{
             log.info('REBUY SUCCESS: ' + name);
             Store.io.emit('noty', {type: 'info', msg: `К турниру присоединился ${name}. Банк составляет ${this.db.params.totalBank.toFixed(0)} ${this.params.coinName}!` });
             this.db.save();
-            this.players.push(player);
             if (!this.addedPlayers.includes(name)){
                 console.log('MTT Новый участник: ' + name);
                 this.addedPlayers.push(name);
@@ -543,10 +554,10 @@ setTimeout(async () => {
     // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
-    // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis'];
+    // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
     Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
     Store.system.mtt.chips = 5000;
-    Store.system.mtt.timeOutShufflePlayers = 2;
+    Store.system.mtt.timeOutShufflePlayers = .3;
     Store.startMtt();
 }, 5000);
 // setInterval(()=>console.log('1'), 1000)

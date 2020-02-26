@@ -50,7 +50,7 @@
                 <span class="small txt-green">{{publicMtt.countOnline}}</span> /
                 <span class="small txt-red">{{publicMtt.countOffline}}</span>
             </div>
-            <span class="txt-green hovered " ng-if="!publicMtt.playersList.includes($root.user.login) && !publicMtt.isFinal" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Присоединиться за {{publicMtt.buyIn}} {{table.coinName}}</span>
+            <span class="txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Присоединиться за {{publicMtt.buyIn}} {{table.coinName}}</span>
             <div class="mttPlayersListContainer">
                 <table class="center mttPlayersList">
                     <tr>
