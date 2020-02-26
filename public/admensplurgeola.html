@@ -120,12 +120,18 @@
                 <b>{{(userDep - resultTxs).toFixed(2)}}</b></h1>
             <table v-if="txs.length">
                 <tr>
-                    <th v-for="f in Object.keys(txs[0])" v-if="!['user_id'].includes(f)">{{f.toUpperCase()}}
-                    </th>
+                   <th>Hash</th>
+                   <th>Type</th>
+                   <th>Amount</th>
+                   <th>Time</th>
                 </tr>
                 <tr v-for="tx in txs">
-                    <td v-for="f in Object.keys(tx)" v-if="!['user_id'].includes(f)"><a target="_blank"
-                            :href="'https://explorer.minter.network/transactions/' + tx.hash">{{tx[f]}}</a></td>
+                    <!-- <td v-for="f in Object.keys(tx)" v-if="!['user_id'].includes(f)"><a target="_blank"
+                            :href="'https://explorer.minter.network/transactions/' + tx.hash">{{tx[f]}}</a></td> -->
+                    <td>{{tx.hash}}</td>
+                    <td>{{tx.type}}</td>
+                    <td>{{tx.amount}}</td>
+                    <td>{{unixToString(tx.time)}}</td>
                 </tr>
             </table>
         </div>
@@ -239,6 +245,7 @@
                         this.users = data;
                     });
                 },
+                unixToString: fullTime,
                 editUser(user) {
                     this.editUserId = 0;
                     api({
@@ -357,6 +364,30 @@
                 }
                 return userListArray.map(e=>e.trim());
             }
+
+
+            function time(u) {
+                    var options = {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        second: 'numeric'
+                    };
+
+                    return new Date(u).toLocaleString("en", options);
+                }
+
+                function date(u) {
+                    var options = {
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric'
+                    };
+                    return (new Date(u).toLocaleString("en", options)).replace(/\//g, '-');
+                }
+
+                function fullTime(u) {
+                    return `${date(u)}  ${time(u)}`;
+                }
     </script>
 </body>
 
