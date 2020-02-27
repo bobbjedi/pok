@@ -1,17 +1,24 @@
 <div id="cabinet">
-    <h1>Cabinet {{$root.user.login}}</h1>
-    <table class="table_dark">
-        <tr>
-            <th>Tx Hash</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Date</th>
-        </tr>
-        <tr ng-repeat="tx in txs">
-            <td>{{tx.hash}}</td>
-            <td>{{tx.type}}</td>
-            <td>{{$root.tsp(tx.amount)}}</td>
-            <td>{{tx.unix}}</td>
-        </tr>
-    </table>
+    <h1 class="txt-white">Cabinet {{$root.user.login}}</h1>
+    <h3>Deposit: {{$root.tsp($root.user.deposits.BIP + $root.user.depositInGame.BIP)}} BIP</h3>
+    <h3>Profit: {{$root.tsp(totalProfit)}} BIP</h3>
+    <h2>Transactions</h2>
+    <div class="scrolled-600">
+        <table class="table_dark" id="transactions">
+            <tr>
+                <th>#</th>
+                <th>Tx Hash</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+            <tr ng-repeat="(i, tx) in txs" ng-class="tx.type === 'withdraw' ? 'txt-red' : 'txt-green'">
+                <td>{{i + 1}}</td>
+                <td>{{hashShort(tx.hash)}}</td>
+                <td>{{tx.type}}</td>
+                <td>{{$root.tsp(tx.amount)}}</td>
+                <td>{{fullTime(tx.unix)}}</td>
+            </tr>
+        </table>
+    </div>
 </div>

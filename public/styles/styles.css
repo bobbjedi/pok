@@ -177,6 +177,13 @@ table {
     color: #afaabe
 }
 
+
+/* CABINET */
+#transactions{
+    max-height: 300px;
+}
+
+/* USER PANEL */
 #user-panel {
     display: flex;
     margin: 10px;
