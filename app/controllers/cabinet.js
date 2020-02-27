@@ -27,7 +27,7 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
                 } else {
                     return s + c.amount; 
                 }
-            }, $rootScope.user.deposits.BIP - $rootScope.user.depositInGame.BIP);
+            }, - ($rootScope.user.deposits.BIP + $rootScope.user.depositInGame.BIP));
         });
     }]);
 
