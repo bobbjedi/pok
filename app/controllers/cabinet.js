@@ -11,7 +11,15 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
         window.showPreloader();
         setTimeout(() => window.hidePreloader(), 1000);
         $rootScope.api({ action: 'getUserTxs' }, txs => {
-            txs.sort((a, b) => b.unix - a.unix);
+            txs.sort((a, b) => {
+                if (!a.unix) {
+                    a.unix = 1;
+                }
+                if (!b.unix) {
+                    b.unix = 1;
+                }
+                return b.unix - a.unix;
+            });
             $scope.txs = txs;
             $scope.totalProfit = txs.reduce((s, c) => {
                 if (c.type === 'deposit'){
