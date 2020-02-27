@@ -10,6 +10,7 @@ import './app';
 import './controllers/lobby';
 import './controllers/chat';
 import './controllers/table';
+import './controllers/cabinet';
 
 import './services/sounds';
 import './directives/seat';

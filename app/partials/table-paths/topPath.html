@@ -16,16 +16,16 @@
                 <div class="big txt-blue"><i class="fa fa-trophy" aria-hidden="true"></i> Турнирный стол</div>
                 <br>
                     <div class="table-requirements">
-                        <span class="table-modal-line">Мест:</span><span class="txt-white">{{table.data.playersCount}}</span>
+                        <span class="table-modal-line">Seats:</span><span class="txt-white">{{table.data.playersCount}}</span>
                     </div>
                     <div class="table-requirements">
-                        <span class="table-modal-line">Победителей:</span><span class="txt-white">{{table.data.winnersCount}}</span>
+                        <span class="table-modal-line">Winners:</span><span class="txt-white">{{table.data.winnersCount}}</span>
                     </div>
                     <div class="table-requirements">
-                        <span class="table-modal-line">Фишек:</span><span class="txt-white">{{table.data.chips}}</span>
+                        <span class="table-modal-line">Chips:</span><span class="txt-white">{{table.data.chips}}</span>
                     </div>
                     <div class="table-requirements">
-                        <span class="table-modal-line">Интервал:</span><span class="txt-white">{{table.data.timeOutMult}}</span> мин.
+                        <span class="table-modal-line">Interval:</span><span class="txt-white">{{table.data.timeOutMult}}</span> мин.
                     </div>
                 <div class="table-requirements">
                     <span class="table-modal-line">Buy-in:</span><span class="big txt-green">{{table.minBuyIn}}</span>
@@ -33,11 +33,11 @@
             </span>
 
             <div class="table-requirements">
-                <span class="table-modal-line">Ваш депозит:</span>
+                <span class="table-modal-line">You deposit:</span>
                 <span class="big txt-yellow">{{$root.user.deposits[$root.settings.coinName]}} {{$root.settings.coinName}}</span>
             </div>
             <div class="table-requirements">
-                <span class="table-modal-line">Ваш стейк:</span>
+                <span class="table-modal-line">You steak:</span>
                 <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay || 0}} {{$root.settings.coinName}}</span>
             </div>
             <br>

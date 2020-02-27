@@ -1,19 +1,19 @@
 <div class="modal-wrap" ng-show="isOpenSettings">
     <div class="modal">
         <div id="settings big">
-            <h4>Настройки</h4>
+            <h4><i class="fa fa-cog" aria-hidden="true"></i> Settings</h4>
             <div class="setting-line"
                 ng-click="$root.settings.cardColors = ($root.settings.cardColors === 'card2' ? 'card4' : 'card2')">
                 <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.cardColors === 'card4' ? 'on' : 'off')"
                     aria-hidden="true"></i>
-                <div class="settings-label">4х цветная колода</div>
+                <div class="settings-label">4th color cards</div>
             </div>
             <div class="setting-line" ng-click="$root.settings.sound = !$root.settings.sound">
                 <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.sound ? 'on' : 'off')"
                     aria-hidden="true"></i>
-                <div class="settings-label">Звук в игре</div>
+                <div class="settings-label">Sound</div>
             </div>
-            <div class="but bg-blue" ng-click="isOpenSettings = false">Ок</div>
+            <div class="but bg-blue" ng-click="isOpenSettings = false">Ok</div>
         </div>
     </div>
 </div>
@@ -26,7 +26,7 @@
             <h3>Сводка МТТ  <span class="big txt-green"ng-if="publicMtt.isFinal">Final!</span></h3>
             <div class="setting-line small" ng-click="isOpacity = !isOpacity">
             <i class="fa hovered" ng-class="'fa-toggle-' + (isOpacity ? 'on' : 'off')" aria-hidden="true"></i>
-            <div class="settings-label">Прозрачно</div>
+            <div class="settings-label">Transparent</div>
         </div>
             <div class="txt-yellow mt15">
                 <i class="fa fa-gift" aria-hidden="true"></i>
@@ -34,30 +34,30 @@
             </div>
             <div class="txt-green mt5">
                 <i class="fa fa-trophy" aria-hidden="true"></i>
-                <span>Победителей: {{publicMtt.winnersCount}} из {{publicMtt.countParticipants}}</span>
+                <span>Winners: {{publicMtt.winnersCount}} из {{publicMtt.countParticipants}}</span>
             </div>
             <div class="txt-white mt10">
                 <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
-                <span>До роста Blinds: {{publicMtt.timerMultBlinds > 0 ? $root.normaliseSeconds(publicMtt.timerMultBlinds) : 'Рост!'}}</span>
+                <span>Timeout Blinds Up: {{publicMtt.timerMultBlinds > 0 ? $root.normaliseSeconds(publicMtt.timerMultBlinds) : 'Рост!'}}</span>
             </div>
             <div class="txt-white" ng-if="!publicMtt.isFinal">
                 <i class="fa fa-clock-o txt-blue" aria-hidden="true"></i>
-                <span ng-show="publicMtt.timerShufflePlayers > 0">До пересадки:
+                <span ng-show="publicMtt.timerShufflePlayers > 0">Shuffle players:
                     {{$root.normaliseSeconds(publicMtt.timerShufflePlayers)}}</span>
-                <span ng-show="publicMtt.timerShufflePlayers <= 0">Ожидание...</span>
+                <span ng-show="publicMtt.timerShufflePlayers <= 0">Wait...</span>
             </div>
-            <div class="mt15">Игроков за столами: <span class="big txt-white">{{publicMtt.playersList.length}}</span>
+            <div class="mt15">Players in game: <span class="big txt-white">{{publicMtt.playersList.length}}</span>
                 <span class="small txt-green">{{publicMtt.countOnline}}</span> /
                 <span class="small txt-red">{{publicMtt.countOffline}}</span>
             </div>
-            <span class="txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Присоединиться за {{publicMtt.buyIn}} {{table.coinName}}</span>
+            <span class="txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Join the tournament for {{publicMtt.buyIn}} {{table.coinName}}</span>
             <div class="mttPlayersListContainer">
                 <table class="center mttPlayersList">
                     <tr>
                         <th>#</th>
-                        <th>Имя</th>
-                        <th>Фишек</th>
-                        <th>Статус</th>
+                        <th>Name</th>
+                        <th>Chips</th>
+                        <th>Status</th>
                     </tr>
                     <tr ng-repeat="(i, p) in publicMtt.playersList">
                         <td>{{i+1}}</td>
@@ -70,7 +70,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="but bg-blue" ng-click="isOpenMTTinfo = false">Скрыть</div>
+            <div class="but bg-blue" ng-click="isOpenMTTinfo = false">Hide</div>
         </div>
     </div>
 </div>

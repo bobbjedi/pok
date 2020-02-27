@@ -1,6 +1,6 @@
 const log = require('../helpers/log');
 const sha256 = require('sha256');
-const {usersDb, restorePswdDb} = require('./DB');
+const {usersDb, depositsDb, restorePswdDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
 const minter = require('./minter');
@@ -91,6 +91,10 @@ module.exports = (app) => {
                 } else {
                     error(addAddress, res);
                 }
+                break;
+
+            case ('getUserTxs'):
+                success(await depositsDb.db.syncFind({user_id: User._id}), res);
                 break;
 
             default:

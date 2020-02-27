@@ -206,7 +206,7 @@ Player.prototype.leaveTable = async function () {
         this.sittingOnTable = false;
         this.seat = null;
         this.public.isSitOutMe = false;
-        this.socket.emit('playerSitOut');
+        this.socket.emit('playerLeaveTable');
     }
 };
 

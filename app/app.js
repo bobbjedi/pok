@@ -1,4 +1,5 @@
 import lobbyTemplate from './partials/lobby.html';
+import cabinetTemplate from './partials/cabinet.html';
 import includeHtml from './partials/table-paths';
 import config from '../config';
 import angular from 'angular';
@@ -25,6 +26,11 @@ const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $
     $routeProvider.when('/', {
         template: lobbyTemplate,
         controller: 'LobbyController',
+    });
+
+    $routeProvider.when('/cabinet', {
+        template: cabinetTemplate,
+        controller: 'CabinetController',
     });
 
     // $routeProvider.otherwise({ redirectTo: '/' });

@@ -1,0 +1,17 @@
+<div id="cabinet">
+    <h1>Cabinet {{$root.user.login}}</h1>
+    <table class="table_dark">
+        <tr>
+            <th>Tx Hash</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+        <tr ng-repeat="tx in txs">
+            <td>{{tx.hash}}</td>
+            <td>{{tx.type}}</td>
+            <td>{{$root.tsp(tx.amount)}}</td>
+            <td>{{tx.unix}}</td>
+        </tr>
+    </table>
+</div>
