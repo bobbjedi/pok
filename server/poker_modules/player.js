@@ -38,7 +38,7 @@ var Player = function (socket, user, createdCoinName = 'BIP') {
         // заюзал время на реконект
         isUseTimeToRecconect: false,
         get coinName(){
-            if (self.sittingOnTable){
+            if (self.sittingOnTable && Store.tables[self.sittingOnTable]){
                 return Store.tables[self.sittingOnTable].public.coinName;
             } else {
                 return self.handleCoinName;
@@ -206,6 +206,7 @@ Player.prototype.leaveTable = async function () {
         this.sittingOnTable = false;
         this.seat = null;
         this.public.isSitOutMe = false;
+        this.socket.emit('playerSitOut');
     }
 };
 

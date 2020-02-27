@@ -204,8 +204,10 @@ Table.prototype.setTimeoutWait = function(){
                 playerPublic.isUseTimeToRecconect = true;
                 console.log(lastActiveUserLogin + ' recconnect.... ' + timeOut);
             }
+            if (config.isDev){
+                timeOut = 0.5;
+            }
         }
-
 
         this.timeOutWaitUserAction = setTimeout(autoMoveCb, timeOut);
     } catch (e){
@@ -780,8 +782,10 @@ Table.prototype.endRound = async function(str) {
 
     // Sitting out the players who don't have chips
     const leftInGame = []; // для МТТ собираем количество оставшихся в игре
+    const sitOutedPlayers = []; // вылетевшие в текущем круге
     for (let i = 0; i < this.public.seatsCount; i++) {
         if (this.seats[i] !== null && this.seats[i].public.sittingIn && (this.seats[i].public.chipsInPlay <= 0 || this.seats[i].public.isSitOutMe)) {
+            sitOutedPlayers.push(this.seats[i].public.name);
             this.playersSittingInCount--;
             this.seats[i].sitOut(true, this.isTourn);
         } else if (this.seats[i] !== null && this.seats[i].public.chipsInPlay > 0){
@@ -789,7 +793,7 @@ Table.prototype.endRound = async function(str) {
         }
     }
 
-    this.public.data.isMtt && this.public.data.mtt.callBackPlayersSittingInCountMTT(this.playersSittingInCount, this.public.id, leftInGame); // оповещаем о количестве
+    this.public.data.isMtt && this.public.data.mtt.callBackPlayersSittingInCountMTT(this.playersSittingInCount, this.public.id, leftInGame, sitOutedPlayers); // оповещаем о количестве
     if (this.isTourn && this.tournWinnersCount >= this.playersSittingInCount){ // завершили турнир!
         this.tournStop();
         return;

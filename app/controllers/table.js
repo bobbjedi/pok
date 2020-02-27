@@ -72,6 +72,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 location.reload();
             }, 5000);
         });
+        socket.on('playerSitOut', ()=> $scope.mySeat = null);
 
         // Getting the table data
         const updateTableData = () => {
