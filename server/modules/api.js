@@ -1,6 +1,6 @@
 const log = require('../helpers/log');
 const sha256 = require('sha256');
-const {usersDb, depositsDb, restorePswdDb} = require('./DB');
+const {usersDb, depositsDb, restorePswdDb, refsBonusDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
 const minter = require('./minter');
@@ -63,7 +63,7 @@ module.exports = (app) => {
                     error('Произошла ошибка, попробуйте еще раз!', res);
                 }
                 break;
-                
+
             case ('restorePswd'):
                 const {pswd} = GET;
                 if (!pswd || pswd.length < 3){
@@ -95,6 +95,11 @@ module.exports = (app) => {
 
             case ('getUserTxs'):
                 success(await depositsDb.db.syncFind({user_id: User._id}), res);
+                break;
+
+            case ('getUserRefs'):
+                const refs = await refsBonusDb.findOne({refererId: User._id}) || {bonuses: {}};
+                success(refs.bonuses, res);
                 break;
 
             default:

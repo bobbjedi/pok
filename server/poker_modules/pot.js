@@ -2,6 +2,7 @@ const log = require('../helpers/log');
 const config = require('../helpers/configReader');
 const $u = require('../helpers/utils');
 const Store = require('../modules/Store');
+const {refsBonusDb} = require('../modules/DB');
 
 /**
  * The pot object
@@ -328,15 +329,16 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
-function mathRake(player, profit) {
+async function mathRake(player, profit) {
     try {
         if (player.isTourn){
             return;
         }
         const {coinName} = player.public;
-        const {percent, minProfit} = config.rakes[coinName] || {
+        const {percent, minProfit, refBonus} = config.rakes[coinName] || {
             percent: 0,
-            minProfit: Infinity
+            minProfit: Infinity,
+            refBonus: 1
         };
         if (profit < minProfit) {
             console.log('return', {profit, minProfit});
@@ -346,12 +348,33 @@ function mathRake(player, profit) {
         const date = log.date();
         Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
         console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
-        // player.public.chipsInPlay -= rake;
-        // player.roundCheapsInPlay();
+        return;
+        player.public.chipsInPlay -= rake;
+        player.roundCheapsInPlay();
+        await setRefBonus(player, rake, refBonus, date, coinName);
     } catch (e) {
         console.log(e);
         log.error('mathRake ' + e);
     }
 }
 
+/**
+ * @description Отправить реф бонус
+ * @param {Player} player
+ * @param {Number} rake
+ */
+async function setRefBonus(player, rake, refBonus, date, coinName){
+    const {refererId, login} = (await player.getUserDB());
+    if (refererId){
+        const doc = await refsBonusDb.findOne({refererId}) || new refsBonusDb({refererId, bonuses: {}});
+        const bonus = rake * refBonus;
+        doc.bonuses[login] = $u.round((doc.bonuses[login] || 0) + bonus);
+        Store.system.refBonus[coinName][date] = $u.round((Store.system.refBonus[coinName][date] || 0) + bonus);
+        console.log({bonus});
+        await doc.save();
+        await $u.updateUserDeposit(await $u.getUserFromQ({_id: refererId}), bonus, coinName);
+        return;
+    }
+    console.log(player.name + ' нет реферера');
+}
 module.exports = Pot;

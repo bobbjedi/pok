@@ -31,4 +31,9 @@ module.exports = {
         filename: 'db_/tourns',
         autoload: true
     }), 600)),
+
+    refsBonusDb: modelDb(syncNedb(new Datastore({
+        filename: 'db_/refBonus',
+        autoload: true
+    }), 600)),
 };

@@ -66,6 +66,10 @@ module.exports = {
     },
     /**
      * @description  изменяем депозит в ДБ
+     * @param {Object} user
+     * @param {Number} amount
+     * @param {String} coinName
+     * @param {Boolean} isNoNeedSave
      */
     async updateUserDeposit(user, amount, coinName, isNoNeedSave){
         // console.log('updateUserDeposit>', amount, coinName, isNoNeedSave);
@@ -75,7 +79,7 @@ module.exports = {
         try {
             if (_.isNumber(amount) && amount !== 0){
                 user.deposits[coinName] = this.round(user.deposits[coinName] + amount);
-                this.updateChipsUserPlayers(user, coinName); // обновим
+                this.updateChipsUserPlayers(user, coinName); // обновим инфу у всех Player
                 if (!isNoNeedSave){
                     await user.save();
                 }
@@ -90,7 +94,7 @@ module.exports = {
     },
 
     async createUser(params){
-        const {login, password} = params;
+        const {login, password, refererId} = params;
         if (!login.length || !password.length) {
             return {error: 'Неполные данные.'};
         }
@@ -114,6 +118,7 @@ module.exports = {
             loginLowCase: params.login.toLowerCase(),
             password: this.createPswd(password),
             deposits: {},
+            refererId,
             depositInGame: {},
             depositInRoom: {}, // сколько в какой комнате заюзано
         });
@@ -126,9 +131,7 @@ module.exports = {
         user.deposits.DEMO = 1000;
 
         await user.save();
-        if (config.regDrop > 0){
-            depositsDb.db.syncInsert({user_id: user._id, amount: config.regDrop, type: 'regdrop'});
-        }
+        await user.update({referalLink: user._id}, 1);
         return {user};
     },
     createPswd(password){

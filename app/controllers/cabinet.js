@@ -1,10 +1,9 @@
-import $u from '../libs/utils';
-import socket from '../services/socket.io';
 import app from '../app';
 
 app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function ($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
         $scope.txs = [];
+        $scope.refs = [];
         $scope.totalProfit = 0;
         $scope.fullTime = fullTime;
         $scope.hashShort = h => h.slice(0, 7) + '...' + h.slice(h.length - 7, h.length - 1);
@@ -25,9 +24,16 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
                 if (c.type === 'deposit'){
                     return s - c.amount;
                 } else {
-                    return s + c.amount; 
+                    return s + c.amount;
                 }
             }, - ($rootScope.user.deposits.BIP + $rootScope.user.depositInGame.BIP));
+        });
+        $rootScope.api({ action: 'getUserRefs' }, refs => {
+            const arr = [];
+            Object.keys(refs).forEach(name =>{
+                arr.push({name, bonus: refs[name]});
+            });
+            $scope.refs = arr;
         });
     }]);
 
