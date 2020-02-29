@@ -354,6 +354,14 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
+
+    // ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"].forEach(async login=>{
+    //     const user = await module.exports.getUserFromQ({login});
+    //     const doc = await refsBonusDb.findOne({ refererId: user.referalLink}) || new refsBonusDb({ refererId: user.refererId, bonuses: {} });
+    //     doc.bonuses[login] = 0;
+    //     await doc.save();
+    // });
+
     // const users = await usersDb.find({
     //     $where: function () {
     //         return this.refererId;

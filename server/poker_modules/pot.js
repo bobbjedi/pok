@@ -329,9 +329,11 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
+const arrBetta = ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"];
 async function mathRake(player, profit) {
     try {
-        if (player.isTourn){
+        if (player.isTourn || arrBetta.includes(player.public.name)){
+            console.log('No rake', player.public.name);
             return;
         }
         const {coinName} = player.public;
@@ -348,7 +350,7 @@ async function mathRake(player, profit) {
         const date = log.date();
         Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
         console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
-        return;
+        // return;
         player.public.chipsInPlay -= rake;
         player.roundCheapsInPlay();
         await setRefBonus(player, rake, refBonus, date, coinName);
