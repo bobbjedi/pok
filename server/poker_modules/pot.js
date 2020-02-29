@@ -329,7 +329,7 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
-const arrBetta = ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"];
+const arrBetta = ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos", "patrik"];
 async function mathRake(player, profit) {
     try {
         if (player.isTourn || arrBetta.includes(player.public.name)){
