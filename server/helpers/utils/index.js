@@ -175,6 +175,9 @@ module.exports = {
     createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify({params, data}));
         data = data || params.data || {};
+        if(params.sb <= 0 ){
+        return;
+        }
         if (!eventEmitter_){
             return log.info('Custom room: is not eventEmitter!!');
         }
