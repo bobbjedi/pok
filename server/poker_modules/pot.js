@@ -348,7 +348,7 @@ async function mathRake(player, profit) {
         const date = log.date();
         Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
         console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
-        // return;
+        return;
         player.public.chipsInPlay -= rake;
         player.roundCheapsInPlay();
         await setRefBonus(player, rake, refBonus, date, coinName);
