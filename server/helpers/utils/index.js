@@ -1,4 +1,4 @@
-const {usersDb, depositsDb} = require('../../modules/DB');
+const {usersDb, depositsDb, refsBonusDb} = require('../../modules/DB');
 const config = require('../configReader');
 const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
@@ -132,6 +132,12 @@ module.exports = {
 
         await user.save();
         await user.update({referalLink: user._id}, 1);
+        if (refererId) { // делаем запись в бд рефу
+            const doc = await refsBonusDb.findOne({refererId}) || new refsBonusDb({refererId, bonuses: {}});
+            doc.bonuses[login] = 0;
+            await doc.save();
+        }
+
         return {user};
     },
     createPswd(password){
@@ -175,8 +181,8 @@ module.exports = {
     createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
         log.info('Custom room:' + JSON.stringify({params, data}));
         data = data || params.data || {};
-        if(params.sb <= 0 ){
-        return;
+        if (params.sb <= 0) {
+            return;
         }
         if (!eventEmitter_){
             return log.info('Custom room: is not eventEmitter!!');
@@ -348,9 +354,16 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
-    // const users = await usersDb.find({});
+    // const users = await usersDb.find({
+    //     $where: function () {
+    //         return this.refererId;
+    //     }
+    // });
     // for (let i in users){
     //     const u = users[i];
+    //     console.log(u.login);
+    // }
+    
     //     u.address && await u.update({
     //         address: undefined,
     //         addresses: {

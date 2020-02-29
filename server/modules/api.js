@@ -98,7 +98,7 @@ module.exports = (app) => {
                 break;
 
             case ('getUserRefs'):
-                const refs = await refsBonusDb.findOne({refererId: User._id}) || {bonuses: {}};
+                const refs = await refsBonusDb.findOne({refererId: User.referalLink}) || {bonuses: {}};
                 success(refs.bonuses, res);
                 break;
 
