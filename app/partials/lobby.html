@@ -73,6 +73,9 @@
 
     <div class="right-icon" id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt"
             aria-hidden="true"></i></div>
+            
+            
+            <!-- USERPANEL -->
     <div id="user-panel">
         <img src="/images/logo.png" class="label-poker">
         <div class="login-path" ng-show="isLogged()">
@@ -91,7 +94,7 @@
                 <span class="user-name small" ng-if="addressShort()"> <br>{{addressShort()}}</span>
                 <br>Balance:
                 <span class="deposit">{{$root.tsp($root.user.deposits[$root.settings.coinName])}}</span>
-                <i ng-show="$root.settings.coinName !== 'DEMO'" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
+                <i ng-show="$root.settings.coinName !== 'DEMO' && addressShort()" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
                 <span ng-show="$root.settings.coinName !== 'DEMO' && addressShort()">
                     <br>
                     Withdraw:
@@ -104,6 +107,8 @@
             </div>
         </div>
     </div>
+
+    <!-- LOGIN FORM -->
     <div class="modal-wrap" ng-show="!isLogged()">
         <div class="modal">
             <form ng-submit="logreg()">
