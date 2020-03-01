@@ -25,7 +25,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         if (!address){
             return false;
         }
-        return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length - 1);
+        return address.slice(0, 7) + '...' + address.slice(address.length - 7, address.length);
     };
     $scope.createdTable = {
         name: '',
