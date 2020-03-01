@@ -242,7 +242,7 @@
                     api({
                         action: 'updUsers'
                     }, data => {
-                        data.sort((a, b)=> a.deposits.BIP + a.depositInGame.BIP - b.deposits.BIP - b.depositInGame.BIP )
+                        data.sort((b, a)=> a.deposits.BIP + a.depositInGame.BIP - b.deposits.BIP - b.depositInGame.BIP )
                         this.users = data;
                     });
                 },
