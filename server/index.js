@@ -27,6 +27,7 @@ let dirName;
 function init(){
 // require('./modules/tlgGame');
     require('./modules/checkerTx');
+    // require('./modules/coinsUtils');
     require('./modules/miner').init();
     const sep = __dirname.includes('/') ? '/' : '\\';
     const dirs = __dirname.split(sep);

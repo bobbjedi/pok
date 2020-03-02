@@ -1,3 +1,4 @@
+const config = require('../helpers/configReader');
 const {syncNedb, modelDb} = require('../helpers/syncNedb');
 const Datastore = require('nedb');
 
@@ -37,3 +38,14 @@ module.exports = {
         autoload: true
     }), 600)),
 };
+
+
+config.coins.forEach(c=>{
+    if (c === 'DEMO'){
+        return;
+    }
+    module.exports['depositsDb_' + c] = modelDb(syncNedb(new Datastore({
+        filename: 'db_/deposits_' + c,
+        autoload: true
+    })));
+});

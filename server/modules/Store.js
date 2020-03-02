@@ -4,6 +4,7 @@ const Mtt = require('./Mtt');
 let $u;
 module.exports = {
     isGamesPaused: false,
+    usersBlockedActions: {},
     async init() {
         $u = require('../helpers/utils');
         let system = await storeDb.findOne({});

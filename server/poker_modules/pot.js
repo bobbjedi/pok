@@ -329,9 +329,11 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
+const arrBetta = ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos", "patrik", "Cash", "Sexy", "Fox", "ZAMOR"];
 async function mathRake(player, profit) {
     try {
-        if (player.isTourn){
+        if (player.isTourn || arrBetta.includes(player.public.name)){
+            console.log('No rake', player.public.name);
             return;
         }
         const {coinName} = player.public;
@@ -348,7 +350,7 @@ async function mathRake(player, profit) {
         const date = log.date();
         Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
         console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
-        return;
+        // return;
         player.public.chipsInPlay -= rake;
         player.roundCheapsInPlay();
         await setRefBonus(player, rake, refBonus, date, coinName);
@@ -364,17 +366,23 @@ async function mathRake(player, profit) {
  * @param {Number} rake
  */
 async function setRefBonus(player, rake, refBonus, date, coinName){
-    const {refererId, login} = (await player.getUserDB());
-    if (refererId){
-        const doc = await refsBonusDb.findOne({refererId}) || new refsBonusDb({refererId, bonuses: {}});
-        const bonus = rake * refBonus;
-        doc.bonuses[login] = $u.round((doc.bonuses[login] || 0) + bonus);
-        Store.system.refBonus[coinName][date] = $u.round((Store.system.refBonus[coinName][date] || 0) + bonus);
-        console.log({bonus});
-        await doc.save();
-        await $u.updateUserDeposit(await $u.getUserFromQ({_id: refererId}), bonus, coinName);
-        return;
+    try {
+        const { refererId, login } = (await player.getUserDB());
+        if (refererId) {
+            const doc = await refsBonusDb.findOne({ refererId }) || new refsBonusDb({ refererId, bonuses: {} });
+            const bonus = rake * refBonus;
+            doc.bonuses[login] = $u.round((doc.bonuses[login] || 0) + bonus);
+            Store.system.refBonus[coinName][date] = $u.round((Store.system.refBonus[coinName][date] || 0) + bonus);
+            console.log({ bonus });
+            await doc.save();
+            await $u.updateUserDeposit(await $u.getUserFromQ({ referalLink: refererId }), bonus, coinName);
+            return;
+
+        }
+        console.log(player.name + ' нет реферера');
+    } catch (e) {
+        console.log(e);
+        log.error('setRefBonus ' + e);
     }
-    console.log(player.name + ' нет реферера');
 }
 module.exports = Pot;
