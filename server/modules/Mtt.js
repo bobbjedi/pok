@@ -56,6 +56,12 @@ module.exports = class Mtt{
             },
             get winners(){
                 self.db.winners;
+            },
+            get levelData(){
+                return {
+                    maxLevelReentry: params.maxLevelReentry,
+                    level: self.db.level
+                };
             }
         };
         this.init();
@@ -70,7 +76,8 @@ module.exports = class Mtt{
                 timeStart: $u.unix(),
                 params: this.params,
                 reEntries: {},
-                winners: []
+                winners: [],
+                level: 0
             }, 1);
 
             // Собираем игроков
@@ -402,6 +409,7 @@ module.exports = class Mtt{
             this.timeOutUpdateTourn = setTimeout(()=>{
                 this.updateTournParams();
             }, timeOut);
+            this.db.level++;
             this.updatePublcParams({updateTournParams: timeOut});
         } catch (e){
             console.log(e);
@@ -413,6 +421,7 @@ module.exports = class Mtt{
     updatePublcParams(params) {
         try {
             console.log('updatePublcParams', params);
+            this.updateGlobalPlayers();
             const publicMtt = this.public;
             const {tableId, status, playersLeftChips, timeOutShufflePlayers, updateTournParams} = params;
             if (tableId) { // обновляем игроков
@@ -486,13 +495,19 @@ module.exports = class Mtt{
         const {buyIn} = publicMtt;
         const {name} = player.public;
         const deposit = (await player.getUserDB()).deposits[this.params.coinName];
+        const {levelData} = this.public;
         console.log('rebuyPlayer>', {deposit, buyIn});
         if (buyIn > deposit){
             return player.socket.emit('noty', {type: 'error', msg: 'Недостаточно средств! Нужно ' + buyIn + '!'});
         }
+
         if (this.getPlayerByName(name)){
             log.error('Reentry ' + name + ' Вы уже в турнире!');
             return player.socket.emit('noty', {type: 'error', msg: 'Вы уже в турнире!'});
+        }
+        if (levelData.level > levelData.maxLevelReentry){
+            log.error('Reentry ' + name + ' level > maxLevelReentry', levelData);
+            return player.socket.emit('noty', {type: 'error', msg: 'Rentry closed!'});
         }
 
         // ищем минимальное количесnво за столами
@@ -524,12 +539,12 @@ module.exports = class Mtt{
         await player.updateDeposit(-buyIn, null, true);
         player.isTourn = true;
         await table.playerSatOnTheTable(player, place, 0);
+        player.public.chipsInPlay = this.params.chips;
         player.room = tableIdMinPlayers;
         player.chips = 0;
         this.db.reEntries[name] = this.db.reEntries[name] || 0;
         this.db.reEntries[name]++;
         setTimeout(()=>{
-            player.public.chipsInPlay = this.params.chips;
             const link = 'table-' + this.params.tableSeatsCount + '/' + tableIdMinPlayers;
             player.link = link;
             player.socket.emit('redirectOntable', {link, msg: 'Переход за стол МТТ'});
@@ -600,14 +615,16 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
     Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
     // Store.system.mtt.users = ['Devi', 'Devs'];
     Store.system.mtt.chips = 500;
-    Store.system.mtt.timeOutShufflePlayers = 5;
+    Store.system.mtt.timeOutShufflePlayers = .2;
+    Store.system.mtt.timeOutMult = .2;
+
     Store.startMtt();
 }, 5000);
 // setInterval(()=>console.log('1'), 1000)

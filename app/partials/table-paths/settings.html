@@ -50,8 +50,9 @@
                 <span class="small txt-green">{{publicMtt.countOnline}}</span> /
                 <span class="small txt-red">{{publicMtt.countOffline}}</span>
             </div>
-            <span class="txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Join the tournament for {{publicMtt.buyIn}} {{table.coinName}}</span>
-            <div class="mttPlayersListContainer">
+            <div class="txt-white mt15">Current level: <b>{{publicMtt.levelData.level}}</b>, reentry for <b>{{publicMtt.levelData.maxLevelReentry}}</b></div>
+            <span class="txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal && publicMtt.levelData.level <= publicMtt.levelData.maxLevelReentry" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Join the tournament for {{publicMtt.buyIn}} {{table.coinName}}</span>
+            <div class="mttPlayersListContainer mt5">
                 <table class="center mttPlayersList">
                     <tr>
                         <th>#</th>

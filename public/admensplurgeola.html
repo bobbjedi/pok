@@ -62,10 +62,10 @@
                 <label>timeOutMult</label>
                 <input v-model.number="tourn.timeOutMult" type="number">
             </div>
-            <!-- <div class="input-line">
-                <label>totalBank</label>
-                <input v-model.number="tourn.totalBank" type="number">
-            </div> -->
+            <div class="input-line">
+                <label>maxLevelReentry</label>
+                <input v-model.number="tourn.maxLevelReentry" type="number">
+            </div>
             <div class="input-line">
                 <label>startBank</label>
                 <input v-model.number="tourn.startBank" type="number">
@@ -183,6 +183,7 @@
                     tableSeatsCount: 6,
                     chips: 1500,
                     timeOutMult: 5,
+                    maxLevelReentry: 7,
                     // totalBank: 0,
                     startBank: 0
                 },

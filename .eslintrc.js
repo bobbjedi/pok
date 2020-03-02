@@ -4,9 +4,14 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "no-unused-vars": "warn",
         "semi": "warn", // обязательно ;
         "semi-spacing": ["error", {"before": false, "after": true}],
         "indent": ["error", 4],
+        "prefer-const": ["error", {
+            "destructuring": "any",
+            "ignoreReadBeforeAssign": true
+        }],
         "space-infix-ops": "error",// отступы вокруг + - * / = и тд
         "eqeqeq": "error", // обязательно === и !== (нельзя == и !=)
         // "no-eq-null": "error", // обязательно === и !== (нельзя == и !=) но тоько в отношении null

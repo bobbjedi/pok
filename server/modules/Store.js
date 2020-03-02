@@ -55,6 +55,7 @@ module.exports = {
             coinName: params.coinName || 'BIP',
             totalBank: params.startBank || 0,
             startBank: params.startBank || 0,
+            maxLevelReentry: params.maxLevelReentry || 7,
             users: []
         };
         this.save();
