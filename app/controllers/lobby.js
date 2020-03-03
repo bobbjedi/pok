@@ -127,7 +127,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
 
     $scope.addAddress = function(){
         const address = $scope.addedAddress;
-        if (!address.startsWith('Mx') || address.length < 30){
+        if (address.length < 20){
             return noty('error', 'No valid address!');
         }
         $scope.isShowAddWallet = false;

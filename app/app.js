@@ -91,7 +91,7 @@ app.run(function($rootScope, $location) {
 
     $rootScope.withdraw = _.throttle(function(amount){
         noty('info', 'Заявка сформирована!');
-        $rootScope.api({action: 'withdraw', data: {amount}}, data => {
+        $rootScope.api({action: 'withdraw', data: {amount, coinName: $rootScope.settings.coinName}}, () => {
             noty('success', 'Успешно вывели!');
             $rootScope.updateUser();
         });

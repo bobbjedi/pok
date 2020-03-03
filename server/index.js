@@ -26,8 +26,7 @@ function createServer(app){
 let dirName;
 function init(){
 // require('./modules/tlgGame');
-    require('./modules/checkerTx');
-    // require('./modules/coinsUtils');
+    // require('./modules/checkerTx');
     require('./modules/miner').init();
     const sep = __dirname.includes('/') ? '/' : '\\';
     const dirs = __dirname.split(sep);
@@ -178,10 +177,10 @@ io.sockets.on('connection', function(socket) {
     });
 
 
-    socket.on('mtt-rebuy', function (tableId, callback) {
+    socket.on('mtt-rebuy', function () {
         try {
             console.log('mtt-rebuy');
-            let player = players[socket.id];
+            const player = players[socket.id];
             if (!player) {
                 console.log('mtt-rebuy !player');
                 return;
@@ -200,7 +199,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('enterRoom', function(tableId, callback) {
         try {
-            let player = players[socket.id];
+            const player = players[socket.id];
             if (!player){
                 return;
             }
@@ -267,7 +266,7 @@ io.sockets.on('connection', function(socket) {
     });
 
 
-    socket.on('getMyCards', function(callback) {
+    socket.on('getMyCards', function() {
         try {
             const player = players[socket.id];
             if (!player){
@@ -332,7 +331,7 @@ io.sockets.on('connection', function(socket) {
 
     $u.findPlayerExist = name =>{
         let playerExists = false;
-        for (let sId in players) {
+        for (const sId in players) {
             const p = players[sId];
             // console.log(p.public.name, name, p.public.isDisconnect, p.public.name === name && p.public.isDisconnect);
             if (p.public.name === name && p.public.isDisconnect) {

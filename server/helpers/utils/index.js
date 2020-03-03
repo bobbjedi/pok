@@ -20,7 +20,7 @@ module.exports = {
     },
     getPlayersByUserId(user_id){
         const players = [];
-        for (let sId in players_){
+        for (const sId in players_){
             if (players_[sId]._id === user_id){
                 players.push(players_[sId]);
             };
@@ -72,7 +72,7 @@ module.exports = {
      * @param {Boolean} isNoNeedSave
      */
     async updateUserDeposit(user, amount, coinName, isNoNeedSave){
-        // console.log('updateUserDeposit>', amount, coinName, isNoNeedSave);
+        console.log('updateUserDeposit>', user.deposits[coinName], amount, coinName);
         if (!coinName){
             return log.error('updateUserDeposit NO_coinName: ' + user.login + ': ' + coinName);
         }
@@ -151,7 +151,7 @@ module.exports = {
             }
         });
 
-        for (let u in users){
+        for (const u in users){
             const user = users[u];
             log.info('[returnChipsInplay] ' + user.login + ': ' + user.depositInGame[coinName] + ' ' + coinName);
             this.updateUserDeposit(user, user.depositInGame[coinName], coinName, true);
@@ -179,7 +179,7 @@ module.exports = {
      */
 
     createCustomTable(params, data){// TODO: проверка что еще есть активные комнаты у юзера!
-        log.info('Custom room:' + JSON.stringify({params, data}));
+        // log.info('Custom room:' + JSON.stringify({params, data}));
         data = data || params.data || {};
         if (params.sb <= 0) {
             return;
@@ -314,7 +314,7 @@ module.exports = {
         });
         log.info('updateDemoChips: ' + users.length);
 
-        for (let u in users){
+        for (const u in users){
             const user = users[u];
             user.deposits.DEMO = 1000;
             console.log('Add demo chips ' + user.login);
@@ -364,13 +364,16 @@ setTimeout(async ()=>{
 
     // const users = await usersDb.find({
     //     $where: function () {
-    //         return this.refererId;
+    //         return !this.deposits.USDT;
     //     }
     // });
-    // for (let i in users){
+    // for (const i in users) {
     //     const u = users[i];
-    //     console.log(u.login);
+    //     u.deposits.USDT = 0;
+    //     await u.save();
+    //     console.log('USDT', u.login);
     // }
+    // });
     
     //     u.address && await u.update({
     //         address: undefined,
@@ -392,14 +395,14 @@ setTimeout(async ()=>{
     // u.deposit = undefined;
     //     await u.save();
     // }
-}, 500);
+}, 5000);
 
 
 
 cron('1d', module.exports.updateDemoChips);
 setTimeout(module.exports.updateDemoChips, 10000);
 setTimeout(()=>{
-    for (let coin of config.coins){
+    for (const coin of config.coins){
         module.exports.returnChipsInplay(coin);
     }
 }, 7500);

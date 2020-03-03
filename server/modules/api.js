@@ -4,7 +4,7 @@ const {usersDb, depositsDb, restorePswdDb, refsBonusDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
 const minter = require('./minter');
-
+const {withdraw} = require('./coinsUtils');
 module.exports = (app) => {
     app.get('/api', async (req, res) => {
         let checkUser;
@@ -45,11 +45,12 @@ module.exports = (app) => {
                 break;
 
             case ('withdraw'):
-                const resWithdraw = await minter.withdraw(User, GET.amount);
-                if (resWithdraw){
+                const resWithdraw = await withdraw(User._id, GET);
+                // const resWithdraw = await minter.withdraw(User, GET.amount);
+                if (resWithdraw.success){
                     success({}, res);
                 } else {
-                    error('Произошла ошибка, попробуйте еще раз!', res);
+                    error(resWithdraw.error, res);
                 }
                 break;
 
@@ -115,12 +116,12 @@ module.exports = (app) => {
 
     app.post('/upload', async (req, res) => {
         if (!req.files || Object.keys(req.files).length === 0) {
-            console.log('No files were uploaded.')
+            console.log('No files were uploaded.');
             return res.status(400).send('No files were uploaded.');
         }
         // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-        let sampleFile = req.files.sampleFile;
-        let token = req.body.token;
+        const sampleFile = req.files.sampleFile;
+        const token = req.body.token;
         const user = await $u.getUserFromQ({token});
         if (!user){
             return res.redirect('/#eui');

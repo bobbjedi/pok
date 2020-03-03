@@ -95,7 +95,7 @@ module.exports = class Mtt{
                 };
 
                 let isAdded = false;
-                for (let i in Store.players){
+                for (const i in Store.players){
                     const player = Store.players[i];
                     if (player.public.name === u && !player.public.sittingIn){ // онлайн и не за столом
                         this.players.push(player);
@@ -130,7 +130,7 @@ module.exports = class Mtt{
     mathTables() {
         let numUsr = this.players.length;
         const {tableSeatsCount} = this.params;
-        let countTables = Math.ceil(numUsr / tableSeatsCount);
+        const countTables = Math.ceil(numUsr / tableSeatsCount);
         const minCountPlayersFromTable = Math.floor(numUsr / countTables);
 
         const arrTables = [];
@@ -285,7 +285,7 @@ module.exports = class Mtt{
      */
     mathPrizesAndRatings(){
         try {
-            let db = this.db;
+            const db = this.db;
             console.log(db);
             for (let i = db.prizes.length; i >= 1; i--) {
                 log.info();
@@ -474,7 +474,7 @@ module.exports = class Mtt{
             let {totalBank, winnersCount} = this.public;
             console.log('calcPrizes', {totalBank, winnersCount});
             while (winnersCount > 1){
-                let currentPrise = Math.round(totalBank * 0.6);
+                const currentPrise = Math.round(totalBank * 0.6);
                 prizes.push(currentPrise);
                 totalBank -= currentPrise;
                 winnersCount--;
@@ -529,7 +529,7 @@ module.exports = class Mtt{
         // Ищем свободное место
         const table = Store.tables[tableIdMinPlayers];
         let place = -1;
-        for (let checkedPlace in table.seats){
+        for (const checkedPlace in table.seats){
             if (table.seats[checkedPlace] === null) {
                 place = checkedPlace;
                 break;
@@ -615,7 +615,7 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    // return;
+    return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];

@@ -4,7 +4,8 @@ require('./BTC/checkerTx');
 const Db = require('../DB');
 const $u = require('../../helpers/utils');
 const log = require('../../helpers/log');
-const {withdrawComission} = require('../../helpers/configReader');
+const _ = require('underscore');
+const {withdrawComission, minWithdraw} = require('../../helpers/configReader');
 const Store = require('../Store');
 const api = {
     BTC: require('./BTC/api'),
@@ -14,6 +15,11 @@ const api = {
 };
 
 module.exports = {
+    /**
+     * @description Вывод средств
+     * @param {String} user_id id пользователя
+     * @param {{coinName: String, amount: Number}} params коин, количество 
+     */
     async withdraw (user_id, params){
         try {
             if (Store.usersBlockedActions[user_id]){
@@ -23,23 +29,35 @@ module.exports = {
             Store.usersBlockedActions[user_id] = 1;
             const user = await $u.getUserFromQ({_id: user_id});
             const {coinName, amount} = params;
-            const error = validError(user, coinName, amount);
+            const amountSend = amount * (1 - (withdrawComission || 0) / 100);
+            let error = validError(user, coinName, amount);
             if (error){
                 log.error(error);
                 delete Store.usersBlockedActions[user_id];
                 return {success: false, error};
             }
-            let resultWithdraw = false;
+            let hash = false;
             if (coinName === 'BIP') {
-                resultWithdraw = await api.BIP.withdraw(user, amount);
+                hash = await api.BIP.withdraw(user.addresses.BIP, amountSend);
             } else {
-                resultWithdraw = await withdrawEthNode(user, coinName, amount);
+                const tx = await api[coinName].send({value: amountSend, address: user.addresses['coinName']});
+                hash = tx.success && tx.hash;
             }
-            if (resultWithdraw){
-                await user.save();
+
+            console.log('COMMON WITHDRAW:', user.login, {
+                amount,
+                amountSend,
+                coinName,
+                hash
+            });
+            if (hash){ // успешно - списываем баланс и пишем транзу в БД
+                Db['depositsDb_' + coinName].db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
+                await $u.updateUserDeposit(user, -amount, coinName);
+            } else {
+                error = 'Произошла ошибка. Попробуйте ещё раз!';
             }
             delete Store.usersBlockedActions[user_id];
-            return {success: resultWithdraw, error};
+            return {success: hash, error};
         } catch (e) {
             delete Store.usersBlockedActions[user_id];
             console.log(e);
@@ -48,26 +66,34 @@ module.exports = {
     }
 };
 
-async function withdrawEthNode(user, coinName, amount){
-    const api_ = api[coinName];
-    const amountSend = amount * (1 - (withdrawComission || 0) / 100);
-    const tx = await api_.send({value: amountSend, address: user['address_' + coinName]});
-    if (tx.success){
-        const userDeposit = user.deposits[coinName];
-        const depositsDb = Db['depositsDb_' + coinName];
-        const {hash} = tx;
-        amount = $u.round(amount);
-        userDeposit.balance = $u.round(userDeposit.balance - amount);
-        depositsDb.db.insert({hash, user_id: user._id, type: 'withdraw', amount, unix: $u.unix()});
-        log.info(coinName + ' Withdraw: ' + user.login + ' amount: ' + amount + ' hash: ' + hash);
-        return true;
-    }
-}
+// async function withdrawEthNode(user, coinName, amount){
+//     const tx = await api[coinName].send({value: amount, address: user['address_' + coinName]});
+//     if (tx.success){
+//         return tx.hash;
+//     }
+// }
 function validError(user, coinName, amount){
-    if (amount <= 0 || user.deposits[coinName] < amount){
-    // const {free} = user.deposits[coinName];
-        console.log('FEE', api[coinName].FEE);
-    // if (free < amount || amount < api[coinName].FEE * 2){
-    //     return 'Недостаточно средств для вывода!';
+    // const comission = amount * (1 - (withdrawComission || 0) / 100);
+    const deposit = user.deposits[coinName];
+    console.log('Withdraw', user.login, {deposit, amount});
+  
+    if (!_.isNumber(deposit) || !_.isNumber(amount)){
+        log.error(`validError: ${user.login} ${coinName} dep: ${deposit} amount: ${amount}`);
+        return 'Ошибка системы! Попробуйте еще раз!';
     }
+    if (deposit < amount) {
+        return 'Недостаточно средств на балансе!';
+    }
+    if (minWithdraw[coinName] > amount) {
+        return 'Минимальная сумма для вывода ' + minWithdraw[coinName] + ' ' + coinName;
+    }
+
+
+
+    // if (amount <= 0 || user.deposits[coinName] < amount){
+    // // const {free} = user.deposits[coinName];
+    //     console.log('FEE', api[coinName].FEE);
+    // // if (free < amount || amount < api[coinName].FEE * 2){
+    // //     return 'Недостаточно средств для вывода!';
+    // }
 }

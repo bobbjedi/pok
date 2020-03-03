@@ -89,7 +89,7 @@ module.exports = {
             }
             _data () {
                 const data = {};
-                for (let field in this) {
+                for (const field in this) {
                     if (!['db', '_id'].includes(field)) {
                         data[field] = this[field];
                     }
