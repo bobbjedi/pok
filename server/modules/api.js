@@ -3,7 +3,6 @@ const sha256 = require('sha256');
 const {usersDb, depositsDb, restorePswdDb, refsBonusDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
-const minter = require('./minter');
 const {withdraw} = require('./coinsUtils');
 module.exports = (app) => {
     app.get('/api', async (req, res) => {

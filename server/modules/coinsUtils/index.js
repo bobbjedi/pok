@@ -29,13 +29,15 @@ module.exports = {
             Store.usersBlockedActions[user_id] = 1;
             const user = await $u.getUserFromQ({_id: user_id});
             const {coinName, amount} = params;
-            const amountSend = amount * (1 - (withdrawComission || 0) / 100);
             let error = validError(user, coinName, amount);
+
             if (error){
                 log.error(error);
                 delete Store.usersBlockedActions[user_id];
                 return {success: false, error};
             }
+            
+            const amountSend = amount * (1 - (withdrawComission || 0) / 100);
             let hash = false;
             if (coinName === 'BIP') {
                 hash = await api.BIP.withdraw(user.addresses.BIP, amountSend);
@@ -66,16 +68,9 @@ module.exports = {
     }
 };
 
-// async function withdrawEthNode(user, coinName, amount){
-//     const tx = await api[coinName].send({value: amount, address: user['address_' + coinName]});
-//     if (tx.success){
-//         return tx.hash;
-//     }
-// }
 function validError(user, coinName, amount){
-    // const comission = amount * (1 - (withdrawComission || 0) / 100);
     const deposit = user.deposits[coinName];
-    console.log('Withdraw', user.login, {deposit, amount});
+    console.log('Try Withdraw', user.login, {deposit, amount});
   
     if (!_.isNumber(deposit) || !_.isNumber(amount)){
         log.error(`validError: ${user.login} ${coinName} dep: ${deposit} amount: ${amount}`);
@@ -84,7 +79,7 @@ function validError(user, coinName, amount){
     if (deposit < amount) {
         return 'Недостаточно средств на балансе!';
     }
-    if (minWithdraw[coinName] > amount) {
+    if ((minWithdraw[coinName] || 1) > amount) {
         return 'Минимальная сумма для вывода ' + minWithdraw[coinName] + ' ' + coinName;
     }
 
