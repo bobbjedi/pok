@@ -7,13 +7,18 @@ const log = require('../../helpers/log');
 const _ = require('underscore');
 const {withdrawComission, minWithdraw} = require('../../helpers/configReader');
 const Store = require('../Store');
+const USDT = require('./ETH/USDT');
 const api = {
-    BTC: require('./BTC/api'),
+    // BTC: require('./BTC/api'),
     BIP: require('./BIP/api'),
-    ETH: require('./ETH/api'),
-    USDT: require('./ETH/USDT')
+    ETH: USDT.eth,
+    USDT
 };
 
+
+// setTimeout(async ()=>{
+//     console.log('USDT', await api.USDT.send({address: '0xaffef569cb39eb2075da37a968fee163f27b96cb', value: 3}));
+// }, 8000);
 module.exports = {
     /**
      * @description Вывод средств
@@ -42,8 +47,9 @@ module.exports = {
             if (coinName === 'BIP') {
                 hash = await api.BIP.withdraw(user.addresses.BIP, amountSend);
             } else {
-                const tx = await api[coinName].send({value: amountSend, address: user.addresses['coinName']});
+                const tx = await api[coinName].send({value: amountSend, address: user.addresses[coinName]});
                 hash = tx.success && tx.hash;
+                tx.error && log.error(coinName + ' send error: ' + tx.error);
             }
 
             console.log('COMMON WITHDRAW:', user.login, {

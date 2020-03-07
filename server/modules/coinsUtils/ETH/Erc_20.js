@@ -1,34 +1,41 @@
 const log = require('../../../helpers/log');
 const models = require('./erc20_models');
-const eth = require('./api');
+const ethCreator = require('./api');
 
 module.exports = class erc20{
-    constructor(token){
+    constructor(token, seed){
+        this.eth = ethCreator(seed);
         this.token = token;
         this.model = models[token];
-        this.address = eth.ADDRESS;
-        const web3 = eth.web3;
+        this.address = this.eth.ADDRESS;
+        const web3 = this.eth.web3;
         this.web3 = web3;
         this.contract = new web3.eth.Contract(abiArray, this.model.sc, {from: this.address});
         console.log('Created ERC-20 token:', token);
     }
-    async updateBalance() {
+    async getBalance(address) {
         try {
-            this.User.balance = ((await this.contract.methods.balanceOf(this.User.address).call()) || 0) / this.model.sat;
+            address = address || this.address;
+            return ((await this.contract.methods.balanceOf(address).call()) || 0) / this.model.sat;
         } catch (e){
             log.error('Error while updating ' + this.token + ' balance: ' + e);
         }
     }
+    /**
+     * 
+     * @param {{address:String, value:Number}} params Кому и сколько
+     */
     async send(params) {
+        console.log(this.token, 'BALANCE', this.address, await this.getBalance());
         const transfer = {
             address: this.model.sc,
             data: this.contract.methods.transfer(params.address, +(params.value * this.model.sat).toFixed(0)).encodeABI()
         };
-        return await eth.send(params, transfer);
+        return await this.eth.send(params, transfer);
     }
 
     async getLastBlockNumber() {
-        return await eth.getLastBlockNumber();
+        return await this.eth.getLastBlockNumber();
     }
 
     async syncGetTransaction(hash) {
@@ -56,7 +63,7 @@ module.exports = class erc20{
     }
 
     async getTransactionStatus(txid){
-        return await eth.getTransactionStatus(txid);
+        return await this.eth.getTransactionStatus(txid);
     }
 
     get FEE() {
@@ -74,6 +81,7 @@ module.exports = class erc20{
         // return inToken;
     }
 };
+
 
 const abiArray = [{
     'constant': true,
@@ -293,3 +301,9 @@ const abiArray = [{
 // config.erc20.forEach(async t=>{ // Create all of ERC-20 tokens
 //     new erc20(t);
 // });
+
+// const c = new module.exports('USDT', 'world public casual myself apart sight sudden air muscle almost girl short');
+// console.log('>>', c.address);
+setTimeout(async ()=>{
+    // console.log('>>>>>>>>>>>>', await c.send({value: 1, address: '0xaffef569cb39eb2075da37a968fee163f27b96cb'}));
+}, 2000); 
