@@ -191,7 +191,7 @@ Pot.prototype.destributeToWinners = function(players, firstPlayerToAct, board) {
         }
 
         log.info(tIdstr + 'Winners для pot:' + JSON.stringify(pot) + ' Winners:' + winners + ' return: ' + isReturn);
-        let strGetPrize = isReturn ? ' returned ' : ' win the pot ';
+        const strGetPrize = isReturn ? ' returned ' : ' win the pot ';
         if (winners.length === 1) {
             const winner = players[winners[0]];
             log.info(tIdstr + 'winner.public.chipsInPlay before: ' + winner.public.chipsInPlay);

@@ -1,4 +1,4 @@
-const {usersDb, depositsDb, refsBonusDb} = require('../../modules/DB');
+const {usersDb, refsBonusDb} = require('../../modules/DB');
 const config = require('../configReader');
 const sha256 = require('sha256');
 const tablesData = require('../../tablesDefault');
@@ -165,12 +165,17 @@ module.exports = {
         eventEmitter_ = eventEmitter;
         Table_ = Table;
         let i = 1;
-        config.coins.forEach(coinName =>{
+        ['BIP', 'DEMO'].forEach(coinName =>{
             tablesData.forEach(t=>{
                 tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, coinName);
                 lastTableId = i;
                 i++;
             });
+        });
+        tablesData.USDT.forEach(t=>{
+            tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, 'USDT');
+            lastTableId = i;
+            i++;
         });
         // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, 'hard', false);
     },
@@ -408,7 +413,8 @@ setTimeout(()=>{
 }, 7500);
 
 
-config.coins.forEach(coinName=>{
+// config.coins.forEach(coinName=>{
+['DEMO', 'BIP'].forEach(coinName=>{
     setTimeout(()=>{
         console.log({coinName});
         let data = JSON.parse(JSON.stringify(config.sng));
@@ -462,6 +468,9 @@ config.coins.forEach(coinName=>{
         data.buyIn = 250;
         module.exports.tmpTourn(data);
 
+
+
+        
     }, 5000);
 });
 

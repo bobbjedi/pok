@@ -158,7 +158,7 @@ Player.prototype.updateDepInPlay = async function (user) {
     console.log(user.login, 'updateDepInPlay', coinName);
     user.depositInRoom[coinName][this.sittingOnTable] = this.public.chipsInPlay;
     let totalInGame = 0;
-    for (let room in user.depositInRoom[coinName]){
+    for (const room in user.depositInRoom[coinName]){
         totalInGame += user.depositInRoom[coinName][room];
         if (user.depositInRoom[coinName][room] <= 0){
             delete user.depositInRoom[coinName][room];
