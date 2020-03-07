@@ -21,7 +21,7 @@ const txsCash = {};
 
 
 const checker = async coinName =>{
-    console.log('checker', coinName, ADDRESS);
+    // console.log('checker', coinName, ADDRESS);
     const {sat, depositsDb} = coins[coinName];
     const lastBockNumber = await getLastBlockNumber();
     if (!lastBockNumber){
