@@ -134,7 +134,7 @@ module.exports = {
         await user.update({referalLink: user._id}, 1);
         if (refererId) { // делаем запись в бд рефу
             const doc = await refsBonusDb.findOne({refererId}) || new refsBonusDb({refererId, bonuses: {}});
-            doc.bonuses[login] = 0;
+            doc.bonuses[login] = {};
             await doc.save();
         }
 

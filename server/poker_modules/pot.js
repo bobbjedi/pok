@@ -371,7 +371,8 @@ async function setRefBonus(player, rake, refBonus, date, coinName){
         if (refererId) {
             const doc = await refsBonusDb.findOne({ refererId }) || new refsBonusDb({ refererId, bonuses: {} });
             const bonus = rake * refBonus;
-            doc.bonuses[login] = $u.round((doc.bonuses[login] || 0) + bonus);
+            doc.bonuses[login] = doc.bonuses[login] || {};
+            doc.bonuses[login][coinName] = $u.round((doc.bonuses[login][coinName] || 0) + bonus);
             Store.system.refBonus[coinName][date] = $u.round((Store.system.refBonus[coinName][date] || 0) + bonus);
             console.log({ bonus });
             await doc.save();
