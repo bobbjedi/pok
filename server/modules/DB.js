@@ -37,6 +37,11 @@ module.exports = {
         filename: 'db_/refBonus',
         autoload: true
     }), 600)),
+    
+    coinPaymentsDb: modelDb(syncNedb(new Datastore({
+        filename: 'db_/coinpayments',
+        autoload: true
+    }), 600)),
 };
 
 

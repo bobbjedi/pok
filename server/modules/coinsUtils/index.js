@@ -1,6 +1,6 @@
 require('./BIP/checkerTx');
-require('./ETH/checkerTx');
-require('./BTC/checkerTx');
+// require('./ETH/checkerTx');
+// require('./BTC/checkerTx');
 const Db = require('../DB');
 const $u = require('../../helpers/utils');
 const log = require('../../helpers/log');
@@ -9,15 +9,16 @@ const {withdrawComission, minWithdraw} = require('../../helpers/configReader');
 const Store = require('../Store');
 const USDT = require('./ETH/USDT');
 const api = {
-    // BTC: require('./BTC/api'),
     BIP: require('./BIP/api'),
-    ETH: USDT.eth,
     USDT
+    // ETH: USDT.eth,
+    // BTC: require('./BTC/api'),
 };
 
-
+// api.USDT.send
+// console.log(api.USDT.address);
 // setTimeout(async ()=>{
-//     console.log('USDT', await api.USDT.send({address: '0xaffef569cb39eb2075da37a968fee163f27b96cb', value: 3}));
+// console.log('USDT send', await api.USDT.send({address: '0xBAdCD1d3BbF13B07a7ca8e96293bE2dE97b5e4cA', value: 1}));
 // }, 8000);
 module.exports = {
     /**

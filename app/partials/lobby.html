@@ -1,4 +1,5 @@
 <div id="lobby">
+    MODAL WITHDRAW
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
@@ -16,11 +17,29 @@
         <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
     </div>
 
+    <!-- MODAL DEPOSIT -->
+    <div class="modal-wrap" ng-show="isShowDeposit">
+        <div class="modal withdraw">
+            <div class="modal-text">
+                <div class="txt-green m10">Deposit {{$root.settings.coinName}}</div>
+                <div class="txt-yellow">Amount: <input ng-model="depositAmount" type="number"></div>
+                <div class="small txt-yellow mt25">
+                    * Пополнение осуществляется с помощью сервиса <i>Coinpayments</i>. Для Вас будет создана транзакция на указанную сумму. 
+                </div>
+            </div>
+            <div class="buts" ng-click="isShowDeposit = false">
+                <div class="but bg-green" ng-click="$root.depositCps(depositAmount)">Ok</div>
+                <div class="but bg-red">Cancel</div>
+            </div>
+        </div>
+        <div id="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>
+    </div>
+
     <div class="modal-wrap" ng-show="isShowAddWallet">
         <div class="modal center">
           <h3>Add address <span class="txt-green big">{{$root.settings.coinName}}</span></h3>
             <input class="dark-form w350 big" ng-model="addedAddress" placeholder="Mx...">
-            <div class="buts mt25" ng-click="isShowWithdraw = false">
+            <div class="buts mt25" ng-click="isShowAddWallet = false">
                 <div class="but bg-green" ng-click="addAddress()">Ok</div>
                 <div class="but bg-red" ng-click="isShowAddWallet = false;">Cancel</div>
             </div>
@@ -94,15 +113,16 @@
                 <span class="user-name small" ng-if="addressShort()"> <br>{{addressShort()}}</span>
                 <br>Balance:
                 <span class="deposit">{{$root.tsp($root.user.deposits[$root.settings.coinName])}}</span>
-                <i ng-show="$root.settings.coinName !== 'DEMO' && addressShort()" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
-                <span ng-show="$root.settings.coinName !== 'DEMO' && addressShort()">
+                <i ng-show="$root.settings.coinName === 'BIP'" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
+                <i ng-show="$root.settings.coinName === 'USDT'" ng-click="isShowDeposit = true;" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
+                <span ng-show="$root.settings.coinName !== 'DEMO' && $root.user.deposits[$root.settings.coinName]">
                     <br>
                     Withdraw:
                     <span class="withdraw">{{$root.tsp($root.user.deposits[$root.settings.coinName])}}</span>
                     <i ng-click="isShowWithdraw = true" class="fa fa-share-square txt-red hovered"
                         aria-hidden="true"></i>
                 </span>
-                <span class="user-name small" ng-show="!addressShort() && $root.settings.coinName !== 'DEMO'" ng-click="isShowAddWallet = true; addedAddress = ''"><br>Add wallet <i
+                <span class="user-name small" ng-show="!addressShort() && $root.settings.coinName === 'BIP'" ng-click="isShowAddWallet = true; addedAddress = ''"><br>Add wallet <i
                         class="fa fa-plus-square-o txt-green" aria-hidden="true"></i></span>
             </div>
         </div>

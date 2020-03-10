@@ -8,7 +8,7 @@ const {bufferToHex, privateToAddress } = require('ethereumjs-util');
 const EthereumTx = require('ethereumjs-tx').Transaction;
 const ethSat = 1000000000000000000;
 // console.log(createKeyPair('skull one cave royal matter soda leg smart tackle advice matrix oblige'));
-
+//'world public casual myself apart sight sudden air muscle almost girl short'-> 0x9810aa3feab23588646ba6fe60c81c58d2de9615
 let updateGasPriceGlobal,
     gasPrice;
 module.exports = seed => {

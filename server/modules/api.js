@@ -4,6 +4,8 @@ const {usersDb, depositsDb, restorePswdDb, refsBonusDb} = require('./DB');
 const $u = require('../helpers/utils');
 const publicApi = require('./publicApi');
 const {withdraw} = require('./coinsUtils');
+const pay = require('../helpers/pay');
+
 module.exports = (app) => {
     app.get('/api', async (req, res) => {
         let checkUser;
@@ -102,6 +104,11 @@ module.exports = (app) => {
                 success(refs.bonuses, res);
                 break;
 
+            case ('cpsPay'):
+                const payUrl = await pay[GET.coinName].createTransaction({amount: GET.amount, login: GET.login});
+                success({payUrl}, res);
+                break;
+
             default:
                 error('error endpoint', res);
                 break;
@@ -163,7 +170,7 @@ async function success(data, res) {
     }
 }
 
-async function assignUser (user, req){
+async function assignUser (user){
     try {
         const token = sha256(new Date().toString() + Math.random());
         user.token = token;

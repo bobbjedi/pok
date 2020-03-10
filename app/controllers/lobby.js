@@ -19,6 +19,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.user = $rootScope.user;
     $scope.public = {};
     $scope.withdrawAmount = 0;
+    $scope.depositAmount = 10;
     $scope.playersInGame = 0;
     $scope.addressShort = ()=>{
         const address = $rootScope.user.addresses[$rootScope.settings.coinName];

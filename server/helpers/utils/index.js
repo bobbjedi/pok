@@ -172,6 +172,7 @@ module.exports = {
                 i++;
             });
         });
+        // Создание USDT
         tablesData.USDT.forEach(t=>{
             tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, 'USDT');
             lastTableId = i;
@@ -416,7 +417,6 @@ setTimeout(()=>{
 // config.coins.forEach(coinName=>{
 ['DEMO', 'BIP'].forEach(coinName=>{
     setTimeout(()=>{
-        console.log({coinName});
         let data = JSON.parse(JSON.stringify(config.sng));
         data.count = 10;
         data.buyIn = 100;
@@ -467,10 +467,6 @@ setTimeout(()=>{
         data = JSON.parse(JSON.stringify(dataSpin));
         data.buyIn = 250;
         module.exports.tmpTourn(data);
-
-
-
-        
     }, 5000);
 });
 

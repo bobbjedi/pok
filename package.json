@@ -23,6 +23,7 @@
         "body-parser": "^1.19.0",
         "clone": "^2.1.2",
         "coininfo": "^5.1.0",
+        "coinpayments": "^2.0.3",
         "connect": "~3.3.3",
         "express": "^4.17.1",
         "express-fileupload": "^1.1.6",

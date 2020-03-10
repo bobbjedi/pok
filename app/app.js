@@ -128,6 +128,19 @@ app.run(function($rootScope, $location) {
 
     $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
     $rootScope.updateUser(true);
+    $rootScope.depositCps = amount => {
+        console.log(amount);
+        $rootScope.api({action: 'cpsPay', data: {
+            coinName: $rootScope.settings.coinName,
+            amount
+        }}, data =>{
+            window.noty('info', 'Заявка созданы, вы будете перенаправлены на страницу для проведения платежа.');
+            setInterval(()=>{
+                window.open(data.payUrl, "_blank");
+            }, 2000);
+        });
+
+    };
 
     window.onbeforeunload = ()=> {
         if (location.hash.includes('table') && $rootScope.makeReload()){
