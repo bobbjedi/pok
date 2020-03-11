@@ -25,6 +25,8 @@ module.exports = {
         config.coins.forEach(c=> {
             system.rakes[c] = system.rakes[c] || {};
             system.refBonus[c] = system.refBonus[c] || {};
+            system.gamesValue[c] = system.gamesValue[c] || {};
+            system.gamesCount[c] = system.gamesCount[c] || {};
             if (typeof system.rakes[c] === 'number'){
                 system.rakes[c] = {};
             }
