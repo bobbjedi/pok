@@ -31,6 +31,11 @@ module.exports = class erc20{
             address: this.model.sc,
             data: this.contract.methods.transfer(params.address, +(params.value * this.model.sat).toFixed(0)).encodeABI()
         };
+        console.log('SEND ' + this.token, {
+            from: this.address,
+            to: params.address,
+            value: params.value
+        });
         return await this.eth.send(params, transfer);
     }
 
