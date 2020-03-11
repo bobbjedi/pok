@@ -33,7 +33,7 @@ module.exports = class {
      * @param {{amount:Number, login:String}}}  
      */
     async createTransaction({amount, login}) {
-        amount += 0.1; // FIXME: чит от комсы пересылки для USDT 
+        const amountSend = amount + 0.1; // FIXME: чит от комсы пересылки для USDT 
         const tx = await this.client.createTransaction({
             currency1: this.cpCoinName,
             currency2: this.cpCoinName,
@@ -41,7 +41,7 @@ module.exports = class {
             item_name: 'RFP',
             address: this.address, // адрес пересылки
             buyer_email: this.info.email,
-            amount
+            amount: amountSend
         });
         if (tx.checkout_url){
             new coinPaymentsDb({

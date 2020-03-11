@@ -18,7 +18,7 @@ const api = {
 // api.USDT.send
 // console.log(api.USDT.address);
 setTimeout(async ()=>{
-// console.log('USDT send', await api.USDT.send({ address: '0x9831a9a2D9670193Af1E85E38b55cE706a40254f', value: 1.1 }));
+    // console.log('USDT send', await api.USDT.send({ address: '0x042C2268C14a6DF1B1d3E040B378A45b4545F677', value: 3.1 }));
 }, 8000);
 module.exports = {
     /**
