@@ -105,7 +105,7 @@ module.exports = (app) => {
                 break;
 
             case ('cpsPay'):
-                const payUrl = await pay[GET.coinName].createTransaction({amount: GET.amount, login: GET.login});
+                const payUrl = await pay[GET.coinName].createTransaction({amount: GET.amount, login: User.login});
                 success({payUrl}, res);
                 break;
 

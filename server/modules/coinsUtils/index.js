@@ -17,9 +17,9 @@ const api = {
 
 // api.USDT.send
 // console.log(api.USDT.address);
-// setTimeout(async ()=>{
-// console.log('USDT send', await api.USDT.send({address: '0xBAdCD1d3BbF13B07a7ca8e96293bE2dE97b5e4cA', value: 1}));
-// }, 8000);
+setTimeout(async ()=>{
+// console.log('USDT send', await api.USDT.send({ address: '0x9831a9a2D9670193Af1E85E38b55cE706a40254f', value: 1.1 }));
+}, 8000);
 module.exports = {
     /**
      * @description Вывод средств
@@ -28,13 +28,14 @@ module.exports = {
      */
     async withdraw (user_id, params){
         try {
+            console.log({params});
             if (Store.usersBlockedActions[user_id]){
                 console.log('withdraw Заблокирован!', user_id);
                 return {success: false};
             }
             Store.usersBlockedActions[user_id] = 1;
             const user = await $u.getUserFromQ({_id: user_id});
-            const {coinName, amount} = params;
+            const {coinName, amount, address} = params;
             let error = validError(user, coinName, amount);
 
             if (error){
@@ -48,7 +49,7 @@ module.exports = {
             if (coinName === 'BIP') {
                 hash = await api.BIP.withdraw(user.addresses.BIP, amountSend);
             } else {
-                const tx = await api[coinName].send({value: amountSend, address: user.addresses[coinName]});
+                const tx = await api[coinName].send({value: amountSend, address: address || user.addresses[coinName]});
                 hash = tx.success && tx.hash;
                 tx.error && log.error(coinName + ' send error: ' + tx.error);
             }

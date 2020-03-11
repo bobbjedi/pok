@@ -80,8 +80,8 @@ module.exports = class {
         for (const txId of txIds) {
             try {
                 const tx = txs[txId];
-
-                if (tx.status === 1 && tx.tx.status_text.startWith('Funds received and confirmed')) { // успешно
+                // console.log(tx.status, tx.status_text);
+                if (tx.status === 1 && tx.status_text.startsWith('Funds received and confirmed')) { // успешно
                     console.log('FINISHED', tx.status, tx.status_text);
                     const txDoc = await coinPaymentsDb.findOne({tx_id: txId}); 
                     const user = await $u.getUserFromQ({login: txDoc.login});

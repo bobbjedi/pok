@@ -89,9 +89,10 @@ app.run(function($rootScope, $location) {
     $rootScope.checkUser = checkUser;
     // window.initSocket(checkUser);
 
-    $rootScope.withdraw = _.throttle(function(amount){
+    $rootScope.withdraw = _.throttle(function(amount, address){
+        console.log({amount, address});
         noty('info', 'Заявка сформирована!');
-        $rootScope.api({action: 'withdraw', data: {amount, coinName: $rootScope.settings.coinName}}, () => {
+        $rootScope.api({action: 'withdraw', data: {address, amount, coinName: $rootScope.settings.coinName}}, () => {
             noty('success', 'Успешно вывели!');
             $rootScope.updateUser();
         });

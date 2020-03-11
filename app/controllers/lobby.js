@@ -18,9 +18,13 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
     $scope.public = {};
+    
+    // Платежки
     $scope.withdrawAmount = 0;
+    $scope.withdrawAddress = '';
     $scope.depositAmount = 10;
     $scope.playersInGame = 0;
+
     $scope.addressShort = ()=>{
         const address = $rootScope.user.addresses[$rootScope.settings.coinName];
         if (!address){
