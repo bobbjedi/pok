@@ -160,7 +160,7 @@
                     <br>
                     <br>
                     <a class="txt-blue hovered"
-                        ng-click="isLoginned = !isLoginned">{{isLoginned ? 'Registration?' : 'Login?'}}</a>
+                        ng-click="isLoginned = !isLoginned">{{isLoginned ? 'Sign up?' : 'Login?'}}</a>
                     |
                 </span>
 
@@ -225,7 +225,7 @@
                 aria-hidden="true"></i> &nbsp; Create room</div>
         <div class="but hovered create-room bg-black big bold txt-yellow"
             ng-show="public.mtt.isRegOppened && public.mtt.coinName === $root.settings.coinName"
-            ng-click="isShowTournModal = true"><i class="fa fa-trophy" aria-hidden="true"></i> &nbsp; Tournament MTT</div>
+            ng-click="isShowTournModal = true"><i class="fa fa-trophy" aria-hidden="true"></i> &nbsp; MTT Tournament</div>
         <div class="lobby-stat txt-green">
             <span>Total: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>
             <span> | Hands: <span class="big txt-yellow">{{$root.tsp(public.totalGamesCount)}}</span></span>
