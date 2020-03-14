@@ -200,10 +200,10 @@ module.exports = Table =>{
         this.seats[seat] = player;
         this.public.seats[seat] = player.public;
         await this.seats[seat].sitOnTable(this.public.id, seat, chips);
-
         // Increase the counters of the table
         this.public.playersSeatedCount++;
         this.playerSatIn(seat);
+        this.playerWaitBB = seat;
     };
 
     /**
@@ -235,7 +235,7 @@ module.exports = Table =>{
 
 
     Table.prototype.allPlayersLeft = function () {
-        for (let seat in this.seats) {
+        for (const seat in this.seats) {
             if (this.seats[seat]) {
                 this.playerLeft(seat);
             }

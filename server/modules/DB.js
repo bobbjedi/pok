@@ -26,17 +26,17 @@ module.exports = {
     restorePswdDb: modelDb(syncNedb(new Datastore({
         filename: 'db_/restorePswd',
         autoload: true
-    }), 600)),
+    }), 60)),
 
     tourns: modelDb(syncNedb(new Datastore({
         filename: 'db_/tourns',
         autoload: true
-    }), 600)),
+    }), 60)),
 
     refsBonusDb: modelDb(syncNedb(new Datastore({
         filename: 'db_/refBonus',
         autoload: true
-    }), 600)),
+    }), 60)),
     
     coinPaymentsDb: modelDb(syncNedb(new Datastore({
         filename: 'db_/coinpayments',

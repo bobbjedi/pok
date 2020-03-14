@@ -93,7 +93,7 @@ module.exports = {
         console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
     },
 
-    async createUser(params){
+    async createUser(params){ 
         const {login, password, refererId} = params;
         if (!login.length || !password.length) {
             return {error: 'Неполные данные.'};
@@ -360,7 +360,30 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
-
+    if (!config.isDev){
+        return;
+    }
+    const $u = module.exports;
+    const table = tables_[1];
+    // const player1 = await $u.createOffLinePlayer('Dev');
+    const player2 = await $u.createOffLinePlayer('Devi');
+    const player3 = await $u.createOffLinePlayer('Devs');
+    const player4 = await $u.createOffLinePlayer('Devt');
+    const player5 = await $u.createOffLinePlayer('Devisd');
+    const player6 = await $u.createOffLinePlayer('Devo');
+    await $u.wait(.5);
+    // await table.playerSatOnTheTable(player1, 1, 100);
+    await $u.wait(.5);
+    await table.playerSatOnTheTable(player2, 1, 100);
+    await $u.wait(.5);
+    await table.playerSatOnTheTable(player3, 2, 100);
+    await $u.wait(.5);
+    await table.playerSatOnTheTable(player4, 3, 100);
+    await $u.wait(.5);
+    await table.playerSatOnTheTable(player5, 4, 100);
+    await $u.wait(.5);
+    await table.playerSatOnTheTable(player6, 5, 100);
+    // await $u.wait(1.5);
     // ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"].forEach(async login=>{
     //     const user = await module.exports.getUserFromQ({login});
     //     const doc = await refsBonusDb.findOne({ refererId: user.referalLink}) || new refsBonusDb({ refererId: user.refererId, bonuses: {} });
@@ -401,7 +424,7 @@ setTimeout(async ()=>{
     // u.deposit = undefined;
     //     await u.save();
     // }
-}, 5000);
+}, 8000);
 
 
 

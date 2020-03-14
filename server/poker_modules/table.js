@@ -69,6 +69,9 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
     // запоминаем последнюю заявку на действие игрока
     this.lastActiveSetWaitMove = {seat: null, move: null};
 
+    // номер позиции только севшего и ожидающего BB 
+    this.playerWaitBB = -1;
+
     // All the public table data
     this.public = {
         type,
@@ -205,7 +208,7 @@ Table.prototype.setTimeoutWait = function(){
                 console.log(lastActiveUserLogin + ' recconnect.... ' + timeOut);
             }
             if (config.isDev){
-                timeOut = 0.5;
+                timeOut = 2000;
             }
         }
 
@@ -415,7 +418,7 @@ Table.prototype.initializeRound = async function(changeDealer) {
 
     // SPIN
     if (data.isSpin && !data.spin){
-        let timeOutStart = $u.unix();
+        const timeOutStart = $u.unix();
         this.emitEvent('waitSpinRate');
         data.spin = await $u.getSpinRate(this.public.seats);
         this.public.tournPrize = data.spin.rate * this.public.maxBuyIn;
@@ -448,18 +451,21 @@ Table.prototype.initializeRound = async function(changeDealer) {
 
         for (var i = 0; i < this.public.seatsCount; i++) {
             // If a player is sitting on the current seat
-            if (this.seats[i] !== null && this.seats[i].public.sittingIn) {
+            const seat = this.seats[i];
+            if (seat !== null && seat.public.sittingIn) {
+                
                 if (this.isTournStart){ // анте всем
                     this.pot.pots[0].amount += this.updateTournSeat(i);
                 }
-                if (!this.seats[i].public.chipsInPlay || this.seats[i].public.isSitOutMe) {
-                    this.seats[i].sitOut(true);
+
+                if (!seat.public.chipsInPlay || seat.public.isSitOutMe) {
+                    seat.sitOut(true);
                     this.playersSittingInCount--;
                 } else {
-                    this.currentGameLog += `| ${this.seats[i].public.name}: ${this.seats[i].public.chipsInPlay}`;
+                    this.currentGameLog += `| ${seat.public.name}: ${seat.public.chipsInPlay}`;
                     this.playersInHandCount++;
-                    this.seats[i].prepareForNewRound();
-                    this.seats[i].stat.gamesCount = (this.seats[i].stat.gamesCount || 0) + 1;
+                    seat.prepareForNewRound();
+                    seat.stat.gamesCount = (seat.stat.gamesCount || 0) + 1;
                 }
             }
         }
@@ -571,20 +577,6 @@ Table.prototype.initializeNextPhase = function() {
     this.public.biggestBet = 0;
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
-
-    // if (this.isTournStart) {
-    //     try {
-    //         const {tournSeats} = this.public;
-    //         for (let i in tournSeats) {
-    //             if (tournSeats[i] && (tournSeats[i].isOut || !this.seats[i] || this.seats[i].public.isDisconnect)) {
-    //                 this.updateTournSeat(i);
-    //             }
-    //         }
-    //     } catch (e){
-    //         console.log(e);
-    //         log.error('updateTournSeat initializeNextPhase' + e);
-    //     }
-    // }
     this.emitEvent('table-data', this.public, true);
 
     // If all other players are all in, there should be no actions. Move to the next round.
@@ -679,7 +671,16 @@ Table.prototype.actionToNextPlayer = function() {
         this.seats[this.public.activeSeat].socket.emit('postSmallBlind');
         break;
     case 'bigBlind':
-        this.seats[this.public.activeSeat].socket.emit('postBigBlind');
+        const bbSeat = this.public.activeSeat;
+        // if (~this.playerWaitBB) { // есть только что зашедший - с него BB
+        //     if (this.seats[this.playerWaitBB]){
+        //         console.log('BB', this.playerWaitBB);
+        //         bbSeat = this.playerWaitBB;
+        //     }
+        //     this.playerWaitBB = -1;
+        // }
+        // console.log({bbSeat, active: this.public.activeSeat});
+        this.seats[bbSeat].socket.emit('postBigBlind');
         break;
     case 'preflop':
         if (this.otherPlayersAreAllIn()) {
