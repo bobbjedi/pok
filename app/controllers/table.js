@@ -126,7 +126,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         $scope.maxBetAmount = function() {
             if ($scope.mySeat === null || typeof $scope.table.seats[$scope.mySeat] === 'undefined' || $scope.table.seats[$scope.mySeat] === null) {return 0;}
-            return $scope.actionState === "actBettedPot" ? $scope.table.seats[$scope.mySeat].chipsInPlay + $scope.table.seats[$scope.mySeat].bet : $scope.table.seats[$scope.mySeat].chipsInPlay;
+            return ($scope.actionState === "actBettedPot" ? $scope.table.seats[$scope.mySeat].chipsInPlay + $scope.table.seats[$scope.mySeat].bet : $scope.table.seats[$scope.mySeat].chipsInPlay);
         };
 
         $scope.callAmount = function() {
@@ -495,6 +495,25 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
+
+        // костыль range
+        const rangeEl = document.getElementById('range-el');
+        const inputEl = document.getElementById('bet-input');
+        $scope.$watch('betAmount', v=>{
+            const max = $scope.maxBetAmount();
+            if (v > max){
+                $scope.betAmount = $scope.maxBetAmount(); 
+            } else if (v < 0){
+                $scope.betAmount = 0;
+            } else if (v < max){
+                $scope.betAmount = roundByCrat($scope.betAmount, $scope.table.bigBlind);
+            }
+            rangeEl.value = v;
+            inputEl.value = v;
+        });
+        window.onRange = el => $scope.betAmount = +el.value;
+
+
         // Фикс Ad
         $scope.$watch('myCards', () => fixAd($scope.myCards), true);
         $scope.$watch('table.board', () => fixAd($scope.table.board), true);
@@ -510,3 +529,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
  * @param {Array} cards
  */
 const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 'Ar'));
+
+/**
+ * 
+ * @param {String} num 
+ * @param {String} step 
+ */
+function roundByCrat(num, step){
+    return Math.round(num / step);
+}

@@ -197,7 +197,7 @@ html, body {
 }
 
 .bg-red {
-    background-color: #5d2d34;
+    background-color: #5d2d34 !important;
 }
 
 .bg-yellow {
