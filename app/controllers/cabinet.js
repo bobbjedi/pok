@@ -1,4 +1,5 @@
 import app from '../app';
+import config from '../../config';
 
 app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function ($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
@@ -6,12 +7,14 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
         $scope.refs = [];
         $scope.totalProfit = 0;
         $scope.fullTime = fullTime;
+        $scope.coinList = config.coins;
         $scope.hashShort = h => h.slice(0, 7) + '...' + h.slice(h.length - 7, h.length - 1);
         window.showPreloader();
         setTimeout(() => window.hidePreloader(), 1000);
 
         const updateTxs = () => {
             $rootScope.api({ action: 'getUserTxs' }, txs => {
+                const {coinName} = $scope;
                 txs.sort((a, b) => {
                     if (!a.unix) {
                         a.unix = 1;
@@ -28,15 +31,14 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
                     } else {
                         return s + c.amount;
                     }
-                }, - ($rootScope.user.deposits.BIP + $rootScope.user.depositInGame.BIP));
+                }, - ($rootScope.user.deposits[coinName] + $rootScope.user.depositInGame[coinName]));
             });
         };
         const updateRefs = () => {
             $rootScope.api({ action: 'getUserRefs' }, refs => {
+                const {coinName} = $scope;
                 const arr = [];
-                Object.keys(refs).forEach(name => {
-                    arr.push({ name, bonus: refs[name] });
-                });
+                Object.keys(refs).forEach(name => arr.push({ name, bonus: refs[name][coinName]}));
                 $scope.refs = arr;
             });
         };
@@ -46,6 +48,12 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
         }
 
         $rootScope.$watch('user.login', ()=>{
+            updateTxs();
+            updateRefs();
+        });
+
+        $rootScope.$watch('settings.coinName', v =>{
+            $scope.coinName = v;
             updateTxs();
             updateRefs();
         });

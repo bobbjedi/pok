@@ -1,6 +1,13 @@
 <div id="cabinet">
     <h1 class="txt-white">Cabinet {{$root.user.login}}</h1>
-    <h3 class="txt-white">Deposit: {{$root.tsp($root.user.deposits.BIP + $root.user.depositInGame.BIP)}} BIP</h3>
+
+    <div 
+        ng-class="{'active-coin': coinName === c}"
+        class="txt-white big hovered"
+        ng-repeat="(i, c) in coinList"
+        ng-if="c!=='DEMO'"
+        ng-click="$root.settings.coinName = c"
+        >Deposit: <span class="big txt-yellow">{{$root.tsp($root.user.deposits[c] + $root.user.depositInGame[c])}}</span> {{c}}</div>
 
     <h2 class="mt25">Referals ({{refs.length}})</h2>
     <div class="scrolled-600">

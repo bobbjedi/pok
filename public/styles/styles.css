@@ -182,6 +182,10 @@ table {
 #transactions{
     max-height: 300px;
 }
+.active-coin{
+    display: inline;
+    border-bottom: 1px solid grey;
+}
 
 /* USER PANEL */
 #user-panel {

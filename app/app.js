@@ -193,6 +193,7 @@ const thousandSeparator = num => {
     if (num > 0.8){
         fixed = 0;
     }
+    console.log(num)
     if (+num === 0 || !num){
         return '0.00';
     }
