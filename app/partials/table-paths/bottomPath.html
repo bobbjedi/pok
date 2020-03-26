@@ -37,7 +37,7 @@
         <button class="control-button" ng-class="{'bg-red': (betAmount < minBetAmount())}" ng-click="(betAmount >= minBetAmount()) && raise()" ng-show="showRaiseButton()">Raise to
             {{round(betAmount)}}</button>
     </div>
-    <div class="block-buttons-bet" ng-show="showBetRange()">
+    <div class="block-buttons-bet" ng-show="showBetRange()">     
         <div class="buttons-bet" >
             <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount())">Min.</div>
             <div class="button-bet hovered" ng-click="betAmount = round(table.bigBlind * 3)">3xBB</div>
@@ -56,11 +56,11 @@
             
             <input 
                 id = "range-el"
-                type ="range" 
+                type ="range"
                 min = "{{round(minBetAmount())}}"
                 max = "{{maxBetAmount()}}"
                 step = "{{table.bigBlind}}"
-                onchange = "onRange(this)"
+                oninput = "onRange(this)"
                 >
 
             <div class="button-range but range-green hovered" ng-click="betAmount = round(betAmount + table.bigBlind)">+</div>

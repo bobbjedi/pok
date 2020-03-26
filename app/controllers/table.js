@@ -499,6 +499,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // костыль range
         const rangeEl = document.getElementById('range-el');
         const inputEl = document.getElementById('bet-input');
+        
         $scope.$watch('betAmount', v=>{
             const max = $scope.maxBetAmount();
             if (v > max){
@@ -511,8 +512,15 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             rangeEl.value = v;
             inputEl.value = v;
         });
-        window.onRange = el => $scope.betAmount = +el.value;
 
+        rangeEl.onmousemove = () => {
+            if (rangeEl.value !== $scope.betAmount) {
+                $scope.betAmount = rangeEl.value;
+                $scope.$digest();
+            }
+        };
+
+        window.onRange = el => $scope.betAmount = +el.value;
 
         // Фикс Ad
         $scope.$watch('myCards', () => fixAd($scope.myCards), true);
