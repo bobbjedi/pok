@@ -13,8 +13,8 @@ app.controller('CabinetController', ['$scope', '$rootScope', '$http', '$routePar
         setTimeout(() => window.hidePreloader(), 1000);
 
         const updateTxs = () => {
-            $rootScope.api({ action: 'getUserTxs' }, txs => {
-                const {coinName} = $scope;
+            const {coinName} = $scope;
+            $rootScope.api({ action: 'getUserTxs', data: {coinName} }, txs => {
                 txs.sort((a, b) => {
                     if (!a.unix) {
                         a.unix = 1;

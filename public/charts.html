@@ -1,0 +1,153 @@
+
+<!doctype html>
+<html>
+	
+	<head>
+		<title>Line Chart</title>
+		<script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+		<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+		<style>
+			canvas{
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<div style="width:75%;">
+			
+		</div>
+		<script>
+			api(data=>{
+				console.log(data);				
+				const rakesBIP = data.rakes.BIP;
+				const rakesUSDT = data.rakes.USDT;
+				
+				const gamesCountBIP = data.gamesCount.BIP;
+				const gamesContUSDT = data.gamesCount.USDT;
+				
+				const gamesValueBIP = data.gamesValue.BIP;
+				const gamesValueUSDT = data.gamesValue.USDT;
+				
+				const fullLabels = Object.keys(rakesBIP);
+				const labels = fullLabels.slice(7, fullLabels.length - 1);
+				
+				const renderData = [
+				{
+					label: 'rakesBIP',
+					data: rakesBIP
+				},
+				{
+					label: 'gamesCountBIP',
+					data: gamesCountBIP
+				},
+				{
+					label: 'gamesValueBIP',
+					data: gamesValueBIP
+				},
+				{
+					label: 'rakesUSDT',
+					data: rakesUSDT
+				},
+				{
+					label: 'gamesContUSDT',
+					data: gamesContUSDT
+				},
+				{
+					label: 'gamesValueUSDT',
+					data: gamesValueUSDT
+				}];
+				console.log(renderData, labels)
+				
+				renderData.forEach(d=>{
+					d.backgroundColor = d.borderColor = getColor();
+					d.data = fullDataSet(labels, d.data);
+					d.fill = true;
+					render([d], labels)
+				});
+			});
+			
+			function render(datasets, labels){
+				
+				var config = {
+					type: 'line',
+					data: {
+						labels,
+						datasets
+					},
+					options: {
+						responsive: true,
+						title: {
+							display: true,
+							text: 'Chart.js Line Chart'
+						},
+						tooltips: {
+							mode: 'index',
+							intersect: false,
+						},
+						hover: {
+							mode: 'nearest',
+							intersect: true
+						},
+						scales: {
+							xAxes: [{
+								display: true,
+								scaleLabel: {
+									display: true,
+									labelString: 'Month'
+								}
+							}],
+							yAxes: [{
+								display: true,
+								scaleLabel: {
+									display: true,
+									labelString: 'Value'
+								}
+							}]
+						}
+					}
+				};
+				
+				const body = document.getElementsByTagName('body')[0];
+				const canvas = document.createElement('canvas');
+				body.insertBefore(canvas, body.lastChild);
+				const ctx = canvas.getContext('2d');
+				new Chart(ctx, config);
+			}
+			
+			
+			function api(cb) {
+				fetch('/public')
+				.then(res => {
+					res.json().then(cb)
+					.catch(err=> {
+						console.warn(err);
+					});
+				});
+			}
+			
+			function fullDataSet(labels, array){
+				return labels.map(d => array[d] || 0);
+			};
+			
+			function getColor(){
+				return COLORS.shift();
+			}
+			
+			const COLORS = [
+			'#4dc9f6',
+			'#f67019',
+			'#f53794',
+			'#537bc4',
+			'#acc236',
+			'#166a8f',
+			'#00a950',
+			'#58595b',
+			'#8549ba'
+			];
+		</script>
+	</body>
+	
+</html>
