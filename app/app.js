@@ -39,7 +39,7 @@ const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $
     // $locationProvider.html5Mode(true).hashPrefix('!');
 });
 
-app.run(function($rootScope, $location) {
+app.run(function($rootScope) {
     $rootScope.logOut = ()=>{
         $rootScope.user = {
             isLogged: false,
@@ -47,7 +47,7 @@ app.run(function($rootScope, $location) {
             login: null,
             addresses: {},
             token: false,
-            deposit: 0,
+            deposits: {},
             isLoginned: true
         };
     };
@@ -124,7 +124,9 @@ app.run(function($rootScope, $location) {
         }
         // $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
         $rootScope.settings.coinName = coinName;
-        $rootScope.$digest();
+        try {
+            $rootScope.$digest();
+        } catch (e) { }
     };
 
     $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
