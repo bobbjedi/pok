@@ -513,13 +513,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             inputEl.value = v;
         });
 
-        rangeEl.onmousemove = () => {
-            if (rangeEl.value !== $scope.betAmount) {
-                $scope.betAmount = rangeEl.value;
-                $scope.$digest();
-            }
-        };
-
+        rangeEl.onmousemove = () => rangeEl.value !== $scope.betAmount && $scope.$digest();
         window.onRange = el => $scope.betAmount = +el.value;
 
         // Фикс Ad
