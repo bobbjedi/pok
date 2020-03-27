@@ -364,7 +364,7 @@ setTimeout(async ()=>{
         return;
     }
     const $u = module.exports;
-    const table = tables_[1];
+    const table = tables_[31];
     // const player1 = await $u.createOffLinePlayer('Dev');
     const player2 = await $u.createOffLinePlayer('Devi');
     const player3 = await $u.createOffLinePlayer('Devs');

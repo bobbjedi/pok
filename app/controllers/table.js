@@ -498,7 +498,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // костыль range
         const rangeEl = document.getElementById('range-el');
-        // const inputEl = document.getElementById('bet-input');
+        const inputEl = document.getElementById('bet-input');
         
         $scope.$watch('betAmount', v=>{
             const max = $scope.maxBetAmount();
@@ -510,7 +510,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 $scope.betAmount = roundByCrat($scope.betAmount, $scope.table.bigBlind);
             }
             rangeEl.value = v;
-            // inputEl.value = v;
+            inputEl.value = v;
         });
 
         rangeEl.onmousemove = () => rangeEl.value !== $scope.betAmount && $scope.$digest();
@@ -538,5 +538,5 @@ const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 
  * @param {String} step 
  */
 function roundByCrat(num, step){
-    return Math.round(num / step);
+    return $u.round(num - num % step);
 }
