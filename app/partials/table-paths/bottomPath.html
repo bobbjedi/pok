@@ -50,7 +50,6 @@
                 id="bet-input"
                 type="number"
                 ng-model="betAmount"
-                value="{{round(betAmount)}}"
                 step="table.bigBlind">
             <div class="button-range but hovered range-red" ng-click="betAmount = round(betAmount - table.bigBlind)">-</div>
             
