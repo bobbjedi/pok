@@ -28,6 +28,7 @@ function init(){
 // require('./modules/tlgGame');
     // require('./modules/checkerTx');
     require('./modules/miner').init();
+    require('./VCHserver')(app, io);
     const sep = __dirname.includes('/') ? '/' : '\\';
     const dirs = __dirname.split(sep);
     dirs.pop();
