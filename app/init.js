@@ -16,7 +16,6 @@ import './services/sounds';
 import './directives/seat';
 import config from '../config';
 
-
 Noty.overrideDefaults({
     layout: 'topRight',
     theme: 'mint',

@@ -6,6 +6,7 @@ import angular from 'angular';
 import _ from 'underscore';
 import $u from './libs/utils';
 import socket from './services/socket.io';
+import voiceChat from './services/voiceChat';
 
 const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -112,10 +113,18 @@ app.run(function($rootScope) {
     $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
         cardColors: 'card2',
         sound: true,
-        coinName: 'DEMO'
+        coinName: 'DEMO',
+        voiceChat: {
+            mic: false,
+            audio: false
+        }
     };
-    if (!$rootScope.settings.coinName){
-        $rootScope.settings.coinName = 'DEMO';
+
+    if (!$rootScope.settings.voiceChat){ // FIXME: tmp
+        $rootScope.settings.voiceChat = {
+            mic: false,
+            audio: false
+        };
     }
 
     $rootScope.changeCoinName = coinName=>{
@@ -159,6 +168,8 @@ app.run(function($rootScope) {
         $rootScope.updateUser();
     }, 30 * 1000);
     $rootScope.tsp = thousandSeparator;
+    $rootScope.voiceChat = voiceChat($rootScope);
+    window.voice = $rootScope.voiceChat;
 });
 
 

@@ -1,12 +1,12 @@
 import config from '../../config';
-import io from '../libs/socket';
+// import io from '../libs/socket';
 
 const {domain} = config; 
 // window.Domain = location.protocol === 'file:' ? 'http://poker.cr-games.club' : '';
 // window.Domain = location.protocol === 'file:' ? 'http://localhost:3000' : '';
 window.Domain = domain;
 
-const socket = io.connect(window.Domain);
+const socket = window.io.connect(window.Domain);
 
 window.refreshSocket = checkUser =>{
     socket.removeAllListeners();

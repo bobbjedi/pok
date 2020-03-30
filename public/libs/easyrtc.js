@@ -11544,6 +11544,7 @@ About: License
        * @private
        */
       function validateVideoIds(monitorVideoId, videoIds) {
+        console.log({monitorVideoId}, document.getElementById(monitorVideoId));
           var i;
           // verify that video ids were not typos.
           if (monitorVideoId && !document.getElementById(monitorVideoId)) {
