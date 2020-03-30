@@ -34,6 +34,7 @@ function callEverybodyElse(roomName, otherPeople, c) {
 }
 
 export default $root => {
+    return;
     const parent = document.getElementById('voice-chat');
     let num = maxCALLERS + 1;
     const boxes = [];
