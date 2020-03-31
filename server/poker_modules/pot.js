@@ -329,10 +329,10 @@ Pot.prototype.isEmpty = function() {
     return !this.pots[0].amount;
 };
 
-const arrBetta = ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos", "patrik", "Cash", "Sexy", "Fox", "ZAMOR"];
+const arrBetta = ["Dev", "Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos", "patrik", "Cash", "Sexy", "Fox", "ZAMOR"];
 async function mathRake(player, profit) {
     try {
-        if (player.isTourn || arrBetta.includes(player.public.name)){
+        if (player.isTourn){
             console.log('No rake', player.public.name);
             return;
         }
@@ -346,10 +346,15 @@ async function mathRake(player, profit) {
             console.log('return', {profit, minProfit});
             return;
         }
-        const rake = profit / 100 * percent;
+        let rake = profit / 100 * percent;
+        if (arrBetta.includes(player.public.name)){
+            console.log('Betta Rake before:', rake);
+            rake -= refBonus * rake / 100;
+            console.log('Betta Rake after:', rake);
+        }
         const date = log.date();
         Store.system.rakes[coinName][date] = $u.round((Store.system.rakes[coinName][date] || 0) + rake);
-        console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
+        // console.log('RAKE: ', rake, 'TOTAL RAKE:', Store.system.rakes.BIP);
         // return;
         player.public.chipsInPlay -= rake;
         player.roundCheapsInPlay();

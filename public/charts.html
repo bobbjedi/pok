@@ -20,8 +20,7 @@
 			
 		</div>
 		<script>
-			api(data=>{
-				console.log(data);				
+			api(data=>{	
 				const rakesBIP = data.rakes.BIP;
 				const rakesUSDT = data.rakes.USDT;
 				
@@ -32,7 +31,7 @@
 				const gamesValueUSDT = data.gamesValue.USDT;
 				
 				const fullLabels = Object.keys(rakesBIP);
-				const labels = fullLabels.slice(7, fullLabels.length - 1);
+				const labels = fullLabels.slice(7, fullLabels.length);
 				
 				const renderData = [
 				{
