@@ -1,7 +1,8 @@
 <div class="right-icon">
     <i onclick="toggleFullScreen()" class="fa fa-arrows-alt" aria-hidden="true"></i>
-    <i ng-class="$root.settings.voiceChat.audio ? 'txt-green': 'txt-red'" ng-click="$root.settings.voiceChat.audio = !$root.settings.voiceChat.audio" class="fa fa-volume-up" aria-hidden="true"></i>
+    <span style="display: none;"><i ng-class="$root.settings.voiceChat.audio ? 'txt-green': 'txt-red'" ng-click="$root.settings.voiceChat.audio = !$root.settings.voiceChat.audio" class="fa fa-volume-up" aria-hidden="true"></i>
     <i ng-class="$root.settings.voiceChat.mic ? 'txt-green': 'txt-red'" ng-click="$root.settings.voiceChat.mic = !$root.settings.voiceChat.mic" class="fa fa-microphone" aria-hidden="true"></i>
+    </span>
 </div>
 <div class="modal-wrap" ng-show="buyInModalVisible">
     <div class="modal">
