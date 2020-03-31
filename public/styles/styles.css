@@ -992,7 +992,9 @@ div#board-wrap .card-container {
     top: 10px;
     color: #7c8186;
     font-weight: 100;
-    font-size: 2.5em
+    font-size: 2.5em;
+    display: flex;
+    flex-direction: column;
 }
 
 .settings {

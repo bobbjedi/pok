@@ -1,6 +1,6 @@
 const {easyrtc} = window;
-// delete window.easyrtc;
-const maxCALLERS = 3;
+delete window.easyrtc;
+const maxCALLERS = 10;
 
 function callEverybodyElse(roomName, otherPeople, c) {
     console.log({roomName, otherPeople, c});
@@ -32,43 +32,41 @@ function callEverybodyElse(roomName, otherPeople, c) {
         establishConnection(list.length - 1);
     }
 }
-
+let parent;
 export default $root => {
-    return;
-    const parent = document.getElementById('voice-chat');
+    parent = document.getElementById('voice-chat');
     let num = maxCALLERS + 1;
     const boxes = [];
     let boxedEl = '';
     while (num--){
         const id = 'box' + num;
         num && boxes.push(id);
-        // boxedEl += '<video id="' + id + '" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>';
-        boxedEl += `<video  ${!num ? 'muted="muted"' : ''}id="${id}" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>`;
+        boxedEl += `<video  ${!num ? ' muted="muted" ' : 'volume="1" class="incoming-voice" '}id="${id}" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>`;
     }
     parent.innerHTML = boxedEl;
     // easyrtc.enableDebug(true);
     easyrtc.setSocketUrl('', {});
     easyrtc.setRoomOccupantListener(callEverybodyElse);
     adapter.videoOff();
-
     
-    setTimeout(()=>{
+    window.initVC = () => setTimeout(() => {
         $root.user.login && easyrtc.setUsername($root.user.login);
-        easyrtc.easyApp('easyrtc.multiparty', 'box0', boxes, () => { });
+        easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => console.log('Success connect'), e =>console.log('Error:' + e));
         easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
         const {voiceChat} = $root.settings;
+        // console.log(voiceChat);
         adapter.mic(voiceChat.mic);
-        adapter.audioReceive(voiceChat.audio);
-       
-        console.log(voiceChat);
-        $root.$watch('settings.voiceChat', s =>{
-            console.log(s);
-            adapter.mic(s.mic);
-            adapter.audioReceive(s.audio);
-        }, true);
-    }, 500);
+        adapter.audio(voiceChat.audio);
 
-    return {
+        $root.$watch('settings.voiceChat', s =>{
+            // console.log(s);
+            adapter.mic(s.mic);
+            adapter.audio(s.audio);
+        }, true);
+        
+    }, 500);
+    window.initVC();
+    const driver = {
         toggleMic() {
             $root.settings.voiceChat.mic = !$root.settings.voiceChat.mic;
             $root.$digest();
@@ -76,25 +74,28 @@ export default $root => {
         toggleAudio() {
             $root.settings.voiceChat.audio = !$root.settings.voiceChat.audio;
             $root.$digest();
-        }
+        },
+        initVC: window.initVC
     };
+    driver.toggleAudio(1);
+    driver.toggleMic(1);
+    return driver;
 };
 
 const adapter = {
     videoOff() {
         easyrtc.enableVideo(false);
-        easyrtc.enableVideoReceive(false);
+        // easyrtc.enableVideoReceive(false);
         easyrtc.enableCamera(false);
     },
     soundOff(){
-        this.mic(false);
-        this.audioReceive(false);
+        easyrtc.enableAudioReceive(false);
+        easyrtc.enableMicrophone(false);
     },
     mic(b){
         easyrtc.enableMicrophone(b);
-        easyrtc.enableAudioReceive(b);
     },
-    audioReceive(b){
-        easyrtc.enableAudio(b);
+    audio(b){
+        parent.querySelectorAll('.incoming-voice').forEach(e => e.volume = Number(b));
     }
 };
