@@ -59,7 +59,10 @@ export default $root => {
             }
         }, e =>console.log('Error:' + e));
         easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
-       
+        easyrtc.setOnCall(function (easyrtcid, slot) {
+            console.log('Connected', easyrtcid, slot);
+            console.log("getConnection count=" + easyrtc.getConnectionCount());
+        });
         console.log(voiceChat);
         
         adapter.mic(voiceChat.mic);
