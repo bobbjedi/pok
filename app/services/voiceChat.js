@@ -3,7 +3,7 @@ delete window.easyrtc;
 const maxCALLERS = 10;
 
 function callEverybodyElse(roomName, otherPeople, c) {
-    console.log({roomName, otherPeople, c});
+    // console.log({roomName, otherPeople, c});
     easyrtc.setRoomOccupantListener(null); // so we're only called once.
 
     var list = [];
@@ -51,15 +51,22 @@ export default $root => {
     
     window.initVC = () => setTimeout(() => {
         $root.user.login && easyrtc.setUsername($root.user.login);
-        easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => console.log('Success connect'), e =>console.log('Error:' + e));
-        easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
         const {voiceChat} = $root.settings;
-        // console.log(voiceChat);
+        easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => {
+            if (!$root.settings.voiceChat.isAllowed){
+                adapter.mic(voiceChat.mic);
+                $root.settings.voiceChat.isAllowed = true;
+            }
+        }, e =>console.log('Error:' + e));
+        easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
+       
+        console.log(voiceChat);
+        
         adapter.mic(voiceChat.mic);
         adapter.audio(voiceChat.audio);
 
         $root.$watch('settings.voiceChat', s =>{
-            // console.log(s);
+            console.log(s);
             adapter.mic(s.mic);
             adapter.audio(s.audio);
         }, true);
@@ -77,20 +84,13 @@ export default $root => {
         },
         initVC: window.initVC
     };
-    driver.toggleAudio(1);
-    driver.toggleMic(1);
     return driver;
 };
 
 const adapter = {
     videoOff() {
         easyrtc.enableVideo(false);
-        // easyrtc.enableVideoReceive(false);
         easyrtc.enableCamera(false);
-    },
-    soundOff(){
-        easyrtc.enableAudioReceive(false);
-        easyrtc.enableMicrophone(false);
     },
     mic(b){
         easyrtc.enableMicrophone(b);
