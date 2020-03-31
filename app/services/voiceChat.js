@@ -1,9 +1,9 @@
 const {easyrtc} = window;
 delete window.easyrtc;
-const maxCALLERS = 10;
+const maxCALLERS = 15;
 
 function callEverybodyElse(roomName, otherPeople, c) {
-    // console.log({roomName, otherPeople, c});
+    console.log({roomName, otherPeople, c});
     easyrtc.setRoomOccupantListener(null); // so we're only called once.
 
     var list = [];
