@@ -75,7 +75,7 @@ export default $root => {
         }, true);
         
     }, 500);
-    window.initVC();
+    // window.initVC();
     const driver = {
         toggleMic() {
             $root.settings.voiceChat.mic = !$root.settings.voiceChat.mic;
