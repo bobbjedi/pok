@@ -360,6 +360,7 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
+    return;
     if (!config.isDev){
         return;
     }

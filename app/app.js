@@ -116,16 +116,27 @@ app.run(function($rootScope) {
         coinName: 'DEMO',
         voiceChat: {
             mic: false,
-            audio: false
+            audio: false,
+            isOn: false
         }
     };
 
     if (!$rootScope.settings.voiceChat){ // FIXME: tmp
         $rootScope.settings.voiceChat = {
             mic: false,
-            audio: false
+            audio: false,
+            isOn: false
         };
     }
+
+    $rootScope.toggleSound = ()=> {
+        $rootScope.voiceChatIsOn = !$rootScope.voiceChatIsOn;
+        if ($rootScope.voiceChatIsOn){
+            window.initVC();
+        } else {
+            window.easyrtc.disconnect();
+        }
+    };
 
     $rootScope.changeCoinName = coinName=>{
         if (!coinName){

@@ -1,5 +1,5 @@
 const {easyrtc} = window;
-delete window.easyrtc;
+// delete window.easyrtc;
 const maxCALLERS = 15;
 
 function callEverybodyElse(roomName, otherPeople, c) {
@@ -44,17 +44,14 @@ export default $root => {
         boxedEl += `<video  ${!num ? ' muted="muted" ' : 'volume="1" class="incoming-voice" '}id="${id}" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>`;
     }
     parent.innerHTML = boxedEl;
-    // easyrtc.enableDebug(true);
     easyrtc.setSocketUrl('', {});
     easyrtc.setRoomOccupantListener(callEverybodyElse);
     adapter.videoOff();
     
     window.initVC = () => setTimeout(() => {
         $root.user.login && easyrtc.setUsername($root.user.login);
-        const {voiceChat} = $root.settings;
         easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => {
             if (!$root.settings.voiceChat.isAllowed){
-                adapter.mic(voiceChat.mic);
                 $root.settings.voiceChat.isAllowed = true;
             }
         }, e =>console.log('Error:' + e));
@@ -62,32 +59,23 @@ export default $root => {
         easyrtc.setOnCall(function (easyrtcid, slot) {
             console.log('Connected', easyrtcid, slot);
             console.log("getConnection count=" + easyrtc.getConnectionCount());
-        });
-        console.log(voiceChat);
-        
-        adapter.mic(voiceChat.mic);
-        adapter.audio(voiceChat.audio);
-
-        $root.$watch('settings.voiceChat', s =>{
-            console.log(s);
-            adapter.mic(s.mic);
-            adapter.audio(s.audio);
-        }, true);
-        
+        });        
     }, 500);
+
+    // $root.$watch('settings.voiceChat', s =>{}, true);
     // window.initVC();
-    const driver = {
-        toggleMic() {
-            $root.settings.voiceChat.mic = !$root.settings.voiceChat.mic;
-            $root.$digest();
-        },
-        toggleAudio() {
-            $root.settings.voiceChat.audio = !$root.settings.voiceChat.audio;
-            $root.$digest();
-        },
-        initVC: window.initVC
-    };
-    return driver;
+    // const driver = {
+    //     toggleMic() {
+    //         $root.settings.voiceChat.mic = !$root.settings.voiceChat.mic;
+    //         $root.$digest();
+    //     },
+    //     toggleAudio() {
+    //         $root.settings.voiceChat.audio = !$root.settings.voiceChat.audio;
+    //         $root.$digest();
+    //     },
+    //     initVC: window.initVC
+    // };
+    // return driver;
 };
 
 const adapter = {
