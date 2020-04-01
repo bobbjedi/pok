@@ -11,75 +11,113 @@
 var option = {};
 
 // Application Options
-option.appDefaultName       = "default";                    // The default application a connection belongs to if it is not initially specified.
-option.appAutoCreateEnable  = true;                         // Enables the creation of rooms from the API. Occurs when client joins a nonexistent room.
-option.appDefaultFieldObj   = null;                         // Default fields which are set when an application is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
-option.appIceServers = [                                    // Array of STUN and TURN servers. By default there is only publicly available STUN servers.
-    {urls: ["stun:stun.l.google.com:19302"]},
-    {urls: ["stun:stun.sipgate.net"]},
-    {urls: ["stun:217.10.68.152"]},
-    {urls: ["stun:stun.sipgate.net:10000"]},
-    {urls: ["stun:217.10.68.152:10000"]}
-];
+option.appDefaultName = "default"; // The default application a connection belongs to if it is not initially specified.
+option.appAutoCreateEnable = true; // Enables the creation of rooms from the API. Occurs when client joins a nonexistent room.
+option.appDefaultFieldObj = null; // Default fields which are set when an application is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
+
+// https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b
+// https://gist.github.com/yetithefoot/7592580
+
+option.appIceServers = [
+    // {urls: ["stun:stun.l.google.com:19302"]},
+    // {urls: ["stun:stun.sipgate.net"]},
+    // {urls: ["stun:217.10.68.152"]},
+    // {urls: ["stun:stun.sipgate.net:10000"]},
+    // {urls: ["stun:217.10.68.152:10000"]}
+
+    {url: 'stun:stun01.sipphone.com'},
+    {url: 'stun:stun.ekiga.net'},
+    {url: 'stun:stun.fwdnet.net'},
+    {url: 'stun:stun.ideasip.com'},
+    {url: 'stun:stun.iptel.org'},
+    {url: 'stun:stun.rixtelecom.se'},
+    {url: 'stun:stun.schlund.de'},
+    {url: 'stun:stun.l.google.com:19302'},
+    {url: 'stun:stun1.l.google.com:19302'},
+    {url: 'stun:stun2.l.google.com:19302'},
+    {url: 'stun:stun3.l.google.com:19302'},
+    {url: 'stun:stun4.l.google.com:19302'},
+    {url: 'stun:stunserver.org'},
+    {url: 'stun:stun.softjoys.com'},
+    {url: 'stun:stun.voiparound.com'},
+    {url: 'stun:stun.voipbuster.com'},
+    {url: 'stun:stun.voipstunt.com'},
+    {url: 'stun:stun.voxgratia.org'},
+    {url: 'stun:stun.xten.com'},
+    {
+        url: 'turn:numb.viagenie.ca',
+        credential: 'muazkh',
+        username: 'webrtc@live.com'
+    },
+    {
+        url: 'turn:192.158.29.39:3478?transport=udp',
+        credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+        username: '28224511:1379330808'
+    },
+    {
+        url: 'turn:192.158.29.39:3478?transport=tcp',
+        credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+        username: '28224511:1379330808'
+    }];
 
 
 // Room Options
-option.roomDefaultEnable    = true;                         // Enables connections joining a default room if it is not initially specified. If false, than a connection initially may be in no room.
-option.roomDefaultName      = "default";                    // The default room a connection joins if it is not initially specified.
-option.roomAutoCreateEnable = true;                         // Enables the creation of rooms from the API. Occurs when client joins a nonexistent room.
-option.roomDefaultFieldObj  = null;                         // Default fields which are set when a room is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
+option.roomDefaultEnable = true; // Enables connections joining a default room if it is not initially specified. If false, than a connection initially may be in no room.
+option.roomDefaultName = "default"; // The default room a connection joins if it is not initially specified.
+option.roomAutoCreateEnable = true; // Enables the creation of rooms from the API. Occurs when client joins a nonexistent room.
+option.roomDefaultFieldObj = null; // Default fields which are set when a room is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
 
 
 // Connection Options
-option.connectionDefaultFieldObj  = null;                   // Default fields which are set when a connection is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
+option.connectionDefaultFieldObj = null; // Default fields which are set when a connection is created. In form of {"fieldName":{fieldValue:<JsonObj>, fieldOption:{isShared:<boolean>}}[, ...]}
 
 
 // SessionOptions
-option.sessionEnable        = true;                         // Enable sessions. If sessions are disabled, each socket connection from the same user will be the same. Relies on Express session handling also being enabled.
-option.sessionCookieEnable  = true;                         // If enabled, the server will attempt to send a easyrtcsid cookie which matches the Express session id.
+option.sessionEnable = true; // Enable sessions. If sessions are disabled, each socket connection from the same user will be the same. Relies on Express session handling also being enabled.
+option.sessionCookieEnable = true; // If enabled, the server will attempt to send a easyrtcsid cookie which matches the Express session id.
 
 
 // API Hosting Options
-option.apiEnable            = true;                         // Enables hosting of the EasyRTC API files.
-option.apiPublicFolder      = "/easyrtc";                   // Api public folder without trailing slash. Note that the demos expect this to be '/easyrtc'
-option.apiLabsEnable        = true;                         // Enables hosting of the EasyRTC experimental API files located in the 'labs' sub folder
-option.apiOldLocationEnable = false;                        // [Depreciated] Listens for requests to core API files in old locations (in addition to the new standard locations)
+option.apiEnable = true; // Enables hosting of the EasyRTC API files.
+option.apiPublicFolder = "/easyrtc"; // Api public folder without trailing slash. Note that the demos expect this to be '/easyrtc'
+option.apiLabsEnable = true; // Enables hosting of the EasyRTC experimental API files located in the 'labs' sub folder
+option.apiOldLocationEnable = false; // [Depreciated] Listens for requests to core API files in old locations (in addition to the new standard locations)
 
 
 // Demo Options
-option.demosEnable          = true;
-option.demosPublicFolder    = "/demos";                     // Demos public folder without trailing slash. This sets the public URL where where demos are hosted, such as http://yourdomain/demos/
+option.demosEnable = true;
+option.demosPublicFolder = "/demos"; // Demos public folder without trailing slash. This sets the public URL where where demos are hosted, such as http://yourdomain/demos/
 
 
 // Log options - Only apply if internal 'log' event is used
-option.logLevel             = "info";                       // The minimum log level to show. (debug|info|warning|error|none)
-option.logDateEnable        = false;                        // Display timestamp in each entry
-option.logErrorStackEnable  = true;                         // print the stack trace in logged errors when available
-option.logWarningStackEnable= true;                         // print the stack trace in logged warnings when available
-option.logColorEnable       = true;                         // include console colors. Disable if forwarding logs to files or databases
-option.logObjectDepth       = 7;                            // When objects are included in the log, this is the max depth the log will display
-option.logMessagesEnable    = false;                        // Log the full contents of incoming and outgoing messages. Also requires the logLevel to be set at "debug". Introduces security and performance concerns.
+option.logLevel = "info"; // The minimum log level to show. (debug|info|warning|error|none)
+option.logDateEnable = false; // Display timestamp in each entry
+option.logErrorStackEnable = true; // print the stack trace in logged errors when available
+option.logWarningStackEnable = true; // print the stack trace in logged warnings when available
+option.logColorEnable = true; // include console colors. Disable if forwarding logs to files or databases
+option.logObjectDepth = 7; // When objects are included in the log, this is the max depth the log will display
+option.logMessagesEnable = false; // Log the full contents of incoming and outgoing messages. Also requires the logLevel to be set at "debug". Introduces security and performance concerns.
 
 
 // Regular expressions for validating names and other input
-option.apiVersionRegExp     = /^[a-z0-9_.+-]{1,32}$/i;      // API Version
-option.appNameRegExp        = /^[a-z0-9_.-]{1,32}$/i;       // Application name
-option.easyrtcidRegExp      = /^[a-z0-9_.-]{1,32}$/i;       // EasyRTC socket id (easyrtcid)
-option.easyrtcsidRegExp     = /^[a-z0-9_.%-]{1,100}$/i;       // EasyRTC session id (easyrtcsid)
-option.groupNameRegExp      = /^[a-z0-9_.-]{1,32}$/i;       // Group name
-option.fieldNameRegExp      = /^[a-z0-9_. -]{1,32}$/i;      // Field names (for defining app and room custom fields)
-option.optionNameRegExp     = /^[a-z0-9_. -]{1,32}$/i;      // Option names (for defining server options)
-option.presenceShowRegExp   = /^(away|chat|dnd|xa)$/;       // Allowed presence "show" values (for setPresence command)
-option.presenceStatusRegExp = /^(.){0,255}$/;               // Allowed presence "status" value
-option.roomNameRegExp       = /^[a-z0-9_.-]{1,32}$/i;       // Room name
-option.usernameRegExp       = /^(.){1,64}$/i;               // Username
+option.apiVersionRegExp = /^[a-z0-9_.+-]{1,32}$/i; // API Version
+option.appNameRegExp = /^[a-z0-9_.-]{1,32}$/i; // Application name
+option.easyrtcidRegExp = /^[a-z0-9_.-]{1,32}$/i; // EasyRTC socket id (easyrtcid)
+option.easyrtcsidRegExp = /^[a-z0-9_.%-]{1,100}$/i; // EasyRTC session id (easyrtcsid)
+option.groupNameRegExp = /^[a-z0-9_.-]{1,32}$/i; // Group name
+option.fieldNameRegExp = /^[a-z0-9_. -]{1,32}$/i; // Field names (for defining app and room custom fields)
+option.optionNameRegExp = /^[a-z0-9_. -]{1,32}$/i; // Option names (for defining server options)
+option.presenceShowRegExp = /^(away|chat|dnd|xa)$/; // Allowed presence "show" values (for setPresence command)
+option.presenceStatusRegExp = /^(.){0,255}$/; // Allowed presence "status" value
+option.roomNameRegExp = /^[a-z0-9_.-]{1,32}$/i; // Room name
+option.usernameRegExp = /^(.){1,64}$/i; // Username
 
 
 //
 // option for stillAlive timer to eliminate zombies.
 // Set to zero if you don't want stillAlive messages firing.
 //
-option.stillAliveInterval = 20*1000; // how frequently the client fires still alives. In milliseconds.
+option.stillAliveInterval = 20 * 1000; // how frequently the client fires still alives. In milliseconds.
 option.stillAliveGracePeriod = 10000;// Extra time allowed before a stillAlive is considered missed
 
 
