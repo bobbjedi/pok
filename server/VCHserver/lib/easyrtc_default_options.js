@@ -18,6 +18,8 @@ option.appDefaultFieldObj = null; // Default fields which are set when an applic
 // https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b
 // https://gist.github.com/yetithefoot/7592580
 
+
+// numb.viagenie.ca Бесплатный сервис
 option.appIceServers = [
     // {urls: ["stun:stun.l.google.com:19302"]},
     // {urls: ["stun:stun.sipgate.net"]},
