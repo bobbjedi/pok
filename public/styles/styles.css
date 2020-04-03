@@ -1222,3 +1222,7 @@ div#board-wrap .card-container {
     display: none;
     position: fixed;
 }
+
+#easyrtcErrorDialog{
+    display: none;
+}
