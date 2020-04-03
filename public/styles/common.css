@@ -32,11 +32,11 @@ html, body {
 }
 
 .big {
-    font-size: 1.2em;
+    font-size: 1.2em !important;
 }
 
 .bigbig {
-    font-size: 1.5em;
+    font-size: 1.5em !important;
 }
 
 .center {
