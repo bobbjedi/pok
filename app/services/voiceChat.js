@@ -5,7 +5,6 @@ const maxCALLERS = 15;
 
 let parent;
 export default $root => {
-    let audioStreamClone;
     $root.voiceChatOn = ()=> {
         $root.voiceChat = {
             mic: false,
@@ -59,19 +58,29 @@ export default $root => {
         }, true);
     };
 
-    const toggleMic = b => {
-        easyrtc.enableMicrophone(b);
-        // console.log('toggleMic', b, audioStreamClone);
-        // easyrtc.enableMicrophone(b);
-        // return;
-        if (b){
-            
-            // easyrtc.getLocalStream().addTrack(audioStreamClone);
-        } else {
-            // audioStreamClone = easyrtc.getLocalStream().getTracks()[0].clone();
-            // easyrtc.getLocalStream().removeTrack(easyrtc.getLocalStream().getTracks()[0]);
+    const startMic = e=>{
+        if (e.target.classList.contains('mic-button')){
+            $root.voiceChat.mic = true;
+            $root.$digest();
         }
     };
+
+    const stopMic = () => {
+        setTimeout(() => {
+            $root.voiceChat.mic = false;
+            $root.$digest();
+        }, 300);
+    };
+    document.addEventListener('mousedown', startMic);
+    document.addEventListener('touchstart', startMic);
+
+    document.addEventListener('mouseup', stopMic);
+    document.addEventListener('touchend', stopMic);
+
+};
+
+const toggleMic = b => {
+    easyrtc.enableMicrophone(b);
 };
 
 const toggleSound = b => {

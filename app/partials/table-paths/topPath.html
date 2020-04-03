@@ -2,8 +2,8 @@
     <i onclick="toggleFullScreen()" class="fa fa-arrows-alt" aria-hidden="true"></i>
     <i ng-if="!$root.voiceChatIsOn" ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="bigbig fa fa-headphones" ng-click="$root.voiceChatOn()" aria-hidden="true"></i>
     
-    <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="fa" aria-hidden="true"></i>
-    <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" ng-click="$root.voiceChat.mic = !$root.voiceChat.mic" class="fa" aria-hidden="true"></i>
+    <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="bigbig fa" aria-hidden="true"></i>
+    <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" class="mic-button bigbig fa" aria-hidden="true"></i>
 </div>
 <div class="modal-wrap" ng-show="buyInModalVisible">
     <div class="modal">
