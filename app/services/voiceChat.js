@@ -1,5 +1,5 @@
 const {easyrtc} = window;
-delete window.easyrtc;
+// delete window.easyrtc;
 const maxCALLERS = 15;
 
 function callEverybodyElse(roomName, otherPeople, c) {
