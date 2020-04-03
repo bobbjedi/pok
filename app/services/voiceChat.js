@@ -2,6 +2,83 @@ const {easyrtc} = window;
 // delete window.easyrtc;
 const maxCALLERS = 15;
 
+
+let parent;
+export default $root => {
+    let audioStreamClone;
+    $root.voiceChatOn = ()=> {
+        $root.voiceChat = {
+            mic: false,
+            audio: true,
+        };
+        $root.voiceChatIsOn = !$root.voiceChatIsOn;
+        window.initVC();
+    };
+
+    parent = document.getElementById('voice-chat');
+   
+    window.initVC = () => {
+        console.clear();
+        let num = maxCALLERS + 1;
+        const boxes = [];
+        let boxedEl = '';
+        while (num--){
+            const id = 'box' + num;
+            num && boxes.push(id);
+            boxedEl += `<video  ${!num ? ' muted="muted" ' : ' class="incoming-voice" '}id="${id}" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>`;
+        }
+        parent.innerHTML = boxedEl;
+
+        easyrtc.enableVideo(false);
+        easyrtc.enableCamera(false);
+
+        easyrtc.setSocketUrl('', {});
+        easyrtc.setRoomOccupantListener(callEverybodyElse);
+        $root.user.login && easyrtc.setUsername($root.user.login);
+
+        easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => {
+            // console.log(easyrtc.getLocalStream().getTracks());
+            toggleMic(false);
+        }, e =>console.log('Error:' + e));
+
+        easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
+        easyrtc.setOnCall(function (easyrtcid, slot) {
+            console.log('Connected', easyrtcid, slot);
+            console.log("getConnection count=" + easyrtc.getConnectionCount());
+        });        
+
+        $root.$watch('voiceChat', v =>{
+            console.log(v);
+            if (easyrtc.getLocalStream()) {
+                const { mic, audio } = v;
+                toggleMic(mic);
+                toggleSound(audio);
+            }
+          
+            // easyrtc.getLocalStream().addTrack(audioStream);
+        }, true);
+    };
+
+    const toggleMic = b => {
+        easyrtc.enableMicrophone(b);
+        // console.log('toggleMic', b, audioStreamClone);
+        // easyrtc.enableMicrophone(b);
+        // return;
+        if (b){
+            
+            // easyrtc.getLocalStream().addTrack(audioStreamClone);
+        } else {
+            // audioStreamClone = easyrtc.getLocalStream().getTracks()[0].clone();
+            // easyrtc.getLocalStream().removeTrack(easyrtc.getLocalStream().getTracks()[0]);
+        }
+    };
+};
+
+const toggleSound = b => {
+    console.log('toggleSound', b);
+    parent.querySelectorAll('.incoming-voice').forEach(el=>el.volume = b ? 1 : 0.1);
+};
+
 function callEverybodyElse(roomName, otherPeople, c) {
     console.log({roomName, otherPeople, c});
     easyrtc.setRoomOccupantListener(null); // so we're only called once.
@@ -32,61 +109,3 @@ function callEverybodyElse(roomName, otherPeople, c) {
         establishConnection(list.length - 1);
     }
 }
-let parent;
-export default $root => {
-    parent = document.getElementById('voice-chat');
-    let num = maxCALLERS + 1;
-    const boxes = [];
-    let boxedEl = '';
-    while (num--){
-        const id = 'box' + num;
-        num && boxes.push(id);
-        boxedEl += `<video  ${!num ? ' muted="muted" ' : 'volume="1" class="incoming-voice" '}id="${id}" autoplay="autoplay" visible="hidden" playsinline="playsinline"></video>`;
-    }
-    parent.innerHTML = boxedEl;
-    easyrtc.setSocketUrl('', {});
-    easyrtc.setRoomOccupantListener(callEverybodyElse);
-    adapter.videoOff();
-    
-    window.initVC = () => setTimeout(() => {
-        $root.user.login && easyrtc.setUsername($root.user.login);
-        easyrtc.easyApp('poker.multiparty', 'box0', boxes, () => {
-            if (!$root.settings.voiceChat.isAllowed){
-                $root.settings.voiceChat.isAllowed = true;
-            }
-        }, e =>console.log('Error:' + e));
-        easyrtc.setDisconnectListener(() => easyrtc.showError('LOST-CONNECTION', 'Lost connection to signaling server'));
-        easyrtc.setOnCall(function (easyrtcid, slot) {
-            console.log('Connected', easyrtcid, slot);
-            console.log("getConnection count=" + easyrtc.getConnectionCount());
-        });        
-    }, 500);
-
-    // $root.$watch('settings.voiceChat', s =>{}, true);
-    // window.initVC();
-    // const driver = {
-    //     toggleMic() {
-    //         $root.settings.voiceChat.mic = !$root.settings.voiceChat.mic;
-    //         $root.$digest();
-    //     },
-    //     toggleAudio() {
-    //         $root.settings.voiceChat.audio = !$root.settings.voiceChat.audio;
-    //         $root.$digest();
-    //     },
-    //     initVC: window.initVC
-    // };
-    // return driver;
-};
-
-const adapter = {
-    videoOff() {
-        easyrtc.enableVideo(false);
-        easyrtc.enableCamera(false);
-    },
-    mic(b){
-        easyrtc.enableMicrophone(b);
-    },
-    audio(b){
-        parent.querySelectorAll('.incoming-voice').forEach(e => e.volume = Number(b));
-    }
-};

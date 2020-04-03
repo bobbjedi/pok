@@ -113,29 +113,7 @@ app.run(function($rootScope) {
     $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
         cardColors: 'card2',
         sound: true,
-        coinName: 'DEMO',
-        voiceChat: {
-            mic: false,
-            audio: false,
-            isOn: false
-        }
-    };
-
-    if (!$rootScope.settings.voiceChat){ // FIXME: tmp
-        $rootScope.settings.voiceChat = {
-            mic: false,
-            audio: false,
-            isOn: false
-        };
-    }
-
-    $rootScope.toggleSound = ()=> {
-        $rootScope.voiceChatIsOn = !$rootScope.voiceChatIsOn;
-        if ($rootScope.voiceChatIsOn){
-            window.initVC();
-        } else {
-            window.easyrtc.disconnect();
-        }
+        coinName: 'DEMO'
     };
 
     $rootScope.changeCoinName = coinName=>{
@@ -172,12 +150,8 @@ app.run(function($rootScope) {
         return null;
     };
     
-    $rootScope.$watch('settings', ()=>{
-        localStorage.setItem('user_settings', JSON.stringify($rootScope.settings));
-    }, true);
-    setInterval(() => {
-        $rootScope.updateUser();
-    }, 30 * 1000);
+    $rootScope.$watch('settings', ()=>localStorage.setItem('user_settings', JSON.stringify($rootScope.settings)), true);
+    setInterval(() => $rootScope.updateUser(), 30 * 1000);
     $rootScope.tsp = thousandSeparator;
     $rootScope.voiceChat = voiceChat($rootScope);
     window.voice = $rootScope.voiceChat;

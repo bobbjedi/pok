@@ -1,9 +1,9 @@
 <div class="right-icon">
     <i onclick="toggleFullScreen()" class="fa fa-arrows-alt" aria-hidden="true"></i>
-    <i ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="bigbig fa fa-volume-up" ng-click="$root.toggleSound()" aria-hidden="true"></i>
+    <i ng-if="!$root.voiceChatIsOn" ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="bigbig fa fa-headphones" ng-click="$root.voiceChatOn()" aria-hidden="true"></i>
     
-    <i style="display: none;" ng-class="$root.settings.voiceChat.audio ? 'txt-green': 'txt-red'" ng-click="$root.settings.voiceChat.audio = !$root.settings.voiceChat.audio" class="fa fa-volume-up" aria-hidden="true"></i>
-    <i style="display: none;" ng-class="$root.settings.voiceChat.mic ? 'txt-green': 'txt-red'" ng-click="$root.settings.voiceChat.mic = !$root.settings.voiceChat.mic" class="fa fa-microphone" aria-hidden="true"></i>
+    <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="fa" aria-hidden="true"></i>
+    <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" ng-click="$root.voiceChat.mic = !$root.voiceChat.mic" class="fa" aria-hidden="true"></i>
 </div>
 <div class="modal-wrap" ng-show="buyInModalVisible">
     <div class="modal">
