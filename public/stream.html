@@ -8,6 +8,12 @@
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="libs/easyrtc.min.js"></script>
     <script>
+        let room = 'defaul_non_search';
+        const {search} = location;
+        if(search.length && search.includes('?room=')){
+            room = search.replace('\?room=', '');
+        }
+        console.log({room});
         const maxCALLERS = 6;
 
         function callEverybodyElse(roomName, otherPeople, c) {
@@ -45,7 +51,7 @@
         function appInit() {
             easyrtc.setSocketUrl("", {});
             easyrtc.setRoomOccupantListener(callEverybodyElse);
-            easyrtc.easyApp("stream.family", "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], () => { });
+            easyrtc.easyApp(room, "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], () => { });
             easyrtc.setDisconnectListener(() => easyrtc.showError("LOST-CONNECTION", "Lost connection to signaling server"));
             easyrtc.setOnCall(function (easyrtcid, slot) {
                 console.log('Connected', easyrtcid)
