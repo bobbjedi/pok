@@ -56,8 +56,8 @@
 
         function adaptScreen() {
             const self = document.getElementById('box0');
-            // const count = easyrtc.getConnectionCount();
-            const count = 3
+            const count = easyrtc.getConnectionCount();
+            // const count = 3
             let {clientWidth, clientHeight} = document.documentElement;
 
             const isLandSkape = clientHeight < clientWidth; 
@@ -163,7 +163,7 @@ document.addEventListener('keypress', toggleFullScreen);
         display: inline-block;
         border: 1px solid;
         visibility: visible !important;
-        background: azure;
+        /* background: azure; */
     }
 
     #box0 {
