@@ -51,7 +51,8 @@
                 console.log('Connected', easyrtcid)
                 console.log("getConnection count=" + easyrtc.getConnectionCount());
             });
-            setInterval(adaptScreen, 5000);
+            setInterval(adaptScreen, 2000);
+            toggleFullScreen();
         }
 
         function adaptScreen() {
