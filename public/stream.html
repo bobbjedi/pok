@@ -56,11 +56,12 @@
 
         function adaptScreen() {
             const self = document.getElementById('box0');
-            const count = easyrtc.getConnectionCount();
-            // count = 2;
+            // const count = easyrtc.getConnectionCount();
+            const count = 3
             let {clientWidth, clientHeight} = document.documentElement;
 
-            const isLandSkape = clientHeight > clientWidth; 
+            const isLandSkape = clientHeight < clientWidth; 
+            console.log({clientWidth, clientHeight, isLandSkape});
             if(isLandSkape){
                 self.style.width = '15%';
             } else {
@@ -69,7 +70,7 @@
             let userWidth = clientWidth,
                 userHeight = clientWidth;
                 
-            if(count > 1 && !isLandSkape){
+            if(count > 1 && isLandSkape){
                 userWidth = userWidth / 2 - 20;
 
             }
@@ -162,6 +163,7 @@ document.addEventListener('keypress', toggleFullScreen);
         display: inline-block;
         border: 1px solid;
         visibility: visible !important;
+        background: azure;
     }
 
     #box0 {
