@@ -45,7 +45,7 @@
         function appInit() {
             easyrtc.setSocketUrl("", {});
             easyrtc.setRoomOccupantListener(callEverybodyElse);
-            easyrtc.easyApp("stream.multiparty", "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], () => { });
+            easyrtc.easyApp("stream.family", "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], () => { });
             easyrtc.setDisconnectListener(() => easyrtc.showError("LOST-CONNECTION", "Lost connection to signaling server"));
             easyrtc.setOnCall(function (easyrtcid, slot) {
                 console.log('Connected', easyrtcid)
