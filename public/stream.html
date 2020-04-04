@@ -1,109 +1,184 @@
 <!DOCTYPE html>
 <html>
-    
-    <head>
-        <title>Multiparty Chatroom</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
-        <script src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript" src="libs/easyrtc.min.js"></script>
-        <script>
-            const maxCALLERS = 6;
-            
-            function callEverybodyElse(roomName, otherPeople, c) {
-                console.log({roomName, otherPeople, c});
-                easyrtc.setRoomOccupantListener(null); // so we're only called once.
-                
-                var list = [];
-                var connectCount = 0;
-                for (var easyrtcid in otherPeople) {
-                    list.push(easyrtcid);
-                }
-                
-                function establishConnection(position) {
-                    function callSuccess() {
-                        connectCount++;
-                        if (connectCount < maxCALLERS && position > 0) {
-                            establishConnection(position - 1);
-                        }
-                    }
-                    function callFailure(errorCode, errorText) {
-                        easyrtc.showError(errorCode, errorText);
-                        if (connectCount < maxCALLERS && position > 0) {
-                            establishConnection(position - 1);
-                        }
-                    }
-                    easyrtc.call(list[position], callSuccess, callFailure);
-                    
-                }
-                if (list.length > 0) {
-                    establishConnection(list.length - 1);
-                }
+
+<head>
+    <title>Multiparty Chatroom</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="libs/easyrtc.min.js"></script>
+    <script>
+        const maxCALLERS = 6;
+
+        function callEverybodyElse(roomName, otherPeople, c) {
+            console.log({ roomName, otherPeople, c });
+            easyrtc.setRoomOccupantListener(null); // so we're only called once.
+
+            var list = [];
+            var connectCount = 0;
+            for (var easyrtcid in otherPeople) {
+                list.push(easyrtcid);
             }
-            
-            
-            function appInit() {
-                easyrtc.setSocketUrl("", {});
-                easyrtc.setRoomOccupantListener(callEverybodyElse);
-                easyrtc.easyApp("stream.multiparty", "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], ()=>{});
-                easyrtc.setDisconnectListener(()=> easyrtc.showError("LOST-CONNECTION", "Lost connection to signaling server"));
-                easyrtc.setOnCall(function (easyrtcid, slot) {
-                    console.log('Connected', easyrtcid)
-                    console.log("getConnection count=" + easyrtc.getConnectionCount());
-                });
-            adaptScreen();
-			}
-            
-            function adaptScreen(){
-                // easyrtc.getConnectionCount();
-			   let clientWidth = document.documentElement.clientWidth;
-			   let clientHeight = document.documentElement.clientHeight;
-				
-				Array.from(document.getElementsByClassName('thumbCommon')).forEach(e=>{
-					e.style.width = clientWidth + 'px';
-					e.style.height = clientHeight + 'px';
-					// console.log(e);
-				});
-				}
-        </script>
+
+            function establishConnection(position) {
+                function callSuccess() {
+                    connectCount++;
+                    if (connectCount < maxCALLERS && position > 0) {
+                        establishConnection(position - 1);
+                    }
+                }
+                function callFailure(errorCode, errorText) {
+                    easyrtc.showError(errorCode, errorText);
+                    if (connectCount < maxCALLERS && position > 0) {
+                        establishConnection(position - 1);
+                    }
+                }
+                easyrtc.call(list[position], callSuccess, callFailure);
+
+            }
+            if (list.length > 0) {
+                establishConnection(list.length - 1);
+            }
+        }
+
+
+        function appInit() {
+            easyrtc.setSocketUrl("", {});
+            easyrtc.setRoomOccupantListener(callEverybodyElse);
+            easyrtc.easyApp("stream.multiparty", "box0", ["box1", "box2", "box3", "box4", "box5", "box6"], () => { });
+            easyrtc.setDisconnectListener(() => easyrtc.showError("LOST-CONNECTION", "Lost connection to signaling server"));
+            easyrtc.setOnCall(function (easyrtcid, slot) {
+                console.log('Connected', easyrtcid)
+                console.log("getConnection count=" + easyrtc.getConnectionCount());
+            });
+            setInterval(adaptScreen, 5000);
+        }
+
+        function adaptScreen() {
+            const self = document.getElementById('box0');
+            const count = easyrtc.getConnectionCount();
+            // count = 2;
+            let {clientWidth, clientHeight} = document.documentElement;
+
+            if(clientHeight > clientWidth){
+                self.style.width = '15%';
+            } else {
+                self.style.width = '10%';
+            }
+            let userWidth = clientWidth,
+                userHeight = clientWidth;
+            if(count > 1){
+                userWidth = userWidth / 2 - 20;
+            }
+
+            Array.from(document.getElementsByClassName('thumbCommon')).forEach(e => {
+                e.style.width = userWidth + 'px';
+                e.style.maxHeight = clientHeight + 'px';
+            });
+        }
+
         
-    </head>
-    
-    
-    
-    <body onload="appInit()">
-        <div id="fullpage">
-            <video id="box0" class="transit boxCommon easyrtcMirror" muted="muted" volume="0"
-            autoplay="autoplay" playsinline="playsinline"></video>
-            <video id="box1" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+(() => {
+    let isFullScreen = false;
+
+    document.fullscreenEnabled =
+        document.fullscreenEnabled ||
+        document.mozFullScreenEnabled ||
+        document.documentElement.webkitRequestFullScreen;
+    //Запустить отображение в полноэкранном режиме
+    window.launchFullScreen = () => {
+        function requestFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+            }
+        }
+
+        if (document.fullscreenEnabled) {
+            isFullScreen = true;
+            requestFullscreen(document.documentElement);
+        }
+    };
+
+    // Выход из полноэкранного режима
+
+    window.cancelFullscreenCustom = () => {
+        isFullScreen = false;
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    };
+
+    window.toggleFullScreen = () => {
+        console.log('TOGGLE')
+        if (isFullScreen) {
+            return window.cancelFullscreenCustom();
+        }
+        window.launchFullScreen();
+    };
+})();
+document.addEventListener('keypress', toggleFullScreen);
+    </script>
+
+</head>
+
+
+
+<body onload="appInit()">
+    <div id="toggle-fs" onclick="toggleFullScreen()">☒</div>
+    <div id="fullpage">
+        <video id="box0" class="transit boxCommon easyrtcMirror" muted="muted" volume="0" autoplay="autoplay"
             playsinline="playsinline"></video>
-            <video id="box2" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+        <video id="box1" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
             playsinline="playsinline"></video>
-            <video id="box3" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
-            playsinline="playsinline"></video> 
-            <video id="box4" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
-            playsinline="playsinline"></video> 
-            <video id="box5" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
-            playsinline="playsinline"></video> 
-            <video id="box6" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+        <video id="box2" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
             playsinline="playsinline"></video>
-        </div>
-    </body>
-    <style>
-        #fullpage video {
+        <video id="box3" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+            playsinline="playsinline"></video>
+        <video id="box4" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+            playsinline="playsinline"></video>
+        <video id="box5" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+            playsinline="playsinline"></video>
+        <video id="box6" class="transit boxCommon thumbCommon" style="visibility:hidden" autoplay="autoplay"
+            playsinline="playsinline"></video>
+    </div>
+</body>
+<style>
+    body{
+        padding: 0;
+        background: black;
+    }
+    #fullpage video {
         display: inline-block;
         border: 1px solid;
         visibility: visible !important;
-        }
-        #box0 {
+    }
+
+    #box0 {
+        border-radius: 10px;
         position: fixed;
         top: 0;
         right: 0;
-        width: 200px! important;
-        }
-    </style>
-    
-    
+        width: 200px;
+    }
+    #toggle-fs {
+        position: fixed;
+        top: 0;
+        left: 3px;
+        color: rgb(121, 153, 180);
+        font-size: 70px;
+        z-index: 10;
+    }
+</style>
+
+
 </body>
 
 </html>
