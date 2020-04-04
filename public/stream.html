@@ -60,15 +60,18 @@
             // count = 2;
             let {clientWidth, clientHeight} = document.documentElement;
 
-            if(clientHeight > clientWidth){
+            const isLandSkape = clientHeight > clientWidth; 
+            if(isLandSkape){
                 self.style.width = '15%';
             } else {
                 self.style.width = '10%';
             }
             let userWidth = clientWidth,
                 userHeight = clientWidth;
-            if(count > 1){
+                
+            if(count > 1 && isLandSkape){
                 userWidth = userWidth / 2 - 20;
+
             }
 
             Array.from(document.getElementsByClassName('thumbCommon')).forEach(e => {
@@ -132,7 +135,7 @@ document.addEventListener('keypress', toggleFullScreen);
 
 
 <body onload="appInit()">
-    <div id="toggle-fs" onclick="toggleFullScreen()">☒</div>
+    <div id="toggle-fs" onclick="toggleFullScreen()">⊗</div>
     <div id="fullpage">
         <video id="box0" class="transit boxCommon easyrtcMirror" muted="muted" volume="0" autoplay="autoplay"
             playsinline="playsinline"></video>
