@@ -5,7 +5,7 @@ if ('serviceWorker' in navigator) {
             err => console.log('ServiceWorker registration failed: ', err));
     });
 }
-
+screen.orientation.lock('landscape');
 import _ from 'underscore';
 import Noty from './libs/noty';
 import './libs/fonts';

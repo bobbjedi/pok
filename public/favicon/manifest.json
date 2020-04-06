@@ -5,6 +5,7 @@
     "start_url": "/",
     "display": "fullscreen",
     "theme_color": "#444",
+    "orientation": "landscape",
     "icons": [
         {
             "src": "\/favicon\/android-icon-36x36.png",
