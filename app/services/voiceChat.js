@@ -66,7 +66,7 @@ export default $root => {
     };
 
     const stopMic = () => {
-        setTimeout(() => {
+        $root.voiceChat && setTimeout(() => {
             $root.voiceChat.mic = false;
             $root.$digest();
         }, 300);
