@@ -1,10 +1,10 @@
 {
-    "name": "Royal Flush Poker",
-    "short_name": "RF.Poker",
+    "name": "Royal Flus Poker",
+    "short_name": "RFPoker",
     "lang": "ru-RU",
     "start_url": "/",
     "display": "fullscreen",
-    "theme_color": "#2c2c2c",
+    "theme_color": "#444",
     "icons": [
         {
             "src": "\/favicon\/android-icon-36x36.png",

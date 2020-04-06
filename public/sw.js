@@ -7,5 +7,4 @@ toolbox.precache([
     '/libs/easyrtc.min.js'
 ]);
 toolbox.router.get('/images/*', toolbox.cacheFirst);
-toolbox.router.get('/favicon/*', toolbox.cacheFirst);
 toolbox.router.get('/*', toolbox.networkFirst, { networkTimeoutSeconds: 5 });
