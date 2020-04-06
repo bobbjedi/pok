@@ -128,3 +128,27 @@ window.generateRndAvatar = img => {
         img.src = src;
     }
 };
+
+
+window.addToHomeScreen = ()=> {
+    window.promptEvent.prompt();
+    window.promptEvent.userChoice.then(function(choiceResult) {
+      if (choiceResult.outcome === 'accepted') {
+        console.info('mm User accepted the A2HS prompt');
+      } else {
+        console.info('mm User dismissed the A2HS prompt');
+      }
+      window.promptEvent = null;
+    });
+  }
+
+  window.addEventListener('beforeinstallprompt', function(event) {
+    event.preventDefault();
+    window.promptEvent = event;
+  });
+
+  document.addEventListener('click', function(event) {
+    if (event.target.matches('.add-app')) {
+      addToHomeScreen();
+    }
+  });
