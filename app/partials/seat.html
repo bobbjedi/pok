@@ -1,5 +1,5 @@
 <div class="player-wrap" ng-class="{'no-hand': !player.inHand}">
-    <div class="player-cards" ng-show="player.inHand || isMe(seatIndex)" ng-class="{dealt: player.hasCards || isMe(seatIndex) && !phase.includes('Blind')}">
+    <div class="player-cards" ng-show="player.inHand || isMe(seatIndex) && player.lastAct === 'Fold'" ng-class="{dealt: player.hasCards || isMe(seatIndex) && !phase.includes('Blind')}">
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 ) + ' ' + $root.settings.cardColors"></div>
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>

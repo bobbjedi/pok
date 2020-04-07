@@ -26,7 +26,7 @@ app.directive('seat', [function() {
             scope.seatIndex = parseInt(attributes.seatIndex);
             scope.cellNumber = parseInt(attributes.cellNumber);
 
-            scope.isMe = seat => +seat === +scope.mySeat;
+            scope.isMe = seat => scope.mySeat !== null && +seat === +scope.mySeat;
 
             scope.getCardClass = function(seat, card) {
                 if (scope.mySeat !== null && +scope.mySeat === seat) {
