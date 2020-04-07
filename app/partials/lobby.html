@@ -99,11 +99,11 @@
             
             <!-- USERPANEL -->
     <div id="user-panel">
-        <img src="/images/logo.png" class="label-poker add-app">
+        <img src="/images/logo.png" class="label-poker add-app" alt="logo">
         <div class="login-path" ng-show="isLogged()">
             <div class="avatar" ng-click="uploadAvatar()">
                 <img class="avatar-img" ng-src="{{'./avatars/' + $root.user.login + '.jpg'}}"
-                    onerror="generateRndAvatar(this)">
+                    onerror="generateRndAvatar(this)" alt="avatar">
             </div>
             <div class="user-info">
                 <b>Hello!</b> <span class="user-name">{{$root.user.login}}</span>

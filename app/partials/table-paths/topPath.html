@@ -75,11 +75,11 @@
 </div>
 
 <div id="table">
-    <img class="table-texture" src="/images/table_2.png">
+    <img class="table-texture" src="/images/table_2.png" alt="table">
     <div class="table-name">
         <div ng-if="!table.isTournStart && table.data.userListArray.length" class="small table-reg-list">Участники: {{table.data.userListArray.join(', ')}}</div>
-        <img ng-if="!isWaitSpinRate" src="/images/logo.png">
-        <img ng-if="isWaitSpinRate && !spin.rate" src="/images/dice.gif">
+        <img ng-if="!isWaitSpinRate" src="/images/logo.png" alt="logo">
+        <img ng-if="isWaitSpinRate && !spin.rate" src="/images/dice.gif" alt="dices">
         <!-- <div ng-if="isWaitSpinRate && spin.rate">
             <div class="spin-rate">Rate: table.maxBuyIn x {{spin.rate}}</div>
             <div class="spin-rate-link"><a ng-href="'/' + spin.hash">{{spin.hash}}</a></div>

@@ -4,7 +4,9 @@
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>
     <div class="seat" ng-show="seatOccupied(seatIndex)" ng-class="{me: $root.user.login === player.name, active: activeSeat===seatIndex, winner: $root.winnerName && $root.winnerName === player.name}">
-            <div ng-show="player.name" class="avatar-img-seat"><img ng-src="{{'/avatars/' + player.name + '.jpg'}}" onerror="generateRndAvatar(this)"></div>
+            <div ng-show="player.name" class="avatar-img-seat">
+                <img ng-src="{{'/avatars/' + player.name + '.jpg'}}" onerror="generateRndAvatar(this)" alt="ava-user">
+            </div>
         <!-- Таймер -->
         <div class="time-out" ng-show="activeSeat === seatIndex && $root.timeOutCurrent >=0 && !$root.winnerMsgArr.length">
             <span class="img_animate red-cheap"></span>&#160;{{$root.timeOutCurrent}}s
@@ -29,6 +31,6 @@
     </div>
     <div id="dealer-wrap-{{cellNumber}}" class="dealer-button txt-white" ng-show="dealerSeat===seatIndex">D</div>
     <div id="bets-{{cellNumber}}" class="bets">
-        <span ng-show="player.bet"><div class=""><img src="/images/cheap.png">&nbsp;{{$root.round(player.bet)}}</span>
+        <span ng-show="player.bet"><div class=""><img src="/images/cheap.png" alt="chip">&nbsp;{{$root.round(player.bet)}}</span>
     </div>
 </div>
