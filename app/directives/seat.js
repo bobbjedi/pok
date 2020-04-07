@@ -33,7 +33,6 @@ app.directive('seat', [function() {
                     return scope.myCards[card];
                 }
                 else if (typeof scope.player !== 'undefined' && scope.player && scope.player.cards && scope.player.cards[card]) {
-                    console.log('SEAT cards', seat);
                     return 'card-' + scope.player.cards[card];
                 }
                 else {
