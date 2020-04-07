@@ -578,13 +578,10 @@ Table.prototype.initializeNextPhase = function() {
     this.public.activeSeat = this.findNextPlayer(this.public.dealerSeat);
     this.lastPlayerToAct = this.findPreviousPlayer(this.public.activeSeat);
     this.emitEvent('table-data', this.public, true);
-
     // If all other players are all in, there should be no actions. Move to the next round.
     if (this.otherPlayersAreAllIn()) {
-        var that = this;
-        setTimeout(function(){
-            that.endPhase();
-        }, 1000);
+        Object.keys(this.seats).forEach(p=> this.seats[p] && (this.seats[p].public.cards = this.seats[p].cards)); // вскрываем всем карты
+        setTimeout(()=>this.endPhase(), 2000);
     } else {
         this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
     }
