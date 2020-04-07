@@ -22,7 +22,6 @@ import './controllers/cabinet';
 
 import './services/sounds';
 import './directives/seat';
-import config from '../config';
 
 Noty.overrideDefaults({
     layout: 'topRight',
@@ -43,15 +42,12 @@ window.noty = (type, text, delay) => {
     }).show();
 };
 
-
-// if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-//     $u.launchFullScreen();
-// }
-window.addEventListener("hashchange", function (e) {
-    if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')) {
-        window.location.reload();
-    }
-});
+// window.addEventListener("hashchange", function (e) {
+//     console.log('RELOAD FORCE');
+//     if (e.oldURL.length > e.newURL.length && e.newURL.endsWith('/#/')) {
+//         window.location.reload();
+//     }
+// });
 
 window.copy = function (v, msg) {
     var copytext = document.createElement('input');
@@ -122,7 +118,6 @@ window.generateRndAvatar = img => {
         if (num < 1 || num > 27){
             src = '/avatars/default.jpg';
         } else {
-            // src = '/avatars_png/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.png';
             src = '/avatars_default/default_' + (liter.toLowerCase().charCodeAt(0) - 96) + '.jpg';
         }
         img.src = src;
@@ -133,22 +128,22 @@ window.generateRndAvatar = img => {
 window.addToHomeScreen = ()=> {
     window.promptEvent.prompt();
     window.promptEvent.userChoice.then(function(choiceResult) {
-      if (choiceResult.outcome === 'accepted') {
-        console.info('mm User accepted the A2HS prompt');
-      } else {
-        console.info('mm User dismissed the A2HS prompt');
-      }
-      window.promptEvent = null;
+        if (choiceResult.outcome === 'accepted') {
+            console.info('mm User accepted the A2HS prompt');
+        } else {
+            console.info('mm User dismissed the A2HS prompt');
+        }
+        window.promptEvent = null;
     });
-  }
+};
 
-  window.addEventListener('beforeinstallprompt', function(event) {
+window.addEventListener('beforeinstallprompt', function(event) {
     event.preventDefault();
     window.promptEvent = event;
-  });
+});
 
-  document.addEventListener('click', function(event) {
+document.addEventListener('click', function(event) {
     if (event.target.matches('.add-app')) {
-      addToHomeScreen();
+        window.addToHomeScreen();
     }
-  });
+});

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 importScripts('sw-toolbox.js');
 
 const precacheFiles = [
@@ -23,7 +24,7 @@ const precacheFiles = [
     '/socket.io/socket.io.js',
     '/libs/easyrtc.min.js',
     '/sw-toolbox.js',
-    // '/dist/build.js'
+    '/dist/build.js'
 ];
 // toolbox.debug = true;
 toolbox.precache(precacheFiles);
