@@ -967,7 +967,7 @@ div#board-wrap .card-container {
     width: 50%
 }
 
-.modal-wrap #curtain {
+.modal-wrap .curtain {
     position: fixed;
     top: 0;
     left: 0;
