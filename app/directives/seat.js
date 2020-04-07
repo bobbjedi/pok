@@ -19,17 +19,21 @@ app.directive('seat', [function() {
             sittingOnTable: '=',
             dealerSeat: '=',
             notifications: '=',
+            phase: '=',
             showBuyInModal: '&'
         },
         link: function(scope, element, attributes) {
             scope.seatIndex = parseInt(attributes.seatIndex);
             scope.cellNumber = parseInt(attributes.cellNumber);
 
+            scope.isMe = seat => +seat === +scope.mySeat;
+
             scope.getCardClass = function(seat, card) {
                 if (scope.mySeat !== null && +scope.mySeat === seat) {
                     return scope.myCards[card];
                 }
                 else if (typeof scope.player !== 'undefined' && scope.player && scope.player.cards && scope.player.cards[card]) {
+                    console.log('SEAT cards', seat);
                     return 'card-' + scope.player.cards[card];
                 }
                 else {

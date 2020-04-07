@@ -46,7 +46,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 return;
             }
             const {table} = $scope;
-            for (let seat in table.seats){
+            for (const seat in table.seats){
                 const player = table.seats[seat];
                 if (player && player.name && player.name === $rootScope.user.login){
                     $rootScope.sittingOnTable = $routeParams.tableId;
@@ -346,7 +346,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             });
         };
 
-        let lastSeatActive = -1;
+        const lastSeatActive = -1;
         // When the table data have changed
         let predCards = '';
         socket.on('table-data', function(data) {

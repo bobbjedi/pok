@@ -218,7 +218,7 @@ Table.prototype.setTimeoutWait = function(){
         log.error('setTimeOut player:  ' + e);
     }
 };
-Table.prototype.clearTimeoutPlayerAction = function(src){
+Table.prototype.clearTimeoutPlayerAction = function(){
     if (this.timeOutWaitUserAction){
         // console.log('clearTimeoutPlayerAction', src);
         clearTimeout(this.timeOutWaitUserAction);

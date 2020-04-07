@@ -1,9 +1,14 @@
 <div class="player-wrap" ng-class="{'no-hand': !player.inHand}">
-    <div class="player-cards" ng-show="player.inHand" ng-class="{dealt: player.hasCards || false && mySeat !== null && seatIndex === mySeat && myCards[0].length > 1}">
+    <div class="player-cards" ng-show="player.inHand || isMe(seatIndex)" ng-class="{dealt: player.hasCards || isMe(seatIndex) && !phase.includes('Blind')}">
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 ) + ' ' + $root.settings.cardColors"></div>
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>
-    <div class="seat" ng-show="seatOccupied(seatIndex)" ng-class="{me: $root.user.login === player.name, active: activeSeat===seatIndex, winner: $root.winnerName && $root.winnerName === player.name}">
+    <div class="seat" ng-show="seatOccupied(seatIndex)" 
+    ng-class="{
+        me: isMe(seatIndex),
+        active: activeSeat===seatIndex,
+        winner: $root.winnerName && $root.winnerName === player.name
+    }">
             <div ng-show="player.name" class="avatar-img-seat">
                 <img ng-src="{{'/avatars/' + player.name + '.jpg'}}" onerror="generateRndAvatar(this)" alt="ava-user">
             </div>
@@ -19,7 +24,7 @@
         <div class="player-content" ng-show="player.name">
             <div ng-show="!notifications[seatIndex].message">
                 <span class="txt-blue small">{{player.lastAct}}</span> 
-                <span ng-class="{me:$root.user.login === player.name}">{{player.name}}</span>
+                <span ng-class="{me:isMe(seatIndex)}">{{player.name}}</span>
                 <div class="tin-line-player"></div>
                 <span ng-show="player.sittingIn" class="txt-yellow deposit">{{$root.round(player.chipsInPlay)}}</span>
                 <span ng-show="!player.sittingIn">sit Out</span>

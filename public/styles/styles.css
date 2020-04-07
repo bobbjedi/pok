@@ -465,6 +465,9 @@ div.seat.active.me{
     border: 2px solid rgb(241, 122, 86);
     box-shadow: 0 0 3px 0 rgb(241, 122, 86);
 }
+div.seat.me:not(.active){
+    
+}
 div.seat.winner {
     color: #e9e0ee;
     border: 2px solid #eabb56;
