@@ -642,7 +642,7 @@ Table.prototype.sendChatMsg = function(message){
  */
 Table.prototype.endPhase = function() {
     let timeOut = 0;
-    if (this.otherPlayersAreAllIn() || 1) {
+    if (this.otherPlayersAreAllIn()) {
         timeOut = 2;
         Object.keys(this.seats).forEach(p=> this.seats[p] && (this.seats[p].public.cards = this.seats[p].cards)); // вскрываем всем карты
         this.public.isAllIn = true;
