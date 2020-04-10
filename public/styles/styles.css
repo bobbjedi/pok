@@ -367,11 +367,10 @@ div#chat input[type="submit"] {
 }
 
 div#chat input[type="text"] {
-    width: 197px;
+    width: 189px;
     font-size: 1em;
-    margin: 3px 0 0 8px;
+    margin: 4px 0 0 3px;
     padding: 5px;
-    transform: translate(0, -2px);
     border-radius: 2px;
     background-color: black;
 }
