@@ -123,6 +123,7 @@ var Table = function(id, name, eventEmitter, seatsCount, bigBlind, smallBlind, m
             seat: '',
             action: ''
         },
+        isAllIn: false
     };
     // Initializing the empty seats
     for (var i = 0; i < this.public.seatsCount; i++) {
@@ -398,6 +399,7 @@ Table.prototype.setTimeOutRmCustomTbl = async function() {
  */
 Table.prototype.initializeRound = async function(changeDealer) {
     this.lastActiveSetWaitMove = {seat: null, move: null};
+    this.public.isAllIn = false;
     if (Store.isGamesPaused
         || this.public.isStoppedGames // остановка для следующей рассадки турнира
         || this.isTourn && !this.isTournStart && this.playersSittingInCount < this.tournPlayersCount){ //  пока не наполнилось - турнир не стартует
@@ -580,8 +582,7 @@ Table.prototype.initializeNextPhase = function() {
     this.emitEvent('table-data', this.public, true);
     // If all other players are all in, there should be no actions. Move to the next round.
     if (this.otherPlayersAreAllIn()) {
-        Object.keys(this.seats).forEach(p=> this.seats[p] && (this.seats[p].public.cards = this.seats[p].cards)); // вскрываем всем карты
-        setTimeout(()=>this.endPhase(), 2000);
+        setTimeout(()=>this.endPhase(), 1000);
     } else {
         this.seats[this.public.activeSeat].socket.emit('actNotBettedPot');
     }
@@ -640,17 +641,26 @@ Table.prototype.sendChatMsg = function(message){
  * Ends the current phase of the round
  */
 Table.prototype.endPhase = function() {
-    // this.clearTimeoutPlayerAction('endPhase');
-    switch (this.public.phase) {
-    case 'preflop':
-    case 'flop':
-    case 'turn':
-        this.initializeNextPhase();
-        break;
-    case 'river':
-        this.showdown();
-        break;
+    let timeOut = 0;
+    if (this.otherPlayersAreAllIn() || 1) {
+        timeOut = 2;
+        Object.keys(this.seats).forEach(p=> this.seats[p] && (this.seats[p].public.cards = this.seats[p].cards)); // вскрываем всем карты
+        this.public.isAllIn = true;
+        this.emitEvent('table-data', this.public);
     }
+    // this.clearTimeoutPlayerAction('endPhase');
+    setTimeout(()=>{
+        switch (this.public.phase) {
+        case 'preflop':
+        case 'flop':
+        case 'turn':
+            this.initializeNextPhase();
+            break;
+        case 'river':
+            this.showdown();
+            break;
+        }
+    }, timeOut * 1000);
 };
 
 
