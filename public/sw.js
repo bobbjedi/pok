@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 importScripts('sw-toolbox.js');
-// importScripts('firebase-messaging-sw.js');
 
 const precacheFiles = [
     '/index.html',
@@ -26,15 +25,15 @@ const precacheFiles = [
     '/audio/card.mp3',
     '/audio/dices_2.mp3',
 
-    '/libs/polyfills.js',
     '/socket.io/socket.io.js',
     '/libs/easyrtc.min.js',
-    // '/libs/firebase-app.js',
-    // '/libs/firebase-messaging.js',
+    '/libs/polyfills.js',
+    '/libs/firebase-app.js',
+    '/libs/firebase-messaging.js',
     '/sw-toolbox.js',
     '/dist/build.js'
 ];
-// toolbox.debug = true;
+
 toolbox.precache(precacheFiles);
 toolbox.router.get('/images/*', toolbox.cacheFirst);
 toolbox.router.get('/audio/*', toolbox.cacheFirst);
