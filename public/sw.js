@@ -26,6 +26,7 @@ const precacheFiles = [
     '/audio/card.mp3',
     '/audio/dices_2.mp3',
 
+    '/libs/polyfills.js',
     '/socket.io/socket.io.js',
     '/libs/easyrtc.min.js',
     // '/libs/firebase-app.js',
