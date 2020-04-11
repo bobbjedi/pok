@@ -15,6 +15,7 @@ const precacheFiles = [
     '/images/dice.gif',
     '/images/deck4.png',
     '/images/deck.png',
+    '/images/*',
 
     '/audio/fold.wav',
     '/audio/check.wav',
