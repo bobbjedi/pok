@@ -28,8 +28,8 @@ const precacheFiles = [
     '/socket.io/socket.io.js',
     '/libs/easyrtc.min.js',
     '/libs/polyfills.js',
-    '/libs/firebase-app.js',
-    '/libs/firebase-messaging.js',
+    // '/libs/firebase-app.js',
+    // '/libs/firebase-messaging.js',
     '/sw-toolbox.js',
     '/dist/build.js'
 ];
