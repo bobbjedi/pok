@@ -1,11 +1,3 @@
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js').then(
-            registration => console.log('ServiceWorker registration successful with scope: ', registration.scope),
-            err => console.log('ServiceWorker registration failed: ', err));
-    });
-}
-
 import _ from 'underscore';
 import Noty from './libs/noty';
 import './libs/fonts';
@@ -147,3 +139,11 @@ document.addEventListener('click', function(event) {
         window.addToHomeScreen();
     }
 });
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').then(
+            registration => console.log('ServiceWorker registration successful with scope: ', registration.scope),
+            err => console.log('ServiceWorker registration failed: ', err));
+    });
+}

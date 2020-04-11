@@ -43,20 +43,20 @@
 <body>
     <div id="noticeOrientation"><img src="./images/rotate.gif" alt="Royal Flush Poker"></div>
     <div id="preloader"><img class="rotate" src="./images/preloader.png"></div>
-    <div id="content" ng-view="ng-view" ng-controller="LobbyController"></div>
+    <div id="content" ng-view="ng-view" ng-controller="LobbyController" ng-strict-di></div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="libs/easyrtc.min.js"></script>
-    <script src="./libs/firebase-app.js"></script>
-    <script src="./libs/firebase-messaging.js"></script>
-    <script src="./dist/build.js"></script>
+    <script src="libs/firebase-app.js"></script>
+    <script src="libs/firebase-messaging.js"></script>
+    <script src="dist/build.js"></script>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
 <div style="display: none;">
-    <img src="./images/deck.png" alt="deck2" />
-    <img src="./images/deck4.png" alt="deck4" />
-    <img src="./images/dice.gif" alt="dices" />
+    <img src="images/deck.png" alt="deck2" />
+    <img src="images/deck4.png" alt="deck4" />
+    <img src="images/dice.gif" alt="dices" />
 </div>
 
 <div id="voice-chat" style="display: none;"></div>
@@ -64,6 +64,9 @@
     <!-- anchor linking to external file -->
     <h3>Sorry! You Brouser blocked or not suppurt javascript. Please use another brouser or enable javascript.</h3>
 </noscript>
+<div id="errors">
+    <div>Errors:</div>
+</div>
 </body>
 
 </html>

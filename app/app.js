@@ -154,6 +154,13 @@ app.run(function($rootScope) {
     $rootScope.tsp = thousandSeparator;
     $rootScope.voiceChat = voiceChat($rootScope);
     window.voice = $rootScope.voiceChat;
+    
+    const errors = document.getElementById('errors');
+    window.addEventListener('error', e => {
+        console.log('Error', e.message);
+        errors.innerHTML += e.message;
+        window.hidePreloader();
+    });
 });
 
 

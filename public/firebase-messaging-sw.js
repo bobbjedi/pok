@@ -1,6 +1,6 @@
 // https://github.com/firebase/quickstart-js/blob/master/messaging/firebase-messaging-sw.js
 /* eslint-disable no-undef */
-importScripts('/libs/firebase-app.js');
+importScripts('libs/firebase-app.js');
 importScripts('libs/firebase-messaging.js');
 
 var firebaseConfig = {
