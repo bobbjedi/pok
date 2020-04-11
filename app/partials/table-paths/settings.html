@@ -13,6 +13,11 @@
                     aria-hidden="true"></i>
                 <div class="settings-label">Sound</div>
             </div>
+            <div class="setting-line" ng-click="$root.settings.push = !$root.settings.push">
+                <i class="fa hovered" ng-class="'fa-toggle-' + ($root.settings.push ? 'on' : 'off')"
+                    aria-hidden="true"></i>
+                <div class="settings-label">Push notify</div>
+            </div>
             <div class="but bg-blue" ng-click="isOpenSettings = false">Ok</div>
         </div>
     </div>

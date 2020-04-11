@@ -7,6 +7,7 @@ import _ from 'underscore';
 import $u from './libs/utils';
 import socket from './services/socket.io';
 import voiceChat from './services/voiceChat';
+import push from './services/firebase';
 
 const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -99,9 +100,7 @@ app.run(function($rootScope) {
         });
     }, 1000);
 
-    $rootScope.$watch('user.token', ()=>{
-        localStorage.setItem('token', $rootScope.user.token);
-    });
+    $rootScope.$watch('user.token', ()=> localStorage.setItem('token', $rootScope.user.token));
 
     $rootScope.logOut();
     $rootScope.api = api;
@@ -113,7 +112,8 @@ app.run(function($rootScope) {
     $rootScope.settings = localStorage.getItem('user_settings') && JSON.parse(localStorage.getItem('user_settings')) || {
         cardColors: 'card2',
         sound: true,
-        coinName: 'DEMO'
+        coinName: 'DEMO',
+        push: false
     };
 
     $rootScope.changeCoinName = coinName=>{
@@ -126,11 +126,10 @@ app.run(function($rootScope) {
             $rootScope.$digest();
         } catch (e) { }
     };
-
+    push($rootScope);// оборачиваем пушами
     $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
     $rootScope.updateUser(true);
     $rootScope.depositCps = amount => {
-        console.log(amount);
         $rootScope.api({action: 'cpsPay', data: {
             coinName: $rootScope.settings.coinName,
             amount

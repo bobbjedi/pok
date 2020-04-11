@@ -25,7 +25,7 @@ function createServer(app){
 
 let dirName;
 function init(){
-// require('./modules/tlgGame');
+    require('./modules/firebase');
     // require('./modules/checkerTx');
     require('./modules/miner').init();
     require('./VCHserver')(app, io);

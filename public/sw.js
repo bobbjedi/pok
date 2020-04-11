@@ -1,9 +1,14 @@
 /* eslint-disable no-undef */
 importScripts('sw-toolbox.js');
+// importScripts('firebase-messaging-sw.js');
 
 const precacheFiles = [
     '/index.html',
+
     '/styles/noty.css',
+    '/styles/styles.css',
+    '/styles/common.css',
+    '/styles/mystyles.css',
 
     '/images/rotate.gif',
     '/images/preloader.png',
@@ -23,6 +28,8 @@ const precacheFiles = [
 
     '/socket.io/socket.io.js',
     '/libs/easyrtc.min.js',
+    '/libs/firebase-app.js',
+    '/libs/firebase-messaging.js',
     '/sw-toolbox.js',
     '/dist/build.js'
 ];
