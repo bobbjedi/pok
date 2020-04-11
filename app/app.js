@@ -14,7 +14,7 @@ const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $
         template: includeHtml(10),
         controller: 'TableController',
     });
-
+    
     $routeProvider.when('/table-6/:tableId', {
         template: includeHtml(6),
         controller: 'TableController',
@@ -154,13 +154,6 @@ app.run(function($rootScope) {
     $rootScope.tsp = thousandSeparator;
     $rootScope.voiceChat = voiceChat($rootScope);
     window.voice = $rootScope.voiceChat;
-    
-    const errors = document.getElementById('errors');
-    window.addEventListener('error', e => {
-        console.log('Error', e.message);
-        errors.innerHTML += e.message;
-        window.hidePreloader();
-    });
 });
 
 
