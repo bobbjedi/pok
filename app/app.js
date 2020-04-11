@@ -7,7 +7,7 @@ import _ from 'underscore';
 import $u from './libs/utils';
 import socket from './services/socket.io';
 import voiceChat from './services/voiceChat';
-// import push from './services/firebase';
+import push from './services/firebase';
 
 const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
     $routeProvider.when('/table-10/:tableId', {
@@ -127,7 +127,7 @@ app.run(function($rootScope) {
         } catch (e) { }
     };
     
-    // push($rootScope);// оборачиваем пушами
+    push($rootScope);// оборачиваем пушами
 
     $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
     $rootScope.updateUser(true);
