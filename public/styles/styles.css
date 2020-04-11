@@ -433,7 +433,7 @@ div.seat {
     width: 100%;
     height: 70px;
     background-color: #0d0d0d;
-    background-image: url("/images/bg-seat.jpg");
+    /* background-image: url("/images/bg-seat.jpg"); */
     background-position: right bottom;
     border: 1px solid #afaabe;
     border-radius: 3px;
@@ -455,6 +455,10 @@ div.seat {
     opacity: 0.8;
 }
 
+.no-hand .me{
+    background-color: #242020;
+}
+
 div.seat.active {
     border: 2px solid #ffd54f99;
     box-shadow: 0 0 3px 0 #fbc02d82;
@@ -464,9 +468,7 @@ div.seat.active.me{
     border: 2px solid rgb(241, 122, 86);
     box-shadow: 0 0 3px 0 rgb(241, 122, 86);
 }
-div.seat.me:not(.active){
-    
-}
+
 div.seat.winner {
     color: #e9e0ee;
     border: 2px solid #eabb56;
