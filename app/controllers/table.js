@@ -34,7 +34,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $scope.lastEventTime = 0;
         automoves($scope, $rootScope);
         tourn($scope, $rootScope);
-        $scope.checkEmitAction = (action) =>{
+        $scope.checkEmitAction = () =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
                 $scope.lastEventTime = new Date().getTime();
                 return true;
@@ -435,14 +435,14 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // When the player is asked to place the small blind
-        socket.on('postSmallBlind', function(data) {
+        socket.on('postSmallBlind', function() {
             sounds.playMyStepSound();
             $scope.$digest();
             $scope.actionState = 'postSmallBlind';
         });
 
         // When the player is asked to place the big blind
-        socket.on('postBigBlind', function(data) {
+        socket.on('postBigBlind', function() {
             $scope.actionState = 'postBigBlind';
             $scope.$digest();
             sounds.playMyStepSound();

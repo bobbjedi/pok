@@ -292,7 +292,7 @@ io.sockets.on('connection', function(socket) {
 	 * @param function callback
 	 */
     socket.on('checkUser', async (data, callback) => {
-        const {name, token, coinName, playerId} = data;
+        const {name, token, coinName} = data;
         // If a new screen name is posted
         try {
             players[socket.id] && players[socket.id].return();
