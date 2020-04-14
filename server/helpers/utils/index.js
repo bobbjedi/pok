@@ -93,7 +93,7 @@ module.exports = {
         console.log('updateUserDeposit2>', user, amount, coinName, isNoNeedSave);
     },
 
-    async createUser(params){ 
+    async createUser(params){
         const {login, password, refererId} = params;
         if (!login.length || !password.length) {
             return {error: 'Неполные данные.'};
@@ -271,10 +271,23 @@ module.exports = {
             log.error('addAddressToUser: Невалидные данные: ' + address + ' ' + coinName);
             return 'Not valid address or coin!';
         }
+
         if (user.addresses[coinName]){
             log.error('addAddressToUser: Адрес пользователю уже добавлен: ' + address);
             return 'Address already exist!';
         }
+
+        const isAlreadyAddress = await this.getUserFromQ({
+            $where: function () {
+                return this.addresses[coinName] === address;
+            }
+        });
+
+        if (isAlreadyAddress){
+            log.error('addAddressToUser: Адрес уже занят: ' + address);
+            return 'Address already exist!';
+        }
+
         user.addresses[coinName] = address;
         await user.save();
         return false;
@@ -360,7 +373,7 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
-    // return;
+    return;
     if (!config.isDev){
         return;
     }
@@ -404,7 +417,7 @@ setTimeout(async ()=>{
     //     console.log('USDT', u.login);
     // }
     // });
-    
+
     //     u.address && await u.update({
     //         address: undefined,
     //         addresses: {
