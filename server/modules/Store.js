@@ -1,6 +1,8 @@
 const config = require('../helpers/configReader');
 const {storeDb} = require('./DB');
 const Mtt = require('./Mtt');
+const _ = require('underscore');
+
 let $u;
 module.exports = {
     isGamesPaused: false,
@@ -45,6 +47,7 @@ module.exports = {
     createMtt(params = {}) {
         console.log('createMtt Params>', params);
         const buyIn = params.buyIn >= 0 ? params.buyIn : 100;
+        const reentryCount =  _.isNumber(params.maxLevelReentry) ? params.maxLevelReentry : 7;
         this.system.mtt = {
             date: params.date || 'Будет обьявлено',
             isRegOppened: true,
@@ -58,7 +61,7 @@ module.exports = {
             coinName: params.coinName || 'BIP',
             totalBank: params.startBank || 0,
             startBank: params.startBank || 0,
-            maxLevelReentry: params.maxLevelReentry || 7,
+            maxLevelReentry: reentryCount,
             users: []
         };
         this.save();
