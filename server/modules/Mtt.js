@@ -77,7 +77,7 @@ module.exports = class Mtt{
                 params: this.params,
                 reEntries: {},
                 winners: [],
-                level: 0
+                level: 1
             }, 1);
 
             // Собираем игроков
