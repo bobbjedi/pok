@@ -8,7 +8,7 @@ import automoves from './mixins/automoves';
 import socket from '../services/socket.io';
 import app from '../app';
 import tourn from './mixins/tourn';
-
+import solover from '../services/solover';
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
         $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
@@ -499,11 +499,11 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // костыль range
         const rangeEl = document.getElementById('range-el');
         const inputEl = document.getElementById('bet-input');
-        
+
         $scope.$watch('betAmount', v=>{
             const max = $scope.maxBetAmount();
             if (v > max){
-                $scope.betAmount = $scope.maxBetAmount(); 
+                $scope.betAmount = $scope.maxBetAmount();
             } else if (v < 0){
                 $scope.betAmount = 0;
             } else if (v < max){
@@ -515,7 +515,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         rangeEl.onmousemove = () => rangeEl.value !== $scope.betAmount && $scope.$digest();
         window.onRange = el => $scope.betAmount = +el.value;
-
+        window.sol = ()=>setInterval(()=>{
+            solover($scope.myCards, $scope.table.board, null, $scope.table.seats);
+        }, 5000);
         // Фикс Ad
         $scope.$watch('myCards', () => fixAd($scope.myCards), true);
         $scope.$watch('table.board', () => fixAd($scope.table.board), true);
@@ -533,9 +535,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 'Ar'));
 
 /**
- * 
- * @param {String} num 
- * @param {String} step 
+ *
+ * @param {String} num
+ * @param {String} step
  */
 function roundByCrat(num, step){
     return $u.round(num - num % step);

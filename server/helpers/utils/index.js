@@ -373,7 +373,7 @@ module.exports = {
 // MIGRATE
 
 setTimeout(async ()=>{
-    return;
+    // return;
     if (!config.isDev){
         return;
     }

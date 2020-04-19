@@ -11,7 +11,6 @@ var firebaseConfig = {
 };
 export default $root => {
     if ('Notification' in window) {
-        console.log('QERT')
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const messaging = firebase.messaging();
@@ -19,11 +18,11 @@ export default $root => {
 
             subscribe(currentToken => $root.pushToken = currentToken);
         };
-  
+
         $root.$watch('settings.push', v => {
             if (v) {
                 enabledPush();
-            // send add 
+            // send add
             } else {
             // send rm
             }
