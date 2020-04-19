@@ -1,5 +1,5 @@
 import * as _ from 'underscore';
-const iterats = 1000;
+const iterats = 5000;
 
 export default startSol;
 
