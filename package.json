@@ -1,5 +1,5 @@
 {
-    "name": "Xewert",
+    "name": "xewert",
     "version": "0.0.1",
     "private": false,
     "scripts": {
@@ -30,8 +30,10 @@
         "express-fileupload": "^1.1.6",
         "fetch": "^1.1.0",
         "get-user-media-promise": "^1.1.4",
+        "hdkey": "^1.1.2",
         "microphone-stream": "^5.0.1",
         "minter-js-sdk": "^0.20.3",
+        "minterjs-wallet": "^4.0.4",
         "nedb": "^1.8.0",
         "node-cron": "^2.0.3",
         "node-fetch": "^2.6.0",

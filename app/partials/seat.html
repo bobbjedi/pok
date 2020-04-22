@@ -3,7 +3,7 @@
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 ) + ' ' + $root.settings.cardColors"></div>
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>
-    <div class="seat" ng-show="seatOccupied(seatIndex)" 
+    <div class="seat" ng-show="seatOccupied(seatIndex)"
     ng-class="{
         me: isMe(seatIndex),
         active: activeSeat===seatIndex,
@@ -18,12 +18,12 @@
         </div>
 
         <!-- Выигрыш -->
-        <div class="time-out txt-green" ng-show="$root.winnersData[player.name]">+{{$root.winnersData[player.name].amount}}</div>
+        <div class="time-out txt-green" ng-show="$root.winnersData[player.name]">+{{$root.tsp($root.winnersData[player.name].amount)}}</div>
 
         <a class="sitIn" ng-show="!player.name" ng-click="showBuyInModal( {seat:seatIndex} )">Занять место</a>
         <div class="player-content" ng-show="player.name">
             <div ng-show="!notifications[seatIndex].message">
-                <span class="txt-blue small">{{player.lastAct}}</span> 
+                <span class="txt-blue small">{{player.lastAct}}</span>
                 <span ng-class="{me:isMe(seatIndex)}">{{player.name}}</span>
                 <div class="tin-line-player"></div>
                 <span ng-show="player.sittingIn" class="txt-yellow deposit">{{$root.round(player.chipsInPlay)}}</span>

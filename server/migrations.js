@@ -1,8 +1,8 @@
 const {usersDb} = require('./modules/DB');
 
-// Коины 
+// Коины
 (async () => {
-    const coin = 'USDT';
+    const coin = 'ROUBLE';
     const users = await usersDb.find({
         $where: function () {
             return this.depositInRoom[coin] === undefined;

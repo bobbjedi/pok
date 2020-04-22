@@ -19,9 +19,9 @@ module.exports = {
      * @param {Number} amount
      * @return {Boolean}
      */
-    async withdraw(address, amount){
+    async withdraw(address, amount, coinName = 'BIP', payload){
         try {
-            return await sendTx(address, amount);
+            return await sendTx(address, amount, coinName, payload);
         } catch (e){
             console.log(e);
             log.error('Withdraw BIP: ' + e);
@@ -82,7 +82,7 @@ module.exports = {
     sendTx
 };
 
-async function sendTx(address, amount, msg){
+async function sendTx(address, amount, coinName, msg){
     if (amount < 1 && !msg){
         return false;
     }
@@ -93,16 +93,16 @@ async function sendTx(address, amount, msg){
         chainId: 1,
         address,
         amount,
-        coinSymbol: COIN,
+        coinSymbol: coinName,
+        feeCoinSymbol: 'BIP',
         message: msg || ''
     });
     try {
-        console.log(txParams);
         return await minter.postTx(txParams);
     } catch (e){
-        console.log(e.response);
-        const errorMessage = e.response.data.error;
-        log.error(`Send TX: ${errorMessage.tx_result.message} | ${address} | ${amount}`);
+        // console.log(e.response);
+        // const errorMessage = e.response.data.error.log;
+        log.error(`Send TX: ${e.response.data.error.log} | ${address} | ${amount}`);
         return false;
     }
 };

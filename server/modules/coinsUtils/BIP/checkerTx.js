@@ -1,12 +1,11 @@
 const config = require('../../../helpers/configReader');
 const request = require('request');
-const {restorePswdDb} = require('../../DB');
-const depositsDb = require('../../DB').depositsDb_BIP;
+const Db = require('../../DB');
+const {restorePswdDb} = Db;
 const $u = require('../../../helpers/utils');
 const log = require('../../../helpers/log');
-const {getEqual} = require('../../minter');
-const coinName = 'BIP';
 const txsCash = {};
+const {isDev} = config;
 // ,https://explorer-api.minter.network/api/v1/addresses/Mxfdfc236848d445e754b6660bec98a046ac59b5cd/transactions?page=1
 setInterval(() => {
     request('https://explorer-api.minter.network/api/v1/addresses/' + config.gameMinterAddress + '/transactions?page=1', async (err, res, body) => {
@@ -19,25 +18,26 @@ setInterval(() => {
                     continue;
                 }
                 txsCash[hash] = 1;
-                log.info('New TX: ' + tx.hash);
+                !isDev && log.info('New TX: ' + tx.hash);
+
+                const incomingCoin = tx.data.coin;
+                const depositsDb = Db['depositsDb_' + incomingCoin];
                 const isHas = await depositsDb.db.syncFindOne({hash});
+
                 if (isHas){
-                    log.warn('Has tx in DB: ' + hash);
+                    !isDev && log.warn('Has tx in DB: ' + hash);
                     continue;
                 }
+
                 const address = tx.from;
                 const payload = tx.payload;
                 const user = await $u.getUserFromQ({
                     $where: function () {
-                        return this.addresses[coinName] === address;
+                        return this.addresses['BIP'] === address;
                     }
                 });
                 if (!user){
-                    log.warn('Cant find user! ' + tx.from);
-                    // const amount = Math.round(+tx.data.value) * 0.99;
-                    // if (amount < 2){
-                    //     continue;
-                    // }
+                    !isDev && log.warn('Cant find user! ' + tx.from);
                     continue;
                 }
 
@@ -55,22 +55,26 @@ setInterval(() => {
                 if (amountTx <= 0){
                     continue;
                 }
-                let amount;
-                console.log('tx.data.coin ', tx.data.coin);
-                if (tx.data.coin !== coinName){
-                    const convert = await getEqual(tx.data.coin, amountTx);
-                    amount = convert.will_get * 0.95;
-                    log.info(`Convert ${amountTx} ${tx.data.coin} to ${amount} ${coinName}`);
-                } else {
-                    amount = amountTx;
-                };
+                const amount = amountTx;
+                // if (tx.data.coin !== coinName){
+                //     const convert = await getEqual(tx.data.coin, amountTx);
+                //     amount = convert.will_get * 0.95;
+                //     log.info(`Convert ${amountTx} ${tx.data.coin} to ${amount} ${coinName}`);
+                // } else {
+                //     amount = amountTx;
+                // };
+                if (!config.minterCoins.includes(incomingCoin)){
+                    log.warn('Not known coin ' + tx.data.coin);
+                    continue;
+                }
                 if (amount > 0){
                     // amount *= 1 - config.comission;
                     depositsDb.db.insert({hash, user_id: user._id, type: 'deposit', amount, unix: $u.unix()});
                     // user.deposit += amount;
-                    $u.updateUserDeposit(user, amount, coinName, true);
+                    $u.updateUserDeposit(user, amount, incomingCoin, true);
                     await user.save();
                     log.info(`newDeposit:
+                    coin: ${incomingCoin}
                     hash: ${hash}
                     user: ${user.login}
                     amount: ${amount}`);

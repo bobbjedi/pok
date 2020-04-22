@@ -155,7 +155,7 @@ Player.prototype.updateDepInPlay = async function (user) {
     }
     user = user || await this.getUserDB();
     const {coinName} = this.public;
-    console.log(user.login, 'updateDepInPlay', coinName);
+    console.log(user.login, 'updateDepInPlay', coinName, user.depositInRoom);
     user.depositInRoom[coinName][this.sittingOnTable] = this.public.chipsInPlay;
     let totalInGame = 0;
     for (const room in user.depositInRoom[coinName]){

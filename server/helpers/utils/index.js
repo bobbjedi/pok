@@ -172,9 +172,16 @@ module.exports = {
                 i++;
             });
         });
+
         // Создание USDT
-        tablesData.USDT.forEach(t=>{
+        tablesData.USDT.forEach(t => {
             tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, 'USDT');
+            lastTableId = i;
+            i++;
+        });
+
+        tablesData.ROUBLE.forEach(t => {
+            tables[i] = new Table(i, t.count + ' hand', eventEmitter(i), t.count, t.sb * 2, t.sb, t.maxBuyIn || t.sb * 2 * 100, t.sb * 2 * 40, t.type, false, false, false, 'ROUBLE');
             lastTableId = i;
             i++;
         });
@@ -378,7 +385,7 @@ setTimeout(async ()=>{
         return;
     }
     const $u = module.exports;
-    const table = tables_[31];
+    const table = tables_[41];
     // const player1 = await $u.createOffLinePlayer('Dev');
     const player2 = await $u.createOffLinePlayer('Devi');
     const player3 = await $u.createOffLinePlayer('Devs');
@@ -388,15 +395,15 @@ setTimeout(async ()=>{
     await $u.wait(.5);
     // await table.playerSatOnTheTable(player1, 1, 100);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player2, 1, 100);
+    await table.playerSatOnTheTable(player2, 1, 8);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player3, 2, 100);
+    await table.playerSatOnTheTable(player3, 2, 8);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player4, 3, 100);
+    await table.playerSatOnTheTable(player4, 3, 8);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player5, 4, 100);
+    await table.playerSatOnTheTable(player5, 4, 8);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player6, 5, 100);
+    await table.playerSatOnTheTable(player6, 5, 8);
     // await $u.wait(1.5);
     // ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"].forEach(async login=>{
     //     const user = await module.exports.getUserFromQ({login});

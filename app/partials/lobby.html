@@ -3,17 +3,17 @@
     <div class="modal-wrap" ng-show="isShowWithdraw">
         <div class="modal withdraw">
             <div class="modal-text">
-                <div>Maximal withdraw amount<span class="big txt-green">{{$root.user.deposits[$root.settings.coinName]}}</span>
+                <div>Maximal withdraw amount <span class="big txt-green">{{$root.user.deposits[$root.settings.coinName]}}</span>
                     {{$root.settings.coinName}} (comission {{$root.config.withdrawComission}}%)</div>
-                    <div class="left mt15"><span class="w150 left">Withdraw:</span> <input ng-model="withdrawAmount" type="number" placeholder="Amount"> 
+                    <div class="left mt15"><span class="w150 left">Withdraw:</span> <input ng-model="withdrawAmount" type="number" placeholder="Amount">
                         <span class="big txt-yellow" ng-click="withdrawAmount = $root.user.deposits[$root.settings.coinName]"> All </span>
                     </div>
-                    <div class="left mt15">
+                    <div ng-show="$root.settings.coinName === 'USDT'" class="left mt15">
                         <span class="w150 left">Address :</span> <textarea type="text" ng-model="withdrawAddress" placeholder="Address"></textarea>
-                    </div>  
+                    </div>
             </div>
             <div class="buts" ng-click="isShowWithdraw = false">
-                <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount, withdrawAddress);">Ok</div>
+                <div class="but bg-green" ng-click="$root.withdraw(withdrawAmount, (withdrawAddress || $root.user.addreses[$root.settings.coinName]));">Ok</div>
                 <div class="but bg-red">Cancel</div>
             </div>
         </div>
@@ -27,7 +27,7 @@
                 <div class="txt-green m10">Deposit {{$root.settings.coinName}}</div>
                 <div class="txt-yellow">Amount: <input ng-model="depositAmount" type="number"></div>
                 <div class="small txt-yellow mt25">
-                    * Пополнение осуществляется с помощью сервиса <i>Coinpayments</i>. Для Вас будет создана транзакция на указанную сумму. 
+                    * Пополнение осуществляется с помощью сервиса <i>Coinpayments</i>. Для Вас будет создана транзакция на указанную сумму.
                 </div>
             </div>
             <div class="buts" ng-click="isShowDeposit = false">
@@ -95,8 +95,8 @@
 
     <div class="right-icon" id="full-screen-icon" onclick="toggleFullScreen()"><i class="fa fa-arrows-alt"
             aria-hidden="true"></i></div>
-            
-            
+
+
             <!-- USERPANEL -->
     <div id="user-panel">
         <img src="/images/logo.png" class="label-poker add-app" alt="logo">
@@ -117,7 +117,7 @@
                 <span class="user-name small" ng-if="addressShort()"> <br>{{addressShort()}}</span>
                 <br>Balance:
                 <span class="deposit">{{$root.tsp($root.user.deposits[$root.settings.coinName])}}</span>
-                <i ng-show="$root.settings.coinName === 'BIP'" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
+                <i ng-show="$root.config.minterCoins.includes($root.settings.coinName)" onclick="copyAddress()" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
                 <i ng-show="$root.settings.coinName === 'USDT'" ng-click="isShowDeposit = true;" class="fa fa-creative-commons txt-green hovered" aria-hidden="true"></i>
                 <span ng-show="$root.settings.coinName !== 'DEMO' && $root.user.deposits[$root.settings.coinName]">
                     <br>
