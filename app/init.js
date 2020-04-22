@@ -165,5 +165,5 @@ window.changeBg = coin => {
         break;
     }
 
-    bgColored.style.backgroundColor = color;
+    // bgColored.style.backgroundColor = color;
 };
