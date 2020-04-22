@@ -115,7 +115,7 @@ app.run(function($rootScope) {
         coinName: 'DEMO',
         push: false
     };
-
+    window.changeBg($rootScope.settings.coinName);
     $rootScope.changeCoinName = coinName=>{
         if (!coinName){
             return;
@@ -123,13 +123,17 @@ app.run(function($rootScope) {
         // $rootScope.totalChips = $rootScope.user.deposits[$rootScope.settings.coinName];
         $rootScope.settings.coinName = coinName;
         try {
+            window.changeBg(coinName);
             $rootScope.$digest();
         } catch (e) { }
     };
-    
+
     push($rootScope);// оборачиваем пушами
 
-    $rootScope.$watch('settings.coinName', coinName => socket.emit('changeCoinName', coinName)); // меняем депозит
+    $rootScope.$watch('settings.coinName', coinName => {
+        socket.emit('changeCoinName', coinName);
+        window.changeBg(coinName);
+    }); // меняем депозит
     $rootScope.updateUser(true);
     $rootScope.depositCps = amount => {
         $rootScope.api({action: 'cpsPay', data: {
@@ -150,7 +154,7 @@ app.run(function($rootScope) {
         }
         return null;
     };
-    
+
     $rootScope.$watch('settings', ()=>localStorage.setItem('user_settings', JSON.stringify($rootScope.settings)), true);
     setInterval(() => $rootScope.updateUser(), 30 * 1000);
     $rootScope.tsp = thousandSeparator;

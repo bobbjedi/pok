@@ -147,3 +147,23 @@ if ('serviceWorker' in navigator) {
             err => console.log('ServiceWorker registration failed: ', err));
     });
 }
+const bgColored = document.getElementById('bg-colored');
+
+window.changeBg = coin => {
+    let color = 'transparent';
+    switch (coin) {
+    case ('BIP'):
+        color = 'rgba(217,163,0,0.8)';
+        break;
+
+    case ('USDT'):
+        color = 'rgba(38,161,123,0.8)';
+        break;
+
+    case ('ROUBLE'):
+        color = 'rgba(119,169,159,0.8)';
+        break;
+    }
+
+    bgColored.style.backgroundColor = color;
+};
