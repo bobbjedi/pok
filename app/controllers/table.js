@@ -540,5 +540,7 @@ const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 
  * @param {String} step
  */
 function roundByCrat(num, step){
-    return $u.round(num - num % step);
+    console.log('CRAT', num, step);
+    num += 0.0000001;
+    return $u.round(num + 0.000001 - num % step);
 }
