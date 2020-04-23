@@ -91,9 +91,12 @@
                     <th>Login</th>
                     <th>Time</th>
                     <th>Address</th>
-                    <th>Deposit</th>
-                    <th>DepositInGame</th>
+                    <th>BIP</th>
+                    <th>in Game</th>
                     <th>USDT</th>
+                    <th>in Game</th>
+                    <th>RUB</th>
+                    <th>in Game</th>
                 </tr>
                 <tr v-for="u in users">
                     <td @click="editUserId = u._id" v-if="editUserId !== u._id">Edit</td>
@@ -107,6 +110,8 @@
                     <td v-show="editUserId !== u._id">BIP: {{u.depositInGame.BIP}}</td>
                     <td v-show="editUserId !== u._id">USDT: {{u.deposits.USDT}}</td>
                     <td v-show="editUserId !== u._id">USDT: {{u.depositInGame.USDT}}</td>
+                    <td v-show="editUserId !== u._id">RUB: {{u.deposits.ROUBLE}}</td>
+                    <td v-show="editUserId !== u._id">RUB: {{u.depositInGame.ROUBLE}}</td>
 
 
                     <td v-show="editUserId == u._id"><input v-model="u.login" /></td>
@@ -116,6 +121,8 @@
                     <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame.BIP" /> !!</td>
                     <td v-show="editUserId == u._id"><input v-model.number="u.deposits.USDT" /></td>
                     <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame.USDT" /></td>
+                    <td v-show="editUserId == u._id"><input v-model.number="u.deposits.ROUBLE" /></td>
+                    <td v-show="editUserId == u._id"><input v-model.number="u.depositInGame.ROUBLE" /></td>
 
                 </tr>
             </table>

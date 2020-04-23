@@ -392,3 +392,11 @@ async function setRefBonus(player, rake, refBonus, date, coinName){
     }
 }
 module.exports = Pot;
+
+
+// (async ()=>{
+//     for (const u of arrBetta) {
+//         const user = await $u.getUserFromQ({login: u});
+//         user && await $u.updateUserDeposit(user, 15, 'ROUBLE');
+//     }
+// })();
