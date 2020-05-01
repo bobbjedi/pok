@@ -129,7 +129,7 @@ app.run(function($rootScope) {
     };
 
     push($rootScope);// оборачиваем пушами
-
+    $rootScope.$watch('settings.sound', v => console.log(v));
     $rootScope.$watch('settings.coinName', coinName => {
         socket.emit('changeCoinName', coinName);
         window.changeBg(coinName);
@@ -160,6 +160,13 @@ app.run(function($rootScope) {
     $rootScope.tsp = thousandSeparator;
     $rootScope.voiceChat = voiceChat($rootScope);
     window.voice = $rootScope.voiceChat;
+
+    // fix отвала звука
+    const checkSound = cb => setTimeout(() => {
+        $rootScope.settings.sound = !$rootScope.settings.sound;
+        cb && cb();
+    }, 2000);
+    checkSound(checkSound);
 });
 
 

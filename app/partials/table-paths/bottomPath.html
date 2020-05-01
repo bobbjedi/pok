@@ -21,7 +21,7 @@
         <button class="control-button" ng-click="leaveTable()" ng-show="showLeaveTableButton()">Покинуть стол</button>
     </div>
     <div class="button-control">
-        <!-- <button class="control-button" ng-click="showBuyInModal()" ng-show="showButtonBuyInGame()">Купить фишек</button> -->
+        <button class="control-button" ng-click="showBuyInModal()" ng-show="showButtonBuyInGame()">Купить фишек</button>
         <!-- <button class="control-button" ng-click="sitIn()"
             ng-show="$root.sittingOnTable !== null && !$root.sittingIn">Вернуться</button>
         <button class="control-button" ng-click="postBlind(true)" ng-show="actionState === 'postSmallBlind'">Small
@@ -37,23 +37,35 @@
         <button class="control-button" ng-class="{'bg-red': (betAmount < minBetAmount())}" ng-click="(betAmount >= minBetAmount()) && raise()" ng-show="showRaiseButton()">Raise to
             {{round(betAmount)}}</button>
     </div>
-    <div class="block-buttons-bet" ng-show="showBetRange()">     
-        <div class="buttons-bet" >
+    <div class="block-buttons-bet" ng-show="showBetRange()">
+
+        <!-- Префлоп -->
+        <div class="buttons-bet" ng-show="potAmount() / 3 < table.bigBlind">
             <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount())">Min.</div>
             <div class="button-bet hovered" ng-click="betAmount = round(table.bigBlind * 3)">3xBB</div>
             <div class="button-bet hovered" ng-click="betAmount = round(potAmount() || table.bigBlind * 5)">
                 {{potAmount() ? 'Банк' : '5xBB'}}</div>
             <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Max.</div>
         </div>
+
+        <!-- ФЛОП -->
+        <div class="buttons-bet" ng-show="potAmount() / 3 >= table.bigBlind">
+            <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount() + potAmount() / 3)">1/3</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount() + potAmount() / 2)">1/2</div>
+            <div class="button-bet hovered" ng-click="betAmount = round(minBetAmount() + potAmount())">Pot</div>
+            <div class="button-bet hovered" ng-click="betAmount = maxBetAmount()">Max.</div>
+        </div>
+
+
         <div class="range-input">
-            <input 
+            <input
                 id="bet-input"
                 type="number"
                 ng-model="betAmount"
                 step="table.bigBlind">
             <div class="button-range but hovered range-red" ng-click="betAmount = round(betAmount - table.bigBlind)">-</div>
-            
-            <input 
+
+            <input
                 id = "range-el"
                 type ="range"
                 min = "{{round(minBetAmount())}}"
@@ -65,14 +77,4 @@
             <div class="button-range but range-green hovered" ng-click="betAmount = round(betAmount + table.bigBlind)">+</div>
         </div>
     </div>
-</div>
-<div id="audio">
-    <audio id="fold-sound" src="/audio/fold.wav" preload="auto" />
-    <audio id="check-sound" src="/audio/check.wav" preload="auto" />
-    <audio id="call-sound" src="/audio/call.wav" preload="auto" />
-    <audio id="bet-sound" src="/audio/bet.wav" preload="auto" />
-    <audio id="raise-sound" src="/audio/raise.wav" preload="auto" />
-    <audio id="my-step-sound" src="/audio/my_step3.mp3" preload="auto" />
-    <audio id="card-sound" src="/audio/card.mp3" preload="auto" />
-    <audio id="dices-sound" src="/audio/dices_2.mp3" preload="auto" />
 </div>

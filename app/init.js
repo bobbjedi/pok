@@ -1,4 +1,5 @@
-// import _ from 'underscore';
+import _ from 'underscore';
+import axios from 'axios';
 import Noty from './libs/noty';
 import './libs/fonts';
 
@@ -167,3 +168,20 @@ window.changeBg = coin => {
 
     // bgColored.style.backgroundColor = color;
 };
+
+
+// check new version
+axios('dist-version.info').then(r => {
+    try {
+        const latestVersion = r.data;
+        const version = window.pokerVersion;
+        console.log({latestVersion, version});
+        if (_.isNumber(latestVersion) && version !== version) {
+            console.log('UPDATE:', version, latestVersion);
+            noty('info', 'Update client version!');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+

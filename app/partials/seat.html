@@ -1,9 +1,15 @@
 <div class="player-wrap" ng-class="{'no-hand': !player.inHand}">
-    <div class="player-cards" ng-show="player.inHand || isMe(seatIndex) && player.lastAct === 'Fold'" ng-class="{dealt: player.hasCards || isMe(seatIndex) && !phase.includes('Blind')}">
+    <div class="player-cards"
+    ng-show="player.inHand || isMe(seatIndex) && player.lastAct === 'Fold'"
+    ng-class="{dealt: player.hasCards || isMe(seatIndex) && !phase.includes('Blind') && isShowMyCards}"
+    >
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 0 ) + ' ' + $root.settings.cardColors"></div>
         <div class="card" ng-show="seatOccupied(seatIndex)" ng-class="getCardClass( seatIndex, 1 ) + ' ' + $root.settings.cardColors"></div>
     </div>
-    <div class="seat" ng-show="seatOccupied(seatIndex)"
+    <div
+    class="seat"
+    ng-show="seatOccupied(seatIndex)"
+    ng-click="isMe(seatIndex) && (isShowMyCards = !isShowMyCards)"
     ng-class="{
         me: isMe(seatIndex),
         active: activeSeat===seatIndex,
@@ -16,9 +22,9 @@
         <div class="time-out" ng-show="activeSeat === seatIndex && $root.timeOutCurrent >=0 && !$root.winnerMsgArr.length">
             <span class="img_animate red-cheap"></span>&#160;{{$root.timeOutCurrent}}s
         </div>
-
         <!-- Выигрыш -->
         <div class="time-out txt-green" ng-show="$root.winnersData[player.name]">+{{$root.tsp($root.winnersData[player.name].amount)}}</div>
+        <div ng-show="player.isDisconnect" class="player-disconnect txt-red"><i class="fa fa-wifi" aria-hidden="true"></i></div>
 
         <a class="sitIn" ng-show="!player.name" ng-click="showBuyInModal( {seat:seatIndex} )">Занять место</a>
         <div class="player-content" ng-show="player.name">

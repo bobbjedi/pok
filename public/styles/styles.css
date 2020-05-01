@@ -1245,3 +1245,10 @@ display: block;
     z-index: 0;
     opacity: 0.1;
 }
+
+.player-disconnect {
+    position: absolute;
+    left: 30px;
+    top: 3px;
+
+}

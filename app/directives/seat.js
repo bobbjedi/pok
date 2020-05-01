@@ -22,13 +22,14 @@ app.directive('seat', [function() {
             phase: '=',
             showBuyInModal: '&'
         },
-        link: function(scope, element, attributes) {
+        link: (scope, element, attributes) => {
+            scope.isShowMyCards = false; // показать карты в фолде
             scope.seatIndex = parseInt(attributes.seatIndex);
             scope.cellNumber = parseInt(attributes.cellNumber);
 
             scope.isMe = seat => scope.mySeat !== null && +seat === +scope.mySeat;
 
-            scope.getCardClass = function(seat, card) {
+            scope.getCardClass = (seat, card) => {
                 if (scope.mySeat !== null && +scope.mySeat === seat) {
                     return scope.myCards[card];
                 }
@@ -40,7 +41,7 @@ app.directive('seat', [function() {
                 }
             };
 
-            scope.seatOccupied = function(seat) {
+            scope.seatOccupied = () => {
                 return !scope.sittingOnTable || (typeof scope.player !== 'undefinde' && scope.player && scope.player.name);
             };
         }

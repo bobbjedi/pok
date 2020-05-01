@@ -9,6 +9,7 @@ import socket from '../services/socket.io';
 import app from '../app';
 import tourn from './mixins/tourn';
 import solover from '../services/solover';
+
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
         $scope.renderHtml = htmlCode => $sce.trustAsHtml(htmlCode);
@@ -32,8 +33,10 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.sittingOnTable = null;
         $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
+
         automoves($scope, $rootScope);
         tourn($scope, $rootScope);
+
         $scope.checkEmitAction = () =>{
             if (new Date().getTime() - $scope.lastEventTime > 500){
                 $scope.lastEventTime = new Date().getTime();
@@ -41,6 +44,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             }
             return false;
         };
+
         $scope.checkUserSeat = ()=>{
             if ($rootScope.sittingIn){
                 return;
@@ -53,7 +57,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     $rootScope.sittingIn = true;
                     $scope.mySeat = seat;
                     if ($scope.table.seats[seat].hasCards){
-                        setTimeout(()=> socket.emit('getMyCards'), 1000);
+                        updateCards();
                     }
                 }
             }
@@ -181,12 +185,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.showBetInput = function() {
-            return ($scope.actionState === "actNotBettedPot" || $scope.actionState === "actBettedPot") && $scope.table.seats[$scope.mySeat].chipsInPlay && $scope.table.biggestBet < $scope.table.seats[$scope.mySeat].chipsInPlay;
+            return $scope.table.activeSeat === $scope.mySeat && ($scope.actionState === "actNotBettedPot" || $scope.actionState === "actBettedPot") && $scope.table.seats[$scope.mySeat].chipsInPlay && $scope.table.biggestBet < $scope.table.seats[$scope.mySeat].chipsInPlay;
         };
 
         $scope.showButtonBuyInGame = function () {
             const mySeat = $scope.table.seats[$scope.mySeat];
-            return mySeat && !mySeat.inHand && mySeat.isSitOutMe && !$scope.table.isTourn;
+            return mySeat && !mySeat.inHand && mySeat.isSitOutMe && !$scope.table.isTourn && $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.maxBuyIn;
         };
 
         $scope.showBuyInModal = function(seat) {
@@ -204,7 +208,24 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
         // A request to sit on a specific seat on the table
         $scope.sitOnTheTable = function() {
-            if ($rootScope.sittingOnTable){
+            if ($scope.showButtonBuyInGame()) { // докуп
+                const {chipsInPlay} = $scope.table.seats[$scope.mySeat];
+                if ($scope.buyInAmount <= chipsInPlay || $scope.buyInAmount > $scope.table.maxBuyIn) {
+                    return noty('error', 'No valid cips count');
+                }
+                socket.emit('rebuyCoins', {amount: $scope.buyInAmount}, response => {
+                    console.log(response);
+                    if (response.error) {
+                        noty('error', response.error);
+                        $scope.buyInError = response.error;
+                    } else {
+                        noty('success', response.msg);
+                    }
+                });
+                return;
+            }
+
+            if ($rootScope.sittingOnTable){ // сесть за стол
                 noty('error', 'Вы уже сидите за этим столом.');
                 return;
             }
@@ -220,7 +241,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     // $scope.$digest();
                 } else {
                     if (response.error) {
+                        noty('error', response.error);
                         $scope.buyInError = response.error;
+
                         // $scope.$digest();
                     }
                 }
@@ -254,16 +277,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                 }
             });
         };
-        $scope.rebuy = function() {
-            socket.emit('mtt-rebuy', function(response) {
-                if (response.success) {
-                    // $scope.mySeat = null;
-                    // $scope.leaveTableStates();
-                    // $rootScope.$digest();
-                    // $scope.$digest();
-                }
-            });
-        };
+
+        $scope.rebuy = () => socket.emit('mtt-reentry', ()=> {});
 
         // Post a blind (or not)
         $scope.postBlind = function(posted) {
@@ -353,6 +368,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             if (+$routeParams.tableId !== data.id){
                 return;
             }
+
             if (data.board[0].length && data.board.toString() !== predCards){
                 sounds.playCardSound();
                 predCards = data.board.toString();
@@ -417,13 +433,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             $scope.$digest();
         });
 
-        setTimeout(()=> socket.emit('getMyCards'), 5000);
+
         $scope.sitOutMe = () => {
             socket.emit('sitOutMe', result => {
                 $scope.table.seats[$scope.mySeat].isSitOutMe = result;
             });
         };
-
         //
         // When the game has stopped
         socket.on('gameStopped', function(data) {
@@ -449,10 +464,12 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
         // When the player is dealt cards
-        socket.on('dealingCards', function(cards) {
-            $scope.myCards[0] = 'card-' + cards[0];
-            $scope.myCards[1] = 'card-' + cards[1];
-            $scope.$digest();
+        socket.on('dealingCards', function (cards) {
+            if (cards.length) {
+                $scope.myCards[0] = 'card-' + cards[0];
+                $scope.myCards[1] = 'card-' + cards[1];
+                $scope.$digest();
+            }
         });
 
         // When the user is asked to act and the pot was betted
@@ -469,7 +486,6 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         socket.on('actNotBettedPot', function() {
             sounds.playMyStepSound();
             $scope.actionState = 'actNotBettedPot';
-
             $scope.betAmount = $scope.table.seats[$scope.mySeat].chipsInPlay < $scope.table.bigBlind ? $scope.table.seats[$scope.mySeat].chipsInPlay : $scope.table.bigBlind;
             $scope.isSendActionAuto = false;
             $scope.$digest();
@@ -496,6 +512,15 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         });
 
 
+        // Апдейт карт пока не будут (пиковые тузы)
+        let counterCheckCards = 0;
+        const updateCards = () => setTimeout(()=>{
+            if ($scope.myCards[0] === '' && counterCheckCards++ < 15) {
+                socket.emit('getMyCards');
+                updateCards();
+            }
+        }, 1000);
+
         // костыль range
         const rangeEl = document.getElementById('range-el');
         const inputEl = document.getElementById('bet-input');
@@ -518,7 +543,9 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         window.sol = ()=>setInterval(()=>{
             solover($scope.myCards, $scope.table.board, null, $scope.table.seats);
         }, 5000);
-        // Фикс Ad
+
+
+        // Фикс Ad бубнового туза
         $scope.$watch('myCards', () => fixAd($scope.myCards), true);
         $scope.$watch('table.board', () => fixAd($scope.table.board), true);
         for (let i = 0; i <= 9; i++) {
@@ -530,17 +557,18 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
 
 
 /**
+ * Для бубнового туза
  * @param {Array} cards
  */
 const fixAd = cards =>cards && cards.forEach((c, i)=>cards[i] = c.replace('Ad', 'Ar'));
 
+
 /**
- *
+ * Для кратного увеличения ставки
  * @param {String} num
  * @param {String} step
  */
 function roundByCrat(num, step){
-    console.log('CRAT', num, step);
     num += 0.0000001;
     return $u.round(num + 0.000001 - num % step);
 }

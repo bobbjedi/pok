@@ -49,7 +49,7 @@ module.exports = {
         });
     },
     /**
-     * @description  всем вкладкам обновляем доступный депозит
+     * @description  всем вкладкам обновляем доступный депозит Player.chips
      */
     updateChipsUserPlayers(user, coinName){
         if (!coinName){
@@ -65,7 +65,7 @@ module.exports = {
         });
     },
     /**
-     * @description  изменяем депозит в ДБ
+     * @description  изменяем депозит в ДБ и во всех вкладках у всех экземпляров обновим Player.chips
      * @param {Object} user
      * @param {Number} amount
      * @param {String} coinName
@@ -390,20 +390,20 @@ setTimeout(async ()=>{
     const player2 = await $u.createOffLinePlayer('Devi');
     const player3 = await $u.createOffLinePlayer('Devs');
     const player4 = await $u.createOffLinePlayer('Devt');
-    const player5 = await $u.createOffLinePlayer('Devisd');
+    // const player5 = await $u.createOffLinePlayer('Devisd');
     const player6 = await $u.createOffLinePlayer('Devo');
     await $u.wait(.5);
     // await table.playerSatOnTheTable(player1, 1, 100);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player2, 1, 8);
+    await table.playerSatOnTheTable(player2, 1, 80);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player3, 2, 8);
+    await table.playerSatOnTheTable(player3, 2, 80);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player4, 3, 8);
+    await table.playerSatOnTheTable(player4, 3, 80);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player5, 4, 8);
+    // await table.playerSatOnTheTable(player5, 4, 80);
     await $u.wait(.5);
-    await table.playerSatOnTheTable(player6, 5, 8);
+    await table.playerSatOnTheTable(player6, 5, 80);
     // await $u.wait(1.5);
     // ["Dino", "vadim", "goldemva", "Scryaga", "A", "⚡Denik⚡", "SkazochnikVS", "Tolyabasik", "xuikorova", "Alexgen", "Vl_silver", "sonder joy", "BaTpyxA", "Megatuchka", "Vince", "alex", "gnomus", "2z", "yakubenko", "Doc", "Alex", "ammae", "Aaravos"].forEach(async login=>{
     //     const user = await module.exports.getUserFromQ({login});

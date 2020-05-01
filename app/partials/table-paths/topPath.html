@@ -2,7 +2,7 @@
     <i onclick="toggleFullScreen()" class="fa fa-arrows-alt" aria-hidden="true"></i>
     <i onclick="location.reload()" class="fa fa-refresh" aria-hidden="true"></i>
     <i ng-if="!$root.voiceChatIsOn" ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="big fa fa-headphones" ng-click="$root.voiceChatOn()" aria-hidden="true"></i>
-    
+
     <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="big fa" aria-hidden="true"></i>
     <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" class="mic-button bigbig fa" aria-hidden="true"></i>
 </div>
@@ -43,7 +43,7 @@
                 <span class="table-modal-line">You deposit:</span>
                 <span class="big txt-yellow">{{$root.user.deposits[$root.settings.coinName]}} {{$root.settings.coinName}}</span>
             </div>
-            <div class="table-requirements">
+            <div class="table-requirements" ng-show="showButtonBuyInGame()">
                 <span class="table-modal-line">You steak:</span>
                 <span class="big txt-yellow">{{table.seats[mySeat].chipsInPlay || 0}} {{$root.settings.coinName}}</span>
             </div>
@@ -53,9 +53,8 @@
             <br>
             <span class="table-requirements txt-red small" ng-show="buyInError">{{buyInError}}</span>
             <br>
-            <!-- <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'"> -->
-            <!-- <input class="hovered bg-green big" type="submit" ng-value="mySeat !== null ? 'Докупить' : 'Сесть'"> -->
-            <input class="hovered bg-green big" type="submit" value="Сесть">
+            <input style="width: auto;" class="hovered bg-green big" type="submit" ng-value="(showButtonBuyInGame() ? 'Докупить до '  : 'Присоеденится с ') + buyInAmount + ' ' + table.coinName">
+            <!-- <input class="hovered bg-green big" type="submit" value="Сесть"> -->
         </form>
     </div>
     <div class="curtain" ng-show="buyInModalVisible" ng-click="buyInModalVisible=false"></div>

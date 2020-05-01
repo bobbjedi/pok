@@ -46,12 +46,15 @@ if (isDev) {
     // ls.stdout.on('data', data => console.log('\x1b[35m', 'Server:', data.replace('\n', '')));
 } else {
     setTimeout(()=>{
+        const version = new Date().getTime();
         console.log('Start JavaScriptObfuscator');
         const fs = require('fs');
         const fileName = Dist + '/build.js';
         const code = fs.readFileSync(fileName, 'utf8');
-        const newCode = code.replace(/(\/\/ .*?\n)|(\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\/)/g, '\n');
+        const newCode = code.replace(/(\/\/ .*?\n)|(\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\/)/g, '\n')
+            + '; window.pokerVersion = ' + version;
         fs.writeFileSync(fileName, newCode);
+        fs.writeFileSync(Dist + '-version.info', version);
         console.log('done;');
     }, 15000);
 }

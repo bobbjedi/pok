@@ -1,5 +1,6 @@
 const express = require('express'),
     log = require('./helpers/log'),
+    _ = require('underscore'),
     port = 3000,
     bodyParser = require('body-parser'),
     fileUpload = require('express-fileupload'),
@@ -11,7 +12,6 @@ const express = require('express'),
     Player = require('./poker_modules/player'),
     $u = require('./helpers/utils'),
     Store = require('./modules/Store');
-
 Store.io = io;
 function createServer(app){
     const ssl = getSSLFiles();
@@ -150,40 +150,12 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-    socket.on('rebuy', async (data, callback) => {
-        const player = players[socket.id];
-        const table = tables[player.room];
-        if (player && table){
-            if (player.isTourn){
-                return callback(false);
-            }
-            const {maxBuyIn} = table.public;
-
-            console.log(player.public.name, 'Rebuy:', data.chips, player.chips);
-            if (data.chips > player.chips || data.chips <= 0 || player.public.chipsInPlay >= maxBuyIn){
-                return callback({'success': false, 'error': 'Ошибка пополнения стейка!'});
-            }
-            let addedChips = data.chips;
-            if ((data.chips + player.public.chipsInPlay) > maxBuyIn){
-                addedChips = $u.round(maxBuyIn - player.public.chipsInPlay);
-            };
-            player.public.chipsInPlay = $u.round(player.public.chipsInPlay + addedChips);
-            const user = await player.getUserDB();
-            await player.updateDeposit(-addedChips, user); // списываем с баланса добавленные за стол
-            await player.updateDepInPlay(user);
-            console.log({addedChips, chipsInPlay: player.public.chipsInPlay});
-            callback({'success': true, chipsInPlay: player.public.chipsInPlay});
-
-        }
-    });
-
-
-    socket.on('mtt-rebuy', function () {
+    socket.on('mtt-reentry', function () {
         try {
-            console.log('mtt-rebuy');
+            console.log('mtt-reentry');
             const player = players[socket.id];
             if (!player) {
-                console.log('mtt-rebuy !player');
+                console.log('mtt-reentry !player');
                 return;
             }
             players[socket.id].return();
@@ -194,7 +166,7 @@ io.sockets.on('connection', function(socket) {
             Store.currentMtt.rebuyPlayer(player);
         } catch (e) {
             console.log(e);
-            log.error('mtt-rebuy: ' + e);
+            log.error('mtt-reentry: ' + e);
         }
     });
 
@@ -353,6 +325,46 @@ io.sockets.on('connection', function(socket) {
             };
         };
     };
+    /**
+ * Докуп за столом
+ */
+    socket.on('rebuyCoins', async function (data, callback) {
+        try {
+            const player = players[socket.id];
+            if (!player) {
+                return;
+            }
+            if (player.isTourn){
+                return callback({ 'success': false, 'error': 'В турнире нельзы докупиться.' });
+            }
+            const { amount } = data;
+            player.return();
+            const tableId = player.room;
+            const table = tables[tableId];
+            const { coinName } = table.public;
+            const chipsAdded = $u.round(amount - player.public.chipsInPlay);
+            const deposit = player.chips;
+
+            if (!_.isNumber(deposit) || deposit < chipsAdded) {
+                return callback({ 'success': false, 'error': 'Deposit error. Try again.' });
+            }
+
+            log.info(`rebuyCoins ${player.public.name} chipsAdded ${chipsAdded} | deposit ${deposit} | ${coinName}`);
+
+            player.public.chipsInPlay = amount;
+            const user = await player.getUserDB();
+            await player.updateDeposit(-chipsAdded, user);
+            await player.updateDepInPlay(user);
+            callback({ success: true, msg: 'Added to ' + amount + ' ' + coinName });
+
+        } catch (e){
+            callback({ 'success': false, error: 'Ошибка... (с)' });
+            console.log(e);
+            log.error('rebuyCoins: ' + e);
+        }
+
+    });
+
 
     /**
 	 * When a player requests to sit on a table
@@ -690,15 +702,43 @@ io.sockets.on('connection', function(socket) {
             if (player.isTourn) {
                 return $u.disconnectPlayerInTourn(player);
             }
-            if (!player.public.inHand && !player.isTourn){ // если не в игре - удаляем
-                log.info(player.public.name + ' not hand -> remove');
-                return $u.removePlayer(socket);
+            if (!player.public.inHand && !player.isTourn && !player.public.isSitOutMe){ // если не в игре и не в ситауте - удаляем
+                log.info(player.public.name + ' not hand -> NOOOOT remove');
+                // return $u.removePlayer(socket);
             }
         } catch (e){
             console.log(e);
             log.error('disconnect: ' + e);
         }
     });
+
+
+    // socket.on('rebuy', async (data, callback) => {
+    //     const player = players[socket.id];
+    //     const table = tables[player.room];
+    //     if (player && table){
+    //         if (player.isTourn){
+    //             return callback(false);
+    //         }
+    //         const {maxBuyIn} = table.public;
+
+    //         console.log(player.public.name, 'Rebuy:', data.chips, player.chips);
+    //         if (data.chips > player.chips || data.chips <= 0 || player.public.chipsInPlay >= maxBuyIn){
+    //             return callback({'success': false, 'error': 'Ошибка пополнения стейка!'});
+    //         }
+    //         let addedChips = data.chips;
+    //         if ((data.chips + player.public.chipsInPlay) > maxBuyIn){
+    //             addedChips = $u.round(maxBuyIn - player.public.chipsInPlay);
+    //         };
+    //         player.public.chipsInPlay = $u.round(player.public.chipsInPlay + addedChips);
+    //         const user = await player.getUserDB();
+    //         await player.updateDeposit(-addedChips, user); // списываем с баланса добавленные за стол
+    //         await player.updateDepInPlay(user);
+    //         console.log({addedChips, chipsInPlay: player.public.chipsInPlay});
+    //         callback({'success': true, chipsInPlay: player.public.chipsInPlay});
+
+    //     }
+    // });
 });
 
 $u.disconnectPlayerInTourn = player=>{
