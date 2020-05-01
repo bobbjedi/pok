@@ -140,7 +140,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         };
 
         $scope.showLeaveTableButton = function() {
-            return $rootScope.sittingOnTable !== null && (!$rootScope.sittingIn || $scope.actionState === "waiting");
+            return $scope.showButtonBuyInGame() || $rootScope.sittingOnTable !== null && (!$rootScope.sittingIn || $scope.actionState === "waiting");
         };
         $scope.showSitOutButton = function() {
             return $scope.actionState === 'postSmallBlind' || $scope.actionState === 'postBigBlind';
