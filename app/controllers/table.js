@@ -221,6 +221,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     } else {
                         noty('success', response.msg);
                     }
+                    $scope.buyInModalVisible = false;
                 });
                 return;
             }

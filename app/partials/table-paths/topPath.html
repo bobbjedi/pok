@@ -6,6 +6,9 @@
     <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="big fa" aria-hidden="true"></i>
     <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" class="mic-button bigbig fa" aria-hidden="true"></i>
 </div>
+
+
+ <!-- САДИТЬСЯ / ДОКУПИТЬ -->
 <div class="modal-wrap" ng-show="buyInModalVisible">
     <div class="modal">
         <form ng-submit="sitOnTheTable()">
