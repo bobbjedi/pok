@@ -704,7 +704,7 @@ io.sockets.on('connection', function(socket) {
             }
             if (!player.public.inHand && !player.isTourn && !player.public.isSitOutMe){ // если не в игре и не в ситауте - удаляем
                 log.info(player.public.name + ' not hand -> NOOOOT remove');
-                // return $u.removePlayer(socket);
+                return $u.removePlayer(socket);
             }
         } catch (e){
             console.log(e);
