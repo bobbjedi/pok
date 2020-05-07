@@ -1040,7 +1040,9 @@ display: block;
     color: rgb(189, 185, 185);
     width: 100px;
 }
-
+.setting-line select{
+    width: 111px;
+}
 .setting-line span {
     width: 200px;
 }

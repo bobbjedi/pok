@@ -18,7 +18,7 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
     $scope.isLogged = ()=> $rootScope.user.isLogged;
     $scope.user = $rootScope.user;
     $scope.public = {};
-    
+
     // Платежки
     $scope.withdrawAmount = 0;
     $scope.withdrawAddress = '';
@@ -37,7 +37,8 @@ app.controller('LobbyController', ['$scope', '$rootScope', '$http', '$location',
         sb: 1,
         count: "2",
         isPrivate: false,
-        maxBuyIn: 100
+        maxBuyIn: 100,
+        coinName: 'BIP'
     };
 
     window.refreshSocket($rootScope.checkUser);
