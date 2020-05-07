@@ -9,6 +9,7 @@ import socket from '../services/socket.io';
 import app from '../app';
 import tourn from './mixins/tourn';
 import solover from '../services/solover';
+import _ from 'underscore';
 
 app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParams', '$timeout', 'sounds', '$location', '$sce',
     function($scope, $rootScope, $http, $routeParams, $timeout, sounds, $location, $sce) {
@@ -366,7 +367,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         // When the table data have changed
         let predCards = '';
         socket.on('table-data', function(data) {
-            if (+$routeParams.tableId !== data.id){
+            if (_.isNumber(data.id) && +$routeParams.tableId !== data.id){
                 return;
             }
 
