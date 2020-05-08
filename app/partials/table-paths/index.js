@@ -11,7 +11,7 @@ export default (count) => {
         .replace('<!--settings-->', settings)
         .replace('<!--cardPath-->', card);
     const nums = counts[count];
-    for (let s in nums) {
+    for (const s in nums) {
         const c = nums[s];
         const seat = seatVar.replace(/\%s\%/g, s).replace(/\%c\%/, c).replace(/\%class\%/, classes[c]);
         bon_ = bon_.replace('<!--set' + c + '-->', seat);

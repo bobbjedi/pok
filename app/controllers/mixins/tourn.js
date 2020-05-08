@@ -50,7 +50,7 @@ export default ($scope, $rootScope) => {
         publicMtt.countOnline = 0;
         publicMtt.timerShufflePlayers = (publicMtt.timers.randomPlayers - publicMtt.unix) / 1000;
         publicMtt.timerMultBlinds = (publicMtt.timers.multBlinds - publicMtt.unix) / 1000;
-        for (let tId in publicMtt.tables) {
+        for (const tId in publicMtt.tables) {
             publicMtt.tables[tId].seats.forEach(p => {
                 if (p.name && p.chipsInPlay > 0) {
                     playersList.push(p);

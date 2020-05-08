@@ -20,7 +20,8 @@ app.directive('seat', [function() {
             dealerSeat: '=',
             notifications: '=',
             phase: '=',
-            showBuyInModal: '&'
+            showBuyInModal: '&',
+            isMtt: '='
         },
         link: (scope, element, attributes) => {
             scope.isShowMyCards = false; // показать карты в фолде

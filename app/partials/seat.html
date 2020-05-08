@@ -26,7 +26,7 @@
         <div class="time-out txt-green" ng-show="$root.winnersData[player.name]">+{{$root.tsp($root.winnersData[player.name].amount)}}</div>
         <div ng-show="player.isDisconnect" class="player-disconnect txt-red"><i class="fa fa-wifi" aria-hidden="true"></i></div>
 
-        <a class="sitIn" ng-show="!player.name" ng-click="showBuyInModal( {seat:seatIndex} )">Занять место</a>
+        <a class="sitIn" ng-show="!player.name" ng-click="isMtt ? rebuy() : showBuyInModal( {seat:seatIndex} )">Занять место</a>
         <div class="player-content" ng-show="player.name">
             <div ng-show="!notifications[seatIndex].message">
                 <span class="txt-blue small">{{player.lastAct}}</span>
