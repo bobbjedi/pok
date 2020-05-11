@@ -18,9 +18,9 @@ setInterval(() => {
                     continue;
                 }
                 txsCash[hash] = 1;
-                !isDev && log.info('New TX: ' + tx.hash);
-
                 const incomingCoin = tx.data.coin;
+                
+                !isDev && log.info('New TX: ' + incomingCoin + '> ' + tx.hash);
                 const depositsDb = Db['depositsDb_' + incomingCoin];
                 const isHas = await depositsDb.db.syncFindOne({hash});
 

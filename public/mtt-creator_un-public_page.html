@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="styles/common.css" rel="stylesheet" type="text/css" />
+    <title>MTT Admin</title>
+    <script src="https://ru.vuejs.org/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <h2>Турниры</h2>
+            <button @click="startMtt" class="bg-green but hovered">СТАРТ</button>
+            <button @click="rmMtt" class="bg-red but hovered">Удалить</button>
+            <button @click="resetMtt" class="bg-red but hovered">Reset MTT (откат чипов)</button>
+            <div class="input-line">
+                <label>title</label>
+                <input v-model="tourn.title">
+            </div>
+            <div class="input-line">
+                <label>Coni name</label>
+                <select v-model="tourn.coinName">
+                    <option>ROUBLE</option>
+                    <option>BIP</option>
+                    <option>USDT</option>
+                </select>
+            </div>
+            <div class="input-line">
+                <label>date</label>
+                <input v-model="tourn.date">
+            </div>
+            <div class="input-line">
+                <label>buyIn</label>
+                <input v-model.number="tourn.buyIn" type="number">
+            </div>
+            <div class="input-line">
+                <label>winnersCount</label>
+                <input v-model.number="tourn.winnersCount" type="number">
+            </div>
+            <div class="input-line">
+                <label>tableSeatsCount</label>
+                <select v-model.number="tourn.tableSeatsCount">
+                    <option>2</option>
+                    <option>6</option>
+                    <option>10</option>
+                </select>
+            </div>
+            <div class="input-line">
+                <label>chips</label>
+                <input v-model.number="tourn.chips" type="number">
+            </div>
+            <div class="input-line">
+                <label>timeOutShufflePlayers</label>
+                <input v-model.number="tourn.timeOutShufflePlayers" type="number">
+            </div>
+            <div class="input-line">
+                <label>timeOutMult</label>
+                <input v-model.number="tourn.timeOutMult" type="number">
+            </div>
+            <div class="input-line">
+                <label>maxLevelReentry</label>
+                <input v-model.number="tourn.maxLevelReentry" type="number">
+            </div>
+            <div class="input-line">
+                <label>startBank</label>
+                <input v-model.number="tourn.startBank" type="number">
+            </div>
+
+            <div @click="createMtt" class="but hovered bg-green">Открыть регу</div>
+        </div>
+
+    </div>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                tab: 'users',
+                users: [],
+                txs: [],
+                txUserLogin: '',
+                editUserId: 0,
+                userDep: 0,
+                resultTxs: 0,
+                returnAmountFromMineAmount: 0,
+                multReturn: {
+                    amount: 0,
+                    userList: ''
+                },
+                tourn: {
+                    coinName: 'ROUBLE',
+                    date: '',
+                    title: '',
+                    buyIn: 100,
+                    winnersCount: 1,
+                    timeOutShufflePlayers: 5,
+                    tableSeatsCount: 6,
+                    chips: 1500,
+                    timeOutMult: 5,
+                    maxLevelReentry: 5,
+                    startBank: 0
+                },
+            },
+            methods: {
+                createMtt: () => api({ action: 'createMtt', data: app.tourn }, data => console.log('createMtt', data)),
+                startMtt: () => api({ action: 'startMtt' }, data => console.log('startMtt', data)),
+                rmMtt: () => api({ action: 'rmMtt' }, data => console.log('rmMtt', data)),
+                resetMtt: () => api({ action: 'rmMtt', data: { isReturn: true } }, data => console.log('rmMtt', data))
+            }
+        });
+
+        function api(obj, cb = () => { }) {
+            obj.data = obj.data || {};
+            obj.data.token = localStorage.getItem('token');
+            fetch('/adminsplurgeola?action=' + obj.action + '&data=' + JSON.stringify(obj.data))
+                .then(res => {
+                    res.json().then(data => {
+                        console.log('Resp:', obj.action + ' -> ', data);
+                        if (data.success) {
+                            cb(data.result);
+                        } else {
+                            console.warn(obj.action + ' error: ', data);
+                        }
+                    });
+                })
+                .catch(function (err) {
+                    console.warn(obj.action, err);
+                });
+        };
+    </script>
+</body>
+
+
+<style>
+    body {
+        background: slategray;
+        color: snow;
+    }
+
+    #users {
+        width: 100%;
+        height: 800px;
+        overflow: scroll;
+    }
+
+    table input {
+        width: 100%;
+        padding: 6px;
+    }
+
+    table {
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+        font-size: 14px;
+        border-radius: 10px;
+        border-spacing: 0;
+        text-align: center;
+    }
+
+    th {
+        background: rgb(35, 36, 36);
+        color: white;
+        text-shadow: 0 1px 1px #2D2020;
+        padding: 10px 20px;
+    }
+
+    th,
+    td {
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        border-color: white;
+    }
+
+    th:first-child,
+    td:first-child {
+        text-align: left;
+    }
+
+    th:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    th:last-child {
+        border-top-right-radius: 10px;
+        border-right: none;
+    }
+
+    td {
+        color: wheat;
+        padding: 10px 20px;
+        background: rgb(150, 149, 145);
+    }
+
+    tr:last-child td:first-child {
+        border-radius: 0 0 0 10px;
+    }
+
+    tr:last-child td:last-child {
+        border-radius: 0 0 10px 0;
+    }
+
+    tr td:last-child {
+        border-right: none;
+    }
+
+    .input-line {
+        margin: 5px;
+    }
+
+    .input-line label {
+        display: inline-block;
+        width: 200px;
+    }
+</style>
+
+</html>

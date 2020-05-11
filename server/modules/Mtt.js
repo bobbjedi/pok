@@ -183,7 +183,8 @@ module.exports = class Mtt{
                     buyIn: 0,
                     winnersCount: this.isFinal ? 1 : -1,
                     timeOutMult: this.params.timeOutMult || 5,
-                    chips: this.params.chips
+                    chips: this.params.chips,
+                    coinName: this.params.coinName
                 };
 
                 const tableId = $u.tmpTourn(data, ' MTT ');
@@ -283,16 +284,15 @@ module.exports = class Mtt{
     /**
      * @description Итоговый подсчет призов и победителей
      */
-    mathPrizesAndRatings(){
+    async mathPrizesAndRatings(){
         try {
             const db = this.db;
-            console.log(db);
             for (let i = db.prizes.length; i >= 1; i--) {
-                log.info();
-                db.winners.push({
-                    prize: db.prizes[i - 1],
-                    name: _.without(db['winners' + i], ...db['winners' + (i - 1)])[0]
-                });
+                const name = _.without(db['winners' + i], ...db['winners' + (i - 1)])[0];
+                const prize = db.prizes[i - 1];
+                db.winners.push({prize, name});
+                const user = $u.getUserFromQ({login: name});
+                await $u.updateUserDeposit(user, prize, this.params.coinName, true);
             }
             db.winners.reverse();
             this.db.save();
@@ -406,9 +406,7 @@ module.exports = class Mtt{
             this.nextTimeParams = next;
             log.info('MTT updateTournParams: ' + JSON.stringify(next));
             const timeOut = this.params.timeOutMult * 60 * 1000;
-            this.timeOutUpdateTourn = setTimeout(()=>{
-                this.updateTournParams();
-            }, timeOut);
+            this.timeOutUpdateTourn = setTimeout(()=> this.updateTournParams(), timeOut);
             this.db.level++;
             this.updatePublcParams({updateTournParams: timeOut});
         } catch (e){
@@ -615,15 +613,16 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
-    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
+    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devo'];
     // Store.system.mtt.users = ['Devi', 'Devs'];
-    Store.system.mtt.chips = 500;
+    Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = .2;
     Store.system.mtt.timeOutMult = .2;
+    Store.system.mtt.coinName = 'ROUBLE';
 
     Store.startMtt();
 }, 5000);

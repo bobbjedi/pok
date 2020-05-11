@@ -1,19 +1,16 @@
 const log = require('../helpers/log');
-const sha256 = require('sha256');
 const {usersDb, depositsDb, actionsStatDb} = require('./DB');
 const $u = require('../helpers/utils');
 const Store = require('./Store');
 const minter = require('./minter');
-const {withdraw} = require('./minter');
 
 module.exports = (app) => {
     app.get('/adminsplurgeola', async (req, res) => {
-        let checkUser;
         try {
             const action = req.query.action;
             const GET = JSON.parse(req.query.data);
             const User = await $u.getUserFromQ({token: GET.token});
-            if (User.login !== 'Dev'){
+            if (!['Dev', 'Scryaga'].includes(User.login)){
                 return error(null, res);
             }
             // роуты
