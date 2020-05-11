@@ -121,8 +121,10 @@
                     res.json().then(data => {
                         console.log('Resp:', obj.action + ' -> ', data);
                         if (data.success) {
+                            alert('Ok');
                             cb(data.result);
                         } else {
+                            alert('Error' + JSON.stringify(data));
                             console.warn(obj.action + ' error: ', data);
                         }
                     });
