@@ -423,7 +423,7 @@ div.row {
 
 
 .mttPlayersList{
-   
+
 }
 .mttPlayersList tr{
     padding: 1px;
@@ -435,7 +435,11 @@ div.row {
     max-height: 40vh;
 }
 
-
+img.qr{
+    width: 98%;
+    margin: 1%;
+    border-radius: 5px;
+}
 @media screen and (min-width:768px) and (max-width:1024px) {
     #content {
         width: 768px;
@@ -664,13 +668,13 @@ div.row {
     #chat-tabs{
         margin-top: -63px;
     }
-    
+
     #chat-tabs .chat-tab {
         width: 30px;
     }
 
     .controls{
-       
+
     }
     .button-control {
         width: 17%;
@@ -683,14 +687,14 @@ div.row {
     }
     .table-name{
         top: calc(60% - 65px);
-    } 
+    }
     .button-control {
         margin: 1px;
     }
     div#board-wrap .card-container {
         width: 16%;
     }
-    
+
 }
 /* FULLSCREEN */
 @media screen and (max-width: 768px) {
@@ -763,7 +767,7 @@ div.row {
         left: 0;
         font-size: 1.4em;
     }
-    
+
     #user-panel{
         font-size: 1.5em;
         display: flex;
