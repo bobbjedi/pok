@@ -34,7 +34,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
         $rootScope.sittingOnTable = null;
         $rootScope.sittingIn = false;
         $scope.lastEventTime = 0;
-
+        $scope.solover = { win: '-', lose: '-' };
         automoves($scope, $rootScope);
         tourn($scope, $rootScope);
 
@@ -539,14 +539,23 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             rangeEl.value = v;
             inputEl.value = v;
         });
-
+        
+        $scope.helper = () => {
+            $scope.isSoloverShow = true;
+            $scope.solover = { win: '-', lose: '-' };
+            setTimeout(() => {
+                solover($scope.myCards, $scope.table.board, null, $scope.table.seats, res => {
+                    if (res.win || res.lose) {
+                        $scope.solover = res;
+                        $scope.$digest();
+                        socket.emit('solover', () => $rootScope.updateUser());
+                    }
+                });
+            }, 100);
+        };
         rangeEl.onmousemove = () => rangeEl.value !== $scope.betAmount && $scope.$digest();
         window.onRange = el => $scope.betAmount = +el.value;
-        window.sol = ()=>setInterval(()=>{
-            solover($scope.myCards, $scope.table.board, null, $scope.table.seats);
-        }, 5000);
-
-
+      
         // Фикс Ad бубнового туза
         $scope.$watch('myCards', () => fixAd($scope.myCards), true);
         $scope.$watch('table.board', () => fixAd($scope.table.board), true);

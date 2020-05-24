@@ -5,6 +5,7 @@ const maxCALLERS = 15;
 
 let parent;
 export default $root => {
+    return;
     $root.voiceChatOn = ()=> {
         $root.voiceChat = {
             mic: false,

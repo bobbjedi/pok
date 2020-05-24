@@ -23,6 +23,30 @@
     </div>
 </div>
 
+<!-- SOLOVER -->
+
+<div class="modal-wrap" ng-show="isSoloverShow">
+    <div class="modal">
+        <div id="settings big">
+            <h2><i class="big fa fa-yelp txt-yellow" aria-hidden="true"></i></i> Solover <span class="txt-yellow">(pay 1BB {{table.bigBlind}} {{table.coinName}})</span></h2>
+            <div class="bigbig center mt15" ng-show="solover.win === '-'"><i class="bigbig txt-blue fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+            <span ng-show="solover.win !== '-'">
+                <div class="setting-line mt5">
+                    <i class="fa fa-users" aria-hidden="true"></i> Hands: {{solover.countPlayers}}
+                </div>
+                <div class="setting-line mt5 txt-green">
+                    <i class="fa fa-check-circle" aria-hidden="true"></i> WIN: {{solover.win}}%
+                </div>
+                <div class="setting-line mt5 txt-red">
+                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i> LOSE: {{solover.lose}}%
+                </div>
+
+                <div class="but bg-blue" ng-click="isSoloverShow = false">Ok</div>
+        </div>
+        </span>
+    </div>
+</div>
+
 
 <!-- Турнирная сводка -->
 <div class="modal-wrap" ng-show="isOpenMTTinfo" ng-class="{opacity5: isOpacity}">

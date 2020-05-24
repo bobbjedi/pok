@@ -123,6 +123,22 @@ io.sockets.on('connection', function(socket) {
         player && player.changeCoinName(coinName);
     });
 
+    socket.on('solover', async callback => {
+        const player = players[socket.id];
+        const table = player && tables[player.room];
+        if (player && table){
+            if (player.isTourn){
+                return callback(false);
+            }
+            const user = await player.getUserDB();
+            await player.updateDeposit(-table.public.bigBlind, user);
+            await player.updateDepInPlay(user);
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+
     socket.on('sitOutMe', callback => {
         try {
             const player = players[socket.id];

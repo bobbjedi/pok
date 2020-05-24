@@ -90,15 +90,6 @@ function evaluate(board, selfCards) {
         }
     };
 
-    // Swaps the position of the cards of the first one is smaller than the second one
-    var swap = function (index1, index2) {
-        if (cardNamess.indexOf(cards[index1][0]) < cardNamess.indexOf(cards[index2][0])) {
-            var tmp = cards[index1];
-            cards[index1] = cards[index2];
-            cards[index2] = tmp;
-        }
-    };
-
     var rateHand = function (hand) {
         return cardNamess.indexOf(hand[0][0]) * 30941 + cardNamess.indexOf(hand[1][0]) * 2380 + cardNamess.indexOf(hand[2][0]) * 183 + cardNamess.indexOf(hand[3][0]) * 14 + cardNamess.indexOf(hand[4][0]);
     };

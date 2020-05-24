@@ -1,10 +1,20 @@
 <div class="right-icon">
     <i onclick="toggleFullScreen()" class="fa fa-arrows-alt" aria-hidden="true"></i>
     <i onclick="location.reload()" class="fa fa-refresh" aria-hidden="true"></i>
-    <i ng-if="!$root.voiceChatIsOn" ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="big fa fa-headphones" ng-click="$root.voiceChatOn()" aria-hidden="true"></i>
+    <i ng-if="!table.isTourn && myCards[0].length && $root.user.deposits[table.coinName] >= table.bigBlind" ng-click="helper()" class="mt3 hovered big fa fa-yelp txt-yellow" aria-hidden="true"></i>
+    
+    <!-- VOICE CHAT -->
+    <span style="display: none;"> 
+        <i ng-if="!$root.voiceChatIsOn" ng-class="$root.voiceChatIsOn ? 'txt-green': 'txt-red'" class="big fa fa-headphones"
+            ng-click="$root.voiceChatOn()" aria-hidden="true"></i>
+        <i ng-if="$root.voiceChatIsOn"
+            ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '"
+            ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="big fa" aria-hidden="true"></i>
+        <i ng-if="$root.voiceChatIsOn"
+            ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'"
+            class="mic-button bigbig fa" aria-hidden="true"></i>
+    </span>
 
-    <i ng-if="$root.voiceChatIsOn" ng-class="$root.voiceChat.audio ? ' fa-volume-up txt-green ': ' fa-volume-down txt-blue '" ng-click="$root.voiceChat.audio = !$root.voiceChat.audio" class="big fa" aria-hidden="true"></i>
-    <i ng-if="$root.voiceChatIsOn"  ng-class="$root.voiceChat.mic ? 'txt-green fa-microphone': 'txt-red fa-microphone-slash'" class="mic-button bigbig fa" aria-hidden="true"></i>
 </div>
 
 
