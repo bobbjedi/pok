@@ -613,7 +613,7 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    // return;
+    return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];

@@ -574,7 +574,11 @@ img.qr{
     }
 
     div.player-wrap.top {
-        margin-top: 36%
+        margin-top: 60%
+    }
+
+    div.player-wrap.bottom {
+        margin-top: -15%;
     }
 
     div.player-wrap.side {

@@ -10,8 +10,8 @@ import voiceChat from './services/voiceChat';
 import push from './services/firebase';
 
 const app = angular.module('app', ['ngRoute']).config(function($routeProvider, $locationProvider) {
-    $routeProvider.when('/table-10/:tableId', {
-        template: includeHtml(10),
+    $routeProvider.when('/table-8/:tableId', {
+        template: includeHtml(8),
         controller: 'TableController',
     });
 
