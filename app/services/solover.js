@@ -47,22 +47,22 @@ function startSol(myCards, board, countPlayers, seats, cb) {
         lose: 0,
         draw: 0
     };
-    console.time('timer');
+    // console.time('timer');
     for (let i = 0; i < iterats; i++) {
         simulateIterat(myCards, board, countPlayers, result);
     }
-    console.clear();
-    console.log(`
-    Cards: ${myCards}
-    Board: ${board}
-    Users: ${countPlayers}
-    Iters: ${iterats}
-    ******* RESULT: ******
-    WIN  : ${Math.round(result.win / iterats * 100)}
-    LOSE : ${Math.round(result.lose / iterats * 100)}
-    DRAW : ${Math.round(result.draw / iterats * 100)}
-`);
-    console.timeEnd('timer');
+//     console.clear();
+//     console.log(`
+//     Cards: ${myCards}
+//     Board: ${board}
+//     Users: ${countPlayers}
+//     Iters: ${iterats}
+//     ******* RESULT: ******
+//     WIN  : ${Math.round(result.win / iterats * 100)}
+//     LOSE : ${Math.round(result.lose / iterats * 100)}
+//     DRAW : ${Math.round(result.draw / iterats * 100)}
+// `);
+    // console.timeEnd('timer');
     cb && cb({
         win: Math.round(result.win / iterats * 100),
         lose: Math.round(result.lose / iterats * 100),

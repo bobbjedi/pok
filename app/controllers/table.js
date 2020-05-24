@@ -539,7 +539,8 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
             rangeEl.value = v;
             inputEl.value = v;
         });
-        
+        let soloverBlocked = false;
+        $scope.$watch('table.phase', () => { soloverBlocked = false; });
         $scope.helper = () => {
             $scope.isSoloverShow = true;
             $scope.solover = { win: '-', lose: '-' };
@@ -548,7 +549,13 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     if (res.win || res.lose) {
                         $scope.solover = res;
                         $scope.$digest();
-                        socket.emit('solover', () => $rootScope.updateUser());
+                        if(!soloverBlocked){
+                            socket.emit('solover', () => $rootScope.updateUser());
+                        }
+                        soloverBlocked = true;
+                    } else {
+                        window.noty('error', 'Solover error');
+                        $scope.isSoloverShow = false;
                     }
                 });
             }, 100);
