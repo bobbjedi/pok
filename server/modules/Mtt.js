@@ -292,7 +292,8 @@ module.exports = class Mtt{
                 const prize = db.prizes[i - 1];
                 db.winners.push({prize, name});
                 const user = await $u.getUserFromQ({login: name});
-                await $u.updateUserDeposit(user, prize, this.params.coinName, true);
+                console.log('MTT PRIZE', {prize, name});
+                setTimeout(() => $u.updateUserDeposit(user, prize, this.params.coinName, true), 1000);
             }
             db.winners.reverse();
             this.db.save();
@@ -617,7 +618,7 @@ setTimeout(async () => {
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
-    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devo'];
+    Store.system.mtt.users = ['Devi', 'Devs', 'Devt', 'Devisd', 'Devo', 'Dev'];
     // Store.system.mtt.users = ['Devi', 'Devs'];
     Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = .2;

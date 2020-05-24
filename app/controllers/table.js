@@ -549,7 +549,7 @@ app.controller('TableController', ['$scope', '$rootScope', '$http', '$routeParam
                     if (res.win || res.lose) {
                         $scope.solover = res;
                         $scope.$digest();
-                        if(!soloverBlocked){
+                        if (!soloverBlocked){
                             socket.emit('solover', () => $rootScope.updateUser());
                         }
                         soloverBlocked = true;
