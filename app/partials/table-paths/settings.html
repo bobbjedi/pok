@@ -82,7 +82,7 @@
             <div class="txt-white mt15">Current level: <b>{{publicMtt.levelData.level}}</b>, reentry for <b>{{publicMtt.levelData.maxLevelReentry}}</b></div>
             
             <div class="mt5 txt-green hovered " ng-if="mySeat === null && !publicMtt.isFinal && publicMtt.levelData.level <= publicMtt.levelData.maxLevelReentry" ng-click="rebuy()"><i class="fa fa-plus-circle" aria-hidden="true"></i> Join the tournament for {{publicMtt.buyIn}} {{table.coinName}}</div>
-            <div class="mt5 txt-red" ng-show="publicMtt.levelData.level <= publicMtt.levelData.maxLevelReentry"><i class="fa fa-ban" aria-hidden="true"></i> Unable to participate!</div>
+            <div class="mt5 txt-red" ng-show="publicMtt.levelData.level > publicMtt.levelData.maxLevelReentry"><i class="fa fa-ban" aria-hidden="true"></i> Unable to participate!</div>
 
             <div class="mttPlayersListContainer mt5">
                 <table class="center mttPlayersList">
