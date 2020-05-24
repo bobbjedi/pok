@@ -5,6 +5,7 @@
  */
 import app from '../app';
 import template from '../partials/seat.html';
+
 app.directive('seat', [function() {
     return {
         restrict: 'E',
@@ -21,7 +22,8 @@ app.directive('seat', [function() {
             notifications: '=',
             phase: '=',
             showBuyInModal: '&',
-            isMtt: '='
+            isMtt: '=',
+            tableScope: '='
         },
         link: (scope, element, attributes) => {
             scope.isShowMyCards = false; // показать карты в фолде

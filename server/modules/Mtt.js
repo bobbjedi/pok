@@ -613,7 +613,7 @@ setTimeout(async () => {
     if (!config.isDev){
         return;
     }
-    return;
+    // return;
     Store = require('../modules/Store');
     Store.createMtt({tableSeatsCount: 6});
     // Store.system.mtt.users = ['Dev', 'Devi', 'Devs', 'Devt', 'Devisd', 'Devis', 'Devo', 'Devog'];
@@ -622,7 +622,7 @@ setTimeout(async () => {
     Store.system.mtt.chips = 50;
     Store.system.mtt.timeOutShufflePlayers = .2;
     Store.system.mtt.timeOutMult = .2;
-    Store.system.mtt.coinName = 'ROUBLE';
+    Store.system.mtt.coinName = 'BIP';
 
     Store.startMtt();
 }, 5000);
