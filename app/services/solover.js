@@ -37,7 +37,7 @@ function simulateIterat(myCards, board, countPlayers, result) {
     result.win++;
 };
 
-function startSol(myCards, board, countPlayers, seats) {
+function startSol(myCards, board, countPlayers, seats, cb) {
     countPlayers = countPlayers || _.compact(seats.map(s => s && s.inHand)).length;
     myCards = myCards.map(c=>c.replace('card-', ''));
     board = _.compact(board);
@@ -47,22 +47,17 @@ function startSol(myCards, board, countPlayers, seats) {
         lose: 0,
         draw: 0
     };
-    console.time('timer');
+    // console.time('timer');
     for (let i = 0; i < iterats; i++) {
         simulateIterat(myCards, board, countPlayers, result);
     }
-    console.clear();
-    console.log(`
-    Cards: ${myCards}
-    Board: ${board}
-    Users: ${countPlayers}
-    Iters: ${iterats}
-    ******* RESULT: ******
-    WIN  : ${Math.round(result.win / iterats * 100)}
-    LOSE : ${Math.round(result.lose / iterats * 100)}
-    DRAW : ${Math.round(result.draw / iterats * 100)}
-`);
-    console.timeEnd('timer');
+    cb && cb({
+        win: Math.round(result.win / iterats * 100),
+        lose: Math.round(result.lose / iterats * 100),
+        countPlayers,
+        board,
+        myCards
+    });
 };
 
 // _______________LIBS___________________
@@ -93,15 +88,6 @@ function evaluate(board, selfCards) {
             return cardValue === '6' ? cardNames[cardValue] + 'es' : cardNames[cardValue] + 's';
         } else {
             return cardNames[cardValue];
-        }
-    };
-
-    // Swaps the position of the cards of the first one is smaller than the second one
-    var swap = function (index1, index2) {
-        if (cardNamess.indexOf(cards[index1][0]) < cardNamess.indexOf(cards[index2][0])) {
-            var tmp = cards[index1];
-            cards[index1] = cards[index2];
-            cards[index2] = tmp;
         }
     };
 

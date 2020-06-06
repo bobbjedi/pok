@@ -48,6 +48,9 @@
             </div>
         </div>
     </div>
+
+
+    <!-- ОКНО ТУРНИРА -->
     <div class="modal-wrap" ng-show="isShowTournModal" ng-click="isShowTournModal = false">
         <div class="modal tourn-info">
             <div class="modal-text">
@@ -65,11 +68,12 @@
                     <div class="setting-line"><span class="al">Chips:</span> {{public.mtt.chips}}</div>
                     <!-- <div class="setting-line"><span class="al">Победителей:</span> {{public.mtt.winnersCount}}</div> -->
                     <div class="setting-line"><span class="al">Winners:</span> every 5th</div>
+                    <div class="setting-line"><span class="al">Mult blinds:</span>{{public.mtt.timeOutMult}} min</div>
+                    <div class="setting-line"><span class="al">Reentry:</span>{{public.mtt.maxLevelReentry}}</div>
                     <!-- <div class="setting-line"><span>Смена столов:</span> {{public.mtt.timeOutShufflePlayers}} мин</div>
                                 <div class="setting-line"><span>Рост блайнов:</span> {{public.mtt.timeOutMult}} мин</div> -->
                     <div class="setting-line"><span class="al">Participants:</span> {{public.mtt.users.length}}</div>
                 </div>
-
 
                 <br>
                 <span ng-if="public.mtt.users.includes($root.user.login)" class="txt-green">You are already registered!</span>
@@ -232,7 +236,7 @@
         <div class="but hovered create-room big bold" ng-click="isCreateRoom = true"><i class="fa fa-users"
                 aria-hidden="true"></i> &nbsp; Create room</div>
         <div class="but hovered create-room bg-black big bold txt-yellow"
-            ng-show="public.mtt.isRegOppened && public.mtt.coinName === $root.settings.coinName"
+            ng-show="public.mtt.isRegOppened"
             ng-click="isShowTournModal = true"><i class="fa fa-trophy" aria-hidden="true"></i> &nbsp; MTT Tournament</div>
         <div class="lobby-stat txt-green">
             <span>Total: <span class="big txt-yellow">{{$root.tsp(public.totalBankAmount)}}</span> BIP</span>

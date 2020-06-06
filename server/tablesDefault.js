@@ -1,25 +1,25 @@
 // tables[0] = new Table(0, '10-ти местный стол', eventEmitter(0), 10, 2, 1, 200, 40, false);
 
 module.exports = [{
-    count: 10,
+    count: 8,
     sb: 0.5,
     type: 'light'
 }, {
-    count: 10,
+    count: 8,
     sb: 1,
     type: 'classic'
 }, {
-    count: 10,
+    count: 8,
     sb: 2,
     type: 'middle'
 },
 {
-    count: 10,
+    count: 8,
     sb: 4,
     type: 'hard'
 },
 {
-    count: 10,
+    count: 8,
     sb: 8,
     maxBuyIn: 1000000,
     type: 'unlim'
@@ -87,25 +87,25 @@ module.exports = [{
 
 
 module.exports.USDT = [{
-    count: 10,
+    count: 8,
     sb: 0.01,
     type: 'light'
 }, {
-    count: 10,
+    count: 8,
     sb: .02,
     type: 'classic'
 }, {
-    count: 10,
+    count: 8,
     sb: .04,
     type: 'middle'
 },
 {
-    count: 10,
+    count: 8,
     sb: .05,
     type: 'hard'
 },
 {
-    count: 10,
+    count: 8,
     sb: .1,
     maxBuyIn: 1000000,
     type: 'unlim'
@@ -172,25 +172,25 @@ module.exports.USDT = [{
 ];
 
 module.exports.ROUBLE = [{
-    count: 10,
+    count: 8,
     sb: 0.1,
     type: 'light'
 }, {
-    count: 10,
+    count: 8,
     sb: .5,
     type: 'classic'
 }, {
-    count: 10,
+    count: 8,
     sb: .8,
     type: 'middle'
 },
 {
-    count: 10,
+    count: 8,
     sb: 1,
     type: 'hard'
 },
 {
-    count: 10,
+    count: 8,
     sb: 1.5,
     maxBuyIn: 1000000,
     type: 'unlim'

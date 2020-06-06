@@ -1,7 +1,7 @@
 <!-- <a target="blank_" ng-href="{{table.data.spin.rate ? ('https://explorer.minter.network/transactions/' + table.data.spin.hash) : ''}}"> -->
     <div class="double-cell">
         <div id="pot-wrap">
-            <span id="pot" ng-show="table.pot[0].amount">Pot: {{potAmount()}}</span>
+            <span id="pot" ng-show="table.pot[0].amount"><i class="fa fa-university txt-yellow" aria-hidden="true"></i> Pot: {{potAmount()}}</span>
         </div>
         <div class="winner-msg txt-yellow" ng-show="winnerMsgArr.length">
             <div ng-repeat="msg in winnerMsgArr" ng:bind-html="renderHtml(msg)"></div>

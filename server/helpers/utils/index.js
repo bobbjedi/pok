@@ -390,7 +390,7 @@ setTimeout(async ()=>{
     const player2 = await $u.createOffLinePlayer('Devi');
     const player3 = await $u.createOffLinePlayer('Devs');
     const player4 = await $u.createOffLinePlayer('Devt');
-    // const player5 = await $u.createOffLinePlayer('Devisd');
+    const player5 = await $u.createOffLinePlayer('Devisd');
     const player6 = await $u.createOffLinePlayer('Devo');
     await $u.wait(.5);
     // await table.playerSatOnTheTable(player1, 1, 100);
@@ -401,7 +401,7 @@ setTimeout(async ()=>{
     await $u.wait(.5);
     await table.playerSatOnTheTable(player4, 3, 80);
     await $u.wait(.5);
-    // await table.playerSatOnTheTable(player5, 4, 80);
+    await table.playerSatOnTheTable(player5, 4, 80);
     await $u.wait(.5);
     await table.playerSatOnTheTable(player6, 5, 80);
     // await $u.wait(1.5);

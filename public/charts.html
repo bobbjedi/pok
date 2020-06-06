@@ -23,12 +23,15 @@
 			api(data=>{	
 				const rakesBIP = data.rakes.BIP;
 				const rakesUSDT = data.rakes.USDT;
+				const rakesROUBLE = data.rakes.ROUBLE;
 				
 				const gamesCountBIP = data.gamesCount.BIP;
 				const gamesContUSDT = data.gamesCount.USDT;
+				const gamesContROUBLE = data.gamesCount.ROUBLE;
 				
 				const gamesValueBIP = data.gamesValue.BIP;
 				const gamesValueUSDT = data.gamesValue.USDT;
+				const gamesValueROUBLE = data.gamesValue.ROUBLE;
 				
 				const fullLabels = Object.keys(rakesBIP);
 				const labels = fullLabels.slice(7, fullLabels.length);
@@ -45,6 +48,18 @@
 				{
 					label: 'gamesValueBIP',
 					data: gamesValueBIP
+				},
+				{
+					label: 'rakesROUBLE',
+					data: rakesROUBLE
+				},
+				{
+					label: 'gamesCountROUBLE',
+					data: gamesContROUBLE
+				},
+				{
+					label: 'gamesValueROUBLE',
+					data: gamesValueROUBLE
 				},
 				{
 					label: 'rakesUSDT',
