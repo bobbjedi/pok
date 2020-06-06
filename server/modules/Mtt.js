@@ -293,7 +293,7 @@ module.exports = class Mtt{
                 db.winners.push({prize, name});
                 const user = await $u.getUserFromQ({login: name});
                 console.log('MTT PRIZE', {prize, name});
-                setTimeout(() => $u.updateUserDeposit(user, prize, this.params.coinName), 1000);
+                setTimeout(() => $u.updateUserDeposit(user, prize, this.params.coinName), 1000 * i);
             }
             db.winners.reverse();
             this.db.save();
