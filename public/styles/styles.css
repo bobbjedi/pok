@@ -129,7 +129,7 @@ table {
 }
 
 .zindex3{
-    z-index: 3;
+    z-index: 3 !important;
 }
 
 .table_dark {
