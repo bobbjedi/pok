@@ -128,7 +128,7 @@ table {
     height: 100%
 }
 
-#table-wrap:first-child{
+.zindex3{
     z-index: 3;
 }
 
