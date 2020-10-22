@@ -19,7 +19,7 @@ setInterval(() => {
                     continue;
                 }
                 txsCash[hash] = 1;
-                const incomingCoin = tx.data.coin;
+                const incomingCoin = tx.data.coin.symbol;
 
                 !isDev && log.info('New TX: ' + incomingCoin + '> ' + tx.hash);
                 const depositsDb = Db['depositsDb_' + incomingCoin];
