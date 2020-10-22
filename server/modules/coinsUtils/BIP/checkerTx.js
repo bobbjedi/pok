@@ -6,9 +6,10 @@ const $u = require('../../../helpers/utils');
 const log = require('../../../helpers/log');
 const txsCash = {};
 const {isDev} = config;
-// ,https://explorer-api.minter.network/api/v1/addresses/Mxfdfc236848d445e754b6660bec98a046ac59b5cd/transactions?page=1
+
+
 setInterval(() => {
-    request('https://explorer-api.minter.network/api/v1/addresses/' + config.gameMinterAddress + '/transactions?page=1', async (err, res, body) => {
+    request('https://explorer-api.minter.network/api/v2/addresses/' + config.gameMinterAddress + '/transactions?page=1', async (err, res, body) => {
         try {
             const txs = JSON.parse(body).data;
             for (const tx of txs) {
@@ -19,7 +20,7 @@ setInterval(() => {
                 }
                 txsCash[hash] = 1;
                 const incomingCoin = tx.data.coin;
-                
+
                 !isDev && log.info('New TX: ' + incomingCoin + '> ' + tx.hash);
                 const depositsDb = Db['depositsDb_' + incomingCoin];
                 const isHas = await depositsDb.db.syncFindOne({hash});

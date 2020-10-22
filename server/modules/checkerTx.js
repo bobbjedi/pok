@@ -6,9 +6,11 @@ const log = require('../helpers/log');
 const {getEqual} = require('../modules/minter');
 const coinName = 'BIP';
 const txsCash = {};
-// ,https://explorer-api.minter.network/api/v1/addresses/Mxfdfc236848d445e754b6660bec98a046ac59b5cd/transactions?page=1
+
+
 setInterval(() => {
-    request('https://explorer-api.minter.network/api/v1/addresses/' + config.gameMinterAddress + '/transactions?page=1', (err, res, body) => {
+    request(' https://explorer-api.testnet.minter.network/api/v2/addresses/' + config.gameMinterAddress + '/transactions?page=1', (err, res, body) => {
+
         try {
             const txs = JSON.parse(body).data;
             txs.forEach(async tx => {

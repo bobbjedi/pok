@@ -16,10 +16,6 @@ const coins = {
     }
 };
 const txsCash = {};
-// ,https://explorer-api.minter.network/api/v1/addresses/Mxfdfc236848d445e754b6660bec98a046ac59b5cd/transactions?page=1
-
-
-
 const checker = async coinName =>{
     // console.log('checker', coinName, ADDRESS);
     const {sat, depositsDb} = coins[coinName];

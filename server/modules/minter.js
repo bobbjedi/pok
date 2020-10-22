@@ -4,7 +4,7 @@ const pk = require('../.pk');
 const {Minter, SendTxParams, BuyTxParams, SellTxParams} = require('minter-js-sdk');
 const ADDRESS = config.gameMinterAddress;
 const COIN = 'BIP';
-const minter = new Minter({chainId: 1, apiType: 'gate', baseURL: 'https://gate-api.minter.network/api/v1/'});
+const minter = new Minter({chainId: 1, apiType: 'gate', baseURL: 'https://gate-api.minter.network/api/v2/'});
 const log = require('../helpers/log');
 const {depositsDb} = require('./DB');
 const $u = require('../helpers/utils');
@@ -65,11 +65,11 @@ module.exports = {
         }
     },
     async getAddressData(address = config.gameMinterAddress){
-        return await $u.asyncReq('https://explorer-api.minter.network/api/v1/addresses/' + address);
+        return await $u.asyncReq('https://explorer-api.minter.network/api/v2/addresses/' + address);
     },
     async getCoinBalance(coinName = COIN){
         const {balances} = (await this.getAddressData()).data;
-        return Math.round(+balances.find(c=>c.coin === coinName).amount);
+        return Math.round(+balances.find(c=>c.coin.symbol === coinName).amount);
     },
     async buy(data){
         const {coinTo, coinFrom, buyAmount} = data;
