@@ -10,6 +10,7 @@ const {isDev} = config;
 
 setInterval(() => {
     request('https://explorer-api.minter.network/api/v2/addresses/' + config.gameMinterAddress + '/transactions?page=1', async (err, res, body) => {
+        // https://explorer-api.minter.network/api/v2/addresses/Mxbdd6711303c0ec290e81bbe0b005c4bcfb458979/transactions
         try {
             const txs = JSON.parse(body).data;
             for (const tx of txs) {
@@ -19,6 +20,9 @@ setInterval(() => {
                     continue;
                 }
                 txsCash[hash] = 1;
+                if (!tx.data.coin){
+                    return;
+                }
                 const incomingCoin = tx.data.coin.symbol;
 
                 !isDev && log.info('New TX: ' + incomingCoin + '> ' + tx.hash);

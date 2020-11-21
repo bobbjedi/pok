@@ -1,8 +1,9 @@
 const config = require('../../../helpers/configReader');
 const seed = require('../.seed');
-const {Minter, SendTxParams, BuyTxParams, SellTxParams} = require('minter-js-sdk');
+const {Minter, TX_TYPE} = require('minter-js-sdk');
 const {walletFromMnemonic} = require('minterjs-wallet');
 const COIN = config.coinName || 'BIP';
+// const minter = new Minter({apiType: 'node', baseURL: 'https://node-api.testnet.minter.network/v2/'});
 const minter = new Minter({chainId: 1, apiType: 'gate', baseURL: 'https://gate-api.minter.network/api/v2/'});
 const log = require('../../../helpers/log');
 const $u = require('../../../helpers/utils');
@@ -10,7 +11,6 @@ const $u = require('../../../helpers/utils');
 const bipWallet = walletFromMnemonic(seed);
 const ADDRESS = bipWallet.getAddressString();
 const privateKey = bipWallet.getPrivateKeyString();
-
 module.exports = {
     ADDRESS,
     privateKey,
@@ -37,13 +37,13 @@ module.exports = {
     async buy(data){
         const {coinTo, coinFrom, buyAmount} = data;
         log.info(`BUY ${coinFrom}>${coinTo} ${buyAmount}`);
-        const txParams = new BuyTxParams({
+        const txParams ={
             privateKey,
             chainId: 1,
             coinFrom,
             coinTo,
             buyAmount
-        });
+        };
         try {
             return await minter.postTx(txParams);
         } catch (e){
@@ -56,17 +56,16 @@ module.exports = {
     async sell(data){
         const {coinTo, coinFrom, sellAmount} = data;
         log.info(`BUY ${coinFrom}>${coinTo} ${sellAmount}`);
-        const txParams = new SellTxParams({
+        const txParams = {
             privateKey,
             chainId: 1,
             coinFrom,
             coinTo,
             sellAmount
-        });
+        };
         try {
             return await minter.postTx(txParams);
         } catch (e){
-            console.log(e);
             const errorMessage = e.response.data.error;
             log.error(`Sell TX: ${errorMessage.tx_result.message} | ${sellAmount} | ${coinTo}`);
             return false;
@@ -87,29 +86,29 @@ async function sendTx(address, amount, coinName, msg){
         return false;
     }
     console.log({ADDRESS, address});
-    const txParams = new SendTxParams({
-        privateKey,
-        nonce: await getNonce(),
-        chainId: 1,
-        address,
-        amount,
-        coinSymbol: coinName,
-        feeCoinSymbol: 'BIP',
-        message: msg || ''
-    });
+
+    const txParams = {
+        type: TX_TYPE.SEND,
+        data: {
+            to: address,
+            value: amount,
+            coin: 0, // BIP id
+        },
+        gasCoin: 0, // BIP id
+        gasPrice: 1,
+        payload: '',
+    };
     try {
-        return await minter.postTx(txParams);
+        return await minter.postTx(txParams, {privateKey});
     } catch (e){
-        // console.log(e.response);
-        // const errorMessage = e.response.data.error.log;
-        log.error(`Send TX: ${e.response.data.error.log} | ${address} | ${amount}`);
+        // const errorMessage = e;
+        console.log('E:', e.response.data.error);
+        const errorMessage = e.response.data.error.log;
+        console.log(errorMessage);
+        log.error(`Send TX: ${e} | ${address} | ${amount}`);
         return false;
     }
 };
-
-async function getNonce(){
-    return await minter.getNonce(ADDRESS);
-}
 
 async function getEqual(sellCoin, value, buyCoin){
     try {
