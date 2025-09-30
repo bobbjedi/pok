@@ -32,7 +32,7 @@
         "get-user-media-promise": "^1.1.4",
         "hdkey": "^1.1.2",
         "microphone-stream": "^5.0.1",
-        "minter-js-sdk": "^0.35.6",
+        "minter-js-sdk": "^0.46.2",
         "minterjs-wallet": "^6.0.0",
         "nedb": "^1.8.0",
         "node-cron": "^2.0.3",
