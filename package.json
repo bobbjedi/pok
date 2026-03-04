@@ -41,7 +41,7 @@
         "sha256": "^0.2.0",
         "socket.io": "^2.3.0",
         "socket.io-stream": "^0.9.1",
-        "underscore": "^1.9.1",
+        "underscore": "^1.13.8",
         "web3": "^1.2.6",
         "zip-dir": "^1.0.2"
     },
